@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxFrame" name="IDZ80">
+		<title>Interactive Disassembler Z80</title>
+		<size>600,465</size>
+		<pos_arg>1</pos_arg>
+		<size_arg>1</size_arg>
+		<object class="wxAuiManager" variable="AuiManager1" member="yes">
+			<handler function="OnAuiPaneClose" entry="EVT_AUI_PANE_CLOSE" />
+			<object class="AuiManagerItem">
+				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="PanelLog" member="yes">
+					<value>Text</value>
+					<pos>114,460</pos>
+					<font>
+						<size>8</size>
+						<style>normal</style>
+						<weight>normal</weight>
+						<underlined>0</underlined>
+						<family>swiss</family>
+						<face>Courier New</face>
+					</font>
+					<style>wxTE_MULTILINE|wxTE_RICH</style>
+				</object>
+				<name>MessageLog</name>
+				<caption>Message Log</caption>
+				<minimizebutton>0</minimizebutton>
+				<maximizebutton>0</maximizebutton>
+				<pinbutton>0</pinbutton>
+				<dockdirection>Bottom</dockdirection>
+				<dockfixed>0</dockfixed>
+				<dockabledirection></dockabledirection>
+				<destroyonclose>0</destroyonclose>
+				<firstadd>0</firstadd>
+			</object>
+		</object>
+		<object class="wxMenuBar" variable="MenuBar1" member="yes">
+			<object class="wxMenu" variable="Menu1" member="yes">
+				<label>&amp;File</label>
+				<object class="wxMenu" name="idMenuFileOpen" variable="MenuItem1" member="yes">
+					<label>&amp;Open</label>
+					<handler function="OnMenuFileOpen" entry="EVT_MENU" />
+					<object class="wxMenuItem" name="idMenuFileOpenProject" variable="MenuItem14" member="yes">
+						<label>Project</label>
+						<accel>Alt+r</accel>
+						<handler function="OnMenuFileOpen" entry="EVT_MENU" />
+					</object>
+					<object class="wxMenuItem" name="idMenuFileOpenArchive" variable="MenuItem15" member="yes">
+						<label>Archive</label>
+						<accel>Alt+l</accel>
+						<handler function="OnMenuFileOpen" entry="EVT_MENU" />
+					</object>
+				</object>
+				<object class="wxMenuItem" name="idMenuFileSave" variable="MenuItem13" member="yes">
+					<label>&amp;Save</label>
+					<accel>Alt+s</accel>
+					<handler function="OnMenuFileSaveProject" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idMenuFileClose" variable="MenuItem17" member="yes">
+					<label>Close</label>
+					<handler function="OnMenuFileClose" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="idMenuFileInfo" variable="MenuItem16" member="yes">
+					<label>&amp;Info</label>
+					<accel>Alt+I</accel>
+					<handler function="OnMenuFileInfo" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="idMenuFileQuit" variable="MenuItem2" member="yes">
+					<label>Quit</label>
+					<accel>Alt+q</accel>
+					<handler function="OnMenuFileQuit" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu3" member="yes">
+				<label>&amp;View</label>
+				<object class="wxMenuItem" name="idMenuViewDasmWindow" variable="MenuItem4" member="yes">
+					<label>Disassembly Window</label>
+					<handler function="OnMenuViewDisassemblyWindow" entry="EVT_MENU" />
+					<checkable>1</checkable>
+				</object>
+				<object class="wxMenuItem" name="idMenuViewProgLabels" variable="MenuItem9" member="no">
+					<label>Program Labels</label>
+					<handler function="OnMenuViewProgramLabels" entry="EVT_MENU" />
+					<checkable>1</checkable>
+				</object>
+				<object class="wxMenuItem" name="idMenuViewVarLabels" variable="MenuItem10" member="no">
+					<label>Var Labels</label>
+					<handler function="OnMenuViewVarLabels" entry="EVT_MENU" />
+					<checkable>1</checkable>
+				</object>
+				<object class="wxMenuItem" name="idMenuViewIOLabels" variable="MenuItem11" member="no">
+					<label>I/O Labels</label>
+					<handler function="OnMenuViewIOLabels" entry="EVT_MENU" />
+					<checkable>1</checkable>
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu2" member="yes">
+				<label>&amp;Tools</label>
+				<object class="wxMenuItem" name="idMenuToolsDasmAll" variable="MenuItem3" member="yes">
+					<label>Disassemble all</label>
+					<accel>CTRL+SHIFT+d</accel>
+					<handler function="OnMenuToolsDisAsm" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idMenuToolsAutoLabel" variable="MenuItem12" member="no">
+					<label>Auto Label</label>
+					<handler function="OnMenuToolAutoLabel" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="idMenuToolsGenCode" variable="MenuItem18" member="yes">
+					<label>Generate Code</label>
+					<handler function="OnMenuToolsGenCode" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu4" member="yes">
+				<label>&amp;Mnemonics</label>
+				<object class="wxMenuItem" name="idMenuMnemLoad" variable="MenuItem5" member="yes">
+					<label>&amp;Load</label>
+					<handler function="OnMenuMnemonicsLoad" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idMenuMnemInfo" variable="MenuItem6" member="yes">
+					<label>&amp;Info</label>
+					<accel>Alt+i</accel>
+					<handler function="OnMenuMnemonicsInfo" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu5" member="yes">
+				<label>&amp;Help</label>
+				<object class="wxMenuItem" name="idMenuHelpContents" variable="MenuItem7" member="yes">
+					<label>&amp;Contents</label>
+					<accel>Alt+c</accel>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="IdMenuHelpAbout" variable="MenuItem8" member="yes">
+					<label>About</label>
+					<accel>Alt+b</accel>
+					<handler function="OnMenuHelpAbout" entry="EVT_MENU" />
+				</object>
+			</object>
+		</object>
+		<object class="wxStatusBar" name="ID_STATUSBAR1" variable="StatusBar1" member="yes">
+			<fields>1</fields>
+			<widths>-10</widths>
+			<styles>wxSB_NORMAL</styles>
+		</object>
+	</object>
+</wxsmith>

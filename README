@@ -1,0 +1,4 @@
+IDZ80 - Interactive Disassembler for Z80 processors
+
+It´s intended to be easy and automated the rough task of disassemble programs.
+The project was created under CodeBlocks IDE, but it´s planned to become a makefile;
