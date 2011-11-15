@@ -16213,7 +16213,7 @@
 
 1300793815 p:\c_c++\projetos\idz80\wxw\wx28\lib\gcc_dll\mswu\wx\setup.h
 
-1275677130 source:p:\c_c++\projetos\idz80\resource.rc
+1321296760 source:p:\c_c++\projetos\idz80\resource.rc
 	"wx/msw/wx.rc"
 
 1279740925 source:p:\c_c++\projetos\idz80\src\editlabeldlg.cpp
@@ -16347,7 +16347,7 @@
 	<wx/textfile.h>
 	"ProcessData.h"
 
-1319644471 p:\c_c++\projetos\idz80\src\version.h
+1321386914 p:\c_c++\projetos\idz80\src\version.h
 
 1300921685 p:\c_c++\projetos\idz80\src\showfileinfo.h
 	<wx/stattext.h>
@@ -16368,7 +16368,7 @@
 1300979285 source:p:\c_c++\projetos\idz80\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1319489482 source:p:\c_c++\projetos\idz80\src\processdata.cpp
+1321383477 source:p:\c_c++\projetos\idz80\src\processdata.cpp
 	"ProcessData.h"
 
 1300922957 source:p:\c_c++\projetos\idz80\src\showfileinfo.cpp
@@ -16379,7 +16379,7 @@
 1307489838 source:p:\c_c++\projetos\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
-1319644470 source:p:\c_c++\projetos\idz80\src\codeview.cpp
+1321376463 source:p:\c_c++\projetos\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -16387,7 +16387,7 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1319479418 source:p:\c_c++\projetos\idz80\src\codeviewline.cpp
+1321385617 source:p:\c_c++\projetos\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
 1285019595 source:p:\c_c++\projetos\idz80\src\d_asm_element.cpp

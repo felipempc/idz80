@@ -524,7 +524,7 @@ void CodeView::PaintBackground(wxDC &dc, const int start_y, const int fromline, 
 
 void CodeView::OnPaint(wxPaintEvent& event)
 {
-    SetBackgroundStyle(wxBG_STYLE_PAINT);    // wxBG_STYLE_CUSTOM);
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxAutoBufferedPaintDC dc(this);
     DoPrepareDC(dc);
     UpdateLastCursorRect();
@@ -905,7 +905,7 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
     }
 
     if (!MultiSelection)
-        CursorLastPosition=CursorPosition;
+        CursorLastPosition = CursorPosition;
 
 	lastposition = CursorPosition;
     CalcCursorPosition(event.GetPosition());
@@ -952,22 +952,28 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
     if (!IsEmpty)
     {
         SetFocusIgnoringChildren();
-        PopUp=new wxMenu();
-        if (SelectedCount>1)
+        PopUp = new wxMenu();
+        if (SelectedCount > 1)
         {
             switch (GetTypeMultiselection())
             {
                 case et_Instruction:
                                 PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
+                                #ifdef IDZ80DEBUG
                                 LogIt(_("Instruction !\n"));
+                                #endif
                                 break;
                 case et_Data:
                                 PopUp->Append(idPOPUP_DISASM,_("Disassemble\tc"));
+                                #ifdef IDZ80DEBUG
                                 LogIt(_("Data !\n"));
+                                #endif
                                 break;
                 default:
                                 PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
+                                #ifdef IDZ80DEBUG
                                 LogIt(_("Default !\n"));
+                                #endif
                                 break;
             }
             PopUp->AppendSeparator();
@@ -977,9 +983,9 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
         }
         else
         {
-            cvi=m_CodeViewLine->getData(CursorPosition);
+            cvi = m_CodeViewLine->getData(CursorPosition);
             // Label
-            if (cvi->LabelAddr>=0)
+            if (cvi->LabelAddr >= 0)
             {
                 PopUp->Append(idPOPUP_EDITLABEL,_T("Rename label"));
                 PopUp->AppendSeparator();
@@ -987,11 +993,11 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             }
             else
             // Dasmed item
-            if (cvi->Dasmitem>=0)
+            if (cvi->Dasmitem >= 0)
             {
-                de=m_process->m_Dasm->GetData(cvi->Dasmitem);
+                de = m_process->m_Dasm->GetData(cvi->Dasmitem);
                 if (de->MnItem != 0)
-                    if (de->MnItem->getBranchType()!=BR_NONE)
+                    if (de->MnItem->getBranchType() != BR_NONE)
                     {
                         PopUp->Append(idPOPUP_GOTO,_T("Goto label"));
                     }
@@ -1001,7 +1007,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
                 }
             }
             PopUp->AppendSeparator();
-            if (cvi->Comment!=0)
+            if (cvi->Comment != 0)
             {
                 PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
                 PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
@@ -1405,6 +1411,9 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
         sz.y += newLineCount * m_fontHeight;
         SetVirtualSize(sz);
         Refresh();
+		#ifdef IDZ80DEBUG
+		LogIt(wxString::Format(_("MakeData: Virtual size = %d, %d\n"),sz.x,sz.y));
+		#endif
     }
 }
 
@@ -1440,9 +1449,13 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
     CursorPosition = lineIndex + ri.Count - 1;
     UpdateSelectedRect();
     wxSize sz = GetVirtualSize();
-    sz.y -= newLineCount * m_fontHeight;
+    //Remember: newLineCount can be positive or negative.
+    sz.y += newLineCount * m_fontHeight;
     SetVirtualSize(sz);
     Refresh();
+    #ifdef IDZ80DEBUG
+    LogIt(wxString::Format(_("Disasm: Virtual size = %d, %d\n"),sz.x,sz.y));
+    #endif
 }
 
 

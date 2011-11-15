@@ -30,13 +30,13 @@ ProcessData::ProcessData(wxWindow *parent)
     Program = new RawData();
     m_Dasm = new DAsmData();
     m_CodeViewLine = new CodeViewLine(m_Dasm);
-    m_main_frame=parent;
-    var_labels = new LabelListCtrl(m_main_frame,wxID_ANY,wxDefaultPosition,wxSize(170,170));
-    prog_labels = new LabelListCtrl(m_main_frame,wxID_ANY,wxDefaultPosition,wxSize(170,170));
-    io_labels = new LabelListCtrl(m_main_frame,wxID_ANY,wxDefaultPosition,wxSize(170,170));
+    m_main_frame = parent;
+    var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
 
     m_gauge = NULL;
-    m_log=0;
+    m_log = 0;
 }
 
 
@@ -57,36 +57,38 @@ void ProcessData::SetGauge(wxGauge *g)
    m_gauge = g;
 }
 
-
+/*
+ *	Convert dasm data items to file offset
+ */
 void ProcessData::ConvertProgramAddress(RangeItems r, RangeData& d)
 {
     DAsmElement* temp;
 
     temp = m_Dasm->GetData(r.Index);
-    d.First=temp->Offset;
-    temp = m_Dasm->GetData((r.Index+r.Count-1));
-    d.Count=temp->Offset + temp->Length;
+    d.First = temp->Offset;
+    temp = m_Dasm->GetData((r.Index + r.Count - 1));
+    d.Count = temp->Offset + temp->Length;
 }
 
 
-uint ProcessData::MatchOpcode(const uint i,const uint max)
+uint ProcessData::MatchOpcode(const uint i, const uint max)
 {
-    uint j,nitems;
+    uint j, nitems;
     wxArrayInt foundItems;
     byte scan;
 
     foundItems.Clear();
-    j=0;
-    while ((j<MAX_OPCODE_SIZE) && ((j+i)<max))
+    j = 0;
+    while ((j < MAX_OPCODE_SIZE) && ((j + i) < max))
     {
-        scan=Program->GetData(i+j);
-        Mnemonics->FindItems(foundItems,scan,j);
+        scan = Program->GetData(i + j);
+        Mnemonics->FindItems(foundItems, scan, j);
         j++;
-        if (foundItems.GetCount()<2)
-            j=MAX_OPCODE_SIZE+1;
+        if (foundItems.GetCount() < 2)
+            j = MAX_OPCODE_SIZE + 1;
     }
-    nitems=foundItems.GetCount();
-    if (nitems == 0)
+    nitems = foundItems.GetCount();
+    if ((nitems == 0) || (nitems > max))
         return (OPCODE_NOT_MATCHED);
     else
         return (foundItems.Last());
@@ -97,53 +99,53 @@ uint ProcessData::MatchOpcode(const uint i,const uint max)
 
 void ProcessData::DisassembleFirst()
 {
-    uint i,f,j,item,totargs;
+    uint i, f, j, item, totargs;
     int percent;
     DAsmElement *de;
 
     m_Dasm->Clear();
 
-    f=Program->GetBufferSize();
-    for (i=0;i<f;i++)
+    f = Program->GetBufferSize();
+    for (i = 0; i < f; i++)
     {
-        item = MatchOpcode(i,f);
-        de = new DAsmElement(Program,&m_Dasm->BaseAddress);
-        de->hasArgumentLabel=false;
-        de->hasLabel=false;
-        if (item==OPCODE_NOT_MATCHED)
+        item = MatchOpcode(i, f);
+        de = new DAsmElement(Program, &m_Dasm->BaseAddress);
+        de->hasArgumentLabel = false;
+        de->hasLabel = false;
+        if (item == OPCODE_NOT_MATCHED)
         {
-            memset(de->Args,'\0',sizeof(OpCodeArguments));
-            memset(de->Code,'\0',sizeof(ByteCode));
-            de->Length=1;
-            de->Offset=i;
-            de->MnItem=0;
-            de->ElType=et_Data;
+            memset(de->Args, '\0', sizeof(OpCodeArguments));
+            memset(de->Code, '\0', sizeof(ByteCode));
+            de->Length = 1;
+            de->Offset = i;
+            de->MnItem = 0;
+            de->ElType = et_Data;
             m_Dasm->AddDasm(de);
         }
         else
         {
-            de->MnItem=Mnemonics->GetData(item);
-            for (j=0;j<MAX_OPCODE_SIZE;j++)
+            de->MnItem = Mnemonics->GetData(item);
+            for (j = 0; j < MAX_OPCODE_SIZE; j++)
             {
                 if (j < de->MnItem->getBytesNo())
                     de->Code[j] = de->MnItem->getOpCode(j);
                 else
                     de->Code[j] = 0;
             }
-            de->Length=de->MnItem->getBytesNo();
-            de->ElType=et_Instruction;
-            de->Offset=i;
-            totargs=de->MnItem->getArgNo() * de->MnItem->getArgSize();
-            for (j=0;j<totargs;j++)
-                de->Args[j]=Program->GetData(i+j+de->MnItem->getArgPos());
+            de->Length = de->MnItem->getBytesNo();
+            de->ElType = et_Instruction;
+            de->Offset = i;
+            totargs = de->MnItem->getArgNo() * de->MnItem->getArgSize();
+            for (j = 0; j < totargs; j++)
+                de->Args[j] = Program->GetData(i + j + de->MnItem->getArgPos());
             m_Dasm->AddDasm(de);
         }
 
-        i += (de->Length-1);
+        i += (de->Length - 1);
 
-        if (!(m_gauge==NULL))
+        if (!(m_gauge == NULL))
         {
-            percent = i*100/f;
+            percent = i * 100 / f;
             m_gauge->SetValue(percent);
         }
     }
@@ -175,10 +177,10 @@ void ProcessData::DisassembleItems(RangeItems &r)
         r.Count = 0;
         for (i = prange.First; i < prange.Count; i++)
         {
-            item = MatchOpcode(i,prange.Count);
+            item = MatchOpcode(i, prange.Count);
             if (item == OPCODE_NOT_MATCHED)
             {
-                de = new DAsmElement(Program,&m_Dasm->BaseAddress);
+                de = new DAsmElement(Program, &m_Dasm->BaseAddress);
                 memset(de->Args,'\0',sizeof(OpCodeArguments));
                 memset(de->Code,'\0',sizeof(ByteCode));
                 de->Length = 1;
@@ -195,9 +197,9 @@ void ProcessData::DisassembleItems(RangeItems &r)
             }
             else
             {
-                de = new DAsmElement(Program,&m_Dasm->BaseAddress);
+                de = new DAsmElement(Program, &m_Dasm->BaseAddress);
                 de->MnItem = Mnemonics->GetData(item);
-                for (j=0;j < MAX_OPCODE_SIZE;j++)
+                for (j = 0; j < MAX_OPCODE_SIZE; j++)
                 {
                     if (j < de->MnItem->getBytesNo())
                         de->Code[j] = de->MnItem->getOpCode(j);
@@ -209,16 +211,16 @@ void ProcessData::DisassembleItems(RangeItems &r)
                 de->Offset = i;
                 totargs = de->MnItem->getArgNo() * de->MnItem->getArgSize();
                 for (j=0;j<totargs;j++)
-                    de->Args[j] = Program->GetData(i+j+de->MnItem->getArgPos());
+                    de->Args[j] = Program->GetData(i + j + de->MnItem->getArgPos());
                 if (IsMiddle)
-                    m_Dasm->InsertDasm(de,x++);
+                    m_Dasm->InsertDasm(de, x++);
                 else
                 {
                     m_Dasm->AddDasm(de);
                     x++;
                 }
             }
-            i += (de->Length-1);
+            i += (de->Length - 1);
             r.Count++;
         }
     }
@@ -229,10 +231,8 @@ void ProcessData::DisassembleItems(RangeItems &r)
 
 void ProcessData::MakeData(RangeItems &r)
 {
-    uint	i,j,k,f,
-			offset,length;
-    DAsmElement
-			*de;
+    uint		i, j, k, f, offset, length;
+    DAsmElement	*de;
 
     f = r.Index + r.Count;
     if (f > m_Dasm->GetCount())
@@ -267,42 +267,42 @@ void ProcessData::MakeData(RangeItems &r)
 void ProcessData::AutoLabel()
 {
     DAsmElement *dasmtemp;
-    uint    i,nargsVar,nargsProg,nargsIO;
+    uint    i, nargsVar, nargsProg, nargsIO;
 
     long addr;
-    wxString str,strdebug;
+    wxString str, strdebug;
     enum ArgType argtype;
 
     if (m_Dasm->IsLoaded())
     {
-        i=0;
-        nargsVar=nargsIO=nargsProg=0;
+        i = 0;
+        nargsVar = nargsIO = nargsProg = 0;
         while (i < m_Dasm->GetCount())
         {
-            dasmtemp=m_Dasm->GetData(i);
+            dasmtemp = m_Dasm->GetData(i);
             if (dasmtemp->ElType == et_Instruction)
             {
                 argtype=dasmtemp->MnItem->getArgType(0);
                 switch (argtype)
                 {
                     case ARG_VARIABLE:
-                                        dasmtemp->hasArgumentLabel=true;
-                                        addr=dasmtemp->getArgument(0);
-                                        str.Printf(_("VAR%d"),nargsVar++);
-                                        var_labels->AddLabel(addr,str,i);
+                                        dasmtemp->hasArgumentLabel = true;
+                                        addr = dasmtemp->getArgument(0);
+                                        str.Printf(_("VAR%d"), nargsVar++);
+                                        var_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
-                                        addr=dasmtemp->getArgument(0);
-                                        dasmtemp->hasArgumentLabel=true;
-                                        str.Printf(_("LABEL%d"),nargsProg++);
-                                        prog_labels->AddLabel(addr,str,i);
+                                        addr = dasmtemp->getArgument(0);
+                                        dasmtemp->hasArgumentLabel = true;
+                                        str.Printf(_("LABEL%d"), nargsProg++);
+                                        prog_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_IO_ADDR:
-                                        addr=dasmtemp->getArgument(0);
-                                        dasmtemp->hasArgumentLabel=true;
-                                        str.Printf(_("PORT%d"),nargsIO++);
-                                        io_labels->AddLabel(addr,str,i);
+                                        addr = dasmtemp->getArgument(0);
+                                        dasmtemp->hasArgumentLabel = true;
+                                        str.Printf(_("PORT%d"), nargsIO++);
+                                        io_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_NONE:
                     case ARG_LITERAL:
@@ -312,11 +312,11 @@ void ProcessData::AutoLabel()
             }
             i++;
         }
-        if (nargsIO>0)
+        if (nargsIO > 0)
             io_labels->SortAddress();
-        if (nargsProg>0)
+        if (nargsProg > 0)
             prog_labels->SortAddress();
-        if (nargsVar>0)
+        if (nargsVar > 0)
             var_labels->SortAddress();
     }
 }
@@ -340,10 +340,10 @@ void ProcessData::InitData()
     while (i < m_Comments.GetCount())
         m_CodeViewLine->Add(m_Comments[i++]);
 
-    m_CodeViewLine->AddOrg(m_Dasm->GetBaseAddress(),_(""));
+    m_CodeViewLine->AddOrg(m_Dasm->GetBaseAddress(), _(""));
     i = 0;
     while (i < m_Dasm->GetCount())
-        m_CodeViewLine->AddDasm(i++,_T(""));
+        m_CodeViewLine->AddDasm(i++, _T(""));
 }
 
 
@@ -362,10 +362,10 @@ void ProcessData::processLabel()
             a = m_CodeViewLine->getDataLineAddress(lbl->Address);
             if (a >= 0)
             {
-                m_CodeViewLine->InsertLabel(lbl->Address,_T(""),a);
+                m_CodeViewLine->InsertLabel(lbl->Address,_T(""), a);
             }
                 else
-                    m_CodeViewLine->EditLabel(lbl->Address,_T(""),a);
+                    m_CodeViewLine->EditLabel(lbl->Address,_T(""), a);
         }
         i++;
     }
@@ -375,7 +375,7 @@ void ProcessData::processLabel()
 
 void ProcessData::SetLog(wxTextCtrl *_lg)
 {
-    m_log=_lg;
+    m_log = _lg;
     io_labels->SetLog(_lg);
     var_labels->SetLog(_lg);
     prog_labels->SetLog(_lg);

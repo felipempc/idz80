@@ -12,8 +12,8 @@
 
 CodeViewLine::CodeViewLine(DAsmData *dasm)
 {
-    m_itemcount=-1;
-    m_dasm=dasm;
+    m_itemcount = -1;
+    m_dasm = dasm;
 }
 
 CodeViewLine::~CodeViewLine()
@@ -42,24 +42,24 @@ void CodeViewLine::Clear()
     uint i;
     CodeViewItem *cvi;
 
-    for (i=0;i<m_CodeLine.GetCount();i++)
+    for (i=0; i < m_CodeLine.GetCount(); i++)
     {
-        cvi=getData(i);
-        if (!(cvi==0))
-            if (cvi->Comment!=0)
+        cvi = getData(i);
+        if (!(cvi == 0))
+            if (cvi->Comment != 0)
                 delete cvi->Comment;
-            if (cvi->RectArg1!=0)
+            if (cvi->RectArg1 != 0)
                 delete cvi->RectArg1;
-            if (cvi->RectArg2!=0)
+            if (cvi->RectArg2 != 0)
                 delete cvi->RectArg2;
             delete cvi;
     }
     m_CodeLine.Clear();
-    m_itemcount=-1;
+    m_itemcount = -1;
 }
 
 
-int CodeViewLine::AddNewItem(const int dasmitem,const int labeladdr, const int org,
+int CodeViewLine::AddNewItem(const int dasmitem, const int labeladdr, const int org,
                              const wxString &comment)
 {
     CodeViewItem *cvi;
@@ -84,37 +84,37 @@ int CodeViewLine::AddNewItem(const int dasmitem,const int labeladdr, const int o
 
 int CodeViewLine::AddDasm(const int dasmitem, const wxString &comment)
 {
-    return (AddNewItem(dasmitem,-1,-1,comment));
+    return (AddNewItem(dasmitem, -1, -1, comment));
 }
 
 
 int CodeViewLine::AddLabel(const int labeladdr, const wxString &comment)
 {
-    if (labeladdr>=0)
-        return (AddNewItem(-1,labeladdr,-1,comment));
+    if (labeladdr >= 0)
+        return (AddNewItem(-1, labeladdr, -1, comment));
     return -1;
 }
 
 int CodeViewLine::AddOrg(const int org, const wxString &comment)
 {
-    return (AddNewItem(-1,-1,org,comment));
+    return (AddNewItem(-1, -1, org, comment));
 }
 
 int CodeViewLine::Add(const wxString &comment)
 {
-    return (AddNewItem(-1,-1,-1,comment));
+    return (AddNewItem(-1, -1, -1, comment));
 }
 
 
 void CodeViewLine::DelItem(CodeViewItem *cvi)
 {
-    if (cvi!=0)
+    if (cvi != 0)
     {
-        if (cvi->Comment!=0)
+        if (cvi->Comment != 0)
             delete cvi->Comment;
-        if (cvi->RectArg1!=0)
+        if (cvi->RectArg1 != 0)
             delete cvi->RectArg1;
-        if (cvi->RectArg2!=0)
+        if (cvi->RectArg2 != 0)
             delete cvi->RectArg2;
         delete cvi;
     }
@@ -125,17 +125,17 @@ void CodeViewLine::DelItem(CodeViewItem *cvi)
 
 void CodeViewLine::DelComment(CodeViewItem *cvi)
 {
-    if (cvi->Comment!=0)
+    if (cvi->Comment != 0)
     {
         delete cvi->Comment;
-        cvi->Comment=0;
+        cvi->Comment = 0;
     }
 }
 
 
 void CodeViewLine::Del(const int idx)
 {
-    if ((idx>=0) && (idx<m_CodeLine.GetCount()))
+    if ((idx >= 0) && (idx < m_CodeLine.GetCount()))
     {
         DelItem(getData(idx));
     }
@@ -143,59 +143,59 @@ void CodeViewLine::Del(const int idx)
 
 
 
-void CodeViewLine::EditItem(const int dasmitem,const int labeladdr, const int org,
+void CodeViewLine::EditItem(const int dasmitem, const int labeladdr, const int org,
                             const wxString &comment, const int pos)
 {
     CodeViewItem *cvi;
-    cvi=getData(pos);
+    cvi = getData(pos);
     if (!comment.IsEmpty())
-        if (cvi->Comment==0)
+        if (cvi->Comment == 0)
         {
-            cvi->Comment=new CommentItem;
-            cvi->Comment->CommentStr=comment;
+            cvi->Comment = new CommentItem;
+            cvi->Comment->CommentStr = comment;
         }
         else
-            cvi->Comment->CommentStr=comment;
+            cvi->Comment->CommentStr = comment;
     else
     {
-        if (cvi->Comment!=0)
+        if (cvi->Comment != 0)
         {
             delete cvi->Comment;
-            cvi->Comment=0;
+            cvi->Comment = 0;
         }
     }
-    if (dasmitem>=0)
-        cvi->Dasmitem=dasmitem;
-    if (org>=0)
-        cvi->Org=org;
-    if (labeladdr>=0)
-        cvi->LabelAddr=labeladdr;
+    if (dasmitem >= 0)
+        cvi->Dasmitem = dasmitem;
+    if (org >= 0)
+        cvi->Org = org;
+    if (labeladdr >= 0)
+        cvi->LabelAddr = labeladdr;
 }
 
-void CodeViewLine::EditDasm(const int dasmitem, const wxString &comment,int pos)
+void CodeViewLine::EditDasm(const int dasmitem, const wxString &comment, int pos)
 {
-    if ((dasmitem>=0) && (pos>=0) && (pos<m_CodeLine.GetCount()))
-        EditItem(dasmitem,-1,-1,comment,pos);
+    if ((dasmitem >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
+        EditItem(dasmitem, -1, -1, comment, pos);
 }
 
 
-void CodeViewLine::EditLabel(const int labeladdr, const wxString &comment,int pos)
+void CodeViewLine::EditLabel(const int labeladdr, const wxString &comment, int pos)
 {
-    if ((labeladdr>=0) && (pos>=0) && (pos<m_CodeLine.GetCount()))
-        EditItem(-1,labeladdr,-1,comment,pos);
+    if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
+        EditItem(-1, labeladdr, -1, comment, pos);
 }
 
 void CodeViewLine::EditOrg(const int org, const wxString &comment, int pos)
 {
-    if ((pos>=0) && (pos<m_CodeLine.GetCount()))
-        EditItem(-1,-1,org,comment,pos);
+    if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
+        EditItem(-1, -1, org, comment, pos);
 }
 
 
 
 void CodeViewLine::Edit(const wxString &comment,const int pos)
 {
-    EditItem(-1,-1,-1,comment,pos);
+    EditItem(-1, -1, -1, comment, pos);
 }
 
 
@@ -203,45 +203,51 @@ int CodeViewLine::InsertNewItem(const int dasmitem,const int labeladdr, const in
                                 const wxString &comment, int pos)
 {
     CodeViewItem *cvi;
-    cvi=new CodeViewItem;
+    cvi = new CodeViewItem;
     if (!comment.IsEmpty())
     {
-        cvi->Comment=new CommentItem;
-        cvi->Comment->CommentStr=comment;
+        cvi->Comment = new CommentItem;
+        cvi->Comment->CommentStr = comment;
     }
     else
-        cvi->Comment=0;
-    cvi->Dasmitem=dasmitem;
-    cvi->LabelAddr=labeladdr;
-    cvi->Org=org;
-    cvi->RectArg1=0;
-    cvi->RectArg2=0;
-    m_CodeLine.Insert(cvi,pos);
+        cvi->Comment = 0;
+    cvi->Dasmitem = dasmitem;
+    cvi->LabelAddr = labeladdr;
+    cvi->Org = org;
+    cvi->RectArg1 = 0;
+    cvi->RectArg2 = 0;
+    m_CodeLine.Insert(cvi, pos);
     m_itemcount++;
     return pos;
 }
 
 
 
-int CodeViewLine::InsertDasm(const int dasmitem, const wxString &comment,int pos)
+int CodeViewLine::InsertDasm(const int dasmitem, const wxString &comment, int pos)
 {
-    if ((dasmitem>=0) && (pos>=0) && (pos<m_CodeLine.GetCount()))
-        return (InsertNewItem(dasmitem,-1,-1,comment,pos));
+    if ((dasmitem >= 0) && (pos >= 0))
+    {
+		if (pos < m_CodeLine.GetCount())
+			return (InsertNewItem(dasmitem, -1, -1, comment, pos));
+		else
+			return (AddDasm(dasmitem, comment));
+    }
     return -1;
 }
 
 
-int CodeViewLine::InsertLabel(const int labeladdr, const wxString &comment,int pos)
+
+int CodeViewLine::InsertLabel(const int labeladdr, const wxString &comment, int pos)
 {
-    if ((labeladdr>=0) && (pos>=0) && (pos<m_CodeLine.GetCount()))
-        return (InsertNewItem(-1,labeladdr,-1,comment,pos));
+    if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
+        return (InsertNewItem(-1, labeladdr, -1, comment, pos));
     return -1;
 }
 
 int CodeViewLine::InsertOrg(const int org, const wxString &comment, int pos)
 {
-    if ((pos>=0) && (pos<m_CodeLine.GetCount()))
-        return (InsertNewItem(-1,-1,org,comment,pos));
+    if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
+        return (InsertNewItem(-1, -1, org, comment, pos));
     return -1;
 }
 
@@ -250,8 +256,8 @@ int CodeViewLine::InsertOrg(const int org, const wxString &comment, int pos)
 //create a new line with comment
 int CodeViewLine::Insert(const wxString &comment, const int pos)
 {
-    if ((pos>=0) && (pos<m_CodeLine.GetCount()))
-        return (InsertNewItem(-1,-1,-1,comment,pos));
+    if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
+        return (InsertNewItem(-1, -1, -1, comment, pos));
     return -1;
 }
 
@@ -261,24 +267,24 @@ int CodeViewLine::AppendComment(const wxString &comment, const int pos)
 {
     CodeViewItem *cvi;
     int i;
-    i=-1;
-    if ((pos>=0) && (pos<m_CodeLine.GetCount()))
+    i = -1;
+    if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
     {
-        cvi=getData(pos);
-        if (cvi!=0)
+        cvi = getData(pos);
+        if (cvi != 0)
         {
             if (!comment.IsEmpty())
             {
-                cvi->Comment=new CommentItem;
-                cvi->Comment->CommentStr=comment;
+                cvi->Comment = new CommentItem;
+                cvi->Comment->CommentStr = comment;
             }
             else
-                if (cvi->Comment!=0)
+                if (cvi->Comment != 0)
                 {
                     delete cvi->Comment;
-                    cvi->Comment=0;
+                    cvi->Comment = 0;
                 }
-            i=pos;
+            i = pos;
         }
     }
     return i;
@@ -287,7 +293,7 @@ int CodeViewLine::AppendComment(const wxString &comment, const int pos)
 
 bool CodeViewLine::IsEmpty()
 {
-    return (GetCount()==0);
+    return (GetCount() == 0);
 }
 
 
@@ -334,7 +340,7 @@ int  CodeViewLine::getDataLineAddress(uint addr)
             if (cvi->LabelAddr == -1)
                 return i;
             else
-                return (i-1);
+                return (i - 1);
         }
         else
             return i;
@@ -353,7 +359,7 @@ void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
         while (i < GetCount())
         {
             cvi = getData(i);
-            if (cvi->Dasmitem>=0)
+            if (cvi->Dasmitem >= 0)
                 cvi->Dasmitem += delta;
             i++;
         }
@@ -363,8 +369,9 @@ void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
 
 void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
 {
+	wxString str = _("");
     while (countdasm-- > 0)
-        InsertDasm(indexdasm++,_(""),indexline++);
+        InsertDasm(indexdasm++, str, indexline++);
 }
 
 

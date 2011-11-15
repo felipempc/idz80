@@ -19,6 +19,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-D__WXDEBUG__" />
+					<Add option="-DIDZ80DEBUG" />
 					<Add directory="$(WXW)\lib\gcc_dll\mswud" />
 				</Compiler>
 				<Linker>
