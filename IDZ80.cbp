@@ -36,10 +36,12 @@
 					<Add option="-march=nocona" />
 					<Add option="-O2" />
 					<Add option="-Wall" />
+					<Add option="-pg" />
 					<Add directory="$(WXW)\lib\gcc_dll\mswu" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-pg -lgmon" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw292u_gcc_custom.dll" />
 					<Add directory="$(WXW)\lib\gcc_dll" />
 				</Linker>

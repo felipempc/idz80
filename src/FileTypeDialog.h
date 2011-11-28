@@ -22,6 +22,7 @@
 #include <wx/dialog.h>
 //*)
 
+#include <wx/checkbox.h>
 #include "rawdata.h"
 
 class FileTypeDialog: public wxDialog
@@ -32,15 +33,19 @@ class FileTypeDialog: public wxDialog
 		virtual ~FileTypeDialog();
 
 		//(*Declarations(FileTypeDialog)
-		wxTextCtrl* Txt_ExecAddress;
-		wxStaticText* StaticText2;
-		wxPanel* Panel1;
-		wxStaticText* StaticText1;
-		wxStaticText* StaticText3;
-		wxTextCtrl* Txt_EndAddress;
-		wxRadioBox* RadioBox1;
-		wxPanel* Panel2;
-		wxTextCtrl* Txt_StartAddress;
+		wxTextCtrl		*Txt_ExecAddress;
+		wxStaticText	*StaticText2;
+		wxPanel			*Panel1;
+		wxPanel			*Panel2;
+		wxPanel			*Panel3;
+		wxPanel			*Panel4;
+		wxStaticText	*StaticText1;
+		wxStaticText	*StaticText3;
+		wxTextCtrl		*Txt_EndAddress;
+		wxRadioBox		*RadioBox1;
+		wxTextCtrl		*Txt_StartAddress;
+		wxCheckBox		*cb_autodisassemble;
+		wxCheckBox		*cb_autolabel;
 		//*)
 
 		void SetData(RawData& program);
@@ -60,6 +65,11 @@ class FileTypeDialog: public wxDialog
 		static const long ID_PANEL2;
 		static const long ID_RADIOBOX1;
 		static const long ID_PANEL1;
+		static const long ID_PANEL3;
+		static const long ID_PANEL4;
+		static const long ID_CHKBOX1;
+		static const long ID_CHKBOX2;
+
 		//*)
 
 	private:

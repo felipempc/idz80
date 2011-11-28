@@ -27,6 +27,10 @@ const long FileTypeDialog::ID_TEXTCTRL3 = wxNewId();
 const long FileTypeDialog::ID_PANEL2 = wxNewId();
 const long FileTypeDialog::ID_RADIOBOX1 = wxNewId();
 const long FileTypeDialog::ID_PANEL1 = wxNewId();
+const long FileTypeDialog::ID_PANEL3 = wxNewId();
+const long FileTypeDialog::ID_PANEL4 = wxNewId();
+const long FileTypeDialog::ID_CHKBOX1 = wxNewId();
+const long FileTypeDialog::ID_CHKBOX2 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(FileTypeDialog,wxDialog)
@@ -36,50 +40,67 @@ END_EVENT_TABLE()
 
 FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
-	//(*Initialize(FileTypeDialog)
-	wxBoxSizer* BoxSizer2;
-	wxBoxSizer* BoxSizer1;
-	wxBoxSizer* BoxSizer3;
-	wxStdDialogButtonSizer* StdDialogButtonSizer1;
+	wxBoxSizer		*UpsideSizer;
+	wxFlexGridSizer	*MainSizer;
+	wxFlexGridSizer	*RightSizer;
+	wxStdDialogButtonSizer	*OkCancelSizer;
+	wxStaticBox		*AddressBox;
 
 	Create(parent, id, _("Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	SetClientSize(wxDefaultSize);
 	Move(wxDefaultPosition);
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+
 	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(263,257), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	Panel2 = new wxPanel(Panel1, ID_PANEL2, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, _T("ID_PANEL2"));
-	StaticText1 = new wxStaticText(Panel2, ID_STATICTEXT1, _("Start"), wxPoint(8,8), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	Txt_StartAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL1, wxEmptyString, wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	StaticText2 = new wxStaticText(Panel2, ID_STATICTEXT2, _("Execution"), wxPoint(8,56), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-	Txt_EndAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL2, wxEmptyString, wxPoint(8,120), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-	StaticText3 = new wxStaticText(Panel2, ID_STATICTEXT3, _("End"), wxPoint(8,104), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-	Txt_ExecAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL3, wxEmptyString, wxPoint(8,72), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-	BoxSizer3->Add(Panel2, 1, wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer2->Add(BoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Panel3 = new wxPanel(Panel1, ID_PANEL3, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, _T("ID_PANEL3"));
+	Panel4 = new wxPanel(this, ID_PANEL4, wxDefaultPosition, wxSize(339,145), wxTAB_TRAVERSAL, _T("ID_PANEL4"));
+
+	MainSizer = new wxFlexGridSizer(2,1,0,0);
+	UpsideSizer = new wxBoxSizer(wxHORIZONTAL);
+	RightSizer = new wxFlexGridSizer(2,1,0,0);
+
+	AddressBox = new wxStaticBox(Panel1, wxID_ANY, _("Address"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+	Panel2 = new wxPanel(AddressBox, ID_PANEL2, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, _T("ID_PANEL2"));
+
+	StaticText1 = new wxStaticText(Panel2, ID_STATICTEXT1, _("Start"), wxPoint(15,15), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	Txt_StartAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL1, wxEmptyString, wxPoint(15,33), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	StaticText2 = new wxStaticText(Panel2, ID_STATICTEXT2, _("Execution"), wxPoint(15,63), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+	Txt_EndAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL2, wxEmptyString, wxPoint(15,129), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+	StaticText3 = new wxStaticText(Panel2, ID_STATICTEXT3, _("End"), wxPoint(15,211), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+	Txt_ExecAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL3, wxEmptyString, wxPoint(15,81), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
+	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
 	wxString __wxRadioBoxChoices_1[3] =
 	{
 		_("ROM"),
 		_("COM"),
 		_("BIN")
 	};
-	RadioBox1 = new wxRadioBox(Panel1, ID_RADIOBOX1, _("File type"), wxDefaultPosition, wxSize(149,79), 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
-	BoxSizer2->Add(RadioBox1, 1, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-	Panel1->SetSizer(BoxSizer2);
-	BoxSizer2->SetSizeHints(Panel1);
-	BoxSizer1->Add(Panel1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
-	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 1, wxALL|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 1);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
-	//*)
+	RadioBox1 = new wxRadioBox(Panel1, ID_RADIOBOX1, _("File type"), wxPoint(8,8), wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
+	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
+	cb_autodisassemble = new wxCheckBox(Panel3, ID_CHKBOX1, _("Auto disassemble"), wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHKBOX1"));
+	cb_autolabel = new wxCheckBox(Panel3, ID_CHKBOX2, _("Auto label"), wxPoint(8,48), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHKBOX2"));
+	RightSizer->Add(Panel3, 1, wxTOP|wxALL, 10);
+	UpsideSizer->Add(RightSizer, 1, wxRIGHT|wxALL, 10);
+	Panel1->SetSizer(UpsideSizer);
+	UpsideSizer->SetSizeHints(Panel1);
+	MainSizer->Add(Panel1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 100);
+
+	OkCancelSizer = new wxStdDialogButtonSizer();
+	OkCancelSizer->AddButton(new wxButton(Panel4, wxID_OK, wxEmptyString));
+	OkCancelSizer->AddButton(new wxButton(Panel4, wxID_CANCEL, wxEmptyString));
+	OkCancelSizer->Realize();
+	Panel4->SetSizer(OkCancelSizer);
+	OkCancelSizer->Fit(Panel4);
+	OkCancelSizer->SetSizeHints(Panel4);
+	MainSizer->Add(Panel4, 1, wxALL|wxALIGN_CENTER, 10);
+
+	SetSizer(MainSizer);
+	MainSizer->Fit(this);
+	MainSizer->SetSizeHints(this);
+
 
 	Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&FileTypeDialog::OnRadioBoxSelect);
+	cb_autodisassemble->SetValue(true);
+	cb_autolabel->SetValue(true);
 }
 
 FileTypeDialog::~FileTypeDialog()
@@ -94,11 +115,11 @@ void FileTypeDialog::SetData(RawData& program)
     wxString str;
     FileType t;
 
-    m_program=&program;
+    m_program = &program;
 
     SyncAddress();
 
-    t=program.GetFileType();
+    t = program.GetFileType();
     switch (t)
     {
         case BIN:
@@ -135,9 +156,9 @@ uint FileTypeDialog::GetEndAddress()
 void FileTypeDialog::SyncAddress()
 {
     wxString str;
-    StartAddress=m_program->StartAddress;
-    EndAddress=m_program->EndAddress;
-    ExecAddress=m_program->ExecAddress;
+    StartAddress = m_program->StartAddress;
+    EndAddress = m_program->EndAddress;
+    ExecAddress = m_program->ExecAddress;
     str.Printf(_T("%.4Xh"),StartAddress);
     Txt_StartAddress->SetValue(str);
     str.Printf(_T("%.4Xh"),EndAddress);

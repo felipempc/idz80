@@ -345,8 +345,7 @@ int  CodeViewLine::getDataLineAddress(uint addr)
         else
             return i;
     }
-    else
-        return -1;
+	return -1;
 }
 
 void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
@@ -369,9 +368,24 @@ void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
 
 void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
 {
-	wxString str = _("");
+	wxString	str = _("");
+	DAsmElement	*de;
+	int			address, labadress;
+
     while (countdasm-- > 0)
-        InsertDasm(indexdasm++, str, indexline++);
+	{
+		labadress = getData(indexline)->LabelAddr;
+		if (labadress >= 0)
+		{
+			de = m_dasm->GetData(indexdasm);
+			address = m_dasm->GetBaseAddress() + de->Offset;
+			if (address >= labadress)
+				indexline++;
+
+		}
+
+		InsertDasm(indexdasm++, str, indexline++);
+	}
 }
 
 

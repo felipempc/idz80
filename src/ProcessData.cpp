@@ -73,21 +73,29 @@ void ProcessData::ConvertProgramAddress(RangeItems r, RangeData& d)
 
 uint ProcessData::MatchOpcode(const uint i, const uint max)
 {
-    uint j, nitems;
-    wxArrayInt foundItems;
-    byte scan;
+    uint 		j, nitems;
+    wxArrayInt	foundItems;
+    byte		scan;
+    bool		quit = false;
+    MnemonicItem	*mi;
 
     foundItems.Clear();
     j = 0;
-    while ((j < MAX_OPCODE_SIZE) && ((j + i) < max))
+    while ((j < MAX_OPCODE_SIZE) && ((j + i) < max) && (!quit))
     {
         scan = Program->GetData(i + j);
         Mnemonics->FindItems(foundItems, scan, j);
         j++;
         if (foundItems.GetCount() < 2)
-            j = MAX_OPCODE_SIZE + 1;
+			quit = true;
     }
     nitems = foundItems.GetCount();
+    if (nitems == 1)
+	{
+		mi = Mnemonics->GetData(foundItems.Last());
+		if (mi->getBytesNo() > (max - i))
+			nitems = 0;
+	}
     if ((nitems == 0) || (nitems > max))
         return (OPCODE_NOT_MATCHED);
     else
@@ -263,7 +271,7 @@ void ProcessData::MakeData(RangeItems &r)
 }
 
 
-
+//TODO: fix the repeated labels after more than a call is issued
 void ProcessData::AutoLabel()
 {
     DAsmElement *dasmtemp;

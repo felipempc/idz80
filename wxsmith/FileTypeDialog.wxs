@@ -14,7 +14,7 @@
 							<object class="wxBoxSizer" variable="BoxSizer3" member="no">
 								<object class="sizeritem">
 									<object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="yes">
-										<size>139,145</size>
+										<size>139,175</size>
 										<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 											<label>Start</label>
 											<pos>8,8</pos>
@@ -24,17 +24,17 @@
 										</object>
 										<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
 											<label>Execution</label>
-											<pos>8,56</pos>
+											<pos>8,64</pos>
 										</object>
 										<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="Txt_EndAddress" member="yes">
-											<pos>8,120</pos>
+											<pos>8,136</pos>
 										</object>
 										<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
 											<label>End</label>
-											<pos>8,104</pos>
+											<pos>8,120</pos>
 										</object>
 										<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="Txt_ExecAddress" member="yes">
-											<pos>8,72</pos>
+											<pos>8,80</pos>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -47,17 +47,41 @@
 							<option>1</option>
 						</object>
 						<object class="sizeritem">
-							<object class="wxRadioBox" name="ID_RADIOBOX1" variable="RadioBox1" member="yes">
-								<label>File type</label>
-								<content>
-									<item>ROM</item>
-									<item>COM</item>
-									<item>BIN</item>
-								</content>
-								<default>-1</default>
-								<size>149,79</size>
+							<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxRadioBox" name="ID_RADIOBOX1" variable="RadioBox1" member="yes">
+										<label>File Type</label>
+										<content>
+											<item>ROM</item>
+											<item>COM</item>
+											<item>BIN</item>
+										</content>
+										<default>-1</default>
+										<size>97,84</size>
+									</object>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="yes">
+										<size>110,74</size>
+										<object class="wxCheckBox" name="ID_CHECKBOX1" variable="cb_autodisassemble" member="yes">
+											<label>Auto disassemble</label>
+											<pos>8,24</pos>
+										</object>
+										<object class="wxCheckBox" name="ID_CHECKBOX2" variable="cb_autolabel" member="yes">
+											<label>Auto label</label>
+											<pos>8,48</pos>
+										</object>
+									</object>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
 							</object>
-							<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 							<border>5</border>
 							<option>1</option>
 						</object>

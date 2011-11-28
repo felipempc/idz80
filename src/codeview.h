@@ -112,6 +112,7 @@ private:
     uint RenderProgramLabel(wxDC &dc, const int start_y, wxString str);
     uint RenderOrigin(wxDC &dc, const int start_y, uint address);
     void CalcItemsShown(void);
+    void UpdateVirtualSize(void);
     void CalcCursorPosition(wxPoint point);
     wxRect CalcCursorRfshRect();
     void UpdateSelectedRect();
@@ -124,7 +125,7 @@ private:
     int GetFirstLine();
     int GetLastLine();
 
-    void FilterInstructions(wxArrayInt &range);
+    bool FilterInstructions(wxArrayInt &range);
     ElementType GetTypeMultiselection();
 
 

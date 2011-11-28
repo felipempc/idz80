@@ -286,14 +286,14 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 
     if (event.GetId() == idMenuFileOpenArchive)
     {
-        caption=_("Choose a file");
-        wildcard=_("Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*");
+        caption = _("Choose a file");
+        wildcard = _("Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*");
     }
     else
         if (event.GetId() == idMenuFileOpenProject)
         {
-            caption=_("Choose a project");
-            wildcard=_("Project files (*.dap)|*.dap|All files (*.*)|*.*");
+            caption = _("Choose a project");
+            wildcard = _("Project files (*.dap)|*.dap|All files (*.*)|*.*");
             project = true;
         }
         else
@@ -305,7 +305,7 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 
         if (dialog.ShowModal() == wxID_OK)
         {
-            fname=dialog.GetPath();
+            fname = dialog.GetPath();
             m_lastDir = dialog.GetDirectory();
             StatusBar1->SetStatusText(fname,0);
             // Open a project
@@ -331,13 +331,13 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
             else    //load a file
                 if (!(process->Program->Open(fname)))
                 {
-                    caption.Printf(_("Could not open '%s' !"),fname.c_str());
+                    caption.Printf(_("Could not open '%s' !"), fname.c_str());
                     wxMessageBox(caption,_("Error..."));
                 }
                 else
                 {
                     wxMenuBar *mb;
-                    mb=GetMenuBar();
+                    mb = GetMenuBar();
                     mb->Enable(idMenuToolsDasmAll, true);
                     mb->Enable(idMenuFileInfo, true);
                     mb->Enable(idMenuFileClose, true);
@@ -367,6 +367,18 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 
                     Clear_all();
                     m_project->New();
+                    if (config.cb_autodisassemble->IsChecked())
+					{
+						wxCommandEvent ev_dasm(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsDasmAll);
+						AddPendingEvent(ev_dasm);
+
+					}
+					if (config.cb_autolabel->IsChecked())
+					{
+						wxCommandEvent ev_label(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsAutoLabel);
+						AddPendingEvent(ev_label);
+					}
+
                 }
         }
         else

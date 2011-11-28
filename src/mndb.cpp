@@ -246,56 +246,55 @@ bool MnemonicDataBase::Open(wxString& opcf)
 }
 
 
-void MnemonicDataBase::FindItems(wxArrayInt& arrayint,byte opcode,uint scanoffset)
+void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoffset)
 {
-    uint i,f,x,index;
-    MnemonicItem *mtemp;
-    wxArrayInt arrtemp;
-    bool arg_detected;
-    byte opcodetest;
+    uint			i, f, index;
+    MnemonicItem	*mtemp;
+    wxArrayInt		arrtemp;
+    bool			arg_detected;
+    byte			opcodetest;
 
-    x=scanoffset;
-    if (scanoffset==0)
+    if (scanoffset == 0)
     {
         arrayint.Clear();
-        f=Data.GetCount();
+        f = Data.GetCount();
     }
     else
-        f=arrayint.GetCount();
+        f = arrayint.GetCount();
 
-    arg_detected=TRUE;
-    if (f>1)
+    arg_detected = TRUE;
+    if (f > 1)
     {
         arrtemp.Clear();
-        for (i=0;i<f;i++)
+        for (i = 0; i < f; i++)
         {
 
-            if (scanoffset==0)
-                index=i;
+            if (scanoffset == 0)
+                index = i;
             else
-                index=arrayint[i];
-            mtemp=(MnemonicItem *)Data[index];
+                index = arrayint[i];
+            mtemp = (MnemonicItem *)Data[index];
             // In four-byte instructions of Z80, there are opcodes that
             // have its argument in the middle of it (DD CB's and FD CB's series)
             // so we must shift right the index to take the code
             // The test below detects this condition
-            if ((!(mtemp->getArgPos() == x)) || (mtemp->getArgPos() == 0))
+            if ((!(mtemp->getArgPos() == scanoffset)) || (mtemp->getArgPos() == 0))
             {
-                arg_detected=FALSE;
-                opcodetest=mtemp->getOpCode(x);
+                arg_detected = FALSE;
+                opcodetest = mtemp->getOpCode(scanoffset);
                 if (opcode == opcodetest)
                 {
-                    if (scanoffset==0)
+                    if (scanoffset == 0)
                         arrayint.Add(i);
                     else
                         arrtemp.Add(index);
                 }
             }
         }
-        if ((scanoffset>0) && (!arg_detected))
+        if ((scanoffset > 0) && (!arg_detected))
         {
             arrayint.Clear();
-            arrayint=arrtemp;
+            arrayint = arrtemp;
         }
     }
 }

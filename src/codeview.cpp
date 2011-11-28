@@ -66,7 +66,6 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Connect(wxEVT_SCROLLWIN_PAGEDOWN, wxScrollWinEventHandler(CodeView::OnScrollPageDown));
     Connect(wxEVT_SCROLLWIN_PAGEUP, wxScrollWinEventHandler(CodeView::OnScrollPageUp));
     Connect(wxEVT_PAINT, wxPaintEventHandler(CodeView::OnPaint));
-    //Connect(wxEVT_ERASE_BACKGROUND,wxEraseEventHandler(CodeView::OnErase));
     Connect(wxEVT_ENTER_WINDOW,wxFocusEventHandler(CodeView::OnGetFocus));
     Connect(wxEVT_LEAVE_WINDOW,wxFocusEventHandler(CodeView::OnKillFocus));
 
@@ -529,6 +528,7 @@ void CodeView::OnPaint(wxPaintEvent& event)
     DoPrepareDC(dc);
     UpdateLastCursorRect();
     OnDraw(dc);
+    UpdateVirtualSize();
 }
 
 
@@ -587,8 +587,6 @@ void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
 CodeView::~CodeView()
 {
     delete LastCursorRect;
-    //TODO: finish moving CodeviewLine
-    //delete m_CodeViewLine;
     delete font;
 }
 
@@ -1161,8 +1159,8 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
     int key;
     key = event.GetKeyCode();
 
-    wxCommandEvent evtMakeData(wxEVT_COMMAND_MENU_SELECTED,idPOPUP_MAKEDATA);
-    wxCommandEvent evtDisassemble(wxEVT_COMMAND_MENU_SELECTED,idPOPUP_DISASM);
+    wxCommandEvent evtMakeData(wxEVT_COMMAND_MENU_SELECTED, idPOPUP_MAKEDATA);
+    wxCommandEvent evtDisassemble(wxEVT_COMMAND_MENU_SELECTED, idPOPUP_DISASM);
     wxScrollWinEvent evtLineDown(wxEVT_SCROLLWIN_LINEDOWN);
     wxScrollWinEvent evtLineUp(wxEVT_SCROLLWIN_LINEUP);
     wxScrollWinEvent evtPageDown(wxEVT_SCROLLWIN_PAGEDOWN);
@@ -1221,11 +1219,15 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                         MultiSelection=true;
                         break;
         case C_KEY:
+						#ifdef IDZ80DEBUG
                         LogIt(_("Event Disasm !\n"));
+                        #endif
                         AddPendingEvent(evtDisassemble);
                         break;
         case D_KEY:
+						#ifdef IDZ80DEBUG
                         LogIt(_("Event makeData !\n"));
+                        #endif
                         AddPendingEvent(evtMakeData);
                         break;
 
@@ -1323,7 +1325,7 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
 }
 
 // Returns the first and the last line of instruction / data
-void CodeView::FilterInstructions(wxArrayInt &range)
+bool CodeView::FilterInstructions(wxArrayInt &range)
 {
     bool	foundindex;
     int		i, last_i;
@@ -1347,115 +1349,116 @@ void CodeView::FilterInstructions(wxArrayInt &range)
                 if (!foundindex)
                 {
                     range.Add(i);
-                    foundindex=true;
+                    foundindex = true;
                 }
-                last_i=i;
+                last_i = i;
             }
-/*            else
-                if (foundindex)
-                {
-                    range.Add(last_i);
-                    foundindex=false;
-                }
-*/
         }
-/*
-        else
-            if (foundindex)
-            {
-                range.Add(last_i);
-                foundindex=false;
-            }
-*/
     }
     if (foundindex)
         range.Add(last_i);
+
+	if (range.GetCount() > 0)
+		return true;
+	else
+		return false;
 }
 
 
 
 void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 {
-    RangeItems		ri;
+    RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    int 			i, newLineCount, lineIndex, lineLast, lineCount;
-    wxArrayInt		dasm_range;
+    int 			i, newLineCount, lineIndex, lineLast, lineCount,
+					j, oldLineCount;
+    wxArrayInt		cvlines;
 
-    FilterInstructions(dasm_range);
-    if (dasm_range.GetCount() > 0)
+    if (!FilterInstructions(cvlines))
+		return;
+
+    if (cvlines.GetCount() > 0)
     {
-        lineIndex = dasm_range[0];
-        lineLast = dasm_range[1];
+        lineIndex = cvlines[0];
+        lineLast = cvlines[1];
         lineCount = lineLast - lineIndex + 1;
 
         cvi = m_CodeViewLine->getData(lineIndex);
-        ri.Index = cvi->Dasmitem;
+        dasmed_items.Index = cvi->Dasmitem;
         cvi = m_CodeViewLine->getData(lineLast);
-        ri.Count = cvi->Dasmitem - ri.Index + 1;
+        dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
+        oldLineCount = dasmed_items.Count;
 
-        m_process->MakeData(ri);
+        m_process->MakeData(dasmed_items);
 
+		j = 0;
         for (i = 0; i < lineCount; i++)
-            m_CodeViewLine->Del(lineIndex);
+		{
+			if (m_CodeViewLine->getData(lineIndex + j)->LabelAddr >= 0)
+				j++;
+			else
+				m_CodeViewLine->Del(lineIndex + j);
+		}
 
-        m_CodeViewLine->linkData(ri.Index, lineIndex, ri.Count);
+        m_CodeViewLine->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
 
-        newLineCount = ri.Count - lineCount;
+        newLineCount = dasmed_items.Count - oldLineCount;
 
-        m_CodeViewLine->UpdateDasmIndex((lineIndex + ri.Count), newLineCount);
+        m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
         CursorLastPosition = lineIndex;
-        CursorPosition = lineIndex + ri.Count - 1;
+        CursorPosition = lineIndex + lineCount + newLineCount -1;
         UpdateSelectedRect();
-        wxSize sz = GetVirtualSize();
-        sz.y += newLineCount * m_fontHeight;
-        SetVirtualSize(sz);
-        Refresh();
-		#ifdef IDZ80DEBUG
-		LogIt(wxString::Format(_("MakeData: Virtual size = %d, %d\n"),sz.x,sz.y));
-		#endif
+		Refresh();
     }
 }
 
 
 void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 {
-    RangeItems ri;
-    CodeViewItem *cvi;
-    int i, newLineCount;
-    int lineIndex, lineLast, lineCount;
+    RangeItems		dasmed_items;
+    CodeViewItem	*cvi;
+    int				i, newLineCount, j, oldLineCount;
+    int				lineIndex, lineLast, lineCount;
+    wxArrayInt		cvlines;
 
-    lineIndex = SelectedItemIndex;
-    lineLast = lineIndex + SelectedCount - 1;
-    lineCount = SelectedCount;
+	if (!FilterInstructions(cvlines))
+		return;
 
-    cvi = m_CodeViewLine->getData(lineIndex);
-    ri.Index = cvi->Dasmitem;
-    cvi = m_CodeViewLine->getData(lineLast);
-    ri.Count = lineCount;
+	if (cvlines.GetCount() > 0)
+	{
+        lineIndex = cvlines[0];
+        lineLast = cvlines[1];
+        lineCount = lineLast - lineIndex + 1;
 
-    for (i = 0; i < lineCount; i++)
-        m_CodeViewLine->Del(lineIndex);
+		cvi = m_CodeViewLine->getData(lineIndex);
+		dasmed_items.Index = cvi->Dasmitem;
+		cvi = m_CodeViewLine->getData(lineLast);
+		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
+		oldLineCount = dasmed_items.Count;
 
-    m_process->DisassembleItems(ri);
+		j = 0;
+		for (i = 0; i < lineCount; i++)
+		{
+			if (m_CodeViewLine->getData(lineIndex + j)->LabelAddr >= 0)
+				j++;
+			else
+				m_CodeViewLine->Del(lineIndex + j);
+		}
 
-    m_CodeViewLine->linkData(ri.Index,lineIndex,ri.Count);
+		m_process->DisassembleItems(dasmed_items);
 
-    newLineCount = ri.Count - lineCount;		//lineCount - ri.Count;
+		m_CodeViewLine->linkData(dasmed_items.Index,lineIndex,dasmed_items.Count);
 
-	m_CodeViewLine->UpdateDasmIndex((lineIndex + ri.Count), newLineCount);
+		newLineCount = dasmed_items.Count - oldLineCount;
 
-    CursorLastPosition = lineIndex;
-    CursorPosition = lineIndex + ri.Count - 1;
-    UpdateSelectedRect();
-    wxSize sz = GetVirtualSize();
-    //Remember: newLineCount can be positive or negative.
-    sz.y += newLineCount * m_fontHeight;
-    SetVirtualSize(sz);
-    Refresh();
-    #ifdef IDZ80DEBUG
-    LogIt(wxString::Format(_("Disasm: Virtual size = %d, %d\n"),sz.x,sz.y));
-    #endif
+		m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
+
+		CursorLastPosition = lineIndex;
+		CursorPosition = lineIndex + lineCount + newLineCount -1;
+		UpdateSelectedRect();
+		Refresh();
+	}
 }
 
 
@@ -1517,6 +1520,23 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
     }
 }
 
+
+
+void CodeView::UpdateVirtualSize(void)
+{
+	if (IsEnabled())
+	{
+		wxSize sz = GetVirtualSize();
+		#ifdef IDZ80DEBUG
+		LogIt(wxString::Format(_("UpdtVS: Virtual size before = %d, %d\n"),sz.x,sz.y));
+		#endif
+		sz.y = m_CodeViewLine->GetCount() * m_fontHeight;
+		#ifdef IDZ80DEBUG
+		LogIt(wxString::Format(_("UpdtVS: Virtual size after = %d, %d\n"),sz.x,sz.y));
+		#endif
+		SetVirtualSize(sz);
+	}
+}
 
 
 

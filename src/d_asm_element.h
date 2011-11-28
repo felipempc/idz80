@@ -26,7 +26,7 @@ typedef char OpCodeArguments [2];
 
 enum ElementType
 {
-    et_None,et_Data, et_Instruction
+    et_None, et_Data, et_Instruction
 };
 
 
