@@ -45,6 +45,7 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	wxFlexGridSizer	*RightSizer;
 	wxStdDialogButtonSizer	*OkCancelSizer;
 	wxStaticBox		*AddressBox;
+	int             addr_x, addr_y;
 
 	Create(parent, id, _("Configuration"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	SetClientSize(wxDefaultSize);
@@ -59,21 +60,29 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	RightSizer = new wxFlexGridSizer(2,1,0,0);
 
 	AddressBox = new wxStaticBox(Panel1, wxID_ANY, _("Address"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	Panel2 = new wxPanel(AddressBox, ID_PANEL2, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, _T("ID_PANEL2"));
 
-	StaticText1 = new wxStaticText(Panel2, ID_STATICTEXT1, _("Start"), wxPoint(15,15), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	Txt_StartAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL1, wxEmptyString, wxPoint(15,33), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	StaticText2 = new wxStaticText(Panel2, ID_STATICTEXT2, _("Execution"), wxPoint(15,63), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-	Txt_EndAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL2, wxEmptyString, wxPoint(15,129), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-	StaticText3 = new wxStaticText(Panel2, ID_STATICTEXT3, _("End"), wxPoint(15,211), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-	Txt_ExecAddress = new wxTextCtrl(Panel2, ID_TEXTCTRL3, wxEmptyString, wxPoint(15,81), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
+    addr_x = 15;
+    addr_y = 20;
+	StaticText1 = new wxStaticText(AddressBox, ID_STATICTEXT1, _("Start"), wxPoint(addr_x,addr_y), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	addr_y += 13;
+	Txt_StartAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL1, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	addr_y += 32;
+	StaticText2 = new wxStaticText(AddressBox, ID_STATICTEXT2, _("Execution"), wxPoint(addr_x,addr_y), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+	addr_y += 13;
+	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL2, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+	addr_y += 32;
+	StaticText3 = new wxStaticText(AddressBox, ID_STATICTEXT3, _("End"), wxPoint(addr_x,addr_y), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+	addr_y += 13;
+	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL3, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
 	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
+
 	wxString __wxRadioBoxChoices_1[3] =
 	{
 		_("ROM"),
 		_("COM"),
 		_("BIN")
 	};
+
 	RadioBox1 = new wxRadioBox(Panel1, ID_RADIOBOX1, _("File type"), wxPoint(8,8), wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
 	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
 	cb_autodisassemble = new wxCheckBox(Panel3, ID_CHKBOX1, _("Auto disassemble"), wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHKBOX1"));

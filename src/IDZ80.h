@@ -10,6 +10,7 @@
 //*)
 
 
+#include <wx/arrstr.h>
 
 #include "mndb.h"
 #include "rawdata.h"
@@ -31,7 +32,7 @@ class IDZ80: public wxFrame
 {
 	public:
 
-		IDZ80(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+		IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 		virtual ~IDZ80();
 
 		//(*Declarations(IDZ80)
@@ -96,12 +97,15 @@ class IDZ80: public wxFrame
         wxString        m_currentDir,
                         m_lastDir;
         ProjectManager  *m_project;
+        wxArrayString	m_commandline;
 
 
         wxSize LastSize;
 
         void SaveAs();
         void Clear_all();
+        bool OpenProgramFile(const wxString filename);
+        bool OpenProjectFile(const wxString filename);
 
 		//(*Handlers(IDZ80)
 		void OnMenuFileOpen(wxCommandEvent& event);

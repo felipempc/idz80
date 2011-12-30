@@ -35,9 +35,13 @@
 
 
 enum {
-    idPOPUP_SEARCH=100,
+    idPOPUP_SEARCH = 100,
     idPOPUP_GOTO,
     idPOPUP_MAKEDATA,
+    idPOPUP_ORGANIZEDATA,
+    idPOPUP_OD_STRING,
+    idPOPUP_OD_MATRIX,
+    idPOPUP_OD_NUMBER,
     idPOPUP_DISASM,
     idPOPUP_EDITLABEL,
     idPOPUP_DELLABEL,
@@ -137,7 +141,6 @@ private:
     void OnSize(wxSizeEvent& event);
     void OnDraw(wxDC &dc);
     void OnPaint(wxPaintEvent& event);
-    //void OnErase(wxEraseEvent &event);
     void OnGetFocus(wxFocusEvent& event);
     void OnKillFocus(wxFocusEvent& event);
     void OnScrollLineDown(wxScrollWinEvent& event);
@@ -162,6 +165,7 @@ private:
     void OnPopUpMenuSearch(wxCommandEvent& event);
     void OnPopUpMenuGoto(wxCommandEvent& event);
     void OnPopUpMenuMakeData(wxCommandEvent& event);
+    void OnPopUpMenuOD_Matrix(wxCommandEvent& event);
     void OnPopUpMenuDisasm(wxCommandEvent& event);
 
     // Pop Up Comment event handlers

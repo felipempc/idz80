@@ -91,6 +91,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Connect(idPOPUP_GOTO,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuGoto);
     Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
     Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
+    Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
 
     PopUp=0;
 
@@ -837,7 +838,7 @@ ElementType CodeView::GetTypeMultiselection()
 
 void CodeView::DebugLog(wxTextCtrl *log)
 {
-    TC_Log=log;
+    TC_Log = log;
 }
 
 
@@ -860,7 +861,7 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
     }
 
     if (!MultiSelection)
-        CursorLastPosition=CursorPosition;
+        CursorLastPosition = CursorPosition;
 
 	lastposition = CursorPosition;
 
@@ -914,21 +915,21 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 		if (MultiSelection && ((CursorPosition < SelectedItemIndex) ||
 			(CursorPosition > SelectedLastItem)))
 		{
-			if (MultiSelection)
-				RefreshRect(CalcSelectedRect());
-			SelectedCount=1;
-			MultiSelection=false;
-			SelectedItemIndex=CursorPosition;
-			CursorLastPosition=CursorPosition;
-			SelectedLastItem=SelectedItemIndex;
+			//if (MultiSelection)
+			RefreshRect(CalcSelectedRect());
+			SelectedCount = 1;
+			MultiSelection = false;
+			SelectedItemIndex = CursorPosition;
+			CursorLastPosition = CursorPosition;
+			SelectedLastItem = SelectedItemIndex;
 		}
 		else
 			if (!MultiSelection)
 			{
-				SelectedCount=1;
-				SelectedItemIndex=CursorPosition;
-				CursorLastPosition=CursorPosition;
-				SelectedLastItem=SelectedItemIndex;
+				SelectedCount = 1;
+				SelectedItemIndex = CursorPosition;
+				CursorLastPosition = CursorPosition;
+				SelectedLastItem = SelectedItemIndex;
 			}
 
 		SetFocusIgnoringChildren();
@@ -945,12 +946,16 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 {
     CodeViewItem *cvi;
     DAsmElement *de;
+    wxMenu		*menu_organize;
 
 
     if (!IsEmpty)
     {
         SetFocusIgnoringChildren();
+
         PopUp = new wxMenu();
+        menu_organize = new wxMenu();
+
         if (SelectedCount > 1)
         {
             switch (GetTypeMultiselection())
@@ -963,6 +968,12 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
                                 break;
                 case et_Data:
                                 PopUp->Append(idPOPUP_DISASM,_("Disassemble\tc"));
+                                menu_organize->Append(idPOPUP_OD_STRING, _("String"));
+                                menu_organize->Append(idPOPUP_OD_MATRIX, _("Matrix"));
+                                menu_organize->Append(idPOPUP_OD_NUMBER, _("Number"));
+                                PopUp->AppendSeparator();
+								PopUp->Append(idPOPUP_ORGANIZEDATA, _T("Organize data"), menu_organize);
+
                                 #ifdef IDZ80DEBUG
                                 LogIt(_("Data !\n"));
                                 #endif
@@ -1014,6 +1025,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
                 PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
         }
         PopupMenu(PopUp);
+		delete menu_organize;
         delete PopUp;
     }
 }
@@ -1215,8 +1227,8 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                         break;
         case WXK_SHIFT:
                         if (!Selecting)
-                        Selecting=true;
-                        MultiSelection=true;
+							Selecting = true;
+                        MultiSelection = true;
                         break;
         case C_KEY:
 						#ifdef IDZ80DEBUG
@@ -1247,7 +1259,7 @@ void CodeView::OnKeyRelease(wxKeyEvent& event)
     switch (key)
     {
         case WXK_SHIFT:
-                        Selecting=false;
+                        Selecting = false;
                         break;
         default:        event.Skip();
     }
@@ -1295,30 +1307,30 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     int				i, fl, ll;
     bool 			needScroll = false;
 
-    fl=GetFirstLine();
-    ll=fl+m_linesShown-1;
-    cvi=m_CodeViewLine->getData(CursorPosition);
-    de=m_process->m_Dasm->GetData(cvi->Dasmitem);
-    address=de->getArgument(0);
+    fl = GetFirstLine();
+    ll = fl + m_linesShown - 1;
+    cvi = m_CodeViewLine->getData(CursorPosition);
+    de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+    address = de->getArgument(0);
     i = m_CodeViewLine->getDataLineAddress(address);
 
-    if (i>=0)
+    if (i >= 0)
     {
-        position=m_linesShown / 2;
-        if ((i>=fl) && (i<=ll))
+        position = m_linesShown / 2;
+        if ((i >= fl) && (i <= ll))
         {
-            CursorLastPosition=CursorPosition;
-            CursorPosition=i;
+            CursorLastPosition = CursorPosition;
+            CursorPosition = i;
         }
         else
         {
-            CursorLastPosition=i;
-            CursorPosition=i;
-            needScroll=true;
+            CursorLastPosition = i;
+            CursorPosition = i;
+            needScroll = true;
         }
         RefreshRect(*LastCursorRect);
         if (needScroll)
-            Scroll(-1,(i-position));
+            Scroll(-1, (i - position));
         RefreshRect(CalcCursorRfshRect());
     }
 
@@ -1467,19 +1479,20 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
     wxString comment;
-    cvi=m_CodeViewLine->getData(CursorPosition);
 
-    if (cvi!=0)
+    cvi = m_CodeViewLine->getData(CursorPosition);
+
+    if (cvi != 0)
     {
-        if (cvi->Comment==0)
+        if (cvi->Comment == 0)
         {
-            comment=::wxGetTextFromUser(_("Add Comment"),_("Add"));
+            comment=::wxGetTextFromUser(_("Add Comment"), _("Add"));
             if (!comment.IsEmpty())
             {
                 comment=comment.Trim(false);
                 if (comment.Left(1) != _T(";"))
                     comment.Prepend(_("; "));
-                m_CodeViewLine->AppendComment(comment,CursorPosition);
+                m_CodeViewLine->AppendComment(comment, CursorPosition);
                 Refresh();
             }
         }
@@ -1490,14 +1503,15 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
     wxString comment;
-    cvi=m_CodeViewLine->getData(CursorPosition);
-    if (cvi!=0)
+
+    cvi = m_CodeViewLine->getData(CursorPosition);
+    if (cvi != 0)
     {
-        if (cvi->Comment!=0)
-            comment=::wxGetTextFromUser(_("Edit Comment"),_("Edit"),cvi->Comment->CommentStr);
+        if (cvi->Comment != 0)
+            comment = ::wxGetTextFromUser(_("Edit Comment"), _("Edit"), cvi->Comment->CommentStr);
             if (!comment.IsEmpty())
             {
-                comment=comment.Trim(false);
+                comment = comment.Trim(false);
                 if (comment.Left(1) != _T(";"))
                     comment.Prepend(_("; "));
                 m_CodeViewLine->Edit(comment,CursorPosition);
@@ -1509,16 +1523,24 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
-    cvi=m_CodeViewLine->getData(CursorPosition);
-    if (cvi!=0)
+    cvi = m_CodeViewLine->getData(CursorPosition);
+    if (cvi != 0)
     {
-        if ((cvi->Dasmitem==-1) && (cvi->LabelAddr==-1) && (cvi->Org==-1))
+        if ((cvi->Dasmitem == -1) && (cvi->LabelAddr == -1) && (cvi->Org == -1))
             m_CodeViewLine->DelItem(cvi);
         else
             m_CodeViewLine->DelComment(cvi);
         Refresh();
     }
 }
+
+
+void CodeView::OnPopUpMenuOD_Matrix(wxCommandEvent &event)
+{
+	LogIt(_("Matrixed !!\n"));
+}
+
+
 
 
 
