@@ -24,7 +24,9 @@
 					<Add directory="$(WXW)\lib\gcc_dll\mswud" />
 				</Compiler>
 				<Linker>
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw292ud_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase293ud_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw293ud_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw293ud_core_gcc_custom.dll" />
 					<Add directory="$(WXW)\lib\gcc_dll" />
 				</Linker>
 			</Target>
@@ -43,12 +45,14 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-pg -lgmon" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw292u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase293u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw293u_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw293u_core_gcc_custom.dll" />
 					<Add directory="$(WXW)\lib\gcc_dll" />
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WXW" value="P:\wxWidgets-2.9.2" />
+				<Variable name="WXW" value="P:\wxwidgets-2.9.3" />
 			</Environment>
 		</Build>
 		<Compiler>

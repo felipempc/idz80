@@ -248,6 +248,7 @@ IDZ80::~IDZ80()
     cfg = AuiManager1->SavePerspective();
     config->Write(_("/AUI_Perspective"),cfg);
     config->Write(_("/Lastdir"),m_lastDir);
+    AuiManager1->UnInit();
     delete m_project;
     delete config;
     delete icons;
@@ -401,7 +402,11 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
     {
         wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard, wxFD_OPEN);
 
-        if (dialog.ShowModal() == wxID_OK)
+        // Era : if (dialog.ShowModal() == wxID_OK)
+		//DEBUG STUFF
+		int dlgret = dialog.ShowModal();
+		PanelLog->AppendText(wxString::Format(_("Dialog returns: %d\n"), dlgret));
+        if (dlgret == wxID_OK)
         {
             fname = dialog.GetPath();
             m_lastDir = dialog.GetDirectory();

@@ -1549,13 +1549,7 @@ void CodeView::UpdateVirtualSize(void)
 	if (IsEnabled())
 	{
 		wxSize sz = GetVirtualSize();
-		#ifdef IDZ80DEBUG
-		LogIt(wxString::Format(_("UpdtVS: Virtual size before = %d, %d\n"),sz.x,sz.y));
-		#endif
 		sz.y = m_CodeViewLine->GetCount() * m_fontHeight;
-		#ifdef IDZ80DEBUG
-		LogIt(wxString::Format(_("UpdtVS: Virtual size after = %d, %d\n"),sz.x,sz.y));
-		#endif
 		SetVirtualSize(sz);
 	}
 }
