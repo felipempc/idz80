@@ -155,7 +155,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	Connect(idMenuMnemInfo,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuMnemonicsInfo);
 	Connect(IdMenuHelpAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuHelpAbout);
 	//*)
-
+	Connect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
 
     /*
      *  Get stored configuration
@@ -223,7 +223,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     m_project->SetLog(PanelLog);
     codeview->DebugLog(PanelLog);
     codeview->Enable(false);
-    StatusBar1->SetStatusText(m_currentDir);
+
     m_commandline = arraystr;
     if (!m_commandline.IsEmpty())
 	{
@@ -233,10 +233,6 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 
 	}
 
-	if (m_commandline.GetCount() > 1)
-	{
-		OpenProgramFile(m_commandline[1]);
-	}
 }
 
 
@@ -257,6 +253,36 @@ IDZ80::~IDZ80()
 	//(*Destroy(IDZ80)
 	//*)
 }
+
+
+
+
+
+
+
+/*
+ *	Process things after main window shows up
+ */
+void IDZ80::OnFirstIdle(wxIdleEvent &event)
+{
+	bool result;
+	// this is needed to stop cathing this event all the time
+	result = Disconnect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
+
+	#ifdef IDZ80DEBUG
+	if (!result)
+		PanelLog->AppendText(_T("*** First Idle Event failed to remove !\n\n"));
+	#endif
+
+    StatusBar1->SetStatusText(m_currentDir);
+
+	if (m_commandline.GetCount() > 1)
+	{
+		OpenProgramFile(m_commandline[1]);
+	}
+}
+
+
 
 
 
@@ -291,6 +317,8 @@ bool IDZ80::LoadMnemonicsDB()
 
 
 
+
+
 bool IDZ80::OpenProgramFile(const wxString filename)
 {
 	bool ret;
@@ -313,10 +341,8 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 		mb->Enable(idMenuToolsGenCode, false);
 		mb->Enable(idMenuToolsAutoLabel, false);
 
-		info = GetTitle();
 		wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
-		info << wxString::Format(_(" - %s"),caption.c_str());
-		SetTitle(info);
+		UpdateTitle(caption);
 
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText(_T("Opened file:\n"));
@@ -456,6 +482,8 @@ void IDZ80::OnMenuMnemonicsInfo(wxCommandEvent& event)
     wxMessageBox(str,_("Mnemonic Info"));
 }
 
+
+
 void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
 {
     using namespace AutoVersion;
@@ -465,6 +493,9 @@ void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
     msg << status;
     wxMessageBox(msg, _("About"));
 }
+
+
+
 
 void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 {
@@ -650,6 +681,9 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
         SaveAs();
 }
 
+
+
+
 void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 {
     ShowFileInfo dialog(this);
@@ -658,18 +692,28 @@ void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 
 }
 
+
+
+
+
 void IDZ80::OnMenuFileClose(wxCommandEvent& event)
 {
     wxMenuBar *mb;
-    mb=GetMenuBar();
+    mb = GetMenuBar();
     mb->Enable(idMenuToolsDasmAll, false);
     mb->Enable(idMenuFileInfo, false);
     mb->Enable(idMenuFileSave, false);
     mb->Enable(idMenuFileClose, false);
     mb->Enable(idMenuToolsGenCode, false);
 
+    UpdateTitle(_(""));
+
     Clear_all();
 }
+
+
+
+
 
 void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
 {
@@ -703,3 +747,21 @@ void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
     }
     dasmwin->Destroy();
 }
+
+
+
+
+
+
+void IDZ80::UpdateTitle(const wxString str)
+{
+	wxString info = GetTitle();
+	info = info.BeforeFirst('-');
+	info.Trim();
+	if (!str.IsEmpty())
+		info << _(" - ") << str;
+	SetTitle(info);
+}
+
+
+

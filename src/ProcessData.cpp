@@ -290,7 +290,7 @@ void ProcessData::AutoLabel()
             dasmtemp = m_Dasm->GetData(i);
             if (dasmtemp->ElType == et_Instruction)
             {
-                argtype=dasmtemp->MnItem->getArgType(0);
+                argtype = dasmtemp->MnItem->getArgType(0);
                 switch (argtype)
                 {
                     case ARG_VARIABLE:

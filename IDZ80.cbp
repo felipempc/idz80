@@ -93,6 +93,7 @@
 		<Unit filename="src\codegenerator.h" />
 		<Unit filename="src\codeview.cpp" />
 		<Unit filename="src\codeview.h" />
+		<Unit filename="src\codeview_render.cpp" />
 		<Unit filename="src\codeviewline.cpp" />
 		<Unit filename="src\codeviewline.h" />
 		<Unit filename="src\d_asm_element.cpp" />

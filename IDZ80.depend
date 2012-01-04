@@ -16267,7 +16267,7 @@
 	<wx/intl.h>
 	<wx/string.h>
 
-1322595588 p:\c_c++\projetos\idz80\src\idz80.h
+1325290480 p:\c_c++\projetos\idz80\src\idz80.h
 	<wx/menu.h>
 	<wx/textctrl.h>
 	<wx/aui/aui.h>
@@ -16351,7 +16351,7 @@
 	<wx/textfile.h>
 	"ProcessData.h"
 
-1325267198 p:\c_c++\projetos\idz80\src\version.h
+1325287546 p:\c_c++\projetos\idz80\src\version.h
 
 1300921685 p:\c_c++\projetos\idz80\src\showfileinfo.h
 	<wx/stattext.h>
@@ -16384,7 +16384,7 @@
 1307489838 source:p:\c_c++\projetos\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
-1325266658 source:p:\c_c++\projetos\idz80\src\codeview.cpp
+1325289632 source:p:\c_c++\projetos\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -23024,4 +23024,12 @@
 	"wx/filename.h"
 
 1323888240 p:\wxwidgets-2.9.3\lib\gcc_dll\mswu\wx\setup.h
+
+1325285404 source:p:\c_c++\projetos\idz80\src\codeview_render.cpp
+	<wx/wx.h>
+	<wx/dcbuffer.h>
+	<wx/utils.h>
+	<wx/region.h>
+	"codeview.h"
+	"d_asm_element.h"
 

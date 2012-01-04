@@ -106,8 +106,9 @@ class IDZ80: public wxFrame
         void Clear_all();
         bool OpenProgramFile(const wxString filename);
         bool OpenProjectFile(const wxString filename);
+        void UpdateTitle(const wxString str);
 
-		//(*Handlers(IDZ80)
+
 		void OnMenuFileOpen(wxCommandEvent& event);
 		void OnMenuFileQuit(wxCommandEvent& event);
 		void OnMenuMnemonicsLoad(wxCommandEvent& event);
@@ -124,7 +125,8 @@ class IDZ80: public wxFrame
 		void OnMenuFileInfo(wxCommandEvent& event);
 		void OnMenuFileClose(wxCommandEvent& event);
 		void OnMenuToolsGenCode(wxCommandEvent& event);
-		//*)
+		void OnFirstIdle(wxIdleEvent &event);
+
 
 		DECLARE_EVENT_TABLE()
 };
