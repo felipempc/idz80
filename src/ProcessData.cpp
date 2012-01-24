@@ -271,14 +271,13 @@ void ProcessData::MakeData(RangeItems &r)
 }
 
 
-//TODO: fix the repeated labels after more than a call is issued
 void ProcessData::AutoLabel()
 {
     DAsmElement *dasmtemp;
-    uint    i, nargsVar, nargsProg, nargsIO;
+    uint    	i, nargsVar, nargsProg, nargsIO;
 
-    long addr;
-    wxString str, strdebug;
+    long		addr;
+    wxString	str, strdebug;
     enum ArgType argtype;
 
     if (m_Dasm->IsLoaded())
@@ -367,13 +366,13 @@ void ProcessData::processLabel()
         lbl = (LabelItem *)prog_labels->GetItemData(i);
         if (lbl != 0)
         {
-            a = m_CodeViewLine->getDataLineAddress(lbl->Address);
-            if (a >= 0)
-            {
-                m_CodeViewLine->InsertLabel(lbl->Address,_T(""), a);
-            }
-                else
-                    m_CodeViewLine->EditLabel(lbl->Address,_T(""), a);
+            if (!m_CodeViewLine->getDataLineAddress(lbl->Address, a))
+				if (a >= 0)
+				{
+					m_CodeViewLine->InsertLabel(lbl->Address,_T(""), a);
+				}
+					else
+						m_CodeViewLine->EditLabel(lbl->Address,_T(""), a);
         }
         i++;
     }

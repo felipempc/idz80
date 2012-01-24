@@ -304,21 +304,27 @@ uint CodeViewLine::GetCount()
 }
 
 
-int  CodeViewLine::getDataLineAddress(uint addr)
+bool CodeViewLine::getDataLineAddress(uint addr, int &index)
 {
-    int i;
-    uint a;
-    bool found;
-    CodeViewItem *cvi;
-    DAsmElement *de;
+    int		i;
+    uint	a;
+    bool	found,
+			labelexists = false;
+    CodeViewItem	*cvi;
+    DAsmElement		*de;
 
     i = 0;
     a = 0;
     found = false;
+    index = -1;
     while ((i < m_CodeLine.GetCount()) && (!found))
     {
         cvi = getData(i);
         if (cvi != 0)
+		{
+			if (cvi->LabelAddr == addr)
+				labelexists = true;
+
             if (cvi->Dasmitem >= 0)
             {
                 de = m_dasm->GetData(cvi->Dasmitem);
@@ -326,26 +332,14 @@ int  CodeViewLine::getDataLineAddress(uint addr)
                 if (a == addr)
                 {
                     found = true;
+                    index = i;
                 }
-
-            }
+			}
+		}
         if (!found)
             i++;
     }
-    if (found)
-    {
-        if (i > 0)
-        {
-            cvi = getData((i-1));
-            if (cvi->LabelAddr == -1)
-                return i;
-            else
-                return (i - 1);
-        }
-        else
-            return i;
-    }
-	return -1;
+	return labelexists;
 }
 
 void CodeViewLine::UpdateDasmIndex(const int index, const int delta)

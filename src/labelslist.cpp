@@ -73,19 +73,19 @@ int LabelListCtrl::AddLabel(uint addr,wxString name,int dasmitem)
     LabelItem *lbl;
     long itemfound,p;
 
-    lbl=0;
-    p=-1;
+    lbl = 0;
+    p = -1;
     buf.Printf(_T("%X"),addr);
-    itemfound=FindItem(0,buf);
+    itemfound = FindItem(0,buf);
     if (itemfound < 0)    // item not found
     {
         if (!(dasmitem == NO_DASM_ITEM))
         {
-            lbl=new LabelItem;
-            lbl->Address=addr;
-            lbl->LabelUsers=new wxArrayInt();
+            lbl = new LabelItem;
+            lbl->Address = addr;
+            lbl->LabelUsers = new wxArrayInt();
             lbl->LabelUsers->Add(dasmitem);
-            lbl->LabelStr=name;
+            lbl->LabelStr = name;
         }
 
         li.SetText(buf);
@@ -93,14 +93,14 @@ int LabelListCtrl::AddLabel(uint addr,wxString name,int dasmitem)
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
         p = InsertItem(li);
-        SetItem(p,1,name);
-        itemfound=p;
+        SetItem(p, 1, name);
+        itemfound = p;
     }
     else
     {
-        lbl=(LabelItem *)GetItemData(itemfound);
-        if (!(lbl==0))
-            if (lbl->LabelUsers->Index(dasmitem)==wxNOT_FOUND)
+        lbl = (LabelItem *)GetItemData(itemfound);
+        if (!(lbl == 0))
+            if (lbl->LabelUsers->Index(dasmitem) == wxNOT_FOUND)
                 lbl->LabelUsers->Add(dasmitem);
     }
     return itemfound;
@@ -223,7 +223,7 @@ void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
 {
     wxMenu popup;
 
-    m_item_selected=event.GetIndex();
+    m_item_selected = event.GetIndex();
 
     popup.Append(idMENU_POPUP_ADD,_("Add Label"));
     popup.Append(idMENU_POPUP_EDIT,_("Edit Label"));

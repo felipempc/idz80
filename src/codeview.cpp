@@ -973,7 +973,7 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     cvi = m_CodeViewLine->getData(CursorPosition);
     de = m_process->m_Dasm->GetData(cvi->Dasmitem);
     address = de->getArgument(0);
-    i = m_CodeViewLine->getDataLineAddress(address);
+    m_CodeViewLine->getDataLineAddress(address, i);
 
     if (i >= 0)
     {

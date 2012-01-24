@@ -252,10 +252,10 @@ void ProjectManager::writeCodeLine(wxTextFile &savefile)
     if (m_codeview->m_CodeViewLine->GetCount() > 0)
     {
         savefile.AddLine(_("[CVLINE]"));
-        for (i=0; i < m_codeview->m_CodeViewLine->GetCount(); i++)
+        for (i = 0; i < m_codeview->m_CodeViewLine->GetCount(); i++)
         {
             cvi = m_codeview->m_CodeViewLine->getData(i);
-            str.Printf(_("%d %d %d"),cvi->Org,cvi->Dasmitem,cvi->LabelAddr);
+            str.Printf(_("%d %d %d"),cvi->Org, cvi->Dasmitem, cvi->LabelAddr);
             if (cvi->Comment != 0)
             {
                 str << wxString::Format(_(" \"%s\""),cvi->Comment->CommentStr.c_str());

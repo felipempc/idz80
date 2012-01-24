@@ -69,11 +69,11 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	addr_y += 32;
 	StaticText2 = new wxStaticText(AddressBox, ID_STATICTEXT2, _("Execution"), wxPoint(addr_x,addr_y), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
 	addr_y += 13;
-	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL2, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL2, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
 	addr_y += 32;
 	StaticText3 = new wxStaticText(AddressBox, ID_STATICTEXT3, _("End"), wxPoint(addr_x,addr_y), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
 	addr_y += 13;
-	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL3, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
+	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL3, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
 	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
 
 	wxString __wxRadioBoxChoices_1[3] =
