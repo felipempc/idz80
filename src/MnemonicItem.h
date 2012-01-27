@@ -32,6 +32,7 @@ enum ArgType
     ARG_REL_ADDR,
     ARG_IO_ADDR
 };
+
 enum BranchType
 {
     BR_NONE=0,

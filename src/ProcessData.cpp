@@ -118,8 +118,12 @@ void ProcessData::DisassembleFirst()
     {
         item = MatchOpcode(i, f);
         de = new DAsmElement(Program, &m_Dasm->BaseAddress);
-        de->hasArgumentLabel = false;
-        de->hasLabel = false;
+        de->Style.hasArgumentLabel = 0; // false;
+        de->Style.hasLabel = 0;   //false;
+        de->Style.arg1 = ast_hex;
+        de->Style.arg2 = ast_hex;
+        de->Style.arg1styled = 0;
+        de->Style.arg2styled = 0;
         if (item == OPCODE_NOT_MATCHED)
         {
             memset(de->Args, '\0', sizeof(OpCodeArguments));
@@ -191,6 +195,12 @@ void ProcessData::DisassembleItems(RangeItems &r)
                 de = new DAsmElement(Program, &m_Dasm->BaseAddress);
                 memset(de->Args,'\0',sizeof(OpCodeArguments));
                 memset(de->Code,'\0',sizeof(ByteCode));
+				de->Style.hasArgumentLabel = 0; // false;
+				de->Style.hasLabel = 0;   //false;
+				de->Style.arg1 = ast_hex;
+				de->Style.arg2 = ast_hex;
+				de->Style.arg1styled = 0;
+				de->Style.arg2styled = 0;
                 de->Length = 1;
                 de->Offset = i;
                 de->MnItem = 0;
@@ -206,6 +216,13 @@ void ProcessData::DisassembleItems(RangeItems &r)
             else
             {
                 de = new DAsmElement(Program, &m_Dasm->BaseAddress);
+				de->Style.hasArgumentLabel = 0; // false;
+				de->Style.hasLabel = 0;   //false;
+				de->Style.arg1 = ast_hex;
+				de->Style.arg2 = ast_hex;
+				de->Style.arg1styled = 0;
+				de->Style.arg2styled = 0;
+
                 de->MnItem = Mnemonics->GetData(item);
                 for (j = 0; j < MAX_OPCODE_SIZE; j++)
                 {
@@ -257,6 +274,12 @@ void ProcessData::MakeData(RangeItems &r)
         for (j = 0; j < length; j++)
         {
             de = new DAsmElement(Program,&m_Dasm->BaseAddress);
+			de->Style.hasArgumentLabel = 0; // false;
+			de->Style.hasLabel = 0;   //false;
+			de->Style.arg1 = ast_hex;
+			de->Style.arg2 = ast_hex;
+			de->Style.arg1styled = 0;
+			de->Style.arg2styled = 0;
             memset(de->Args,'\0',sizeof(OpCodeArguments));
             de->Length = 1;
             de->Offset = offset + j;
@@ -270,7 +293,7 @@ void ProcessData::MakeData(RangeItems &r)
     }
 }
 
-
+//TODO: Insert var labels
 void ProcessData::AutoLabel()
 {
     DAsmElement *dasmtemp;
@@ -293,7 +316,7 @@ void ProcessData::AutoLabel()
                 switch (argtype)
                 {
                     case ARG_VARIABLE:
-                                        dasmtemp->hasArgumentLabel = true;
+                                        dasmtemp->Style.hasArgumentLabel = 1;   //true;
                                         addr = dasmtemp->getArgument(0);
                                         str.Printf(_("VAR%d"), nargsVar++);
                                         var_labels->AddLabel(addr, str, i);
@@ -301,13 +324,13 @@ void ProcessData::AutoLabel()
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
                                         addr = dasmtemp->getArgument(0);
-                                        dasmtemp->hasArgumentLabel = true;
+                                        dasmtemp->Style.hasArgumentLabel = 1;   //true;
                                         str.Printf(_("LABEL%d"), nargsProg++);
                                         prog_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_IO_ADDR:
                                         addr = dasmtemp->getArgument(0);
-                                        dasmtemp->hasArgumentLabel = true;
+                                        dasmtemp->Style.hasArgumentLabel = 1; //true;
                                         str.Printf(_("PORT%d"), nargsIO++);
                                         io_labels->AddLabel(addr, str, i);
                                         break;

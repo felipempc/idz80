@@ -16233,7 +16233,7 @@
 
 1275835393 p:\c_c++\projetos\idz80\src\idz80base.h
 
-1325265262 source:p:\c_c++\projetos\idz80\src\filetypedialog.cpp
+1327437039 source:p:\c_c++\projetos\idz80\src\filetypedialog.cpp
 	"FileTypeDialog.h"
 	<wx/intl.h>
 	<wx/button.h>
@@ -16249,14 +16249,14 @@
 	<wx/checkbox.h>
 	"rawdata.h"
 
-1300921235 p:\c_c++\projetos\idz80\src\rawdata.h
+1327619415 p:\c_c++\projetos\idz80\src\rawdata.h
 	<wx/file.h>
 	<wx/string.h>
 	<wx/buffer.h>
 	<wx/textctrl.h>
 	"IDZ80Base.h"
 
-1325291765 source:p:\c_c++\projetos\idz80\src\idz80.cpp
+1327691921 source:p:\c_c++\projetos\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -16301,7 +16301,7 @@
 	"rawdata.h"
 	"d_asm_element.h"
 
-1322490126 p:\c_c++\projetos\idz80\src\d_asm_element.h
+1327617121 p:\c_c++\projetos\idz80\src\d_asm_element.h
 	"mndb.h"
 	"MnemonicItem.h"
 	"rawdata.h"
@@ -16332,7 +16332,7 @@
 	"d_asm_element.h"
 	"dasmdata.h"
 
-1322590006 p:\c_c++\projetos\idz80\src\codeview.h
+1327691608 p:\c_c++\projetos\idz80\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -16351,7 +16351,7 @@
 	<wx/textfile.h>
 	"ProcessData.h"
 
-1327437040 p:\c_c++\projetos\idz80\src\version.h
+1327694334 p:\c_c++\projetos\idz80\src\version.h
 
 1300921685 p:\c_c++\projetos\idz80\src\showfileinfo.h
 	<wx/stattext.h>
@@ -16373,7 +16373,7 @@
 1300979285 source:p:\c_c++\projetos\idz80\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1327435531 source:p:\c_c++\projetos\idz80\src\processdata.cpp
+1327617775 source:p:\c_c++\projetos\idz80\src\processdata.cpp
 	"ProcessData.h"
 
 1300922957 source:p:\c_c++\projetos\idz80\src\showfileinfo.cpp
@@ -16381,10 +16381,10 @@
 	<wx/intl.h>
 	<wx/string.h>
 
-1307489838 source:p:\c_c++\projetos\idz80\src\codegenerator.cpp
+1327615701 source:p:\c_c++\projetos\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
-1327435683 source:p:\c_c++\projetos\idz80\src\codeview.cpp
+1327690546 source:p:\c_c++\projetos\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -16421,7 +16421,7 @@
 	<wx/dynarray.h>
 	"mndb_tools.h"
 
-1327433247 source:p:\c_c++\projetos\idz80\src\projectmanager.cpp
+1327617840 source:p:\c_c++\projetos\idz80\src\projectmanager.cpp
 	"projectmanager.h"
 	"mnemonicitem.h"
 	<wx/dynarray.h>
@@ -23025,11 +23025,15 @@
 
 1323888240 p:\wxwidgets-2.9.3\lib\gcc_dll\mswu\wx\setup.h
 
-1325285404 source:p:\c_c++\projetos\idz80\src\codeview_render.cpp
+1327692832 source:p:\c_c++\projetos\idz80\src\codeview_render.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
-	<wx/utils.h>
-	<wx/region.h>
+	"codeview.h"
+	"d_asm_element.h"
+
+1327692997 source:p:\c_c++\projetos\idz80\src\codeview_evmouse.cpp
+	<wx/wx.h>
+	<wx/dcbuffer.h>
 	"codeview.h"
 	"d_asm_element.h"
 

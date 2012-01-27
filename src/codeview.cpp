@@ -37,7 +37,8 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     m_fontHeight = 1;
     IsFocused = false;
     IsEmpty = true;
-
+    m_styleData.arg = 0;
+    m_styleData.item = 0;
 
     m_CodeViewLine = m_process->m_CodeViewLine;
     LastCursorRect = new wxRect();
@@ -92,6 +93,10 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
     Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
     Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
+
+    Connect(idPOPUP_ARG_BIN, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleBin);
+    Connect(idPOPUP_ARG_DEC, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleDec);
+    Connect(idPOPUP_ARG_HEX, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleHex);
 
     PopUp = 0;
 
@@ -308,8 +313,8 @@ void CodeView::CalcCursorPosition(wxPoint point)
 
 wxRect CodeView::CalcCursorRfshRect()
 {
-    wxRect cursor(0,CursorPosition * m_fontHeight,GetClientSize().x,m_fontHeight);
-    CalcScrolledPosition(cursor.x,cursor.y,0,&cursor.y);
+    wxRect cursor(0, CursorPosition * m_fontHeight, GetClientSize().x, m_fontHeight);
+    CalcScrolledPosition(cursor.x, cursor.y, 0, &cursor.y);
     return (cursor);
 }
 
@@ -510,318 +515,6 @@ void CodeView::DebugLog(wxTextCtrl *log)
  * Event Handlers
  * ---------------------------------------------
  */
-
-
-void CodeView::OnMouseLeftDown(wxMouseEvent& event)
-{
-	int lastposition;
-
-    if (!IsEnabled())
-    {
-        return;
-    }
-
-    if (!MultiSelection)
-        CursorLastPosition = CursorPosition;
-
-	lastposition = CursorPosition;
-
-    CalcCursorPosition(event.GetPosition());
-	if (CursorPosition < GetCount())
-	{
-		ClearCursor();
-
-		if (CursorPosition > GetLastLine())
-		{
-			Scroll(-1,GetFirstLine() + 1);
-			RefreshRect(CalcCursorRfshRect());
-		}
-
-		DoSelection();
-
-		SetFocusIgnoringChildren();
-
-		RefreshRect(CalcCursorRfshRect());
-	}
-	else
-		CursorPosition = lastposition;
-}
-
-
-void CodeView::OnMouseLeftUp(wxMouseEvent& event)
-{
-    // nothing
-}
-
-
-
-void CodeView::OnMouseRightDown(wxMouseEvent& event)
-{
-	int	lastposition;
-
-    if (!IsEnabled())
-    {
-        return;
-    }
-
-    if (!MultiSelection)
-        CursorLastPosition = CursorPosition;
-
-	lastposition = CursorPosition;
-    CalcCursorPosition(event.GetPosition());
-	if (CursorPosition < GetCount())
-	{
-		ClearCursor();
-
-		if (MultiSelection && ((CursorPosition < SelectedItemIndex) ||
-			(CursorPosition > SelectedLastItem)))
-		{
-			//if (MultiSelection)
-			RefreshRect(CalcSelectedRect());
-			SelectedCount = 1;
-			MultiSelection = false;
-			SelectedItemIndex = CursorPosition;
-			CursorLastPosition = CursorPosition;
-			SelectedLastItem = SelectedItemIndex;
-		}
-		else
-			if (!MultiSelection)
-			{
-				SelectedCount = 1;
-				SelectedItemIndex = CursorPosition;
-				CursorLastPosition = CursorPosition;
-				SelectedLastItem = SelectedItemIndex;
-			}
-
-		SetFocusIgnoringChildren();
-
-		RefreshRect(CalcCursorRfshRect());
-	}
-	else
-		CursorPosition = lastposition;
-
-}
-
-
-void CodeView::OnMouseRightUp(wxMouseEvent& event)
-{
-    CodeViewItem *cvi;
-    DAsmElement *de;
-    wxMenu		*menu_organize;
-
-
-    if (!IsEmpty)
-    {
-        SetFocusIgnoringChildren();
-
-        PopUp = new wxMenu();
-        menu_organize = new wxMenu();
-
-        if (SelectedCount > 1)
-        {
-            switch (GetTypeMultiselection())
-            {
-                case et_Instruction:
-                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
-                                #ifdef IDZ80DEBUG
-                                LogIt(_("Instruction !\n"));
-                                #endif
-                                break;
-                case et_Data:
-                                PopUp->Append(idPOPUP_DISASM,_("Disassemble\tc"));
-                                menu_organize->Append(idPOPUP_OD_STRING, _("String"));
-                                menu_organize->Append(idPOPUP_OD_MATRIX, _("Matrix"));
-                                menu_organize->Append(idPOPUP_OD_NUMBER, _("Number"));
-                                PopUp->AppendSeparator();
-								PopUp->Append(idPOPUP_ORGANIZEDATA, _T("Organize data"), menu_organize);
-
-                                #ifdef IDZ80DEBUG
-                                LogIt(_("Data !\n"));
-                                #endif
-                                break;
-                default:
-                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
-                                #ifdef IDZ80DEBUG
-                                LogIt(_("Default !\n"));
-                                #endif
-                                break;
-            }
-            PopUp->AppendSeparator();
-            PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
-            PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
-
-        }
-        else
-        {
-            cvi = m_CodeViewLine->getData(CursorPosition);
-            // Label
-            if (cvi->LabelAddr >= 0)
-            {
-                PopUp->Append(idPOPUP_EDITLABEL,_T("Rename label"));
-                PopUp->AppendSeparator();
-                PopUp->Append(idPOPUP_DELLABEL,_T("Delete label"));
-            }
-            else
-            // Dasmed item
-            if (cvi->Dasmitem >= 0)
-            {
-                de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-                if (de->MnItem != 0)
-                    if (de->MnItem->getBranchType() != BR_NONE)
-                    {
-                        PopUp->Append(idPOPUP_GOTO,_T("Goto label"));
-                    }
-                if (de->ElType == et_Instruction)
-                {
-                    PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data"));
-                }
-            }
-            PopUp->AppendSeparator();
-            if (cvi->Comment != 0)
-            {
-                PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
-                PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
-            }
-            else
-                PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
-        }
-        PopupMenu(PopUp);
-		delete menu_organize;
-        delete PopUp;
-    }
-}
-
-
-// TODO: Rewrite this
-void CodeView::OnMouseMove(wxMouseEvent& event)
-{
-    CodeViewItem *cvi;
-    wxPoint pt;
-    wxClientDC  dc(this);
-    DoPrepareDC(dc);
-
-    uint pointedline;
-    static uint lastpointedline=0;
-    static wxRect *lastrect=0;
-    static bool lastfocus1=false;
-    static bool lastfocus2=false;
-    static bool arg_erased=false;
-
-    bool    m_Arg1focused,
-            m_Arg2focused,
-            linechanged=false;
-
-
-    pt=event.GetLogicalPosition(dc);
-    pointedline = pt.y/m_fontHeight;
-    cvi=m_CodeViewLine->getData(pointedline);
-    if (lastpointedline!=pointedline)
-    {
-        linechanged=true;
-        lastpointedline=pointedline;
-    }
-    else
-    {
-        linechanged=false;
-        lastpointedline=pointedline;
-    }
-
-    if (((!m_Arg1focused) && (!m_Arg2focused)) || (linechanged))
-    {
-        if ((lastrect!=0) && (!arg_erased))
-        {
-            wxPen pen(*wxWHITE,1,wxSOLID);
-            wxBrush brush(*wxWHITE,wxTRANSPARENT);
-            dc.SetPen(pen);
-            dc.SetBrush(brush);
-            dc.DrawRectangle(*lastrect);
-            arg_erased=true;
-            lastfocus1=false;
-            lastfocus2=false;
-        }
-    }
-
-    if (cvi->RectArg1!=0)
-    {
-        if (cvi->RectArg1->Contains(wxPoint(pt.x,pt.y)))
-        {
-            lastrect=cvi->RectArg1;
-            m_Arg1focused=true;
-
-            if (m_Arg1focused!=lastfocus1)
-            {
-                wxPen pen(FGArgumentColor,1,wxSOLID);
-                wxBrush brush(BGArgumentColor,wxTRANSPARENT);
-                dc.SetPen(pen);
-                dc.SetBrush(brush);
-                dc.DrawRectangle(*cvi->RectArg1);
-                lastfocus1=m_Arg1focused;
-                arg_erased=false;
-            }
-        }
-        else
-        {
-            m_Arg1focused=false;
-            lastfocus1=false;
-        }
-    }
-    if  (cvi->RectArg2!=0)
-    {
-        if (cvi->RectArg2->Contains(wxPoint(pt.x,pt.y)))
-        {
-            lastrect=cvi->RectArg2;
-            m_Arg2focused=true;
-
-            if (m_Arg2focused!=lastfocus2)
-            {
-                wxPen pen(FGArgumentColor,1,wxSOLID);
-                wxBrush brush(BGArgumentColor,wxSOLID);       //wxTRANSPARENT);
-                dc.SetPen(pen);
-                dc.SetBrush(brush);
-                dc.DrawRectangle(*cvi->RectArg2);
-                lastfocus2=m_Arg2focused;
-                arg_erased=false;
-            }
-        }
-        else
-        {
-            m_Arg2focused=false;
-            lastfocus2=false;
-        }
-    }
-}
-
-
-
-
-void CodeView::OnMouseWheel(wxMouseEvent& event)
-{
-    bool up_motion;
-    int motion_step = 3;
-    int position;
-
-    up_motion = (event.GetWheelRotation() >= 0);
-
-    if (up_motion)
-    {
-        position = GetFirstLine() - motion_step;
-        if (position < 0)
-            position = 0;
-        Scroll(-1,position);
-    }
-    else
-    {
-        position = GetFirstLine() + motion_step;
-        if (position > (m_CodeViewLine->GetCount() - m_linesShown))
-            position = m_CodeViewLine->GetCount() - m_linesShown;
-        Scroll(-1,position);
-    }
-}
-
-
-
-
-
 
 
 // Event handler for Page up/down and direction keys
@@ -1199,6 +892,62 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 void CodeView::OnPopUpMenuOD_Matrix(wxCommandEvent &event)
 {
 	LogIt(_("Matrixed !!\n"));
+}
+
+
+
+void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
+{
+	DAsmElement *de;
+
+	if (m_styleData.arg != 0)
+	{
+		de = m_process->m_Dasm->GetData(m_styleData.item);
+		if (m_styleData.arg == 1)
+			de->Style.arg1 = ast_bin;
+		else
+			de->Style.arg2 = ast_bin;
+
+		m_styleData.arg = 0;
+		m_styleData.item = 0;
+		RefreshRect(CalcCursorRfshRect());
+	}
+}
+
+void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
+{
+	DAsmElement *de;
+
+	if (m_styleData.arg != 0)
+	{
+		de = m_process->m_Dasm->GetData(m_styleData.item);
+		if (m_styleData.arg == 1)
+			de->Style.arg1 = ast_dec;
+		else
+			de->Style.arg2 = ast_dec;
+
+		m_styleData.arg = 0;
+		m_styleData.item = 0;
+		RefreshRect(CalcCursorRfshRect());
+	}
+}
+
+void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
+{
+	DAsmElement *de;
+
+	if (m_styleData.arg != 0)
+	{
+		de = m_process->m_Dasm->GetData(m_styleData.item);
+		if (m_styleData.arg == 1)
+			de->Style.arg1 = ast_hex;
+		else
+			de->Style.arg2 = ast_hex;
+
+		m_styleData.arg = 0;
+		m_styleData.item = 0;
+		RefreshRect(CalcCursorRfshRect());
+	}
 }
 
 

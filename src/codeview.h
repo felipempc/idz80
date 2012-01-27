@@ -42,12 +42,21 @@ enum {
     idPOPUP_OD_STRING,
     idPOPUP_OD_MATRIX,
     idPOPUP_OD_NUMBER,
+    idPOPUP_ARG_BIN,
+    idPOPUP_ARG_DEC,
+    idPOPUP_ARG_HEX,
+    idPOPUP_ARG_STYLE,
     idPOPUP_DISASM,
     idPOPUP_EDITLABEL,
     idPOPUP_DELLABEL,
     idPOPUP_EDITCOMMENT,
     idPOPUP_DELCOMMENT,
     idPOPUP_ADDCOMMENT
+};
+
+typedef struct styledata
+{
+	uint item, arg;
 };
 
 
@@ -79,6 +88,7 @@ private:
                 m_fractionScroll,   // Pixels' number to complete a fractional line
                 m_fontHeight,
                 m_fontWidth;
+	styledata	m_styleData;		// Holds info to change style handlers (BIN/DEC/HEX)
 
     int         SelectedCount,      // Number of Items Selected
                 SelectedItemIndex,  // First Disassembled Item Selected
@@ -126,6 +136,8 @@ private:
     void ClearCursor();
     void DoSelection();
 
+	wxString FormatArg(uint arg, uint style);
+
     int GetFirstLine();
     int GetLastLine();
 
@@ -168,11 +180,19 @@ private:
     void OnPopUpMenuOD_Matrix(wxCommandEvent& event);
     void OnPopUpMenuDisasm(wxCommandEvent& event);
 
+    void OnPopUpMenuArgStyleBin(wxCommandEvent& event);
+    void OnPopUpMenuArgStyleDec(wxCommandEvent& event);
+    void OnPopUpMenuArgStyleHex(wxCommandEvent& event);
+
     // Pop Up Comment event handlers
     void OnPopUpAddComment(wxCommandEvent& event);
     void OnPopUpEditComment(wxCommandEvent& event);
     void OnPopUpDelComment(wxCommandEvent& event);
 };
+
+
+// Tools
+wxString IntToBin(uint conv);
 
 #endif
 

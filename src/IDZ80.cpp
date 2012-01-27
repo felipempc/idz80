@@ -271,7 +271,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
 	#ifdef IDZ80DEBUG
 	if (!result)
-		PanelLog->AppendText(_T("*** First Idle Event failed to remove !\n\n"));
+		PanelLog->AppendText(_T("*** First Idle Event failed to disconnect !\n\n"));
 	#endif
 
     StatusBar1->SetStatusText(m_currentDir);

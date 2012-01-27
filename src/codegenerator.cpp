@@ -101,7 +101,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     else
         str_number_format = _T("0x%X");
 
-    if (de->hasArgumentLabel)
+    if (de->Style.hasArgumentLabel)
     {
         switch (de->MnItem->getArgType(0))
         {

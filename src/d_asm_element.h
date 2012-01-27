@@ -29,6 +29,25 @@ enum ElementType
     et_None, et_Data, et_Instruction
 };
 
+enum aStyleType
+{
+	ast_hex,
+	ast_bin,
+	ast_dec
+};
+
+
+typedef struct ArgStyle
+{
+	unsigned char arg1;
+	unsigned char arg2;
+	unsigned char reserved;
+	unsigned char arg1styled:1;
+	unsigned char arg2styled:1;
+	unsigned char hasArgumentLabel:1;	// true if there is a label for its argument
+	unsigned char hasLabel:1;			// true if there is a label for this item
+};
+
 
 class DAsmElement
 {
@@ -47,8 +66,11 @@ class DAsmElement
         unsigned int        Offset,         // File address (0..EOF)
                             Length;         // How many BYTEs
         enum ElementType    ElType;
+        ArgStyle			Style;
+        /*
         bool                hasArgumentLabel,   // true if there is a label for its argument
                             hasLabel;           // true if there is a label for this item
+		*/
 
         DAsmElement(RawData* rawdata, uint *baseaddress);
         ~DAsmElement();

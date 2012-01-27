@@ -538,6 +538,13 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
         {
             ParseString(str,arr_str);
             de = new DAsmElement(m_process->Program,&m_process->Program->StartAddress);
+			de->Style.hasArgumentLabel = 0; // false;
+			de->Style.hasLabel = 0;   //false;
+			de->Style.arg1 = ast_hex;
+			de->Style.arg2 = ast_hex;
+			de->Style.arg1styled = 0;
+			de->Style.arg2styled = 0;
+
             j = 0;
 
             if (arr_str.GetCount() > 3)

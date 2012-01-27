@@ -69,7 +69,6 @@ class RawData
 
         bool ValidateBIN(unsigned char byte_id);
         void LogIt(const wxString &str);
-
 };
 
 #endif
