@@ -179,7 +179,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             cvi = m_CodeViewLine->getData(CursorPosition);
             // Label
             //TODO: Implement rename/delete label routine
-            if (cvi->LabelAddr >= 0)
+            if ((cvi->LabelProgAddr >= 0) && (cvi->LabelVarAddr >= 0))
             {
                 PopUp->Append(idPOPUP_EDITLABEL,_T("Rename label"));
                 PopUp->AppendSeparator();

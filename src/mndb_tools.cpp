@@ -44,24 +44,33 @@ int GetSection(wxString& s)
 
 void ParseString(wxString& s, wxArrayString& sl)
 {
-    int f,x;
-    wxString stemp;
+    int			f,x;
+    wxString	stemp;
+    bool		have_string = true;
 
     sl.Clear();
-    stemp=s.BeforeFirst('"');
-    f=stemp.Len();
-    x=stemp.First(' ');
+    x = s.Find('"');
+    have_string = (x > 0);
+    if (have_string)
+		stemp = s.Left(x);
+	else
+		stemp = s;
+    f = stemp.Len();
+    x = stemp.First(' ');
     while (f > 0)
     {
-        sl.Add(stemp.Mid(0,x));
+        sl.Add(stemp.Left(x));
         stemp = stemp.AfterFirst(' ');
         f = stemp.Len();
         x = stemp.Find(' ');
         if ((x < 0) && (f > 0))
             x = f;
     }
-    stemp=s.AfterFirst('"');
-    stemp=stemp.BeforeLast('"');
-    sl.Add(stemp);
+    if (have_string)
+	{
+		stemp = s.AfterFirst('"');
+		stemp = stemp.BeforeLast('"');
+		sl.Add(stemp);
+	}
 }
 

@@ -66,7 +66,7 @@ void LabelListCtrl::Clear()
  *     Label List Control Implementation
  */
 
-int LabelListCtrl::AddLabel(uint addr,wxString name,int dasmitem)
+int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
 {
     wxString buf;
     wxListItem li;
@@ -76,17 +76,20 @@ int LabelListCtrl::AddLabel(uint addr,wxString name,int dasmitem)
     lbl = 0;
     p = -1;
     buf.Printf(_T("%X"),addr);
-    itemfound = FindItem(0,buf);
+    itemfound = FindItem(0, buf);
     if (itemfound < 0)    // item not found
     {
-        if (!(dasmitem == NO_DASM_ITEM))
-        {
-            lbl = new LabelItem;
-            lbl->Address = addr;
-            lbl->LabelUsers = new wxArrayInt();
-            lbl->LabelUsers->Add(dasmitem);
-            lbl->LabelStr = name;
-        }
+		lbl = new LabelItem;
+		lbl->Address = addr;
+		lbl->LabelStr = name;
+
+		if (dasmitem != NO_DASM_ITEM)
+		{
+			lbl->LabelUsers = new wxArrayInt();
+			lbl->LabelUsers->Add(dasmitem);
+		}
+		else
+			lbl->LabelUsers = 0;
 
         li.SetText(buf);
         li.SetImage(-1);
@@ -102,6 +105,60 @@ int LabelListCtrl::AddLabel(uint addr,wxString name,int dasmitem)
         if (!(lbl == 0))
             if (lbl->LabelUsers->Index(dasmitem) == wxNOT_FOUND)
                 lbl->LabelUsers->Add(dasmitem);
+    }
+    return itemfound;
+}
+
+
+
+int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labelusers)
+{
+    wxString	buf;
+    wxListItem	li;
+    LabelItem	*lbl;
+    long		itemfound, p;
+
+    lbl = 0;
+    p = -1;
+    buf.Printf(_T("%X"),addr);
+    itemfound = FindItem(0, buf);
+    if (itemfound < 0)    // item not found
+    {
+		lbl = new LabelItem;
+		lbl->Address = addr;
+		if (labelusers.IsEmpty())
+			lbl->LabelUsers = 0;
+		else
+		{
+			lbl->LabelUsers = new wxArrayInt();
+			lbl->LabelUsers = &labelusers;
+			lbl->LabelStr = name;
+		}
+        li.SetText(buf);
+        li.SetImage(-1);
+        li.SetAlign(wxLIST_FORMAT_LEFT);
+        li.SetData(lbl);
+        p = InsertItem(li);
+        SetItem(p, 1, name);
+        itemfound = p;
+    }
+    else
+    {	// Overwrite old list of users, if exists
+        lbl = (LabelItem *)GetItemData(itemfound);
+        if (lbl != 0)
+		{
+            if (lbl->LabelUsers != 0)
+			{
+                lbl->LabelUsers->Clear();
+                lbl->LabelUsers = &labelusers;
+			}
+			else
+			{
+				lbl->LabelUsers = new wxArrayInt();
+				lbl->LabelUsers = &labelusers;
+			}
+		}
+
     }
     return itemfound;
 }

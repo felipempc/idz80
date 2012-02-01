@@ -22,9 +22,6 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
         : wxScrolledWindow(parent)
 {
     m_process = _proc;
-    //TODO: delete m_fractionXXXX vars ?
-    m_fractionLine = 0;
-    m_fractionScroll = 0;
     m_linesShown = 0;
     CursorPosition = -1;
     CursorLastPosition = -1;
@@ -372,13 +369,11 @@ void CodeView::Plot(void)
     Refresh();
 }
 
-//TODO: See if m_fractionXXXX will be used
+
 void CodeView::CalcItemsShown(void)
 {
     wxSize size = GetClientSize();
     m_linesShown = size.GetHeight() / m_fontHeight;
-    m_fractionLine = size.GetHeight() - (m_linesShown * m_fontHeight);
-    m_fractionScroll = m_fontHeight - m_fractionLine;
 }
 
 int CodeView::GetFirstLine()
@@ -760,7 +755,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 		j = 0;
         for (i = 0; i < lineCount; i++)
 		{
-			if (m_CodeViewLine->getData(lineIndex + j)->LabelAddr >= 0)
+			if (m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0)
 				j++;
 			else
 				m_CodeViewLine->Del(lineIndex + j);
@@ -806,7 +801,7 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 		j = 0;
 		for (i = 0; i < lineCount; i++)
 		{
-			if (m_CodeViewLine->getData(lineIndex + j)->LabelAddr >= 0)
+			if (m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0)
 				j++;
 			else
 				m_CodeViewLine->Del(lineIndex + j);
@@ -880,7 +875,7 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
     cvi = m_CodeViewLine->getData(CursorPosition);
     if (cvi != 0)
     {
-        if ((cvi->Dasmitem == -1) && (cvi->LabelAddr == -1) && (cvi->Org == -1))
+        if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr == -1) && (cvi->LabelVarAddr == -1) && (cvi->Org == -1))
             m_CodeViewLine->DelItem(cvi);
         else
             m_CodeViewLine->DelComment(cvi);

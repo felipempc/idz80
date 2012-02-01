@@ -17,6 +17,7 @@
 
 #include <wx/string.h>
 #include <wx/arrstr.h>
+#include "idz80base.h"
 
 #define MAX_NUM_ARG 2
 #define MAX_OPCODE_SIZE 4

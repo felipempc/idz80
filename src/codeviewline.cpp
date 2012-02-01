@@ -59,8 +59,8 @@ void CodeViewLine::Clear()
 }
 
 
-int CodeViewLine::AddNewItem(const int dasmitem, const int labeladdr, const int org,
-                             const wxString &comment)
+int CodeViewLine::AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+							 const int org, const wxString &comment)
 {
     CodeViewItem *cvi;
 
@@ -73,7 +73,8 @@ int CodeViewLine::AddNewItem(const int dasmitem, const int labeladdr, const int 
     else
         cvi->Comment = 0;
     cvi->Dasmitem = dasmitem;
-    cvi->LabelAddr = labeladdr;
+    cvi->LabelProgAddr = labelprogaddr;
+    cvi->LabelVarAddr = labelvaraddr;
     cvi->Org = org;
     cvi->RectArg1 = 0;
     cvi->RectArg2 = 0;
@@ -84,25 +85,34 @@ int CodeViewLine::AddNewItem(const int dasmitem, const int labeladdr, const int 
 
 int CodeViewLine::AddDasm(const int dasmitem, const wxString &comment)
 {
-    return (AddNewItem(dasmitem, -1, -1, comment));
+    return (AddNewItem(dasmitem, -1, -1, -1, comment));
 }
 
 
-int CodeViewLine::AddLabel(const int labeladdr, const wxString &comment)
+int CodeViewLine::AddProgLabel(const int labeladdr, const wxString &comment)
 {
     if (labeladdr >= 0)
-        return (AddNewItem(-1, labeladdr, -1, comment));
+        return (AddNewItem(-1, labeladdr, -1, -1, comment));
     return -1;
 }
 
+
+int CodeViewLine::AddVarLabel(const int labeladdr, const wxString &comment)
+{
+    if (labeladdr >= 0)
+        return (AddNewItem(-1, -1, labeladdr, -1, comment));
+    return -1;
+}
+
+
 int CodeViewLine::AddOrg(const int org, const wxString &comment)
 {
-    return (AddNewItem(-1, -1, org, comment));
+    return (AddNewItem(-1, -1, -1, org, comment));
 }
 
 int CodeViewLine::Add(const wxString &comment)
 {
-    return (AddNewItem(-1, -1, -1, comment));
+    return (AddNewItem(-1, -1, -1, -1, comment));
 }
 
 
@@ -143,8 +153,8 @@ void CodeViewLine::Del(const int idx)
 
 
 
-void CodeViewLine::EditItem(const int dasmitem, const int labeladdr, const int org,
-                            const wxString &comment, const int pos)
+void CodeViewLine::EditItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+							const int org, const wxString &comment, const int pos)
 {
     CodeViewItem *cvi;
     cvi = getData(pos);
@@ -168,39 +178,49 @@ void CodeViewLine::EditItem(const int dasmitem, const int labeladdr, const int o
         cvi->Dasmitem = dasmitem;
     if (org >= 0)
         cvi->Org = org;
-    if (labeladdr >= 0)
-        cvi->LabelAddr = labeladdr;
+    if (labelprogaddr >= 0)
+        cvi->LabelProgAddr = labelprogaddr;
+    if (labelvaraddr >= 0)
+        cvi->LabelVarAddr = labelvaraddr;
 }
 
 void CodeViewLine::EditDasm(const int dasmitem, const wxString &comment, int pos)
 {
     if ((dasmitem >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
-        EditItem(dasmitem, -1, -1, comment, pos);
+        EditItem(dasmitem, -1, -1, -1, comment, pos);
 }
 
 
-void CodeViewLine::EditLabel(const int labeladdr, const wxString &comment, int pos)
+void CodeViewLine::EditProgLabel(const int labeladdr, const wxString &comment, int pos)
 {
     if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
-        EditItem(-1, labeladdr, -1, comment, pos);
+        EditItem(-1, labeladdr, -1, -1, comment, pos);
 }
+
+
+void CodeViewLine::EditVarLabel(const int labeladdr, const wxString &comment, int pos)
+{
+    if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
+        EditItem(-1, -1, labeladdr, -1, comment, pos);
+}
+
 
 void CodeViewLine::EditOrg(const int org, const wxString &comment, int pos)
 {
     if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
-        EditItem(-1, -1, org, comment, pos);
+        EditItem(-1, -1, -1, org, comment, pos);
 }
 
 
 
 void CodeViewLine::Edit(const wxString &comment,const int pos)
 {
-    EditItem(-1, -1, -1, comment, pos);
+    EditItem(-1, -1, -1, -1, comment, pos);
 }
 
 
-int CodeViewLine::InsertNewItem(const int dasmitem,const int labeladdr, const int org,
-                                const wxString &comment, int pos)
+int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+								const int org, const wxString &comment, int pos)
 {
     CodeViewItem *cvi;
     cvi = new CodeViewItem;
@@ -212,7 +232,8 @@ int CodeViewLine::InsertNewItem(const int dasmitem,const int labeladdr, const in
     else
         cvi->Comment = 0;
     cvi->Dasmitem = dasmitem;
-    cvi->LabelAddr = labeladdr;
+    cvi->LabelProgAddr = labelprogaddr;
+    cvi->LabelVarAddr = labelvaraddr;
     cvi->Org = org;
     cvi->RectArg1 = 0;
     cvi->RectArg2 = 0;
@@ -228,7 +249,7 @@ int CodeViewLine::InsertDasm(const int dasmitem, const wxString &comment, int po
     if ((dasmitem >= 0) && (pos >= 0))
     {
 		if (pos < m_CodeLine.GetCount())
-			return (InsertNewItem(dasmitem, -1, -1, comment, pos));
+			return (InsertNewItem(dasmitem, -1, -1, -1, comment, pos));
 		else
 			return (AddDasm(dasmitem, comment));
     }
@@ -237,17 +258,25 @@ int CodeViewLine::InsertDasm(const int dasmitem, const wxString &comment, int po
 
 
 
-int CodeViewLine::InsertLabel(const int labeladdr, const wxString &comment, int pos)
+int CodeViewLine::InsertProgLabel(const int labeladdr, const wxString &comment, int pos)
 {
     if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
-        return (InsertNewItem(-1, labeladdr, -1, comment, pos));
+        return (InsertNewItem(-1, labeladdr, -1, -1, comment, pos));
     return -1;
 }
+
+int CodeViewLine::InsertVarLabel(const int labeladdr, const wxString &comment, int pos)
+{
+    if ((labeladdr >= 0) && (pos >= 0) && (pos < m_CodeLine.GetCount()))
+        return (InsertNewItem(-1, -1, labeladdr, -1, comment, pos));
+    return -1;
+}
+
 
 int CodeViewLine::InsertOrg(const int org, const wxString &comment, int pos)
 {
     if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
-        return (InsertNewItem(-1, -1, org, comment, pos));
+        return (InsertNewItem(-1, -1, -1, org, comment, pos));
     return -1;
 }
 
@@ -257,7 +286,7 @@ int CodeViewLine::InsertOrg(const int org, const wxString &comment, int pos)
 int CodeViewLine::Insert(const wxString &comment, const int pos)
 {
     if ((pos >= 0) && (pos < m_CodeLine.GetCount()))
-        return (InsertNewItem(-1, -1, -1, comment, pos));
+        return (InsertNewItem(-1, -1, -1, -1, comment, pos));
     return -1;
 }
 
@@ -322,7 +351,7 @@ bool CodeViewLine::getDataLineAddress(uint addr, int &index)
         cvi = getData(i);
         if (cvi != 0)
 		{
-			if (cvi->LabelAddr == addr)
+			if ((cvi->LabelProgAddr == addr) || (cvi->LabelVarAddr == addr))
 				labelexists = true;
 
             if (cvi->Dasmitem >= 0)
@@ -368,7 +397,7 @@ void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
 
     while (countdasm-- > 0)
 	{
-		labadress = getData(indexline)->LabelAddr;
+		labadress = getData(indexline)->LabelProgAddr;
 		if (labadress >= 0)
 		{
 			de = m_dasm->GetData(indexdasm);

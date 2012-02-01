@@ -14,17 +14,17 @@
 void MnemonicItem::Clear()
 {
     int i;
-    m_bytesNo=0;
-    m_argNo=0;
-    m_argSize=0;
-    m_argPos=0;
-    m_argCount=0;
-    m_lastArg=ARG_NONE;
-    m_branchType=BR_NONE;
-    memset(m_opCode,0,sizeof(ByteCode));
+    m_bytesNo = 0;
+    m_argNo = 0;
+    m_argSize = 0;
+    m_argPos = 0;
+    m_argCount = 0;
+    m_lastArg = ARG_NONE;
+    m_branchType = BR_NONE;
+    memset(m_opCode, 0, sizeof(ByteCode));
     MnemonicString.Clear();
-    for (i=0;i<MAX_NUM_ARG;i++)
-        m_argType[i]=ARG_NONE;
+    for (i = 0; i < MAX_NUM_ARG; i++)
+        m_argType[i] = ARG_NONE;
 }
 
 
@@ -35,27 +35,27 @@ MnemonicItem::MnemonicItem()
 
 void MnemonicItem::addArgument(enum ArgType argument)
 {
-    if (m_argCount<MAX_NUM_ARG)
+    if (m_argCount < MAX_NUM_ARG)
     {
-        m_argType[m_argCount]=argument;
-        if (m_argCount>0)
+        m_argType[m_argCount] = argument;
+        if (m_argCount > 0)
         {
-            if (m_lastArg==argument)
+            if (m_lastArg == argument)
             {
-                m_argNo=m_argCount;
-                m_argSize=m_argCount+1;
+                m_argNo = m_argCount;
+                m_argSize = m_argCount + 1;
             }
             else
             {
-                m_argNo=m_argCount+1;
-                m_argSize=m_argCount;
+                m_argNo = m_argCount + 1;
+                m_argSize = m_argCount;
             }
         }
         else
         {
-            m_argNo=1;
-            m_argSize=1;
-            m_lastArg=argument;
+            m_argNo = 1;
+            m_argSize = 1;
+            m_lastArg = argument;
         }
         m_argCount++;
     }
@@ -63,12 +63,12 @@ void MnemonicItem::addArgument(enum ArgType argument)
 
 void MnemonicItem::addOpCode(unsigned char opcode)
 {
-    m_opCode[m_bytesNo++]=opcode;
+    m_opCode[m_bytesNo++] = opcode;
 }
 
 unsigned int MnemonicItem::getArgNo()
 {
-    return (unsigned int)m_argNo;
+    return (uint)m_argNo;
 }
 
 
@@ -85,7 +85,7 @@ BranchType MnemonicItem::getBranchType()
 
 bool MnemonicItem::hasArgument()
 {
-    return (m_argNo>0);
+    return (m_argNo > 0);
 }
 
 
@@ -93,19 +93,19 @@ void MnemonicItem::setMnemonicStr(wxString str)
 {
     int i1,i2;
     wxString strtemp;
-    i1=str.Find(ARG_POSITION_CHAR,false);
-    i2=str.Find(ARG_POSITION_CHAR,true);
-    if ((i1==i2) && (!(i1==wxNOT_FOUND)))
+    i1 = str.Find(ARG_POSITION_CHAR,false);
+    i2 = str.Find(ARG_POSITION_CHAR,true);
+    if ((i1 == i2) && (!(i1 == wxNOT_FOUND)))
     {
         MnemonicString.Add(str.Left(i1));
-        strtemp=str.Right(str.Len()-i1-1);
+        strtemp = str.Right(str.Len() - i1 - 1);
         MnemonicString.Add(strtemp);
     }
     else
-        if (!((i1==wxNOT_FOUND) || (i2==wxNOT_FOUND)))
+        if (!((i1 == wxNOT_FOUND) || (i2 == wxNOT_FOUND)))
         {
             MnemonicString.Add(str.Left(i1));
-            strtemp=str.Mid(i1+1,(i2-i1-1));
+            strtemp = str.Mid(i1 + 1,(i2 - i1 - 1));
             if (!strtemp.IsEmpty())
                 MnemonicString.Add(strtemp);
         }
@@ -116,8 +116,8 @@ void MnemonicItem::setMnemonicStr(wxString str)
 
 void MnemonicItem::setOpCodeArgPos(unsigned int argpos)
 {
-    if (m_argPos==0)        // we want the first argument position
-        m_argPos=(unsigned char)argpos;
+    if (m_argPos == 0)        // we want the first argument position
+        m_argPos = (unsigned char)argpos;
 }
 
 unsigned int MnemonicItem::getBytesNo()
@@ -162,6 +162,6 @@ unsigned int MnemonicItem::getArgPos()
 
 void MnemonicItem::setBranchType(enum BranchType branchtype)
 {
-    m_branchType=branchtype;
+    m_branchType = branchtype;
 }
 

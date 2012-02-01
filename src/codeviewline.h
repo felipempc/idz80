@@ -26,7 +26,8 @@ typedef struct stComment CommentItem;
 struct stCodeViewLine
 {
     CommentItem *Comment;
-    int LabelAddr;
+    short int LabelProgAddr;
+    short int LabelVarAddr;
     int Dasmitem;
     int Org;
     wxRect *RectArg1, *RectArg2;
@@ -41,18 +42,21 @@ class CodeViewLine
 
         void Clear();
         int AddDasm(const int dasmitem, const wxString &comment);
-        int AddLabel(const int labeladdr, const wxString &comment);
+        int AddProgLabel(const int labeladdr, const wxString &comment);
+        int AddVarLabel(const int labeladdr, const wxString &comment);
         int AddOrg(const int org, const wxString &comment);
         int Add(const wxString &comment);
         void Del(const int idx);
         void DelItem(CodeViewItem *cvi);
         void DelComment(CodeViewItem *cvi);
         void EditDasm(const int asmitem, const wxString &comment,int pos);
-        void EditLabel(const int labeladdr, const wxString &comment,int pos);
+        void EditProgLabel(const int labeladdr, const wxString &comment,int pos);
+        void EditVarLabel(const int labeladdr, const wxString &comment,int pos);
         void EditOrg(const int org, const wxString &comment, int pos);
         void Edit(const wxString &comment, const int pos);
         int InsertDasm(const int dasmitem, const wxString &comment,int pos);
-        int InsertLabel(const int labeladdr, const wxString &comment,int pos);
+        int InsertProgLabel(const int labeladdr, const wxString &comment,int pos);
+        int InsertVarLabel(const int labeladdr, const wxString &comment,int pos);
         int InsertOrg(const int org, const wxString &comment, int pos);
         int Insert(const wxString &comment, const int pos);       //create a new line with comment
         int AppendComment(const wxString &comment, const int pos); // append a comment to an existing line
@@ -73,11 +77,11 @@ class CodeViewLine
         int             m_itemcount;
         DAsmData        *m_dasm;
 
-        int AddNewItem(const int dasmitem,const int labeladdr, const int org,const wxString &comment);
-        int InsertNewItem(const int dasmitem,const int labeladdr, const int org,
-                          const wxString &comment, int pos);
-        void EditItem(const int dasmitem,const int labeladdr, const int org,
-                      const wxString &comment, int pos);
+        int AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr, const int org,const wxString &comment);
+        int InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+						  const int org, const wxString &comment, int pos);
+        void EditItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+					  const int org, const wxString &comment, int pos);
 };
 
 #endif // CODEVIEWLINE_H

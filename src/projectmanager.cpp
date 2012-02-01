@@ -206,34 +206,39 @@ void ProjectManager::writeIOlabel(wxTextFile &savefile)
     }
 }
 
-
+/* Saves dasm structure into string lines
+ *  Format: type[1] length[1] offset[2] opcode[1 to 4] << argnum[1] argsize[1]
+ *		   argument[1 to 2] >>
+ */
 void ProjectManager::writeDasmData(wxTextFile &savefile)
 {
-    int i,j,c;
-    wxString str;
+    int		i, j, c;
+    uint	arg_aux;
+    wxString	str;
     DAsmElement *de;
     if (m_process->m_Dasm->GetCount() != 0)
     {
         savefile.AddLine(_("[DASM]"));
-        for (i=0; i < m_process->m_Dasm->GetCount(); i++)
+        for (i = 0; i < m_process->m_Dasm->GetCount(); i++)
         {
             de = m_process->m_Dasm->GetData(i);
-            str.Printf(_("%.2X "),de->ElType);
-            str << wxString::Format(_("%.2X "),de->Length);
-            str << wxString::Format(_("%.2X "),de->Offset);
-            for(j=0; j < de->Length; j++)
-                str << wxString::Format(_("%.2X "),de->Code[j]);
+            str.Printf(_("%.2X "), de->ElType);
+            str << wxString::Format(_("%.2X "), de->Length);
+            str << wxString::Format(_("%.4X "), de->Offset);
+            for(j = 0; j < de->Length; j++)
+                str << wxString::Format(_("%.2X "), de->Code[j]);
 
             if (de->MnItem != 0)
                 if (de->MnItem->getArgNo() > 0)
                 {
-                    str << wxString::Format(_("%.2X "),de->MnItem->getArgNo());
-
-                    for(j=0; j < de->MnItem->getArgNo(); j++)
-                    {
-                        c = de->Args[j] & 0xFF;
-                        str << wxString::Format(_("%.2X "),c);
-                    }
+                    str << wxString::Format(_("%.2X "), de->MnItem->getArgNo());
+                    str << wxString::Format(_("%.2X "), de->MnItem->getArgSize());
+					arg_aux = de->MnItem->getArgNo() * de->MnItem->getArgSize();
+					for(j = 0; j < arg_aux; j++)
+					{
+						c = de->Args[j] & 0xFF;
+						str << wxString::Format(_("%.2X "), c);
+					}
                 }
             str.Trim();
             str.Trim(false);
@@ -255,7 +260,7 @@ void ProjectManager::writeCodeLine(wxTextFile &savefile)
         for (i = 0; i < m_codeview->m_CodeViewLine->GetCount(); i++)
         {
             cvi = m_codeview->m_CodeViewLine->getData(i);
-            str.Printf(_("%d %d %d"),cvi->Org, cvi->Dasmitem, cvi->LabelAddr);
+            str.Printf(_("%d %d %d %d"),cvi->Org, cvi->Dasmitem, cvi->LabelProgAddr, cvi->LabelVarAddr);
             if (cvi->Comment != 0)
             {
                 str << wxString::Format(_(" \"%s\""),cvi->Comment->CommentStr.c_str());
@@ -394,12 +399,13 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
 
 void ProjectManager::readLabels(wxTextFile &openfile)
 {
-    wxString str, str_name, str_addr, str_debug;
-    wxArrayString arrstr;
-    int i;
-    uint addr;
-    long conv;
-    bool foundHeader;
+    wxString		str, str_name, str_addr, str_debug;
+    wxArrayString	arrstr;
+    wxArrayInt		labelusers;
+    int				i;
+    uint			addr;
+    long			conv;
+    bool			foundHeader;
 
     str = openfile.GetFirstLine();
     foundHeader = str.IsSameAs(_("[PROGLABEL]"));
@@ -420,16 +426,24 @@ void ProjectManager::readLabels(wxTextFile &openfile)
             str_addr.Trim(false);
             ParseString(str_addr,arrstr);
             if (arrstr.GetCount() > 0)
-                str_addr = arrstr[0];
-            str_addr.ToLong(&conv,16);
-            addr = (uint)conv;
-            for (i = 1; i < (arrstr.GetCount()-1); i++)
-            {
-                str = arrstr[i];
-                str.ToLong(&conv);
-                m_process->prog_labels->AddLabel(addr,str_name,conv);   //FIXME: this label may never be added if i=arrstr.GetCount()-1
-            }
-
+			{
+				str_addr = arrstr[0];
+				str_addr.ToLong(&conv,16);
+				addr = (uint)conv;
+				m_process->prog_labels->AddLabel(addr, str_name, conv);
+				arrstr.RemoveAt(0);
+				if (!arrstr.IsEmpty())
+				{
+					for (i = 0; i < arrstr.GetCount(); i++)
+					{
+						str = arrstr[i];
+						if (str.ToLong(&conv))
+							labelusers.Add((uint)conv);
+					}
+					m_process->prog_labels->AddLabel(addr, str_name, labelusers);
+				}
+				labelusers.Clear();
+			}
             str = openfile.GetNextLine();
         }
     }
@@ -452,18 +466,26 @@ void ProjectManager::readLabels(wxTextFile &openfile)
             str_name.Trim(true);
             str_addr = str.Right(str.Len() - i - 1);
             str_addr.Trim(false);
-            str_addr.Trim(false);
             ParseString(str_addr,arrstr);
             if (arrstr.GetCount() > 0)
-                str_addr = arrstr[0];
-            str_addr.ToLong(&conv,16);
-            addr = (uint)conv;
-            for (i = 1; i < (arrstr.GetCount() - 1); i++)
-            {
-                str = arrstr[i];
-                str.ToLong(&conv);
-                m_process->var_labels->AddLabel(addr,str_name,conv);   //FIXME: this label may never be added if i=arrstr.GetCount()-1
-            }
+			{
+				str_addr = arrstr[0];
+				str_addr.ToLong(&conv,16);
+				addr = (uint)conv;
+				m_process->var_labels->AddLabel(addr, str_name, conv);
+				arrstr.RemoveAt(0);
+				if (!arrstr.IsEmpty())
+				{
+					for (i = 0; i < arrstr.GetCount(); i++)
+					{
+						str = arrstr[i];
+						if (str.ToLong(&conv))
+							labelusers.Add((uint)conv);
+					}
+					m_process->var_labels->AddLabel(addr, str_name, labelusers);
+				}
+			}
+			labelusers.Clear();
             str = openfile.GetNextLine();
         }
     }
@@ -485,18 +507,26 @@ void ProjectManager::readLabels(wxTextFile &openfile)
             str_name.Trim(true);
             str_addr = str.Right(str.Len() - i - 1);
             str_addr.Trim(false);
-            str_addr.Trim(false);
             ParseString(str_addr,arrstr);
             if (arrstr.GetCount() > 0)
-                str_addr = arrstr[0];
-            str_addr.ToLong(&conv,16);
-            addr = (uint)conv;
-            for (i = 1; i < (arrstr.GetCount() - 1); i++)
-            {
-                str = arrstr[i];
-                str.ToLong(&conv);
-                m_process->io_labels->AddLabel(addr,str_name,conv);   //FIXME: this label may never be added if i=arrstr.GetCount()-1
-            }
+			{
+				str_addr = arrstr[0];
+				str_addr.ToLong(&conv,16);
+				addr = (uint)conv;
+				m_process->io_labels->AddLabel(addr, str_name, conv);
+				arrstr.RemoveAt(0);
+				if (!arrstr.IsEmpty())
+				{
+					for (i = 0; i < arrstr.GetCount(); i++)
+					{
+						str = arrstr[i];
+						if (str.ToLong(&conv))
+							labelusers.Add((uint)conv);
+					}
+					m_process->io_labels->AddLabel(addr, str_name, labelusers);
+				}
+			}
+			labelusers.Clear();
             str = openfile.GetNextLine();
         }
     }
@@ -504,19 +534,22 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 }
 
 
-
+/* Loads dasm structure from string lines
+ *  Format: type[1] length[1] offset[2] opcode[1 to 4] << argnum[1] argsize[1]
+ *		   argument[1 to 2] >>
+ */
 void ProjectManager::readDasmData(wxTextFile &openfile)
 {
-    wxString str;
-    int i,j,count;
-    long conv;
-    bool foundHeader, mnfailed;
-    wxArrayString arr_str;
-    enum ElementType dtype;
-    uint len, offs, arg_len;
-    ByteCode bc;
-    OpCodeArguments args;
-    DAsmElement *de;
+    wxString	str;
+    int			i, j, count;
+    long		conv;
+    bool		foundHeader, mnfailed;
+    wxArrayString		arr_str;
+    enum ElementType	dtype;
+    uint		len, offs, arg_num, arg_size, arg_aux;
+    ByteCode	bc;
+    OpCodeArguments	args;
+    DAsmElement	*de;
 
     count = 0;
 
@@ -536,10 +569,10 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
 
         while ((!openfile.Eof()) && (str != _("[\\DASM]")))
         {
-            ParseString(str,arr_str);
-            de = new DAsmElement(m_process->Program,&m_process->Program->StartAddress);
-			de->Style.hasArgumentLabel = 0; // false;
-			de->Style.hasLabel = 0;   //false;
+            ParseString(str, arr_str);
+            de = new DAsmElement(m_process->Program, &m_process->Program->StartAddress);
+			de->Style.hasArgumentLabel = 0;
+			de->Style.hasLabel = 0;
 			de->Style.arg1 = ast_hex;
 			de->Style.arg2 = ast_hex;
 			de->Style.arg1styled = 0;
@@ -564,7 +597,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
                 offs = (uint)conv;
                 de->Offset = offs;
 
-                memset(&bc,0,MAX_OPCODE_SIZE);
+                memset(&bc, 0, MAX_OPCODE_SIZE);
                 for (i = 0; i < len; i++)
                 {
                     str = arr_str[(i + j)];
@@ -572,29 +605,36 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
                     if (i < sizeof(ByteCode))
                         bc[i] = (unsigned char)conv;
                 }
-                memcpy(de->Code,bc,MAX_OPCODE_SIZE);
+                memcpy(de->Code, bc, MAX_OPCODE_SIZE);
 
                 de->MnItem = m_process->Mnemonics->FindItem(de->Code);
                 if (de->MnItem == 0)
                     mnfailed = true;
 
 
-                j +=len;
+                j += len;
             }
 
-            if ((arr_str.GetCount() > 5) && !mnfailed)
+            if ((arr_str.GetCount() > (3 + len)) && !mnfailed)
             {
                 str = arr_str[j++];
                 str.ToLong(&conv,16);
-                arg_len = (uint)conv;
-                for (i = 0; i < arg_len; i++)
+                arg_num = (uint)conv;
+
+                str = arr_str[j++];
+                str.ToLong(&conv,16);
+                arg_size = (uint)conv;
+
+                arg_aux = arg_size * arg_num;
+
+                for (i = 0; i < arg_aux; i++)
                 {
                     str = arr_str[(i + j)];
-                    str.ToLong(&conv,16);
+                    str.ToLong(&conv, 16);
                     if (i < sizeof(OpCodeArguments))
                         args[i] = (unsigned char)conv;
                 }
-                memcpy(de->Args,args,arg_len);
+                memcpy(de->Args, args, arg_aux);
             }
 
             if (!mnfailed)
@@ -614,12 +654,12 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
 
 void ProjectManager::readCodeLine(wxTextFile &openfile)
 {
-    wxString str;
-    int i,j,count;
-    long conv;
-    bool foundHeader,lineOK;
-    wxArrayString arr_str;
-    int dsm,la,org;
+    wxString	str;
+    int			i,j,count;
+    long		conv;
+    bool		foundHeader, lineOK;
+    wxArrayString	arr_str;
+    int			dsm, la, lb, org, lastitem;
 
     count = 0;
     j = 0;
@@ -638,10 +678,10 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
         str = openfile.GetNextLine();
         while ((!openfile.Eof()) && (str != _("[\\CVLINE]")))
         {
-            org = dsm = la = -1;
+            org = dsm = la = lb = -1;
             ParseString(str,arr_str);
             i = arr_str.GetCount();
-            if (i > 2)
+            if (i > 3)
             {
                 j = 0;
                 str = arr_str[j++];
@@ -655,37 +695,48 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
                 str = arr_str[j++];
                 lineOK = lineOK && str.ToLong(&conv);
                 la = (int)conv;
+
+                str = arr_str[j++];
+                lineOK = lineOK && str.ToLong(&conv);
+                lb = (int)conv;
+
             }
 
             if (lineOK)
             {
-                if (i > 3)
+                if (i > 4)
                     str = arr_str[j];
                 else
                     str.Clear();
 
                 if (dsm >= 0)
                 {
-                    m_codeview->m_CodeViewLine->AddDasm(dsm,str);
+                    lastitem = m_codeview->m_CodeViewLine->AddDasm(dsm, str);
                     count++;
                 }
                 else
                     if (la >= 0)
                     {
-                        m_codeview->m_CodeViewLine->AddLabel(la,str);
+                        lastitem = m_codeview->m_CodeViewLine->AddProgLabel(la,str);
                         count++;
                     }
                     else
-                        if (org >= 0)
-                        {
-                            m_codeview->m_CodeViewLine->AddOrg(org,str);
-                            count++;
-                        }
-                        else
-                        {
-                            m_codeview->m_CodeViewLine->Add(str);
-                            count++;
-                        }
+						if (lb >= 0)
+						{
+							lastitem = m_codeview->m_CodeViewLine->AddVarLabel(lb, str);
+							count++;
+						}
+						else
+							if (org >= 0)
+							{
+								lastitem = m_codeview->m_CodeViewLine->AddOrg(org,str);
+								count++;
+							}
+							else
+							{
+								lastitem = m_codeview->m_CodeViewLine->Add(str);
+								count++;
+							}
             }
             str = openfile.GetNextLine();
         }

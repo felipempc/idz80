@@ -250,13 +250,13 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             /* -------------------------------------------------
              *  Render Labels
              * -------------------------------------------------*/
-            if (cvi->LabelAddr != -1)   // Is it a label ?
+            if ((cvi->LabelProgAddr != -1) || (cvi->LabelVarAddr != -1))   // Is it a label ?
             {
                 first_instruction = true;
-                if (process->prog_labels->GetLabel(cvi->LabelAddr,str))
+                if (process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
                     textCode << str << _T(":");
                 else
-                    if (process->var_labels->GetLabel(cvi->LabelAddr,str))
+                    if (process->var_labels->GetLabel(cvi->LabelVarAddr, str))
                         textCode << str << _T(":");
                     else
                         process->m_CodeViewLine->DelItem(cvi);

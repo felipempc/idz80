@@ -233,7 +233,7 @@ uint CodeView::RenderOrigin(wxDC &dc, const int start_y,uint address)
     wxString str;
 
     x = COL_MNEM;
-    str.Printf(_T("ORG %Xh"),address);
+    str.Printf(_T("ORG %XH"),address);
     dc.SetTextForeground(FG_TextColor);
     dc.DrawText(str, x, start_y);
     x += dc.GetTextExtent(str).GetWidth();
@@ -313,13 +313,13 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 				/* -------------------------------------------------
 				 *  Render Labels
 				 * -------------------------------------------------*/
-				if (cvi->LabelAddr != -1)   // Is it a label ?
+				if (cvi->LabelProgAddr != -1)   // Is it a label ?
 				{
-					if (m_process->prog_labels->GetLabel(cvi->LabelAddr, str))
+					if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
 					{
 						str << _T(":");
 						RenderProgramLabel(dc, linepixel, str);
-						address = cvi->LabelAddr;
+						address = cvi->LabelProgAddr;
 						firstInstruction = true;
 					}
 					else
@@ -328,6 +328,23 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 						labelfailed = true;
 					}
 				}
+/*
+				if (cvi->LabelVarAddr != -1)   // Is it a label ?
+				{
+					if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str))
+					{
+						str << _T(":");
+						RenderProgramLabel(dc, linepixel, str);
+						address = cvi->LabelVarAddr;
+						firstInstruction = true;
+					}
+					else
+					{
+						m_CodeViewLine->DelItem(cvi);
+						labelfailed = true;
+					}
+				}
+*/
 			}
 
 			/* -------------------------------------------------

@@ -316,7 +316,7 @@ void ProcessData::AutoLabel()
                 switch (argtype)
                 {
                     case ARG_VARIABLE:
-                                        dasmtemp->Style.hasArgumentLabel = 1;   //true;
+                                        dasmtemp->Style.hasArgumentLabel = 1;
                                         addr = dasmtemp->getArgument(0);
                                         str.Printf(_("VAR%d"), nargsVar++);
                                         var_labels->AddLabel(addr, str, i);
@@ -324,13 +324,13 @@ void ProcessData::AutoLabel()
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
                                         addr = dasmtemp->getArgument(0);
-                                        dasmtemp->Style.hasArgumentLabel = 1;   //true;
+                                        dasmtemp->Style.hasArgumentLabel = 1;
                                         str.Printf(_("LABEL%d"), nargsProg++);
                                         prog_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_IO_ADDR:
                                         addr = dasmtemp->getArgument(0);
-                                        dasmtemp->Style.hasArgumentLabel = 1; //true;
+                                        dasmtemp->Style.hasArgumentLabel = 1;
                                         str.Printf(_("PORT%d"), nargsIO++);
                                         io_labels->AddLabel(addr, str, i);
                                         break;
@@ -382,6 +382,7 @@ void ProcessData::processLabel()
     LabelItem *lbl;
     int i,a;
 
+	// Program label
     i = 0;
     a = -1;
     while (i < prog_labels->GetItemCount())
@@ -392,13 +393,34 @@ void ProcessData::processLabel()
             if (!m_CodeViewLine->getDataLineAddress(lbl->Address, a))
 				if (a >= 0)
 				{
-					m_CodeViewLine->InsertLabel(lbl->Address,_T(""), a);
+					m_CodeViewLine->InsertProgLabel(lbl->Address, _T(""), a);
 				}
 					else
-						m_CodeViewLine->EditLabel(lbl->Address,_T(""), a);
+						m_CodeViewLine->EditProgLabel(lbl->Address, _T(""), a);
         }
         i++;
     }
+
+	// Variables
+    i = 0;
+    a = -1;
+    while (i <  var_labels->GetItemCount())
+    {
+        lbl = (LabelItem *)var_labels->GetItemData(i);
+        if (lbl != 0)
+        {
+            if (!m_CodeViewLine->getDataLineAddress(lbl->Address, a))
+				if (a >= 0)
+				{
+					m_CodeViewLine->InsertVarLabel(lbl->Address,_T(""), a);
+				}
+					else
+						m_CodeViewLine->EditVarLabel(lbl->Address,_T(""), a);
+        }
+        i++;
+    }
+
+
 }
 
 

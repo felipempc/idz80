@@ -84,8 +84,6 @@ private:
 
 
     uint        m_linesShown,       // Number of Items shown
-                m_fractionLine,     // Pixels' number of a non fully shown line.
-                m_fractionScroll,   // Pixels' number to complete a fractional line
                 m_fontHeight,
                 m_fontWidth;
 	styledata	m_styleData;		// Holds info to change style handlers (BIN/DEC/HEX)
