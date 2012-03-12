@@ -145,6 +145,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labeluser
     else
     {	// Overwrite old list of users, if exists
         lbl = (LabelItem *)GetItemData(itemfound);
+/*
         if (lbl != 0)
 		{
             if (lbl->LabelUsers != 0)
@@ -158,7 +159,18 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labeluser
 				lbl->LabelUsers = &labelusers;
 			}
 		}
-
+*/
+        //FIXME: Optimization test
+        if ((lbl !=0) && (lbl->LabelUsers != 0))
+        {
+            lbl->LabelUsers->Clear();
+            lbl->LabelUsers = &labelusers;
+        }
+        else
+        {
+            lbl->LabelUsers = new wxArrayInt();
+            lbl->LabelUsers = &labelusers;
+        }
     }
     return itemfound;
 }
