@@ -45,7 +45,7 @@ void CodeViewLine::Clear()
     for (i=0; i < m_CodeLine.GetCount(); i++)
     {
         cvi = getData(i);
-        if (!(cvi == 0))
+        if (cvi != 0)
             if (cvi->Comment != 0)
                 delete cvi->Comment;
             if (cvi->RectArg1 != 0)
@@ -391,22 +391,26 @@ void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
 
 void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
 {
-	wxString	str = _("");
-	DAsmElement	*de;
-	int			address, labadress;
+	wxString        str = _("");
+	DAsmElement     *de;
+	int		        address, labadress;
+	CodeViewItem    *cvi;
 
     while (countdasm-- > 0)
 	{
-		labadress = getData(indexline)->LabelProgAddr;
-		if (labadress >= 0)
-		{
-			de = m_dasm->GetData(indexdasm);
-			address = m_dasm->GetBaseAddress() + de->Offset;
-			if (address >= labadress)
-				indexline++;
+	    cvi = getData(indexline);
+	    if (cvi != 0)
+        {
+            labadress = cvi->LabelProgAddr;
+            if (labadress >= 0)
+            {
+                de = m_dasm->GetData(indexdasm);
+                address = m_dasm->GetBaseAddress() + de->Offset;
+                if (address >= labadress)
+                    indexline++;
 
-		}
-
+            }
+        }
 		InsertDasm(indexdasm++, str, indexline++);
 	}
 }

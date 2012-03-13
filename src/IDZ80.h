@@ -35,7 +35,6 @@ class IDZ80: public wxFrame
 		IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 		virtual ~IDZ80();
 
-		//(*Declarations(IDZ80)
 		wxAuiManager* AuiManager1;
 		wxMenuItem* MenuItem8;
 		wxMenuItem* MenuItem7;
@@ -59,16 +58,15 @@ class IDZ80: public wxFrame
 		wxMenuItem* MenuItem18;
 		wxMenu* Menu5;
 		wxMenu* Menu4;
-		//*)
 
 	protected:
 
-		//(*Identifiers(IDZ80)
 		static const long ID_TEXTCTRL1;
 		static const long idMenuFileOpenProject;
 		static const long idMenuFileOpenArchive;
 		static const long idMenuFileOpen;
 		static const long idMenuFileSave;
+		static const long idMenuFileSaveAs;
 		static const long idMenuFileClose;
 		static const long idMenuFileInfo;
 		static const long idMenuFileQuit;
@@ -84,7 +82,7 @@ class IDZ80: public wxFrame
 		static const long idMenuHelpContents;
 		static const long IdMenuHelpAbout;
 		static const long ID_STATUSBAR1;
-		//*)
+
 
 		static const long ID_VARLABELPANE;
 
@@ -102,7 +100,7 @@ class IDZ80: public wxFrame
 
         wxSize LastSize;
 
-        void SaveAs();
+        bool SaveAs();
         void Clear_all();
         bool OpenProgramFile(const wxString filename);
         bool OpenProjectFile(const wxString filename);
@@ -122,6 +120,7 @@ class IDZ80: public wxFrame
 		void OnMenuViewIOLabels(wxCommandEvent& event);
 		void OnMenuToolAutoLabel(wxCommandEvent& event);
 		void OnMenuFileSaveProject(wxCommandEvent& event);
+		void OnMenuFileSaveAsProject(wxCommandEvent& event);
 		void OnMenuFileInfo(wxCommandEvent& event);
 		void OnMenuFileClose(wxCommandEvent& event);
 		void OnMenuToolsGenCode(wxCommandEvent& event);

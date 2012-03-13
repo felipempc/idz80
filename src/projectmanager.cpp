@@ -286,6 +286,7 @@ bool ProjectManager::Open(const wxString &filename)
         readLabels(openfile);
         readDasmData(openfile);
         readCodeLine(openfile);
+        linkLabels();
 
         openfile.Close();
     }
@@ -745,6 +746,65 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
 }
 
 
+
+void ProjectManager::linkLabels()
+{
+    CodeViewItem *cvi;
+    DAsmElement *de;
+    int i, x, f;
+    uint item;
+    wxArrayInt *users;
+
+    i = 0;
+    item = 0;
+    f = m_process->prog_labels->GetCount();
+    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+        for(i = 0; i < f; i++)
+        {
+            users = m_process->prog_labels->GetLabelUsers(i);
+            if (users > 0)
+                for(x = 0; x < users->GetCount(); x++)
+                {
+                    item = users->Item(x);
+                    de = m_process->m_Dasm->GetData(item);
+                    de->SetArgLabel();
+                }
+        }
+
+    // *** var labels
+    i = 0;
+    item = 0;
+    f = m_process->var_labels->GetCount();
+    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+        for(i = 0; i < f; i++)
+        {
+            users = m_process->var_labels->GetLabelUsers(i);
+            if (users > 0)
+                for(x = 0; x < users->GetCount(); x++)
+                {
+                    item = users->Item(x);
+                    de = m_process->m_Dasm->GetData(item);
+                    de->SetArgLabel();
+                }
+        }
+
+    // *** io labels
+    i = 0;
+    item = 0;
+    f = m_process->io_labels->GetCount();
+    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+        for(i = 0; i < f; i++)
+        {
+            users = m_process->io_labels->GetLabelUsers(i);
+            if (users > 0)
+                for(x = 0; x < users->GetCount(); x++)
+                {
+                    item = users->Item(x);
+                    de = m_process->m_Dasm->GetData(item);
+                    de->SetArgLabel();
+                }
+        }
+}
 
 
 

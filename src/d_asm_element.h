@@ -59,6 +59,7 @@ class DAsmElement
         wxString getAsciiStr();
         uint getArgument(uint arg);
         byte GetData(uint offset);
+        void SetArgLabel(bool hal = true);
 
         MnemonicItem        *MnItem;
         ByteCode            Code;

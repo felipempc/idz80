@@ -24,12 +24,13 @@
 #include <wx/string.h>
 //*)
 
-//(*IdInit(IDZ80)
+
 const long IDZ80::ID_TEXTCTRL1 = wxNewId();
 const long IDZ80::idMenuFileOpenProject = wxNewId();
 const long IDZ80::idMenuFileOpenArchive = wxNewId();
 const long IDZ80::idMenuFileOpen = wxNewId();
 const long IDZ80::idMenuFileSave = wxNewId();
+const long IDZ80::idMenuFileSaveAs = wxNewId();
 const long IDZ80::idMenuFileClose = wxNewId();
 const long IDZ80::idMenuFileInfo = wxNewId();
 const long IDZ80::idMenuFileQuit = wxNewId();
@@ -45,7 +46,7 @@ const long IDZ80::idMenuMnemInfo = wxNewId();
 const long IDZ80::idMenuHelpContents = wxNewId();
 const long IDZ80::IdMenuHelpAbout = wxNewId();
 const long IDZ80::ID_STATUSBAR1 = wxNewId();
-//*)
+
 
 
 const long IDZ80::ID_VARLABELPANE=wxNewId();
@@ -62,7 +63,6 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     int i;
 
 
-	//(*Initialize(IDZ80)
 	wxMenuItem* MenuItem11;
 	wxMenuItem* MenuItem10;
 	wxMenuItem* MenuItem12;
@@ -86,6 +86,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	MenuItem1->Append(MenuItem15);
 	Menu1->Append(idMenuFileOpen, _("&Open"), MenuItem1, wxEmptyString);
 	MenuItem13 = new wxMenuItem(Menu1, idMenuFileSave, _("&Save\tAlt+s"), wxEmptyString, wxITEM_NORMAL);
+	Menu1->Append(MenuItem13);
+	MenuItem13 = new wxMenuItem(Menu1, idMenuFileSaveAs, _("&Save As...\tAlt+s"), wxEmptyString, wxITEM_NORMAL);
 	Menu1->Append(MenuItem13);
 	MenuItem17 = new wxMenuItem(Menu1, idMenuFileClose, _("Close"), wxEmptyString, wxITEM_NORMAL);
 	Menu1->Append(MenuItem17);
@@ -141,6 +143,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	Connect(idMenuFileOpenArchive,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileOpen);
 	Connect(idMenuFileOpen,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileOpen);
 	Connect(idMenuFileSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileSaveProject);
+	Connect(idMenuFileSaveAs,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileSaveAsProject);
 	Connect(idMenuFileClose,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileClose);
 	Connect(idMenuFileInfo,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileInfo);
 	Connect(idMenuFileQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileQuit);
@@ -154,8 +157,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	Connect(idMenuMnemLoad,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuMnemonicsLoad);
 	Connect(idMenuMnemInfo,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuMnemonicsInfo);
 	Connect(IdMenuHelpAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuHelpAbout);
-	//*)
 	Connect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
+
 
     /*
      *  Get stored configuration
@@ -196,6 +199,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     mb->Enable(idMenuToolsAutoLabel,false);
     mb->Check(idMenuViewDasmWindow,true);
     mb->Enable(idMenuFileSave,false);
+    mb->Enable(idMenuFileSaveAs,false);
     mb->Enable(idMenuFileClose,false);
     mb->Enable(idMenuToolsGenCode,false);
 
@@ -223,7 +227,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     m_project->SetLog(PanelLog);
     codeview->DebugLog(PanelLog);
     codeview->Enable(false);
-
+    /*
     m_commandline = arraystr;
     if (!m_commandline.IsEmpty())
 	{
@@ -232,7 +236,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 			PanelLog->AppendText(wxString::Format(_("-> %s <%s>\n"), m_commandline[i].c_str(), wxPathOnly(m_commandline[i])));
 
 	}
-
+    */
 }
 
 
@@ -374,7 +378,7 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 			AddPendingEvent(ev_label);
 		}
 	}
-
+    return ret;
 }
 
 
@@ -392,6 +396,7 @@ bool IDZ80::OpenProjectFile(const wxString filename)
 		mb->Enable(idMenuToolsDasmAll, true);
 		mb->Enable(idMenuFileInfo, true);
 		mb->Enable(idMenuFileSave, true);
+		mb->Enable(idMenuFileSaveAs, true);
 		mb->Enable(idMenuFileClose, true);
 		mb->Enable(idMenuToolsGenCode, true);
 		mb->Enable(idMenuToolsAutoLabel, true);
@@ -533,6 +538,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     mb=GetMenuBar();
     mb->Enable(idMenuToolsAutoLabel, true);
     mb->Enable(idMenuFileSave, true);
+    mb->Enable(idMenuFileSaveAs, true);
     mb->Enable(idMenuToolsGenCode, true);
 }
 
@@ -640,11 +646,13 @@ void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
 }
 
 
-void IDZ80::SaveAs()
+bool IDZ80::SaveAs()
 {
     wxString fname, caption, wildcard,
             defaultFilename = wxEmptyString;
+    bool    ret;
 
+    ret = false;
     caption = _("Save project as");
     wildcard = _("Project files (*.dap)|*.dap|All files (*.*)|*.*");
     wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard,
@@ -652,9 +660,10 @@ void IDZ80::SaveAs()
     if (dialog.ShowModal() == wxID_OK)
     {
         fname=dialog.GetPath();
-        m_project->Save(fname,true);
+        if (m_project->Save(fname,true))
+            ret = true;
     }
-
+    return ret;
 }
 
 
@@ -678,9 +687,21 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
             PanelLog->AppendText(_("Project saved !\n"));
     }
     else
-        SaveAs();
+        if (SaveAs())
+        {
+            UpdateTitle(m_project->GetFilename());
+        }
+
 }
 
+
+void IDZ80::OnMenuFileSaveAsProject(wxCommandEvent& event)
+{
+    if (SaveAs())
+    {
+        UpdateTitle(m_project->GetFilename());
+    }
+}
 
 
 
@@ -703,6 +724,7 @@ void IDZ80::OnMenuFileClose(wxCommandEvent& event)
     mb->Enable(idMenuToolsDasmAll, false);
     mb->Enable(idMenuFileInfo, false);
     mb->Enable(idMenuFileSave, false);
+    mb->Enable(idMenuFileSaveAs, false);
     mb->Enable(idMenuFileClose, false);
     mb->Enable(idMenuToolsGenCode, false);
 

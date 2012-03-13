@@ -53,7 +53,7 @@ class LabelListCtrl : public wxListCtrl
 
         void SetLog(wxTextCtrl *_lg);
         int AddLabel(uint addr, const wxString name, int dasmitem=NO_DASM_ITEM);
-        int AddLabel(uint addr, const wxString name, wxArrayInt labelusers);
+        int AddLabel(uint addr, const wxString name, wxArrayInt &labelusers);
         void DelLabel(uint addr);
         void EditLabel(uint listitem,wxString strlabel);
         bool GetLabel(uint addr, wxString& str);
@@ -63,6 +63,7 @@ class LabelListCtrl : public wxListCtrl
         int GetCount();
         bool IsEmpty();
         void Clear();
+        wxArrayInt *GetLabelUsers(const int index);
 
         void SortAddress(bool crescent = true);
         // TODO: improve sorting Strings

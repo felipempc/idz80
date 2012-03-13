@@ -133,3 +133,12 @@ byte DAsmElement::GetData(uint offset)
 {
     return FileData->GetData(offset);
 }
+
+
+void DAsmElement::SetArgLabel(bool hal)
+{
+    if (hal)
+        Style.hasArgumentLabel = 1;
+    else
+        Style.hasArgumentLabel = 0;
+}

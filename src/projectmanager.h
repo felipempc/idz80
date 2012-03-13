@@ -51,6 +51,8 @@ class ProjectManager
         void readDasmData(wxTextFile &openfile);
         void readCodeLine(wxTextFile &openfile);
 
+        void linkLabels();
+
         void writeHeader(wxTextFile &savefile);
         void writeProglabel(wxTextFile &savefile);
         void writeVarlabel(wxTextFile &savefile);

@@ -388,15 +388,14 @@ void ProcessData::processLabel()
     while (i < prog_labels->GetItemCount())
     {
         lbl = (LabelItem *)prog_labels->GetItemData(i);
-        if (lbl != 0)
+        if ((lbl !=0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
         {
-            if (!m_CodeViewLine->getDataLineAddress(lbl->Address, a))
-				if (a >= 0)
-				{
-					m_CodeViewLine->InsertProgLabel(lbl->Address, _T(""), a);
-				}
-					else
-						m_CodeViewLine->EditProgLabel(lbl->Address, _T(""), a);
+            if (a >= 0)
+            {
+                m_CodeViewLine->InsertProgLabel(lbl->Address, _T(""), a);
+            }
+            else
+                m_CodeViewLine->EditProgLabel(lbl->Address, _T(""), a);
         }
         i++;
     }
@@ -407,15 +406,14 @@ void ProcessData::processLabel()
     while (i <  var_labels->GetItemCount())
     {
         lbl = (LabelItem *)var_labels->GetItemData(i);
-        if (lbl != 0)
+        if ((lbl != 0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
         {
-            if (!m_CodeViewLine->getDataLineAddress(lbl->Address, a))
-				if (a >= 0)
-				{
-					m_CodeViewLine->InsertVarLabel(lbl->Address,_T(""), a);
-				}
-					else
-						m_CodeViewLine->EditVarLabel(lbl->Address,_T(""), a);
+            if (a >= 0)
+            {
+                m_CodeViewLine->InsertVarLabel(lbl->Address,_T(""), a);
+            }
+            else
+                m_CodeViewLine->EditVarLabel(lbl->Address,_T(""), a);
         }
         i++;
     }

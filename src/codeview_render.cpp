@@ -313,38 +313,39 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 				/* -------------------------------------------------
 				 *  Render Labels
 				 * -------------------------------------------------*/
-				if (cvi->LabelProgAddr != -1)   // Is it a label ?
-				{
-					if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
-					{
-						str << _T(":");
-						RenderProgramLabel(dc, linepixel, str);
-						address = cvi->LabelProgAddr;
-						firstInstruction = true;
-					}
-					else
-					{
-						m_CodeViewLine->DelItem(cvi);
-						labelfailed = true;
-					}
-				}
-/*
-				if (cvi->LabelVarAddr != -1)   // Is it a label ?
-				{
-					if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str))
-					{
-						str << _T(":");
-						RenderProgramLabel(dc, linepixel, str);
-						address = cvi->LabelVarAddr;
-						firstInstruction = true;
-					}
-					else
-					{
-						m_CodeViewLine->DelItem(cvi);
-						labelfailed = true;
-					}
-				}
-*/
+                {
+                        if (cvi->LabelProgAddr != -1)   // Is it a label ?
+                        {
+                            if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
+                            {
+                                str << _T(":");
+                                RenderProgramLabel(dc, linepixel, str);
+                                address = cvi->LabelProgAddr;
+                                firstInstruction = true;
+                            }
+                            else
+                            {
+                                m_CodeViewLine->DelItem(cvi);
+                                labelfailed = true;
+                            }
+                        }
+
+                        if (cvi->LabelVarAddr != -1)   // Is it a label ?
+                        {
+                            if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str))
+                            {
+                                str << _T(":");
+                                RenderProgramLabel(dc, linepixel, str);
+                                address = cvi->LabelVarAddr;
+                                firstInstruction = true;
+                            }
+                            else
+                            {
+                                m_CodeViewLine->DelItem(cvi);
+                                labelfailed = true;
+                            }
+                        }
+                }
 			}
 
 			/* -------------------------------------------------

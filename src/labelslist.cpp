@@ -83,7 +83,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
 		lbl->Address = addr;
 		lbl->LabelStr = name;
 
-		if (dasmitem != NO_DASM_ITEM)
+		if (dasmitem >= 0)
 		{
 			lbl->LabelUsers = new wxArrayInt();
 			lbl->LabelUsers->Add(dasmitem);
@@ -111,7 +111,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
 
 
 
-int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labelusers)
+int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labelusers)
 {
     wxString	buf;
     wxListItem	li;
@@ -131,7 +131,8 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labeluser
 		else
 		{
 			lbl->LabelUsers = new wxArrayInt();
-			lbl->LabelUsers = &labelusers;
+			for(p = 0; p < labelusers.GetCount(); p++)
+                lbl->LabelUsers->Add(labelusers.Item(p));
 			lbl->LabelStr = name;
 		}
         li.SetText(buf);
@@ -145,32 +146,22 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt labeluser
     else
     {	// Overwrite old list of users, if exists
         lbl = (LabelItem *)GetItemData(itemfound);
-/*
-        if (lbl != 0)
+        if ((lbl != 0) && (!labelusers.IsEmpty()))
 		{
             if (lbl->LabelUsers != 0)
 			{
                 lbl->LabelUsers->Clear();
-                lbl->LabelUsers = &labelusers;
+                for(p = 0; p < labelusers.GetCount(); p++)
+                    lbl->LabelUsers->Add(labelusers.Item(p));
 			}
 			else
 			{
 				lbl->LabelUsers = new wxArrayInt();
-				lbl->LabelUsers = &labelusers;
+				for(p = 0; p < labelusers.GetCount(); p++)
+                    lbl->LabelUsers->Add(labelusers.Item(p));
 			}
 		}
-*/
-        //FIXME: Optimization test
-        if ((lbl !=0) && (lbl->LabelUsers != 0))
-        {
-            lbl->LabelUsers->Clear();
-            lbl->LabelUsers = &labelusers;
-        }
-        else
-        {
-            lbl->LabelUsers = new wxArrayInt();
-            lbl->LabelUsers = &labelusers;
-        }
+
     }
     return itemfound;
 }
@@ -485,6 +476,12 @@ int wxCALLBACK CompareLabelStr(long item1, long item2, long data)
         ret = lbl_2->LabelStr.Cmp(lbl_1->LabelStr);
 
     return ret;
+}
+
+
+wxArrayInt *LabelListCtrl::GetLabelUsers(const int index)
+{
+    return GetLabelItem(index)->LabelUsers;
 }
 
 

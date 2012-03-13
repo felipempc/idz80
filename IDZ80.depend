@@ -9022,13 +9022,13 @@
 	<wx/textfile.h>
 	"ProcessData.h"
 
-1279737325 source:d:\felipe\coding\c_c++\projetos\idz80\src\editlabeldlg.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\editlabeldlg.cpp
 	<wx/intl.h>
 	<wx/string.h>
 	"EditLabelDlg.h"
 	<wx/msgdlg.h>
 
-1279737265 d:\felipe\coding\c_c++\projetos\idz80\src\editlabeldlg.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\editlabeldlg.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/textctrl.h>
@@ -9037,15 +9037,15 @@
 	<wx/dialog.h>
 	"IDZ80Base.h"
 
-1275831793 d:\felipe\coding\c_c++\projetos\idz80\src\idz80base.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\idz80base.h
 
-1327433439 source:d:\felipe\coding\c_c++\projetos\idz80\src\filetypedialog.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\filetypedialog.cpp
 	"FileTypeDialog.h"
 	<wx/intl.h>
 	<wx/button.h>
 	<wx/string.h>
 
-1321636599 d:\felipe\coding\c_c++\projetos\idz80\src\filetypedialog.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\filetypedialog.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/radiobox.h>
@@ -9055,14 +9055,14 @@
 	<wx/checkbox.h>
 	"rawdata.h"
 
-1327615815 d:\felipe\coding\c_c++\projetos\idz80\src\rawdata.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\rawdata.h
 	<wx/file.h>
 	<wx/string.h>
 	<wx/buffer.h>
 	<wx/textctrl.h>
 	"IDZ80Base.h"
 
-1328054574 source:d:\felipe\coding\c_c++\projetos\idz80\src\idz80.cpp
+1329261476 source:d:\felipe\coding\c_c++\projetos\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -9073,7 +9073,7 @@
 	<wx/intl.h>
 	<wx/string.h>
 
-1325286880 d:\felipe\coding\c_c++\projetos\idz80\src\idz80.h
+1329350360 d:\felipe\coding\c_c++\projetos\idz80\src\idz80.h
 	<wx/menu.h>
 	<wx/textctrl.h>
 	<wx/aui/aui.h>
@@ -9090,7 +9090,7 @@
 	"codegenerator.h"
 	<wx/config.h>
 
-1300977190 d:\felipe\coding\c_c++\projetos\idz80\src\mndb.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\mndb.h
 	<wx/string.h>
 	<wx/dynarray.h>
 	<wx/textctrl.h>
@@ -9098,23 +9098,23 @@
 	"IDZ80Base.h"
 	"MnemonicItem.h"
 
-1327945712 d:\felipe\coding\c_c++\projetos\idz80\src\mnemonicitem.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\mnemonicitem.h
 	<wx/string.h>
 	<wx/arrstr.h>
 	"idz80base.h"
 
-1282311575 d:\felipe\coding\c_c++\projetos\idz80\src\dasmdata.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\dasmdata.h
 	<wx/dynarray.h>
 	"rawdata.h"
 	"d_asm_element.h"
 
-1327613521 d:\felipe\coding\c_c++\projetos\idz80\src\d_asm_element.h
+1328313382 d:\felipe\coding\c_c++\projetos\idz80\src\d_asm_element.h
 	"mndb.h"
 	"MnemonicItem.h"
 	"rawdata.h"
 	"labelslist.h"
 
-1328120673 d:\felipe\coding\c_c++\projetos\idz80\src\labelslist.h
+1329094082 d:\felipe\coding\c_c++\projetos\idz80\src\labelslist.h
 	<wx/Panel.h>
 	<wx/String.h>
 	<wx/ListCtrl.h>
@@ -9123,7 +9123,7 @@
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 
-1304114367 d:\felipe\coding\c_c++\projetos\idz80\src\processdata.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"mndb.h"
 	"dasmdata.h"
@@ -9133,13 +9133,13 @@
 	"codeviewline.h"
 	<wx/gauge.h>
 
-1327938161 d:\felipe\coding\c_c++\projetos\idz80\src\codeviewline.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\codeviewline.h
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 	"d_asm_element.h"
 	"dasmdata.h"
 
-1327934490 d:\felipe\coding\c_c++\projetos\idz80\src\codeview.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -9149,18 +9149,18 @@
 	"ProcessData.h"
 	"codeviewline.h"
 
-1303945604 d:\felipe\coding\c_c++\projetos\idz80\src\projectmanager.h
+1328315484 d:\felipe\coding\c_c++\projetos\idz80\src\projectmanager.h
 	<wx/textfile.h>
 	"ProcessData.h"
 	"codeview.h"
 
-1304022801 d:\felipe\coding\c_c++\projetos\idz80\src\codegenerator.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\codegenerator.h
 	<wx/textfile.h>
 	"ProcessData.h"
 
-1330982402 d:\felipe\coding\c_c++\projetos\idz80\src\version.h
+1331602100 d:\felipe\coding\c_c++\projetos\idz80\src\version.h
 
-1300918085 d:\felipe\coding\c_c++\projetos\idz80\src\showfileinfo.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\showfileinfo.h
 	<wx/stattext.h>
 	<wx/statbox.h>
 	<wx/panel.h>
@@ -9168,30 +9168,30 @@
 	<wx/dialog.h>
 	"ProcessData.h"
 
-1322590097 source:d:\felipe\coding\c_c++\projetos\idz80\src\idz80app.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\idz80app.cpp
 	"IDZ80App.h"
 	<wx/arrstr.h>
 	"IDZ80.h"
 	<wx/image.h>
 
-1275831786 d:\felipe\coding\c_c++\projetos\idz80\src\idz80app.h
+1328126472 d:\felipe\coding\c_c++\projetos\idz80\src\idz80app.h
 	<wx/app.h>
 
-1327943282 source:d:\felipe\coding\c_c++\projetos\idz80\src\mnemonicitem.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1327938349 source:d:\felipe\coding\c_c++\projetos\idz80\src\processdata.cpp
+1328312270 source:d:\felipe\coding\c_c++\projetos\idz80\src\processdata.cpp
 	"ProcessData.h"
 
-1300919357 source:d:\felipe\coding\c_c++\projetos\idz80\src\showfileinfo.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\showfileinfo.cpp
 	"ShowFileInfo.h"
 	<wx/intl.h>
 	<wx/string.h>
 
-1327938547 source:d:\felipe\coding\c_c++\projetos\idz80\src\codegenerator.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
-1327933834 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview.cpp
+1328126472 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -9199,42 +9199,42 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1327938141 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeviewline.cpp
+1331600792 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
-1285015995 source:d:\felipe\coding\c_c++\projetos\idz80\src\d_asm_element.cpp
+1328313362 source:d:\felipe\coding\c_c++\projetos\idz80\src\d_asm_element.cpp
 	"d_asm_element.h"
 	"mndb_tools.h"
 	"IDZ80Base.h"
 
-1275831840 d:\felipe\coding\c_c++\projetos\idz80\src\mndb_tools.h
+1328126474 d:\felipe\coding\c_c++\projetos\idz80\src\mndb_tools.h
 	<wx/string.h>
 	"mndb.h"
 
-1319546696 source:d:\felipe\coding\c_c++\projetos\idz80\src\dasmdata.cpp
+1328126474 source:d:\felipe\coding\c_c++\projetos\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 	"d_asm_element.h"
 
-1330982354 source:d:\felipe\coding\c_c++\projetos\idz80\src\labelslist.cpp
+1329095670 source:d:\felipe\coding\c_c++\projetos\idz80\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
 
-1321401763 source:d:\felipe\coding\c_c++\projetos\idz80\src\mndb.cpp
+1328126474 source:d:\felipe\coding\c_c++\projetos\idz80\src\mndb.cpp
 	"mndb.h"
 	"mndb_tools.h"
 
-1327949931 source:d:\felipe\coding\c_c++\projetos\idz80\src\mndb_tools.cpp
+1328126474 source:d:\felipe\coding\c_c++\projetos\idz80\src\mndb_tools.cpp
 	<wx/dynarray.h>
 	"mndb_tools.h"
 
-1328121804 source:d:\felipe\coding\c_c++\projetos\idz80\src\projectmanager.cpp
+1329257248 source:d:\felipe\coding\c_c++\projetos\idz80\src\projectmanager.cpp
 	"projectmanager.h"
 	"mnemonicitem.h"
 	<wx/dynarray.h>
 	"mndb_tools.h"
 
-1318944322 source:d:\felipe\coding\c_c++\projetos\idz80\src\rawdata.cpp
+1328126474 source:d:\felipe\coding\c_c++\projetos\idz80\src\rawdata.cpp
 	"rawdata.h"
 
 1300793816 d:\felipe\wxmsw-2.8.12\include\wx\msw\wx.rc
@@ -23030,7 +23030,7 @@
 	"wx/confbase.h"
 	"wx/filename.h"
 
-1323888240 p:\wxwidgets-2.9.3\lib\gcc_dll\mswu\wx\setup.h
+1323884640 p:\wxwidgets-2.9.3\lib\gcc_dll\mswu\wx\setup.h
 
 1328058594 source:p:\c_c++\projetos\idz80\src\codeview_render.cpp
 	<wx/wx.h>
@@ -23044,13 +23044,13 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1327933950 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview_evmouse.cpp
+1328126474 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview_evmouse.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
 	"d_asm_element.h"
 
-1328054994 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview_render.cpp
+1329258256 source:d:\felipe\coding\c_c++\projetos\idz80\src\codeview_render.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"

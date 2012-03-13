@@ -2,10 +2,10 @@
 
 
 # wxWidgets
-WXW ?= C:\wxWidgets-2.8.11
+WXW ?= F:\Pessoal\Coding\wxw\wx29
 
 # Compiler
-CC = g++
+CC = F:\Pessoal\Coding\MinGW\bin\g++
 
 # Resource
 RS = windres
@@ -20,19 +20,34 @@ INCLUDE = -I$(INCLUDE0_PATH) -I$(INCLUDE1_PATH) -I$(INCLUDE2_PATH)
 DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
 
 # Linker
-LD = ld
-LD_FLAGS = -s -Wall -pipe -mthreads
-#-Wl,--subsystem,windows -mwindows -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32
+LD_FLAGS =
+#  -Wl,--subsystem,windows -mwindows -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32
+
+# libraries
+LIBFILE1 = -lwxbase293u_gcc_custom
+LIBFILE2 = -lwxmsw293u_aui_gcc_custom
+LIBFILE3 = -lwxmsw293u_core_gcc_custom
+LIBS = $(LIBFILE1) $(LIBFILE2) $(LIBFILE3)
+
+# libraries's path
+LIBPATH = -L$(WXW)\lib\gcc_dll
+
+# Project's path
+OBJDIR = X:\obj\Release\src
+SRCDIR = X:\src
+BINDIR = X:\bin\Release
+RESDIR = X:
+
+EXECFILE = $(BINDIR)\idz80_make.exe
 
 
-OBJDIR = nobj
-
-
-all: $(OBJDIR)\EditLabelDlg.o \
+OBJS = $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\FileTypeDialog.o \
 	$(OBJDIR)\MnemonicItem.o \
 	$(OBJDIR)\ProcessData.o \
 	$(OBJDIR)\codeview.o \
+	$(OBJDIR)\codeview_evmouse.o \
+	$(OBJDIR)\codeview_render.o \
 	$(OBJDIR)\codeviewline.o \
 	$(OBJDIR)\d_asm_element.o \
 	$(OBJDIR)\dasmdata.o \
@@ -41,66 +56,83 @@ all: $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\mndb_tools.o \
 	$(OBJDIR)\projectmanager.o \
 	$(OBJDIR)\rawdata.o \
+	$(OBJDIR)\ShowFileInfo.o \
+	$(OBJDIR)\codegenerator.o \
 	$(OBJDIR)\IDZ80.o \
 	$(OBJDIR)\IDZ80App.o \
 	$(OBJDIR)\resource.o
 
-	$(CC) -o idz80_make.exe $(LD_FLAGS) -L$(WXW)\lib\gcc_dll -lwxmsw28u_gcc_custom $(OBJDIR)\resource.o $(OBJDIR)\EditLabelDlg.o $(OBJDIR)\FileTypeDialog.o $(OBJDIR)\MnemonicItem.o $(OBJDIR)\ProcessData.o $(OBJDIR)\codeview.o $(OBJDIR)\codeviewline.o $(OBJDIR)\d_asm_element.o $(OBJDIR)\dasmdata.o $(OBJDIR)\labelslist.o $(OBJDIR)\mndb.o $(OBJDIR)\mndb_tools.o $(OBJDIR)\projectmanager.o $(OBJDIR)\rawdata.o $(OBJDIR)\IDZ80.o $(OBJDIR)\IDZ80App.o
+all: $(OBJS)
+	if not exist $(BINDIR) md $(BINDIR)
+	@echo Linking...
+	$(CC) -o $(EXECFILE) $(LD_FLAGS) $(LIBPATH) $(LIBS) $(OBJS) 
 	@echo $@ done !
+	@echo File is $(EXECFILE)
 
 
-$(OBJDIR)\EditLabelDlg.o: src\EditLabelDlg.cpp src\EditLabelDlg.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\EditLabelDlg.cpp $(INCLUDE)
+$(OBJDIR)\EditLabelDlg.o: $(SRCDIR)\EditLabelDlg.cpp $(SRCDIR)\EditLabelDlg.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\EditLabelDlg.cpp $(INCLUDE)
 
-$(OBJDIR)\resource.o: bin\Release\resource.res
-	windres --use-temp-file -i$< -o$@    --define __WXMSW__
+$(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialog.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\FileTypeDialog.cpp $(INCLUDE)
 
-$(OBJDIR)\FileTypeDialog.o: src\FileTypeDialog.cpp src\FileTypeDialog.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\FileTypeDialog.cpp $(INCLUDE)
+$(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\MnemonicItem.cpp $(INCLUDE)
 
-$(OBJDIR)\MnemonicItem.o: src\MnemonicItem.cpp src\MnemonicItem.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\MnemonicItem.cpp $(INCLUDE)
+$(OBJDIR)\ProcessData.o: $(SRCDIR)\ProcessData.cpp $(SRCDIR)\ProcessData.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ProcessData.cpp $(INCLUDE)
 
-$(OBJDIR)\ProcessData.o: src\ProcessData.cpp src\ProcessData.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\ProcessData.cpp $(INCLUDE)
+$(OBJDIR)\codeview_render.o: $(SRCDIR)\codeview_render.cpp $(SRCDIR)\codeview.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_render.cpp $(INCLUDE)
 
-$(OBJDIR)\codeview.o: src\codeview.cpp src\codeview.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\codeview.cpp $(INCLUDE)
+$(OBJDIR)\codeview_evmouse.o: $(SRCDIR)\codeview_evmouse.cpp $(SRCDIR)\codeview.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_evmouse.cpp $(INCLUDE)
 	
-$(OBJDIR)\codeviewline.o: src\codeviewline.cpp src\codeviewline.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\codeviewline.cpp $(INCLUDE)
+$(OBJDIR)\codeview.o: $(SRCDIR)\codeview.cpp $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.cpp $(INCLUDE)
 
-$(OBJDIR)\d_asm_element.o: src\d_asm_element.cpp src\d_asm_element.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\d_asm_element.cpp $(INCLUDE)
-	
-$(OBJDIR)\dasmdata.o: src\dasmdata.cpp src\dasmdata.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\dasmdata.cpp $(INCLUDE)
+$(OBJDIR)\codeviewline.o: $(SRCDIR)\codeviewline.cpp $(SRCDIR)\codeviewline.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeviewline.cpp $(INCLUDE)
 
-$(OBJDIR)\labelslist.o: src\labelslist.cpp src\labelslist.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\labelslist.cpp $(INCLUDE)
+$(OBJDIR)\d_asm_element.o: $(SRCDIR)\d_asm_element.cpp $(SRCDIR)\d_asm_element.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\d_asm_element.cpp $(INCLUDE)
 
-$(OBJDIR)\mndb.o: src\mndb.cpp src\mndb.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\mndb.cpp $(INCLUDE)
+$(OBJDIR)\dasmdata.o: $(SRCDIR)\dasmdata.cpp $(SRCDIR)\dasmdata.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\dasmdata.cpp $(INCLUDE)
 
-$(OBJDIR)\mndb_tools.o: src\mndb_tools.cpp src\mndb_tools.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\mndb_tools.cpp $(INCLUDE)
+$(OBJDIR)\labelslist.o: $(SRCDIR)\labelslist.cpp $(SRCDIR)\labelslist.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\labelslist.cpp $(INCLUDE)
 
-$(OBJDIR)\projectmanager.o: src\projectmanager.cpp src\projectmanager.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\projectmanager.cpp $(INCLUDE)
+$(OBJDIR)\mndb.o: $(SRCDIR)\mndb.cpp $(SRCDIR)\mndb.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb.cpp $(INCLUDE)
 
-$(OBJDIR)\rawdata.o: src\rawdata.cpp src\rawdata.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\rawdata.cpp $(INCLUDE)
+$(OBJDIR)\mndb_tools.o: $(SRCDIR)\mndb_tools.cpp $(SRCDIR)\mndb_tools.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb_tools.cpp $(INCLUDE)
 
-$(OBJDIR)\IDZ80.o: src\IDZ80.cpp src\IDZ80.h	
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\IDZ80.cpp $(INCLUDE)
+$(OBJDIR)\projectmanager.o: $(SRCDIR)\projectmanager.cpp $(SRCDIR)\projectmanager.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\projectmanager.cpp $(INCLUDE)
 
-$(OBJDIR)\IDZ80App.o: src\IDZ80App.cpp src\IDZ80App.h
-	$(CC) $(CC_FLAGS) $(DEFS) -o $@ src\IDZ80App.cpp $(INCLUDE)
+$(OBJDIR)\rawdata.o: $(SRCDIR)\rawdata.cpp $(SRCDIR)\rawdata.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\rawdata.cpp $(INCLUDE)
 
-$(OBJDIR)\resource.o: resource.rc
-	$(RS) -o $@ resource.rc
+$(OBJDIR)\codegenerator.o: $(SRCDIR)\codegenerator.cpp $(SRCDIR)\codegenerator.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codegenerator.cpp $(INCLUDE)
+
+$(OBJDIR)\ShowFileInfo.o: $(SRCDIR)\ShowFileInfo.cpp $(SRCDIR)\ShowFileInfo.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ShowFileInfo.cpp $(INCLUDE)
+
+$(OBJDIR)\IDZ80.o: $(SRCDIR)\IDZ80.cpp $(SRCDIR)\IDZ80.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80.cpp $(INCLUDE)
+
+$(OBJDIR)\IDZ80App.o: $(SRCDIR)\IDZ80App.cpp $(SRCDIR)\IDZ80App.h
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80App.cpp $(INCLUDE)
+
+$(OBJDIR)\resource.o: $(RESDIR)\resource.rc
+	$(RS) -o $@ $(RESDIR)\resource.rc -I $(INCLUDE1_PATH)
 
 
-clean:
-	del $(OBJDIR)\*.o
+clean: FORCE
+	-if exist $(OBJDIR)\*.o del $(OBJDIR)\*.o
+	-if exist $(BINDIR)\*.exe del $(BINDIR)\*.exe
+
 
