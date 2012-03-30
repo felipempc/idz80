@@ -26,13 +26,6 @@
 
 
 
-#define COL_ADDRESS 7
-#define COL_CODE    70
-#define COL_ASCII   160
-#define COL_LABEL   200
-#define COL_MNEM    230
-
-
 
 enum {
     idPOPUP_SEARCH = 100,
@@ -54,7 +47,30 @@ enum {
     idPOPUP_ADDCOMMENT
 };
 
-typedef struct styledata
+
+enum LineType
+{
+	siUnknown = -1,
+	siInstruction = 0,
+	siInstructionLabel,
+	siData,
+	siLineLabelProg,
+	siLineLabelVar,
+	siComments
+};
+
+struct SelectedItemInfo
+{
+	LineType		type;
+	DAsmElement* 	dasmitem;
+	CodeViewItem* 	lineitem;
+	bool			hasComment;
+	uint			argSelected;
+};
+
+
+//TODO: Eliminate styledata
+struct styledata
 {
 	uint item, arg;
 };
@@ -80,7 +96,15 @@ public:
 
 
 private:
+	static const int COL_ADDRESS = 7;
+	static const int COL_CODE = 70;
+	static const int COL_ASCII = 160;
+	static const int COL_LABEL = 200;
+	static const int COL_MNEM = 230;
+
     ProcessData     *m_process;
+    
+    SelectedItemInfo m_iteminfo;	// Holds info about the selected item
 
 
     uint        m_linesShown,       // Number of Items shown
@@ -133,6 +157,7 @@ private:
     void ShowCursor(wxDC &dc);
     void ClearCursor();
     void DoSelection();
+	void FillSelectedItemInfo(const wxPoint &pt);
 
 	wxString FormatArg(uint arg, uint style);
 
@@ -176,11 +201,16 @@ private:
     void OnPopUpMenuGoto(wxCommandEvent& event);
     void OnPopUpMenuMakeData(wxCommandEvent& event);
     void OnPopUpMenuOD_Matrix(wxCommandEvent& event);
+    void OnPopUpMenuOD_String(wxCommandEvent& event);
+    void OnPopUpMenuOD_Number(wxCommandEvent& event);
     void OnPopUpMenuDisasm(wxCommandEvent& event);
 
     void OnPopUpMenuArgStyleBin(wxCommandEvent& event);
     void OnPopUpMenuArgStyleDec(wxCommandEvent& event);
     void OnPopUpMenuArgStyleHex(wxCommandEvent& event);
+    
+    void OnPopUpMenuRenLabel(wxCommandEvent& event);
+    void OnPopUpMenuDelLabel(wxCommandEvent& event);
 
     // Pop Up Comment event handlers
     void OnPopUpAddComment(wxCommandEvent& event);

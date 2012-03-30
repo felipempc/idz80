@@ -18,6 +18,14 @@
 
 
 
+const int CodeView::COL_ADDRESS;
+const int CodeView::COL_CODE;
+const int CodeView::COL_ASCII;
+const int CodeView::COL_LABEL;
+const int CodeView::COL_MNEM;
+
+
+
 CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
         : wxScrolledWindow(parent)
 {
@@ -36,6 +44,11 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     IsEmpty = true;
     m_styleData.arg = 0;
     m_styleData.item = 0;
+    
+    m_iteminfo.type = siUnknown;
+    m_iteminfo.dasmitem = (DAsmElement *)0;
+    m_iteminfo.lineitem = (CodeViewItem *)0;
+    m_iteminfo.hasComment = false;
 
     m_CodeViewLine = m_process->m_CodeViewLine;
     LastCursorRect = new wxRect();
@@ -74,7 +87,8 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Connect(wxEVT_LEFT_DOWN,wxMouseEventHandler(CodeView::OnMouseLeftDown));
     //Connect(wxEVT_LEFT_UP,wxMouseEventHandler(CodeView::OnMouseLeftUp));
     Connect(wxEVT_RIGHT_DOWN,wxMouseEventHandler(CodeView::OnMouseRightDown));
-    Connect(wxEVT_RIGHT_UP,wxMouseEventHandler(CodeView::OnMouseRightUp));
+    Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
+    //Connect(wxEVT_RIGHT_UP,wxMouseEventHandler(CodeView::OnMouseRightUp));
     //Connect(wxEVT_MOTION,wxMouseEventHandler(CodeView::OnMouseMove));
     Connect(wxEVT_MOUSEWHEEL,wxMouseEventHandler(CodeView::OnMouseWheel));
 
@@ -90,10 +104,14 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
     Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
     Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
+    Connect(idPOPUP_OD_STRING, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_String);
+    Connect(idPOPUP_OD_NUMBER, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Number);
 
     Connect(idPOPUP_ARG_BIN, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleBin);
     Connect(idPOPUP_ARG_DEC, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleDec);
     Connect(idPOPUP_ARG_HEX, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleHex);
+    Connect(idPOPUP_EDITLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuRenLabel);
+    Connect(idPOPUP_DELLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDelLabel);
 
     PopUp = 0;
 
@@ -123,7 +141,7 @@ void CodeView::OnDraw(wxDC &dc)
     dc.SetFont(*font);
     dc.SetBackground(bkcolor);
 
-    // cleans destroyed region
+    // cleans the destroyed region
     while (regIterator)
     {
         touchedRegion = regIterator.GetRect();
@@ -854,19 +872,16 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
     wxString comment;
 
     cvi = m_CodeViewLine->getData(CursorPosition);
-    if (cvi != 0)
-    {
-        if (cvi->Comment != 0)
-            comment = ::wxGetTextFromUser(_("Edit Comment"), _("Edit"), cvi->Comment->CommentStr);
-            if (!comment.IsEmpty())
-            {
-                comment = comment.Trim(false);
-                if (comment.Left(1) != _T(";"))
-                    comment.Prepend(_("; "));
-                m_CodeViewLine->Edit(comment,CursorPosition);
-                Refresh();
-            }
-    }
+	if ((cvi != 0) && (cvi->Comment != 0))
+		comment = ::wxGetTextFromUser(_("Edit Comment"), _("Edit"), cvi->Comment->CommentStr);
+	if (!comment.IsEmpty())
+	{
+		comment = comment.Trim(false);
+		if (comment.Left(1) != _T(";"))
+			comment.Prepend(_("; "));
+		m_CodeViewLine->Edit(comment,CursorPosition);
+		Refresh();
+	}
 }
 
 void CodeView::OnPopUpDelComment(wxCommandEvent& event)
@@ -886,15 +901,54 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuOD_Matrix(wxCommandEvent &event)
 {
-	LogIt(_("Matrixed !!\n"));
+	LogIt(_("Data Matrixed !!\n"));
 }
+
+void CodeView::OnPopUpMenuOD_String(wxCommandEvent& event)
+{
+	LogIt(_("Data stringed !!\n"));
+}
+
+void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
+{
+	LogIt(_("Data numbered !!\n"));
+}
+
+void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
+{
+    CodeViewItem *cvi;
+    cvi = m_CodeViewLine->getData(CursorPosition);
+    //TODO: Implement label editing in instructions
+	if (cvi != 0)
+	{
+		if (cvi->LabelProgAddr >= 0)
+			m_process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
+		if (cvi->LabelVarAddr >= 0)
+			m_process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
+	}
+	LogIt("Label renamed !!\n");
+}
+
+void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
+{
+	LogIt(_("Label deleted !!\n"));
+}
+
 
 
 
 void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
-	DAsmElement *de;
+//	DAsmElement *de;
 
+
+	if (m_iteminfo.argSelected == 1)
+		m_iteminfo.dasmitem->Style.arg1 = ast_bin;
+
+	if (m_iteminfo.argSelected == 2)
+		m_iteminfo.dasmitem->Style.arg2 = ast_bin;
+
+/*
 	if (m_styleData.arg != 0)
 	{
 		de = m_process->m_Dasm->GetData(m_styleData.item);
@@ -905,14 +959,23 @@ void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 
 		m_styleData.arg = 0;
 		m_styleData.item = 0;
-		RefreshRect(CalcCursorRfshRect());
-	}
+*/
+	RefreshRect(CalcCursorRfshRect());
+//	}
 }
 
 void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
-	DAsmElement *de;
+//	DAsmElement *de;
 
+
+	if (m_iteminfo.argSelected == 1)
+		m_iteminfo.dasmitem->Style.arg1 = ast_dec;
+
+	if (m_iteminfo.argSelected == 2)
+		m_iteminfo.dasmitem->Style.arg2 = ast_dec;
+
+/*
 	if (m_styleData.arg != 0)
 	{
 		de = m_process->m_Dasm->GetData(m_styleData.item);
@@ -923,16 +986,22 @@ void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 
 		m_styleData.arg = 0;
 		m_styleData.item = 0;
-		RefreshRect(CalcCursorRfshRect());
-	}
+*/
+	RefreshRect(CalcCursorRfshRect());
+//	}
 }
 
 void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
-	DAsmElement *de;
+	//DAsmElement *de;
 
-	if (m_styleData.arg != 0)
-	{
+	if (m_iteminfo.argSelected == 1)
+		m_iteminfo.dasmitem->Style.arg1 = ast_hex;
+
+	if (m_iteminfo.argSelected == 2)
+		m_iteminfo.dasmitem->Style.arg2 = ast_hex;
+
+/*	
 		de = m_process->m_Dasm->GetData(m_styleData.item);
 		if (m_styleData.arg == 1)
 			de->Style.arg1 = ast_hex;
@@ -941,8 +1010,9 @@ void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 
 		m_styleData.arg = 0;
 		m_styleData.item = 0;
+*/
 		RefreshRect(CalcCursorRfshRect());
-	}
+//	}
 }
 
 
@@ -960,7 +1030,72 @@ void CodeView::UpdateVirtualSize(void)
 }
 
 
+void CodeView::FillSelectedItemInfo(const wxPoint &pt)
+{
+	DAsmElement *de;
+	CodeViewItem *cvi;
+	bool testcomment = false;
 
+	m_iteminfo.type = siUnknown;
+	cvi = m_CodeViewLine->getData(CursorPosition);
+	if (cvi != 0)
+	{
+		m_iteminfo.lineitem = cvi;
+		// Does the line have comment ?
+		if (cvi->Comment != 0)
+			m_iteminfo.hasComment = true;
+		else
+			m_iteminfo.hasComment = false;
+		
+		// If line is a program label or a var label
+		if (cvi->LabelProgAddr >= 0)
+			m_iteminfo.type = siLineLabelProg;
+
+		if (cvi->LabelVarAddr >= 0)
+			m_iteminfo.type = siLineLabelVar;
+
+		// If clicked over an instruction argument, discover which was
+		if ((cvi->RectArg1 != 0) && (cvi->RectArg1->Contains(pt)))
+			m_iteminfo.argSelected = 1;
+		else
+			m_iteminfo.argSelected = 0;
+
+		if ((cvi->RectArg2 != 0) && (cvi->RectArg2->Contains(pt)))
+			m_iteminfo.argSelected = 2;
+		else
+			m_iteminfo.argSelected = 0;
+
+		// check if line has instruction
+		if (cvi->Dasmitem >= 0)
+		{
+			de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+			if (de != 0)
+			{
+				m_iteminfo.dasmitem = de;
+				if (de->Style.hasArgumentLabel)
+					m_iteminfo.type = siInstructionLabel;
+				else
+					m_iteminfo.type = siInstruction;
+				
+				if (de->ElType == et_Data)
+					m_iteminfo.type = siData;
+					
+			}
+			else
+				m_iteminfo.dasmitem = (DAsmElement *)0;
+		}
+		else
+				m_iteminfo.dasmitem = (DAsmElement *)0;
+		
+		// Test if line has only comments
+		testcomment = ((cvi->Org + cvi->Dasmitem + cvi->LabelProgAddr +
+					cvi->LabelVarAddr) < 0);
+		if (testcomment)
+			m_iteminfo.type = siComments;
+	}
+	else
+		m_iteminfo.lineitem = (CodeViewItem *)0;
+}
 
 
 // TODO: Remove debug log it function

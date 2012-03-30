@@ -20,8 +20,6 @@
 #include "IDZ80Base.h"
 #include "MnemonicItem.h"
 
-#define MIN_ARRAY_ITENS 3
-
 
 class MnemonicDataBase
 {
@@ -40,6 +38,8 @@ class MnemonicDataBase
     void DebugVodoo(wxTextCtrl& log);
 
     private:
+    static const int MIN_ARRAY_ITENS = 3;
+    
     uint totalAllocated;
     wxArrayPtrVoid Data;
     bool doReadData(wxTextFile& tf);

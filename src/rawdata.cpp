@@ -20,6 +20,8 @@
 
 // RawData implementation
 
+const byte RawData::BIN_ID;
+const uint RawData::BIN_HEADER_SIZE;
 
 RawData::RawData(void)
 {

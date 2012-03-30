@@ -23,6 +23,7 @@
 void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 {
 	int lastposition;
+	wxPoint pt;
 
     if (!IsEnabled())
     {
@@ -33,8 +34,8 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
         CursorLastPosition = CursorPosition;
 
 	lastposition = CursorPosition;
-
-    CalcCursorPosition(event.GetPosition());
+	pt = event.GetPosition();
+    CalcCursorPosition(pt);
 	if (CursorPosition < GetCount())
 	{
 		ClearCursor();
@@ -48,11 +49,13 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 		DoSelection();
 
 		SetFocusIgnoringChildren();
+		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
 	}
 	else
 		CursorPosition = lastposition;
+	
 }
 
 
@@ -66,6 +69,7 @@ void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 void CodeView::OnMouseRightDown(wxMouseEvent& event)
 {
 	int	lastposition;
+	wxPoint pt;
 
     if (!IsEnabled())
     {
@@ -76,7 +80,8 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
         CursorLastPosition = CursorPosition;
 
 	lastposition = CursorPosition;
-    CalcCursorPosition(event.GetPosition());
+	pt = event.GetPosition();
+    CalcCursorPosition(pt);
 	if (CursorPosition < GetCount())
 	{
 		ClearCursor();
@@ -84,7 +89,6 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 		if (MultiSelection && ((CursorPosition < SelectedItemIndex) ||
 			(CursorPosition > SelectedLastItem)))
 		{
-			//if (MultiSelection)
 			RefreshRect(CalcSelectedRect());
 			SelectedCount = 1;
 			MultiSelection = false;
@@ -102,6 +106,7 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 			}
 
 		SetFocusIgnoringChildren();
+		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
 	}
@@ -115,19 +120,22 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 {
     CodeViewItem *cvi;
     DAsmElement *de;
-    wxMenu		*submenu1;
+    wxMenu		*argStyleSubMenu,
+				*organizeDataSubMenu;
     wxPoint		pt;
     uint		pointedline;
     wxClientDC  dc(this);
+/*
     bool		argfocus = false,
 				arg1focus = false,
 				arg2focus = false,
-				labeled = false;
+*/
+	bool		labeled = false;
 
+/*
     DoPrepareDC(dc);
     pt = event.GetLogicalPosition(dc);
-    pointedline = pt.y / m_fontHeight;
-    cvi = m_CodeViewLine->getData(pointedline);
+    cvi = m_CodeViewLine->getData(CursorPosition);
 
     if (cvi->RectArg1 != 0)
 		if (cvi->RectArg1->Contains(pt))
@@ -142,7 +150,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 			argfocus = true;
 			arg2focus = true;
 		}
-
+*/
 
     if (!IsEmpty)
     {
@@ -150,21 +158,22 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 
         PopUp = new wxMenu();
 
+		// ************** MULTISELECTION ********************>
         if (SelectedCount > 1)
         {
             switch (GetTypeMultiselection())
             {
                 case et_Instruction:
-                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
+                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make data\td"));
                                 break;
                 case et_Data:
-								submenu1 = new wxMenu();
+								organizeDataSubMenu = new wxMenu();
                                 PopUp->Append(idPOPUP_DISASM,_("Disassemble\tc"));
-                                submenu1->Append(idPOPUP_OD_STRING, _("String"));
-                                submenu1->Append(idPOPUP_OD_MATRIX, _("Matrix"));
-                                submenu1->Append(idPOPUP_OD_NUMBER, _("Number"));
+                                organizeDataSubMenu->Append(idPOPUP_OD_STRING, _("String"));
+                                organizeDataSubMenu->Append(idPOPUP_OD_MATRIX, _("Matrix"));
+                                organizeDataSubMenu->Append(idPOPUP_OD_NUMBER, _("Number"));
                                 PopUp->AppendSeparator();
-								PopUp->Append(idPOPUP_ORGANIZEDATA, _T("Organize data"), submenu1);
+								PopUp->Append(idPOPUP_ORGANIZEDATA, _T("Organize data"), organizeDataSubMenu);
                                 break;
                 default:
                                 PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
@@ -174,31 +183,74 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
             PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
         }
+        // ************** MULTISELECTION ********************<
         else
-        {
-            cvi = m_CodeViewLine->getData(CursorPosition);
-            // Label
+        { // ************** ONE SELECTION ********************>
             //TODO: Implement rename/delete label routine
-            if ((cvi->LabelProgAddr >= 0) && (cvi->LabelVarAddr >= 0))
+            
+            switch(m_iteminfo.type)
             {
-                PopUp->Append(idPOPUP_EDITLABEL,_T("Rename label"));
-                PopUp->AppendSeparator();
-                PopUp->Append(idPOPUP_DELLABEL,_T("Delete label"));
+				case 	siInstructionLabel:
+				case	siLineLabelProg:
+				case	siLineLabelVar:
+						                if ((de->MnItem != 0) && 
+						                   (de->MnItem->getBranchType() != BR_NONE))
+											PopUp->Append(idPOPUP_GOTO, "Goto label");
+
+										PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
+										PopUp->AppendSeparator();
+										PopUp->Append(idPOPUP_DELLABEL, "Delete label");
+										break;
+				case	siInstruction:
+										PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
+										break;
+
+			}
+			// Clicked over an argument
+			if (m_iteminfo.argSelected > 0)
+			{
+				argStyleSubMenu = new wxMenu();
+
+				argStyleSubMenu->Append(idPOPUP_ARG_BIN, _("Binary"));
+				argStyleSubMenu->Append(idPOPUP_ARG_DEC, _("Decimal"));
+				argStyleSubMenu->Append(idPOPUP_ARG_HEX, _("Hexadecimal"));
+				PopUp->Append(idPOPUP_ARG_STYLE, _T("Style data"), argStyleSubMenu);
+			}
+
+			PopUp->AppendSeparator();
+			
+            if (m_iteminfo.type == siComments)
+            {
+                PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
+                PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
             }
             else
-            // Dasmed item
+                PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
+			
+/*
+            if ((cvi->LabelProgAddr >= 0) || (cvi->LabelVarAddr >= 0))
+            {
+                PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
+                PopUp->AppendSeparator();
+                PopUp->Append(idPOPUP_DELLABEL, "Delete label");
+            }
+            else
+            // ---------- Disassembled item ------------
             if (cvi->Dasmitem >= 0)
             {
                 de = m_process->m_Dasm->GetData(cvi->Dasmitem);
                 if (de->MnItem != 0)
                     if (de->MnItem->getBranchType() != BR_NONE)
                     {
-                        PopUp->Append(idPOPUP_GOTO,_T("Goto label"));
+                        PopUp->Append(idPOPUP_GOTO, "Goto label");
+                        PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
+						PopUp->AppendSeparator();
+						PopUp->Append(idPOPUP_DELLABEL, "Delete label");
                         labeled = true;
                     }
                 if (de->ElType == et_Instruction)
                 {
-                    PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data"));
+                    PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
                 }
                 //TODO: Filter VAR and I/O instructions
                 if (argfocus && (!labeled))
@@ -225,7 +277,9 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             }
             else
                 PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
-        }
+  */
+        } // ************** ONE SELECTION ********************<
+      
         PopupMenu(PopUp);
         delete PopUp;
     }

@@ -102,7 +102,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
     else
     {
         lbl = (LabelItem *)GetItemData(itemfound);
-        if (!(lbl == 0))
+        if (lbl != 0)
             if (lbl->LabelUsers->Index(dasmitem) == wxNOT_FOUND)
                 lbl->LabelUsers->Add(dasmitem);
     }
@@ -199,23 +199,22 @@ void LabelListCtrl::SetLog(wxTextCtrl *_lg)
 }
 
 
-bool LabelListCtrl::GetLabel(uint addr, wxString& str)
+int LabelListCtrl::GetLabel(uint addr, wxString& str)
 {
     int i;
     wxListItem item;
 
-    str.Printf(_T("%X"),addr);
-    i = FindItem(-1,str);
+    str.Printf(_T("%X"), addr);
+    i = FindItem(-1, str);
     if (i >= 0)
     {
         item.m_itemId = i;
         item.m_col = 1;
         item.m_mask = wxLIST_MASK_TEXT;
         GetItem(item);
-        str=item.m_text;
-        return true;
+        str = item.m_text;
     }
-    return false;
+    return i;
 }
 
 
@@ -319,13 +318,15 @@ void LabelListCtrl::OnMenuPopUpDel(wxCommandEvent& event)
 
 void LabelListCtrl::OnMenuPopUpEdit(wxCommandEvent& event)
 {
-    EditLabelDlg adlab(this,true);
+//    EditLabelDlg adlab(this,true);
     LabelItem *lbl;
-    wxString str;
-    wxListItem item;
+//    wxString str;
+//    wxListItem item;
 
 
-    lbl=(LabelItem *)GetItemData(m_item_selected);
+    lbl = (LabelItem *)GetItemData(m_item_selected);
+	EditLabelDialog(lbl->Address);
+/*
     adlab.SetAddress(lbl->Address);
 
     item.m_itemId = m_item_selected;
@@ -341,6 +342,38 @@ void LabelListCtrl::OnMenuPopUpEdit(wxCommandEvent& event)
         if (lbl!=0)
             lbl->LabelStr=adlab.GetLabel();
     }
+*/
+}
+
+
+
+bool LabelListCtrl::EditLabelDialog(uint addr)
+{
+    EditLabelDlg adlab(this,true);
+    LabelItem *lbl;
+    wxString str;
+	int idx;
+	bool ret = false;
+
+
+    adlab.SetAddress(addr);
+	idx = GetLabel(addr, str);
+	if (idx >= 0)
+	{
+		adlab.SetLabel(str);
+		lbl = (LabelItem *)GetItemData(idx);
+
+		if (adlab.ShowModal() == wxID_OK)
+		{
+			EditLabel(idx, adlab.GetLabel());
+			if (lbl != 0)
+			{
+				lbl->LabelStr = adlab.GetLabel();
+				ret = true;
+			}
+		}
+	}
+	return ret;
 }
 
 

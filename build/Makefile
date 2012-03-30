@@ -21,7 +21,7 @@ DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
 
 # Linker
 LD_FLAGS =
-#  -Wl,--subsystem,windows -mwindows -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32
+
 
 # libraries
 LIBFILE1 = -lwxbase293u_gcc_custom
@@ -62,13 +62,17 @@ OBJS = $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\IDZ80App.o \
 	$(OBJDIR)\resource.o
 
-all: $(OBJS)
-	if not exist $(BINDIR) md $(BINDIR)
+all: make_dir $(OBJS)
 	@echo Linking...
 	$(CC) -o $(EXECFILE) $(LD_FLAGS) $(LIBPATH) $(LIBS) $(OBJS) 
+	@echo --------------------------------------------------------
 	@echo $@ done !
 	@echo File is $(EXECFILE)
 
+make_dir:
+	@echo Checking dirs...
+	@if not exist $(BINDIR) md $(BINDIR)
+	@if not exist $(OBJDIR) md $(OBJDIR)
 
 $(OBJDIR)\EditLabelDlg.o: $(SRCDIR)\EditLabelDlg.cpp $(SRCDIR)\EditLabelDlg.h
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\EditLabelDlg.cpp $(INCLUDE)
@@ -131,8 +135,8 @@ $(OBJDIR)\resource.o: $(RESDIR)\resource.rc
 	$(RS) -o $@ $(RESDIR)\resource.rc -I $(INCLUDE1_PATH)
 
 
-clean: FORCE
+clean:
 	-if exist $(OBJDIR)\*.o del $(OBJDIR)\*.o
-	-if exist $(BINDIR)\*.exe del $(BINDIR)\*.exe
+	-if exist $(EXECFILE) del $(EXECFILE)
 
 

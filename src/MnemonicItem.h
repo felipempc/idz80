@@ -20,7 +20,7 @@
 #include "idz80base.h"
 
 #define MAX_NUM_ARG 2
-#define MAX_OPCODE_SIZE 4
+//define MAX_OPCODE_SIZE 4
 #define ARG_POSITION_CHAR   '$'
 
 enum ArgType
@@ -70,6 +70,7 @@ class MnemonicItem
 
     protected:
     private:
+	
         unsigned char   m_bytesNo;      // opcode´s number of bytes
         unsigned char   m_argNo;        // number of arguments
         unsigned char   m_argSize;      // size of argument

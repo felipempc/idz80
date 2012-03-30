@@ -11,6 +11,7 @@
 #include "MnemonicItem.h"
 
 
+
 void MnemonicItem::Clear()
 {
     int i;

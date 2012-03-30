@@ -56,7 +56,8 @@ class LabelListCtrl : public wxListCtrl
         int AddLabel(uint addr, const wxString name, wxArrayInt &labelusers);
         void DelLabel(uint addr);
         void EditLabel(uint listitem,wxString strlabel);
-        bool GetLabel(uint addr, wxString& str);
+		bool EditLabelDialog(uint addr);
+        int GetLabel(uint addr, wxString& str);
         wxString GetLabel(uint idx);
         wxString GetAddress(uint idx);
         LabelItem *GetLabelItem(const int index);

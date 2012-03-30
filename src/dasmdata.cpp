@@ -58,7 +58,7 @@ void DAsmData::Clear()
 DAsmElement *DAsmData::GetData(uint index)
 {
     if (index >= Data.GetCount())
-        return (DAsmElement *)0;		//index = Data.GetCount() - 1;
+        return (DAsmElement *)0;
     return (DAsmElement *)Data[index];
 }
 

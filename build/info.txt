@@ -1,0 +1,24 @@
+F:\Pessoal\Coding\MinGW\bin\g++ -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -o X:\obj\Release\src\codeview.o X:\obj\Release\src\codeview_evmouse.o X:\obj\Release\src\codeview_render.o X:\src\codeview.cpp -IF:\Pessoal\Coding\wxw\wx29\lib\gcc_dll\mswu -IF:\Pessoal\Coding\wxw\wx29\include -IF:\Pessoal\Coding\wxw\wx29\contrib\include
+Checking dirs...
+In file included from F:\Pessoal\Coding\wxw\wx29\include/wx/affinematrix2dbase.h:17:0,
+                 from F:\Pessoal\Coding\wxw\wx29\include/wx/affinematrix2d.h:17,
+                 from F:\Pessoal\Coding\wxw\wx29\include/wx/dc.h:33,
+                 from F:\Pessoal\Coding\wxw\wx29\include/wx/wx.h:51,
+                 from X:\src\codeview.cpp:12:
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:91:65: warning: redundant redeclaration of 'wxPoint2DInt operator*(wxInt32, const wxPoint2DInt&)' in same scope [-Wredundant-decls]
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:90:21: warning: previous declaration of 'wxPoint2DInt operator*(wxInt32, const wxPoint2DInt&)' [-Wredundant-decls]
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:93:65: warning: redundant redeclaration of 'wxPoint2DInt operator*(const wxPoint2DInt&, wxInt32)' in same scope [-Wredundant-decls]
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:92:21: warning: previous declaration of 'wxPoint2DInt operator*(const wxPoint2DInt&, wxInt32)' [-Wredundant-decls]
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:96:65: warning: redundant redeclaration of 'wxPoint2DInt operator/(const wxPoint2DInt&, wxInt32)' in same scope [-Wredundant-decls]
+F:\Pessoal\Coding\wxw\wx29\include/wx/geometry.h:95:21: warning: previous declaration of 'wxPoint2DInt operator/(const wxPoint2DInt&, wxInt32)' [-Wredundant-decls]
+X:\src\codeview.cpp: In member function 'void CodeView::OnScrollPageDown(wxScrollWinEvent&)':
+X:\src\codeview.cpp:237:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+X:\src\codeview.cpp: In member function 'void CodeView::OnScrollPageUp(wxScrollWinEvent&)':
+X:\src\codeview.cpp:255:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+g++: warning: X:\obj\Release\src\codeview_evmouse.o: linker input file unused because linking not done
+g++: warning: X:\obj\Release\src\codeview_render.o: linker input file unused because linking not done
+Linking...
+F:\Pessoal\Coding\MinGW\bin\g++ -o X:\bin\Release\idz80_make.exe  -LF:\Pessoal\Coding\wxw\wx29\lib\gcc_dll -lwxbase293u_gcc_custom -lwxmsw293u_aui_gcc_custom -lwxmsw293u_core_gcc_custom X:\obj\Release\src\EditLabelDlg.o X:\obj\Release\src\FileTypeDialog.o X:\obj\Release\src\MnemonicItem.o X:\obj\Release\src\ProcessData.o X:\obj\Release\src\codeview.o X:\obj\Release\src\codeview_evmouse.o X:\obj\Release\src\codeview_render.o X:\obj\Release\src\codeviewline.o X:\obj\Release\src\d_asm_element.o X:\obj\Release\src\dasmdata.o X:\obj\Release\src\labelslist.o X:\obj\Release\src\mndb.o X:\obj\Release\src\mndb_tools.o X:\obj\Release\src\projectmanager.o X:\obj\Release\src\rawdata.o X:\obj\Release\src\ShowFileInfo.o X:\obj\Release\src\codegenerator.o X:\obj\Release\src\IDZ80.o X:\obj\Release\src\IDZ80App.o X:\obj\Release\src\resource.o 
+--------------------------------------------------------
+all done !
+File is X:\bin\Release\idz80_make.exe

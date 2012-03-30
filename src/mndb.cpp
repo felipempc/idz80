@@ -23,6 +23,9 @@
  */
 
 
+const int MnemonicDataBase::MIN_ARRAY_ITENS;
+
+
 void MnemonicDataBase::DebugVodoo(wxTextCtrl& log)
 {
     uint i,f,x,b,idebug;

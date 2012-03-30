@@ -37,7 +37,7 @@ enum aStyleType
 };
 
 
-typedef struct ArgStyle
+struct ArgStyle
 {
 	unsigned char arg1;
 	unsigned char arg2;

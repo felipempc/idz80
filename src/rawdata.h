@@ -24,9 +24,6 @@
 #include <wx/textctrl.h>
 #include "IDZ80Base.h"
 
-#define BIN_ID          0xFE
-#define BIN_HEADER_SIZE 7
-
 
 enum eFileType
 {
@@ -61,6 +58,9 @@ class RawData
         ~RawData(void);
 
     private:
+		static const byte BIN_ID = 0xFE;
+		static const uint BIN_HEADER_SIZE = 7;
+		
         wxMemoryBuffer  m_buffer;
         wxString        m_filename;
         FileType        m_filetype;
