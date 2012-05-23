@@ -44,7 +44,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     IsEmpty = true;
     m_styleData.arg = 0;
     m_styleData.item = 0;
-    
+
     m_iteminfo.type = siUnknown;
     m_iteminfo.dasmitem = (DAsmElement *)0;
     m_iteminfo.lineitem = (CodeViewItem *)0;
@@ -72,46 +72,72 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     FG_TextColor.Set(_T("BLACK"));
     FG_LabelColor.Set(_T("BLUE"));
 
-    Connect(wxEVT_SCROLLWIN_LINEDOWN, wxScrollWinEventHandler(CodeView::OnScrollLineDown));
-    Connect(wxEVT_SCROLLWIN_LINEUP, wxScrollWinEventHandler(CodeView::OnScrollLineUp));
-    Connect(wxEVT_SCROLLWIN_PAGEDOWN, wxScrollWinEventHandler(CodeView::OnScrollPageDown));
-    Connect(wxEVT_SCROLLWIN_PAGEUP, wxScrollWinEventHandler(CodeView::OnScrollPageUp));
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CodeView::OnPaint));
-    Connect(wxEVT_ENTER_WINDOW,wxFocusEventHandler(CodeView::OnGetFocus));
-    Connect(wxEVT_LEAVE_WINDOW,wxFocusEventHandler(CodeView::OnKillFocus));
-
+    //Connect(wxEVT_SCROLLWIN_LINEDOWN, wxScrollWinEventHandler(CodeView::OnScrollLineDown));
+    Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::OnScrollLineDown, this);
+    //Connect(wxEVT_SCROLLWIN_LINEUP, wxScrollWinEventHandler(CodeView::OnScrollLineUp));
+    Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::OnScrollLineUp, this);
+    //Connect(wxEVT_SCROLLWIN_PAGEDOWN, wxScrollWinEventHandler(CodeView::OnScrollPageDown));
+    Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
+    //Connect(wxEVT_SCROLLWIN_PAGEUP, wxScrollWinEventHandler(CodeView::OnScrollPageUp));
+    Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::OnScrollPageUp, this);
+    //Connect(wxEVT_PAINT, wxPaintEventHandler(CodeView::OnPaint));
+    Bind(wxEVT_PAINT, &CodeView::OnPaint, this);
+    //Connect(wxEVT_ENTER_WINDOW,wxFocusEventHandler(CodeView::OnGetFocus));
+    Bind(wxEVT_SET_FOCUS, &CodeView::OnGetFocus, this);
+    //Connect(wxEVT_LEAVE_WINDOW,wxFocusEventHandler(CodeView::OnKillFocus));
+    Bind(wxEVT_KILL_FOCUS, &CodeView::OnKillFocus, this);
 
 
     // MOUSE Events
-    Connect(wxEVT_SIZE, wxSizeEventHandler(CodeView::OnSize));
-    Connect(wxEVT_LEFT_DOWN,wxMouseEventHandler(CodeView::OnMouseLeftDown));
-    //Connect(wxEVT_LEFT_UP,wxMouseEventHandler(CodeView::OnMouseLeftUp));
-    Connect(wxEVT_RIGHT_DOWN,wxMouseEventHandler(CodeView::OnMouseRightDown));
-    Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
+    //Connect(wxEVT_SIZE, wxSizeEventHandler(CodeView::OnSize));
+    Bind(wxEVT_SIZE, &CodeView::OnSize, this);
+    //Connect(wxEVT_LEFT_DOWN,wxMouseEventHandler(CodeView::OnMouseLeftDown));
+    Bind(wxEVT_LEFT_DOWN, &CodeView::OnMouseLeftDown, this);
+    Bind(wxEVT_LEFT_UP, &CodeView::OnMouseLeftUp, this);
+    //Connect(wxEVT_RIGHT_DOWN,wxMouseEventHandler(CodeView::OnMouseRightDown));
+    Bind(wxEVT_RIGHT_DOWN, &CodeView::OnMouseRightDown, this);
     //Connect(wxEVT_RIGHT_UP,wxMouseEventHandler(CodeView::OnMouseRightUp));
-    //Connect(wxEVT_MOTION,wxMouseEventHandler(CodeView::OnMouseMove));
-    Connect(wxEVT_MOUSEWHEEL,wxMouseEventHandler(CodeView::OnMouseWheel));
+    Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
+    Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
+    //Connect(wxEVT_MOUSEWHEEL,wxMouseEventHandler(CodeView::OnMouseWheel));
+    Bind(wxEVT_MOUSEWHEEL, &CodeView::OnMouseWheel, this);
 
     // KEYBOARD events
-    Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(CodeView::OnKeyPress));
-    Connect(wxEVT_KEY_UP,wxKeyEventHandler(CodeView::OnKeyRelease));
+    //Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(CodeView::OnKeyPress));
+    Bind(wxEVT_KEY_DOWN, &CodeView::OnKeyPress, this);
+    //Connect(wxEVT_KEY_UP,wxKeyEventHandler(CodeView::OnKeyRelease));
+    Bind(wxEVT_KEY_UP, &CodeView::OnKeyRelease, this);
 
     // Popup event connections
-    Connect(idPOPUP_ADDCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpAddComment);
-    Connect(idPOPUP_EDITCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpEditComment);
-    Connect(idPOPUP_DELCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpDelComment);
-    Connect(idPOPUP_GOTO,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuGoto);
-    Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
-    Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
-    Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
-    Connect(idPOPUP_OD_STRING, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_String);
-    Connect(idPOPUP_OD_NUMBER, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Number);
+    //Connect(idPOPUP_ADDCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpAddComment);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpAddComment, this, idPOPUP_ADDCOMMENT);
+    //Connect(idPOPUP_EDITCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpEditComment);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
+    //Connect(idPOPUP_DELCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpDelComment);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
+    //Connect(idPOPUP_GOTO,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuGoto);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
+    //Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
+    //Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
+    //Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
+    //Connect(idPOPUP_OD_STRING, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_String);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_String, this, idPOPUP_OD_STRING);
+    //Connect(idPOPUP_OD_NUMBER, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Number);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
 
-    Connect(idPOPUP_ARG_BIN, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleBin);
-    Connect(idPOPUP_ARG_DEC, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleDec);
-    Connect(idPOPUP_ARG_HEX, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleHex);
-    Connect(idPOPUP_EDITLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuRenLabel);
-    Connect(idPOPUP_DELLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDelLabel);
+    //Connect(idPOPUP_ARG_BIN, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleBin);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
+    //Connect(idPOPUP_ARG_DEC, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleDec);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
+    //Connect(idPOPUP_ARG_HEX, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleHex);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
+    //Connect(idPOPUP_EDITLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuRenLabel);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
+    //Connect(idPOPUP_DELLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDelLabel);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
 
     PopUp = 0;
 
@@ -1001,7 +1027,7 @@ void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 	if (m_iteminfo.argSelected == 2)
 		m_iteminfo.dasmitem->Style.arg2 = ast_hex;
 
-/*	
+/*
 		de = m_process->m_Dasm->GetData(m_styleData.item);
 		if (m_styleData.arg == 1)
 			de->Style.arg1 = ast_hex;
@@ -1046,7 +1072,7 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 			m_iteminfo.hasComment = true;
 		else
 			m_iteminfo.hasComment = false;
-		
+
 		// If line is a program label or a var label
 		if (cvi->LabelProgAddr >= 0)
 			m_iteminfo.type = siLineLabelProg;
@@ -1062,8 +1088,9 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 
 		if ((cvi->RectArg2 != 0) && (cvi->RectArg2->Contains(pt)))
 			m_iteminfo.argSelected = 2;
-		else
-			m_iteminfo.argSelected = 0;
+		// BUG
+		//else
+		//	m_iteminfo.argSelected = 0;
 
 		// check if line has instruction
 		if (cvi->Dasmitem >= 0)
@@ -1076,17 +1103,17 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 					m_iteminfo.type = siInstructionLabel;
 				else
 					m_iteminfo.type = siInstruction;
-				
+
 				if (de->ElType == et_Data)
 					m_iteminfo.type = siData;
-					
+
 			}
 			else
 				m_iteminfo.dasmitem = (DAsmElement *)0;
 		}
 		else
 				m_iteminfo.dasmitem = (DAsmElement *)0;
-		
+
 		// Test if line has only comments
 		testcomment = ((cvi->Org + cvi->Dasmitem + cvi->LabelProgAddr +
 					cvi->LabelVarAddr) < 0);
