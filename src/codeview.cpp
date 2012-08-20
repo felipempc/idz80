@@ -72,71 +72,47 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     FG_TextColor.Set(_T("BLACK"));
     FG_LabelColor.Set(_T("BLUE"));
 
-    //Connect(wxEVT_SCROLLWIN_LINEDOWN, wxScrollWinEventHandler(CodeView::OnScrollLineDown));
+
     Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::OnScrollLineDown, this);
-    //Connect(wxEVT_SCROLLWIN_LINEUP, wxScrollWinEventHandler(CodeView::OnScrollLineUp));
     Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::OnScrollLineUp, this);
-    //Connect(wxEVT_SCROLLWIN_PAGEDOWN, wxScrollWinEventHandler(CodeView::OnScrollPageDown));
     Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
-    //Connect(wxEVT_SCROLLWIN_PAGEUP, wxScrollWinEventHandler(CodeView::OnScrollPageUp));
     Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::OnScrollPageUp, this);
-    //Connect(wxEVT_PAINT, wxPaintEventHandler(CodeView::OnPaint));
+
     Bind(wxEVT_PAINT, &CodeView::OnPaint, this);
-    //Connect(wxEVT_ENTER_WINDOW,wxFocusEventHandler(CodeView::OnGetFocus));
+
     Bind(wxEVT_SET_FOCUS, &CodeView::OnGetFocus, this);
-    //Connect(wxEVT_LEAVE_WINDOW,wxFocusEventHandler(CodeView::OnKillFocus));
     Bind(wxEVT_KILL_FOCUS, &CodeView::OnKillFocus, this);
 
 
     // MOUSE Events
-    //Connect(wxEVT_SIZE, wxSizeEventHandler(CodeView::OnSize));
     Bind(wxEVT_SIZE, &CodeView::OnSize, this);
-    //Connect(wxEVT_LEFT_DOWN,wxMouseEventHandler(CodeView::OnMouseLeftDown));
     Bind(wxEVT_LEFT_DOWN, &CodeView::OnMouseLeftDown, this);
     Bind(wxEVT_LEFT_UP, &CodeView::OnMouseLeftUp, this);
-    //Connect(wxEVT_RIGHT_DOWN,wxMouseEventHandler(CodeView::OnMouseRightDown));
     Bind(wxEVT_RIGHT_DOWN, &CodeView::OnMouseRightDown, this);
-    //Connect(wxEVT_RIGHT_UP,wxMouseEventHandler(CodeView::OnMouseRightUp));
     Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
-    Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
-    //Connect(wxEVT_MOUSEWHEEL,wxMouseEventHandler(CodeView::OnMouseWheel));
+    //TODO: Improve focus highlight
+    //Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
     Bind(wxEVT_MOUSEWHEEL, &CodeView::OnMouseWheel, this);
 
     // KEYBOARD events
-    //Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(CodeView::OnKeyPress));
     Bind(wxEVT_KEY_DOWN, &CodeView::OnKeyPress, this);
-    //Connect(wxEVT_KEY_UP,wxKeyEventHandler(CodeView::OnKeyRelease));
     Bind(wxEVT_KEY_UP, &CodeView::OnKeyRelease, this);
 
     // Popup event connections
-    //Connect(idPOPUP_ADDCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpAddComment);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpAddComment, this, idPOPUP_ADDCOMMENT);
-    //Connect(idPOPUP_EDITCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpEditComment);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
-    //Connect(idPOPUP_DELCOMMENT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpDelComment);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
-    //Connect(idPOPUP_GOTO,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuGoto);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
-    //Connect(idPOPUP_MAKEDATA,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuMakeData);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
-    //Connect(idPOPUP_DISASM,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDisasm);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
-    //Connect(idPOPUP_OD_MATRIX, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Matrix);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
-    //Connect(idPOPUP_OD_STRING, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_String);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_String, this, idPOPUP_OD_STRING);
-    //Connect(idPOPUP_OD_NUMBER, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuOD_Number);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
 
-    //Connect(idPOPUP_ARG_BIN, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleBin);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
-    //Connect(idPOPUP_ARG_DEC, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleDec);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
-    //Connect(idPOPUP_ARG_HEX, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CodeView::OnPopUpMenuArgStyleHex);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
-    //Connect(idPOPUP_EDITLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuRenLabel);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
-    //Connect(idPOPUP_DELLABEL, wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CodeView::OnPopUpMenuDelLabel);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
 
     PopUp = 0;
@@ -494,7 +470,8 @@ void CodeView::DoSelection()
 
 
 
-ElementType CodeView::GetTypeMultiselection()
+ElementType CodeView::GetTypeMultiselection(bool &hcomment)
+
 {
     CodeViewItem *cvi;
     DAsmElement *de;
@@ -508,6 +485,9 @@ ElementType CodeView::GetTypeMultiselection()
         cvi = m_CodeViewLine->getData(i);
         if (cvi->Dasmitem >= 0)
         {
+			if (cvi->Comment != 0)
+				hcomment = true;
+				
             de = m_process->m_Dasm->GetData(cvi->Dasmitem);
             if (de->ElType == et_Instruction)
             {
@@ -778,6 +758,10 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
     int 			i, newLineCount, lineIndex, lineLast, lineCount,
 					j, oldLineCount;
     wxArrayInt		cvlines;
+	
+	//TODO: Create a function to remove unused labels
+	//FIXME: It's removing line with var labels
+	//FIXME: Duplicating lines when reassembling lines with labels
 
     if (!FilterInstructions(cvlines))
 		return;
@@ -799,7 +783,8 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 		j = 0;
         for (i = 0; i < lineCount; i++)
 		{
-			if (m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0)
+			if ((m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0) ||
+				(m_CodeViewLine->getData(lineIndex + j)->LabelVarAddr >= 0))
 				j++;
 			else
 				m_CodeViewLine->Del(lineIndex + j);
@@ -1063,6 +1048,7 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 	bool testcomment = false;
 
 	m_iteminfo.type = siUnknown;
+	
 	cvi = m_CodeViewLine->getData(CursorPosition);
 	if (cvi != 0)
 	{
@@ -1088,9 +1074,6 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 
 		if ((cvi->RectArg2 != 0) && (cvi->RectArg2->Contains(pt)))
 			m_iteminfo.argSelected = 2;
-		// BUG
-		//else
-		//	m_iteminfo.argSelected = 0;
 
 		// check if line has instruction
 		if (cvi->Dasmitem >= 0)
@@ -1115,8 +1098,8 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 				m_iteminfo.dasmitem = (DAsmElement *)0;
 
 		// Test if line has only comments
-		testcomment = ((cvi->Org + cvi->Dasmitem + cvi->LabelProgAddr +
-					cvi->LabelVarAddr) < 0);
+		testcomment = ((cvi->Org + cvi->LabelProgAddr + cvi->LabelVarAddr +
+						cvi->Dasmitem) == -4);
 		if (testcomment)
 			m_iteminfo.type = siComments;
 	}

@@ -1,41 +1,70 @@
 # IDZ80 Makefile
 
+#MainDrive
+DRV = K:
 
 # wxWidgets
-WXW ?= F:\Pessoal\Coding\wxw\wx29
+WXWVERSION = 294
+WXW ?= $(DRV)\wxw\wx$(WXWVERSION)
 
 # Compiler
-CC = F:\Pessoal\Coding\MinGW\bin\g++
+CC = $(DRV)\MinGW\bin\g++
+
+# Debug
+DEBUG ?= 0
 
 # Resource
 RS = windres
 RS_FLAGS = --include-dirs=$(WXW)\include
 
-CC_FLAGS = -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads
-INCLUDE0_PATH = $(WXW)\lib\gcc_dll\mswu
+# Date and time
+DATE = $(shell date /t)
+TIME = $(shell time /t)
+
+
+ifeq ($(DEBUG), 0)
+	# Release
+	CC_FLAGS = -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads
+	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
+	INCLUDE0_PATH = $(WXW)\lib\gcc_dll\mswu
+	LIBFILE1 = -lwxbase$(WXWVERSION)u_gcc_custom
+	LIBFILE2 = -lwxmsw$(WXWVERSION)u_aui_gcc_custom
+	LIBFILE3 = -lwxmsw$(WXWVERSION)u_core_gcc_custom
+else
+	# DEBUG
+	CC_FLAGS = -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -g
+	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG
+	INCLUDE0_PATH = $(WXW)\lib\gcc_dll\mswud
+	LIBFILE1 = -lwxbase$(WXWVERSION)ud_gcc_custom
+	LIBFILE2 = -lwxmsw$(WXWVERSION)ud_aui_gcc_custom
+	LIBFILE3 = -lwxmsw$(WXWVERSION)ud_core_gcc_custom
+endif
+
+
 INCLUDE1_PATH = $(WXW)\include
 INCLUDE2_PATH = $(WXW)\contrib\include
 INCLUDE = -I$(INCLUDE0_PATH) -I$(INCLUDE1_PATH) -I$(INCLUDE2_PATH)
 
-DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
-
 # Linker
-LD_FLAGS =
+LD_FLAGS = -Wl,--subsystem,windows -mwindows
 
 
 # libraries
-LIBFILE1 = -lwxbase293u_gcc_custom
-LIBFILE2 = -lwxmsw293u_aui_gcc_custom
-LIBFILE3 = -lwxmsw293u_core_gcc_custom
 LIBS = $(LIBFILE1) $(LIBFILE2) $(LIBFILE3)
 
 # libraries's path
 LIBPATH = -L$(WXW)\lib\gcc_dll
 
 # Project's path
-OBJDIR = X:\obj\Release\src
+ifeq ($(DEBUG), 0)
+	OBJDIR = X:\obj\Release
+	BINDIR = X:\bin\Release
+else
+	OBJDIR = X:\obj\Debug
+	BINDIR = X:\bin\Debug
+endif
+
 SRCDIR = X:\src
-BINDIR = X:\bin\Release
 RESDIR = X:
 
 EXECFILE = $(BINDIR)\idz80_make.exe
@@ -67,6 +96,7 @@ all: make_dir $(OBJS)
 	$(CC) -o $(EXECFILE) $(LD_FLAGS) $(LIBPATH) $(LIBS) $(OBJS) 
 	@echo --------------------------------------------------------
 	@echo $@ done !
+	@echo $(TIME) $(DATE)
 	@echo File is $(EXECFILE)
 
 make_dir:

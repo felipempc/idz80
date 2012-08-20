@@ -18,11 +18,10 @@
 #include <wx/filefn.h>
 #include <wx/filename.h>
 
-//(*InternalHeaders(IDZ80)
 #include <wx/font.h>
 #include <wx/intl.h>
 #include <wx/string.h>
-//*)
+
 
 
 const long IDZ80::ID_TEXTCTRL1 = wxNewId();
@@ -52,8 +51,7 @@ const long IDZ80::ID_STATUSBAR1 = wxNewId();
 const long IDZ80::ID_VARLABELPANE=wxNewId();
 
 BEGIN_EVENT_TABLE(IDZ80,wxFrame)
-	//(*EventTable(IDZ80)
-	//*)
+
 END_EVENT_TABLE()
 
 IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxPoint& pos, const wxSize& size)
@@ -138,33 +136,34 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
 	SetStatusBar(StatusBar1);
 
-	AuiManager1->Connect(wxEVT_AUI_PANE_CLOSE,(wxObjectEventFunction)&IDZ80::OnAuiPaneClose,0,this);
-	Connect(idMenuFileOpenProject,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileOpen);
-	Connect(idMenuFileOpenArchive,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileOpen);
-	Connect(idMenuFileOpen,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileOpen);
-	Connect(idMenuFileSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileSaveProject);
-	Connect(idMenuFileSaveAs,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileSaveAsProject);
-	Connect(idMenuFileClose,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileClose);
-	Connect(idMenuFileInfo,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileInfo);
-	Connect(idMenuFileQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuFileQuit);
-	Connect(idMenuViewDasmWindow,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuViewDisassemblyWindow);
-	Connect(idMenuViewProgLabels,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuViewProgramLabels);
-	Connect(idMenuViewVarLabels,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuViewVarLabels);
-	Connect(idMenuViewIOLabels,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuViewIOLabels);
-	Connect(idMenuToolsDasmAll,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuToolsDisAsm);
-	Connect(idMenuToolsAutoLabel,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuToolAutoLabel);
-	Connect(idMenuToolsGenCode,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuToolsGenCode);
-	Connect(idMenuMnemLoad,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuMnemonicsLoad);
-	Connect(idMenuMnemInfo,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuMnemonicsInfo);
-	Connect(IdMenuHelpAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&IDZ80::OnMenuHelpAbout);
-	Connect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
+
+	AuiManager1->Bind(wxEVT_AUI_PANE_CLOSE, &IDZ80::OnAuiPaneClose, this);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileOpen, this, idMenuFileOpenProject);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileOpen, this, idMenuFileOpenArchive);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileOpen, this, idMenuFileOpen);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileSaveProject, this, idMenuFileSave);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileSaveAsProject, this, idMenuFileSaveAs);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileClose, this, idMenuFileClose);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileInfo, this, idMenuFileInfo);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuFileQuit, this, idMenuFileQuit);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewDisassemblyWindow, this, idMenuViewDasmWindow);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewProgramLabels, this, idMenuViewProgLabels);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewVarLabels, this, idMenuViewVarLabels);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewIOLabels, this, idMenuViewIOLabels);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsDisAsm, this, idMenuToolsDasmAll);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolAutoLabel, this, idMenuToolsAutoLabel);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsGenCode, this, idMenuToolsGenCode);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsLoad, this, idMenuMnemLoad);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsInfo, this, idMenuMnemInfo);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuHelpAbout, this, IdMenuHelpAbout);
+	Bind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
 
 
     /*
      *  Get stored configuration
      */
     config = new wxConfig(_("IDZ80"));
-    m_currentDir = ::wxGetCwd();
+    m_currentDir = LocalPath; // ::wxGetCwd();
 
     process = new ProcessData(this);
     codeview = new CodeView(this,process);
@@ -271,7 +270,8 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 {
 	bool result;
 	// this is needed to stop cathing this event all the time
-	result = Disconnect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
+	//result = Disconnect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
+	result = Unbind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
 
 	#ifdef IDZ80DEBUG
 	if (!result)

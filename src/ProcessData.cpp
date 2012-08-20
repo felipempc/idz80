@@ -1,4 +1,4 @@
-/****************************************************************
+﻿/****************************************************************
  * Name:      IDZ80
  * Purpose:   Defines Application Frame
  * Author:    Felipe Mainieri (felipe.mpc@gmail.com)

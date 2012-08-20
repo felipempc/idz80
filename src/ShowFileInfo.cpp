@@ -35,7 +35,6 @@ END_EVENT_TABLE()
 
 ShowFileInfo::ShowFileInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
-	//(*Initialize(ShowFileInfo)
 	Create(parent, wxID_ANY, _("File Information"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
 	SetClientSize(wxSize(400,249));
 	SetFocus();
@@ -51,8 +50,9 @@ ShowFileInfo::ShowFileInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,con
 	StaticText5 = new wxStaticText(Panel1, ID_STATICTEXT5, _("Execution Address:"), wxPoint(24,128), wxDefaultSize, 0, _T("ID_STATICTEXT5"));
 	StaticText6 = new wxStaticText(Panel1, ID_STATICTEXT6, _("End Address:"), wxPoint(24,144), wxDefaultSize, 0, _T("ID_STATICTEXT6"));
 
-	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ShowFileInfo::OnB_OKClick);
-	//*)
+	//Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ShowFileInfo::OnB_OKClick);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ShowFileInfo::OnB_OKClick, this, ID_BUTTON1);
+
 }
 
 ShowFileInfo::~ShowFileInfo()

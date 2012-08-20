@@ -44,19 +44,22 @@ enum {
     idPOPUP_DELLABEL,
     idPOPUP_EDITCOMMENT,
     idPOPUP_DELCOMMENT,
-    idPOPUP_ADDCOMMENT
+    idPOPUP_ADDCOMMENT,
+    idPOPUP_LBL,
+    idPOPUP_LBL_EDIT,
+    idPOPUP_LBL_DEL
 };
 
 
 enum LineType
 {
-	siUnknown = -1,
-	siInstruction = 0,
-	siInstructionLabel,
-	siData,
-	siLineLabelProg,
-	siLineLabelVar,
-	siComments
+	siUnknown = -1,			// -1
+	siInstruction = 0,		//  0
+	siInstructionLabel,		//  1
+	siData,					//  2
+	siLineLabelProg,		//  3
+	siLineLabelVar,			//  4
+	siComments				//  5
 };
 
 struct SelectedItemInfo
@@ -165,7 +168,7 @@ private:
     int GetLastLine();
 
     bool FilterInstructions(wxArrayInt &range);
-    ElementType GetTypeMultiselection();
+    ElementType GetTypeMultiselection(bool &hcomment);
 
 
     /*

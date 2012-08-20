@@ -107,7 +107,8 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	MainSizer->SetSizeHints(this);
 
 
-	Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&FileTypeDialog::OnRadioBoxSelect);
+	//Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&FileTypeDialog::OnRadioBoxSelect);
+	Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &FileTypeDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
 	cb_autodisassemble->SetValue(true);
 	cb_autolabel->SetValue(true);
 }

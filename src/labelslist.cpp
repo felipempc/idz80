@@ -28,12 +28,18 @@ LabelListCtrl::LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos
     SetColumnWidth(0,wxLIST_AUTOSIZE_USEHEADER);
     SetColumnWidth(1,100);
 
-    Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,wxListEventHandler(LabelListCtrl::OnMouseRightDown));
-    Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(LabelListCtrl::OnMouseDblLeft));
-    Connect(idMENU_POPUP_ADD,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpAdd);
-    Connect(idMENU_POPUP_EDIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpEdit);
-    Connect(idMENU_POPUP_DEL,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpDel);
-    Connect(wxEVT_COMMAND_LIST_COL_CLICK,wxListEventHandler(LabelListCtrl::OnColumnClick));
+    //Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,wxListEventHandler(LabelListCtrl::OnMouseRightDown));
+    Bind(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, &LabelListCtrl::OnMouseRightDown, this);
+    //Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(LabelListCtrl::OnMouseDblLeft));
+    Bind(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, &LabelListCtrl::OnMouseDblLeft, this);
+    //Connect(idMENU_POPUP_ADD,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpAdd);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpAdd, this, idMENU_POPUP_ADD);
+    //Connect(idMENU_POPUP_EDIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpEdit);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpEdit, this, idMENU_POPUP_EDIT);
+    //Connect(idMENU_POPUP_DEL,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpDel);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpDel, this, idMENU_POPUP_DEL);
+    //Connect(wxEVT_COMMAND_LIST_COL_CLICK,wxListEventHandler(LabelListCtrl::OnColumnClick));
+    Bind(wxEVT_COMMAND_LIST_COL_CLICK, &LabelListCtrl::OnColumnClick, this);
 
 }
 

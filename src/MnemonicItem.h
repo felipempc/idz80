@@ -71,7 +71,7 @@ class MnemonicItem
     protected:
     private:
 	
-        unsigned char   m_bytesNo;      // opcode´s number of bytes
+        unsigned char   m_bytesNo;      // opcodeÂ´s number of bytes
         unsigned char   m_argNo;        // number of arguments
         unsigned char   m_argSize;      // size of argument
         unsigned int    m_argCount;     // internal use

@@ -27,6 +27,7 @@ enum
 {
     id_CD_EVT=111
 };
+static const wxString LocalPath = "X:";
 
 class IDZ80: public wxFrame
 {

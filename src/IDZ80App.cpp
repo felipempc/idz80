@@ -9,10 +9,10 @@
 
 #include "IDZ80App.h"
 #include <wx/arrstr.h>
-//(*AppHeaders
+
 #include "IDZ80.h"
 #include <wx/image.h>
-//*)
+
 
 IMPLEMENT_APP(IDZ80App);
 
@@ -21,7 +21,7 @@ bool IDZ80App::OnInit()
 	int i;
 	wxArrayString	astr;
 
-    //(*AppInitialize
+
     bool wxsOK = true;
     wxInitAllImageHandlers();
     if ( wxsOK )
@@ -32,7 +32,7 @@ bool IDZ80App::OnInit()
     	Frame->Show();
     	SetTopWindow(Frame);
     }
-    //*)
+
     return wxsOK;
 
 }

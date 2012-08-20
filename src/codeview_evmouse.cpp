@@ -61,7 +61,37 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 {
-    // nothing
+	//DEBUG:
+    wxString str;
+    DAsmElement* de;
+    CodeViewItem* cvi;
+    
+    str.Printf("Type: %d\nDasmItem: ", m_iteminfo.type);
+    
+    if (m_iteminfo.dasmitem != 0)
+    {
+		de = m_iteminfo.dasmitem;
+		str << de->getCodeStr() << "\n";
+	}
+	else
+		str << "NULL\n";
+	
+	if (m_iteminfo.lineitem >= 0)
+	{
+		cvi = m_iteminfo.lineitem;
+		str << wxString::Format("LineItem: %d\n", cvi->Dasmitem);
+	}
+	else
+		str << "LineItem: NULL\n";
+	
+	if (m_iteminfo.hasComment)
+		str << "hasComment: SIM\n";
+	else
+		str << "hasComment: NAO\n";
+	
+    str << wxString::Format("Arg Selected: %d\n\n", m_iteminfo.argSelected);
+    
+    LogIt(str);
 }
 
 
@@ -120,68 +150,48 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 {
     CodeViewItem *cvi;
     DAsmElement *de;
-    wxMenu		*argStyleSubMenu,
-				*organizeDataSubMenu;
+    wxMenu		*argStyleSubMenu = 0,
+				*organizeDataSubMenu = 0,
+				*labelMenu = 0;
     wxPoint		pt;
     uint		pointedline;
     wxClientDC  dc(this);
-/*
-    bool		argfocus = false,
-				arg1focus = false,
-				arg2focus = false,
-*/
-	bool		labeled = false;
-
-/*
-    DoPrepareDC(dc);
-    pt = event.GetLogicalPosition(dc);
-    cvi = m_CodeViewLine->getData(CursorPosition);
-
-    if (cvi->RectArg1 != 0)
-		if (cvi->RectArg1->Contains(pt))
-		{
-			argfocus = true;
-			arg1focus = true;
-		}
-
-    if (cvi->RectArg2 != 0)
-		if (cvi->RectArg2->Contains(pt))
-		{
-			argfocus = true;
-			arg2focus = true;
-		}
-*/
+	bool		labeled = false,
+				hascomments = false;
 
     if (!IsEmpty)
     {
         SetFocusIgnoringChildren();
 
         PopUp = new wxMenu();
+        de = m_iteminfo.dasmitem;
 
 		// ************** MULTISELECTION ********************>
         if (SelectedCount > 1)
         {
-            switch (GetTypeMultiselection())
+            switch (GetTypeMultiselection(hascomments))
             {
                 case et_Instruction:
-                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make data\td"));
+                                PopUp->Append(idPOPUP_MAKEDATA, "Make data\td");
                                 break;
                 case et_Data:
 								organizeDataSubMenu = new wxMenu();
-                                PopUp->Append(idPOPUP_DISASM,_("Disassemble\tc"));
-                                organizeDataSubMenu->Append(idPOPUP_OD_STRING, _("String"));
-                                organizeDataSubMenu->Append(idPOPUP_OD_MATRIX, _("Matrix"));
-                                organizeDataSubMenu->Append(idPOPUP_OD_NUMBER, _("Number"));
+                                PopUp->Append(idPOPUP_DISASM, "Disassemble\tc");
+                                organizeDataSubMenu->Append(idPOPUP_OD_STRING, "String");
+                                organizeDataSubMenu->Append(idPOPUP_OD_MATRIX, "Matrix");
+                                organizeDataSubMenu->Append(idPOPUP_OD_NUMBER, "Number");
                                 PopUp->AppendSeparator();
-								PopUp->Append(idPOPUP_ORGANIZEDATA, _T("Organize data"), organizeDataSubMenu);
+								PopUp->Append(idPOPUP_ORGANIZEDATA, "Organize data", organizeDataSubMenu);
                                 break;
                 default:
-                                PopUp->Append(idPOPUP_MAKEDATA,_T("Make it data\td"));
+                                PopUp->Append(idPOPUP_MAKEDATA, "Make it data\td");
                                 break;
             }
-            PopUp->AppendSeparator();
-            PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
-            PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
+            if (hascomments)
+            {
+				PopUp->AppendSeparator();
+				PopUp->Append(idPOPUP_DELCOMMENT,  "Del comments");
+			}
         }
         // ************** MULTISELECTION ********************<
         else
@@ -191,35 +201,47 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             switch(m_iteminfo.type)
             {
 				case 	siInstructionLabel:
+						                if ((de != 0) && (de->MnItem != 0) &&
+						                    (de->MnItem->getBranchType() != BR_NONE))
+						                {
+											PopUp->Append(idPOPUP_GOTO, "Goto label");
+											PopUp->AppendSeparator();
+										}
 				case	siLineLabelProg:
 				case	siLineLabelVar:
-						                if ((de->MnItem != 0) && 
-						                   (de->MnItem->getBranchType() != BR_NONE))
-											PopUp->Append(idPOPUP_GOTO, "Goto label");
+										labelMenu = new wxMenu();
+										labelMenu->Append(idPOPUP_LBL_EDIT, "Edit");
+										labelMenu->AppendSeparator();
+										labelMenu->Append(idPOPUP_LBL_DEL, "Delete");
 
-										PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
-										PopUp->AppendSeparator();
-										PopUp->Append(idPOPUP_DELLABEL, "Delete label");
-										break;
 				case	siInstruction:
-										PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
+										if ((m_iteminfo.type != siLineLabelProg) &&
+										    (m_iteminfo.type != siLineLabelVar))
+											PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
 										break;
+				case	siData:
+										PopUp->Append(idPOPUP_DISASM, "Disassemble");
+
 
 			}
+			
+			if (labelMenu != 0)
+				PopUp->Append(idPOPUP_LBL, "Label", labelMenu);
+			
 			// Clicked over an argument
 			if (m_iteminfo.argSelected > 0)
 			{
 				argStyleSubMenu = new wxMenu();
 
-				argStyleSubMenu->Append(idPOPUP_ARG_BIN, _("Binary"));
-				argStyleSubMenu->Append(idPOPUP_ARG_DEC, _("Decimal"));
-				argStyleSubMenu->Append(idPOPUP_ARG_HEX, _("Hexadecimal"));
-				PopUp->Append(idPOPUP_ARG_STYLE, _T("Style data"), argStyleSubMenu);
+				argStyleSubMenu->Append(idPOPUP_ARG_BIN, "Binary");
+				argStyleSubMenu->Append(idPOPUP_ARG_DEC, "Decimal");
+				argStyleSubMenu->Append(idPOPUP_ARG_HEX, "Hexadecimal");
+				PopUp->Append(idPOPUP_ARG_STYLE, "Style data", argStyleSubMenu);
 			}
 
 			PopUp->AppendSeparator();
 			
-            if (m_iteminfo.type == siComments)
+            if ((m_iteminfo.type == siComments) || (m_iteminfo.hasComment))
             {
                 PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
                 PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
@@ -227,63 +249,15 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             else
                 PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
 			
-/*
-            if ((cvi->LabelProgAddr >= 0) || (cvi->LabelVarAddr >= 0))
-            {
-                PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
-                PopUp->AppendSeparator();
-                PopUp->Append(idPOPUP_DELLABEL, "Delete label");
-            }
-            else
-            // ---------- Disassembled item ------------
-            if (cvi->Dasmitem >= 0)
-            {
-                de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-                if (de->MnItem != 0)
-                    if (de->MnItem->getBranchType() != BR_NONE)
-                    {
-                        PopUp->Append(idPOPUP_GOTO, "Goto label");
-                        PopUp->Append(idPOPUP_EDITLABEL, "Edit label");
-						PopUp->AppendSeparator();
-						PopUp->Append(idPOPUP_DELLABEL, "Delete label");
-                        labeled = true;
-                    }
-                if (de->ElType == et_Instruction)
-                {
-                    PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
-                }
-                //TODO: Filter VAR and I/O instructions
-                if (argfocus && (!labeled))
-				{
-					submenu1 = new wxMenu();
-
-					if (arg1focus)
-						m_styleData.arg = 1;
-					else
-						m_styleData.arg = 2;
-					m_styleData.item = cvi->Dasmitem;
-
-					submenu1->Append(idPOPUP_ARG_BIN, _("Binary"));
-					submenu1->Append(idPOPUP_ARG_DEC, _("Decimal"));
-					submenu1->Append(idPOPUP_ARG_HEX, _("Hexadecimal"));
-					PopUp->Append(idPOPUP_ARG_STYLE, _T("Style data"), submenu1);
-				}
-            }
-            PopUp->AppendSeparator();
-            if (cvi->Comment != 0)
-            {
-                PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
-                PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
-            }
-            else
-                PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
-  */
         } // ************** ONE SELECTION ********************<
       
         PopupMenu(PopUp);
         delete PopUp;
     }
 }
+
+
+
 
 
 // TODO: Rewrite this
