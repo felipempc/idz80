@@ -1,12 +1,10 @@
 Checking dirs...
-K:\MinGW\bin\g++ -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -o X:\obj\Release\IDZ80.o X:\src\IDZ80.cpp -IK:\wxw\wx294\lib\gcc_dll\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
-X:\src\IDZ80.cpp: In constructor 'IDZ80::IDZ80(wxWindow*, wxArrayString&, wxWindowID, const wxPoint&, const wxSize&)':
-X:\src\IDZ80.cpp:61:9: warning: unused variable 'i' [-Wunused-variable]
-X:\src\IDZ80.cpp: In member function 'void IDZ80::OnFirstIdle(wxIdleEvent&)':
-X:\src\IDZ80.cpp:271:7: warning: variable 'result' set but not used [-Wunused-but-set-variable]
-Linking...
-K:\MinGW\bin\g++ -o X:\bin\Release\idz80_make.exe -Wl,--subsystem,windows -mwindows -LK:\wxw\wx294\lib\gcc_dll -lwxbase294u_gcc_custom -lwxmsw294u_aui_gcc_custom -lwxmsw294u_core_gcc_custom X:\obj\Release\EditLabelDlg.o X:\obj\Release\FileTypeDialog.o X:\obj\Release\MnemonicItem.o X:\obj\Release\ProcessData.o X:\obj\Release\codeview.o X:\obj\Release\codeview_evmouse.o X:\obj\Release\codeview_render.o X:\obj\Release\codeviewline.o X:\obj\Release\d_asm_element.o X:\obj\Release\dasmdata.o X:\obj\Release\labelslist.o X:\obj\Release\mndb.o X:\obj\Release\mndb_tools.o X:\obj\Release\projectmanager.o X:\obj\Release\rawdata.o X:\obj\Release\ShowFileInfo.o X:\obj\Release\codegenerator.o X:\obj\Release\IDZ80.o X:\obj\Release\IDZ80App.o X:\obj\Release\resource.o 
---------------------------------------------------------
-all done !
-22:44 14/08/2012 
-File is X:\bin\Release\idz80_make.exe
+..\src\IDZ80.cpp
+K:\MinGW\bin\g++ -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -o ..\obj\Release\IDZ80.o ..\src\IDZ80.cpp -IK:\wxw\wx294\lib\gcc_dll\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+..\src\IDZ80.cpp: In constructor 'IDZ80::IDZ80(wxWindow*, wxArrayString&, wxWindowID, const wxPoint&, const wxSize&)':
+..\src\IDZ80.cpp:61:9: warning: unused variable 'i' [-Wunused-variable]
+..\src\IDZ80.cpp: In member function 'void IDZ80::OnFirstIdle(wxIdleEvent&)':
+..\src\IDZ80.cpp:271:7: warning: variable 'result' set but not used [-Wunused-but-set-variable]
+..\src\IDZ80.cpp: In member function 'bool IDZ80::OpenProgramFile(wxString)':
+..\src\IDZ80.cpp:382:2: error: 'xxx' was not declared in this scope
+mingw32-make: *** [..\obj\Release\IDZ80.o] Error 1

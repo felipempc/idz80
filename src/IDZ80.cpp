@@ -269,13 +269,13 @@ IDZ80::~IDZ80()
 void IDZ80::OnFirstIdle(wxIdleEvent &event)
 {
 	bool result;
-	// this is needed to stop cathing this event all the time
+	// this is needed to stop catching this event all the time
 	//result = Disconnect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
 	result = Unbind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
 
 	#ifdef IDZ80DEBUG
 	if (!result)
-		PanelLog->AppendText(_T("*** First Idle Event failed to disconnect !\n\n"));
+		PanelLog->AppendText(_T("*** First Idle Event failed to unbind !\n\n"));
 	#endif
 
     StatusBar1->SetStatusText(m_currentDir);

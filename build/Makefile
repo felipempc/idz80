@@ -57,15 +57,15 @@ LIBPATH = -L$(WXW)\lib\gcc_dll
 
 # Project's path
 ifeq ($(DEBUG), 0)
-	OBJDIR = X:\obj\Release
-	BINDIR = X:\bin\Release
+	OBJDIR = ..\obj\Release
+	BINDIR = ..\bin\Release
 else
-	OBJDIR = X:\obj\Debug
-	BINDIR = X:\bin\Debug
+	OBJDIR = ..\obj\Debug
+	BINDIR = ..\bin\Debug
 endif
 
-SRCDIR = X:\src
-RESDIR = X:
+SRCDIR = ..\src
+RESDIR = ..
 
 EXECFILE = $(BINDIR)\idz80_make.exe
 
@@ -99,69 +99,101 @@ all: make_dir $(OBJS)
 	@echo $(TIME) $(DATE)
 	@echo File is $(EXECFILE)
 
+
+debug: make_dir $(OBJS)
+	DEBUG = 1
+	@echo Linking (DEBUG mode)...
+	$(CC) -o $(EXECFILE) $(LD_FLAGS) $(LIBPATH) $(LIBS) $(OBJS) 
+	@echo --------------------------------------------------------
+	@echo $@ done !
+	@echo $(TIME) $(DATE)
+	@echo File is $(EXECFILE)
+
+
 make_dir:
 	@echo Checking dirs...
 	@if not exist $(BINDIR) md $(BINDIR)
 	@if not exist $(OBJDIR) md $(OBJDIR)
 
+
 $(OBJDIR)\EditLabelDlg.o: $(SRCDIR)\EditLabelDlg.cpp $(SRCDIR)\EditLabelDlg.h
+	@echo $(SRCDIR)\EditLabelDlg.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\EditLabelDlg.cpp $(INCLUDE)
 
 $(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialog.h
+	@echo $(SRCDIR)\FileTypeDialog.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\FileTypeDialog.cpp $(INCLUDE)
 
 $(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h
+	@echo $(SRCDIR)\MnemonicItem.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\MnemonicItem.cpp $(INCLUDE)
 
 $(OBJDIR)\ProcessData.o: $(SRCDIR)\ProcessData.cpp $(SRCDIR)\ProcessData.h
+	@echo $(SRCDIR)\ProcessData.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ProcessData.cpp $(INCLUDE)
 
 $(OBJDIR)\codeview_render.o: $(SRCDIR)\codeview_render.cpp $(SRCDIR)\codeview.h
+	@echo $(SRCDIR)\codeview_render.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_render.cpp $(INCLUDE)
 
 $(OBJDIR)\codeview_evmouse.o: $(SRCDIR)\codeview_evmouse.cpp $(SRCDIR)\codeview.h
+	@echo $(SRCDIR)\codeview_evmouse.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_evmouse.cpp $(INCLUDE)
 	
 $(OBJDIR)\codeview.o: $(SRCDIR)\codeview.cpp $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.h
+	@echo $(SRCDIR)\codeview.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.cpp $(INCLUDE)
 
 $(OBJDIR)\codeviewline.o: $(SRCDIR)\codeviewline.cpp $(SRCDIR)\codeviewline.h
+	@echo $(SRCDIR)\codeviewline.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeviewline.cpp $(INCLUDE)
 
 $(OBJDIR)\d_asm_element.o: $(SRCDIR)\d_asm_element.cpp $(SRCDIR)\d_asm_element.h
+	@echo $(SRCDIR)\d_asm_element.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\d_asm_element.cpp $(INCLUDE)
 
 $(OBJDIR)\dasmdata.o: $(SRCDIR)\dasmdata.cpp $(SRCDIR)\dasmdata.h
+	@echo $(SRCDIR)\dasmdata.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\dasmdata.cpp $(INCLUDE)
 
 $(OBJDIR)\labelslist.o: $(SRCDIR)\labelslist.cpp $(SRCDIR)\labelslist.h
+	@echo $(SRCDIR)\labelslist.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\labelslist.cpp $(INCLUDE)
 
 $(OBJDIR)\mndb.o: $(SRCDIR)\mndb.cpp $(SRCDIR)\mndb.h
+	@echo $(SRCDIR)\mndb.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb.cpp $(INCLUDE)
 
 $(OBJDIR)\mndb_tools.o: $(SRCDIR)\mndb_tools.cpp $(SRCDIR)\mndb_tools.h
+	@echo $(SRCDIR)\mndb_tools.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb_tools.cpp $(INCLUDE)
 
 $(OBJDIR)\projectmanager.o: $(SRCDIR)\projectmanager.cpp $(SRCDIR)\projectmanager.h
+	@echo $(SRCDIR)\projectmanager.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\projectmanager.cpp $(INCLUDE)
 
 $(OBJDIR)\rawdata.o: $(SRCDIR)\rawdata.cpp $(SRCDIR)\rawdata.h
+	@echo $(SRCDIR)\rawdata.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\rawdata.cpp $(INCLUDE)
 
 $(OBJDIR)\codegenerator.o: $(SRCDIR)\codegenerator.cpp $(SRCDIR)\codegenerator.h
+	@echo $(SRCDIR)\codegenerator.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codegenerator.cpp $(INCLUDE)
 
 $(OBJDIR)\ShowFileInfo.o: $(SRCDIR)\ShowFileInfo.cpp $(SRCDIR)\ShowFileInfo.h
+	@echo $(SRCDIR)\ShowFileInfo.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ShowFileInfo.cpp $(INCLUDE)
 
 $(OBJDIR)\IDZ80.o: $(SRCDIR)\IDZ80.cpp $(SRCDIR)\IDZ80.h
+	@echo $(SRCDIR)\IDZ80.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80.cpp $(INCLUDE)
 
 $(OBJDIR)\IDZ80App.o: $(SRCDIR)\IDZ80App.cpp $(SRCDIR)\IDZ80App.h
+	@echo $(SRCDIR)\IDZ80App.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80App.cpp $(INCLUDE)
 
 $(OBJDIR)\resource.o: $(RESDIR)\resource.rc
+	@echo $(RESDIR)\resource.rc
 	$(RS) -o $@ $(RESDIR)\resource.rc -I $(INCLUDE1_PATH)
 
 
