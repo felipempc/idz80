@@ -25,6 +25,7 @@
 #include "d_asm_element.h"
 #include "labelslist.h"
 #include "codeviewline.h"
+#include "systemlabels.h"
 
 #include <wx/gauge.h>
 
@@ -58,6 +59,9 @@ class ProcessData
         LabelListCtrl       *var_labels,
                             *prog_labels,
                             *io_labels;
+		SystemLabelList		*sys_calls,
+							*sys_vars,
+							*sys_io;
 
         void DisassembleFirst();
         void DisassembleItems(RangeItems &r);

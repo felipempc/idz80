@@ -3,5 +3,6 @@ TODO
 - if it's transform to data then back to instructions, the addresses are replicated down code when
   a label is in the middle;
 - if a second disassemble command is issued, the existing labels won't show;
-- right click mouse selection;
+- left/right click mouse selection;
+- search popup menu (search in arguments)
 

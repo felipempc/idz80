@@ -18,12 +18,12 @@
 
 
 
-const long FileTypeDialog::ID_STATICTEXT1 = wxNewId();
-const long FileTypeDialog::ID_TEXTCTRL1 = wxNewId();
-const long FileTypeDialog::ID_STATICTEXT2 = wxNewId();
-const long FileTypeDialog::ID_TEXTCTRL2 = wxNewId();
-const long FileTypeDialog::ID_STATICTEXT3 = wxNewId();
-const long FileTypeDialog::ID_TEXTCTRL3 = wxNewId();
+const long FileTypeDialog::ID_TXT_START = wxNewId();
+const long FileTypeDialog::ID_TXTCTRL_START = wxNewId();
+const long FileTypeDialog::ID_TXT_EXECUTION = wxNewId();
+const long FileTypeDialog::ID_TXTCTRL_EXECUTION = wxNewId();
+const long FileTypeDialog::ID_TXT_END = wxNewId();
+const long FileTypeDialog::ID_TXTCTRL_END = wxNewId();
 const long FileTypeDialog::ID_PANEL2 = wxNewId();
 const long FileTypeDialog::ID_RADIOBOX1 = wxNewId();
 const long FileTypeDialog::ID_PANEL1 = wxNewId();
@@ -31,10 +31,15 @@ const long FileTypeDialog::ID_PANEL3 = wxNewId();
 const long FileTypeDialog::ID_PANEL4 = wxNewId();
 const long FileTypeDialog::ID_CHKBOX1 = wxNewId();
 const long FileTypeDialog::ID_CHKBOX2 = wxNewId();
+const long FileTypeDialog::ID_CHKBOX_CARTRIDGE = wxNewId();
 
 
 BEGIN_EVENT_TABLE(FileTypeDialog,wxDialog)
 END_EVENT_TABLE()
+
+
+
+//TODO: Create events to modify addresses
 
 FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
@@ -61,17 +66,17 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 
     addr_x = 15;
     addr_y = 20;
-	StaticText1 = new wxStaticText(AddressBox, ID_STATICTEXT1, "Start", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_STATICTEXT1");
+	StaticText1 = new wxStaticText(AddressBox, ID_TXT_START, "Start", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_START");
 	addr_y += 13;
-	Txt_StartAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL1, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TEXTCTRL1");
+	Txt_StartAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_START, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_START");
 	addr_y += 32;
-	StaticText2 = new wxStaticText(AddressBox, ID_STATICTEXT2, "Execution", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_STATICTEXT2");
+	StaticText2 = new wxStaticText(AddressBox, ID_TXT_EXECUTION, "Execution", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_EXECUTION");
 	addr_y += 13;
-	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL2, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TEXTCTRL2");
+	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_EXECUTION, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_EXECUTION");
 	addr_y += 32;
-	StaticText3 = new wxStaticText(AddressBox, ID_STATICTEXT3, "End", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_STATICTEXT3");
+	StaticText3 = new wxStaticText(AddressBox, ID_TXT_END, "End", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_END");
 	addr_y += 13;
-	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TEXTCTRL3, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TEXTCTRL3");
+	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_END, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_END");
 	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
 
 	wxString __wxRadioBoxChoices_1[3] =
@@ -85,6 +90,7 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
 	cb_autodisassemble = new wxCheckBox(Panel3, ID_CHKBOX1, "Auto disassemble", wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX1");
 	cb_autolabel = new wxCheckBox(Panel3, ID_CHKBOX2, "Auto label", wxPoint(8,48), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX2");
+	cb_cartridge = new wxCheckBox(Panel3, ID_CHKBOX_CARTRIDGE, "Cartridge", wxPoint(8, 72), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX_CARTRIDGE");
 	RightSizer->Add(Panel3, 1, wxTOP|wxALL, 10);
 	UpsideSizer->Add(RightSizer, 1, wxRIGHT|wxALL, 10);
 	Panel1->SetSizer(UpsideSizer);
@@ -105,11 +111,16 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	MainSizer->SetSizeHints(this);
 
 
-	//Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&FileTypeDialog::OnRadioBoxSelect);
 	Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &FileTypeDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
+	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &FileTypeDialog::OnChkBoxCartridge, this, ID_CHKBOX_CARTRIDGE);
 
 	cb_autodisassemble->SetValue(true);
 	cb_autolabel->SetValue(true);
+	cb_cartridge->Enable(false);
+	
+	StartAddress = 0;
+	ExecAddress = 0;
+	EndAddress = 0;
 }
 
 FileTypeDialog::~FileTypeDialog()
@@ -135,10 +146,11 @@ void FileTypeDialog::SetData(RawData& program)
         case COM:
             RadioBox1->SetSelection(1);
             break;
-        default:
         case ROM:
+			cb_cartridge->Enable(true);
             RadioBox1->SetSelection(0);
             break;
+
     }
 }
 
@@ -179,12 +191,41 @@ void FileTypeDialog::OnRadioBoxSelect(wxCommandEvent &event)
     wxString str;
     str=event.GetString();
     if (str == "COM")
+    {
+		cb_cartridge->Enable(false);
         m_program->SetFileType(COM);
+	}
     else
         if (str == "ROM")
+        {
+			cb_cartridge->Enable(true);
             m_program->SetFileType(ROM);
+		}
         else
+        {
+			cb_cartridge->Enable(false);
             m_program->SetFileType(BIN);
+		}
 
     SyncAddress();
 }
+
+
+
+void FileTypeDialog::OnChkBoxCartridge(wxCommandEvent &event)
+{
+	if (cb_cartridge->IsChecked())
+	{
+		m_program->setCartridge(true);
+        m_program->SetFileType(ROM);
+	}
+	else
+	{
+		m_program->setCartridge(false);
+        m_program->SetFileType(ROM);
+	}
+	SyncAddress();
+}
+
+
+

@@ -57,7 +57,7 @@ class DAsmElement
         wxString getMnemonic(LabelListCtrl *labels);
         wxString getCodeStr();
         wxString getAsciiStr();
-        uint getArgument(uint arg);
+        uint getArgument(uint arg, uint _baseaddress);
         byte GetData(uint offset);
         void SetArgLabel(bool hal = true);
 
@@ -73,14 +73,13 @@ class DAsmElement
                             hasLabel;           // true if there is a label for this item
 		*/
 
-        DAsmElement(RawData* rawdata, uint *baseaddress);
+        DAsmElement(RawData* rawdata);
         ~DAsmElement();
 
     private:
         RawData     *FileData;
-        uint        *BaseAddress;
 
-        uint convertRelAbs(int reladdr);
+        uint convertRelAbs(int reladdr, uint _baseaddress);
 
 };
 

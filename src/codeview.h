@@ -46,8 +46,8 @@ enum {
     idPOPUP_DELCOMMENT,
     idPOPUP_ADDCOMMENT,
     idPOPUP_LBL,
-    idPOPUP_LBL_EDIT,
-    idPOPUP_LBL_DEL
+    //idPOPUP_LBL_EDIT,
+    //idPOPUP_LBL_DEL
 };
 
 
@@ -167,7 +167,7 @@ private:
     int GetFirstLine();
     int GetLastLine();
 
-    bool FilterInstructions(wxArrayInt &range);
+    bool FilterInstructions(wxArrayInt &range, wxArrayInt *plabels);
     ElementType GetTypeMultiselection(bool &hcomment);
 
 

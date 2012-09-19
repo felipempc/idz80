@@ -24,13 +24,9 @@
  * DAsmElement Implementation
  */
 
-DAsmElement::DAsmElement(RawData* rawdata, uint *baseaddress)
+DAsmElement::DAsmElement(RawData* rawdata)
 {
-    FileData=rawdata;
-    if (baseaddress==0)
-        *BaseAddress=0;
-    else
-        BaseAddress=baseaddress;
+    FileData = rawdata;
     Clear();
 }
 
@@ -41,31 +37,32 @@ DAsmElement::~DAsmElement()
 
 
 
-uint DAsmElement::getArgument(uint arg)
+uint DAsmElement::getArgument(uint arg, uint _baseaddress)
 {
-    uint ret=0;
-    unsigned int h,l;
-    signed char rel=0;
-    if ((ElType == et_Instruction) && (!(MnItem==0)))
+    uint ret = 0;
+    unsigned int h, l;
+    signed char rel = 0;
+    
+    if ((ElType == et_Instruction) && (MnItem != 0))
     {
-        if ((MnItem->getArgSize()==1) && (MnItem->getArgNo()==1))
-            if (MnItem->getArgType(0)==ARG_REL_ADDR)
+        if ((MnItem->getArgSize() == 1) && (MnItem->getArgNo() == 1))
+            if (MnItem->getArgType(0) == ARG_REL_ADDR)
             {
-                rel=(signed char)Args[0];
-                ret=convertRelAbs(rel);
+                rel = (signed char)Args[0];
+                ret = convertRelAbs(rel, _baseaddress);
             }
             else
             {
-                ret=(int)Args[0] & 0xFF;
+                ret = (int)Args[0] & 0xFF;
             }
         else
-        if ((MnItem->getArgSize()==1) && (MnItem->getArgNo()==2))
-            ret=(int)Args[arg] & 0xFF;
+        if ((MnItem->getArgSize() == 1) && (MnItem->getArgNo() == 2))
+            ret = (int)Args[arg] & 0xFF;
         else
         {
-            l=(unsigned int)Args[0] & 0xFF;
-            h=(unsigned int)Args[1] & 0xFF;
-            ret=(int)(h*0x100+l);
+            l = (unsigned int)Args[0] & 0xFF;
+            h = (unsigned int)Args[1] & 0xFF;
+            ret = (int)(h * 0x100 + l);
         }
     }
     return ret;
@@ -76,10 +73,10 @@ uint DAsmElement::getArgument(uint arg)
 
 void DAsmElement::Clear()
 {
-    MnItem=0;
-    memset(Args,'\0',sizeof(OpCodeArguments));
-    Offset=Length=0;
-    ElType=et_None;
+    MnItem = 0;
+    memset(Args, '\0', sizeof(OpCodeArguments));
+    Offset = Length = 0;
+    ElType = et_None;
 }
 
 
@@ -92,10 +89,10 @@ wxString DAsmElement::getCodeStr()
     byte b;
 
     gcstr.Clear();
-    for (i=0;i<Length;i++)
+    for (i=0; i < Length; i++)
     {
-        b=FileData->GetData(Offset+i);
-        gcstr << gcstr.Format(_T("%.2X "),b);
+        b = FileData->GetData(Offset + i);
+        gcstr << gcstr.Format("%.2X ", b);
     }
     gcstr.Trim(true);
     return (gcstr);
@@ -105,26 +102,26 @@ wxString DAsmElement::getCodeStr()
 wxString DAsmElement::getAsciiStr()
 {
     static wxString gastr;
-    uint i,b;
+    uint i, b;
 
     gastr.Clear();
-    for (i=0;i<Length;i++)
+    for (i=0; i < Length; i++)
     {
-        b=uint(FileData->GetData(Offset+i));
-        b=b & 0xFF;
-        if ((b<32) || (b>126))
-            b='.';
-        gastr << gastr.Format(_T("%c"),b);
+        b = uint(FileData->GetData(Offset + i));
+        b = b & 0xFF;
+        if ((b < 32) || (b > 126))
+            b = '.';
+        gastr << gastr.Format("%c", b);
     }
     return (gastr);
 }
 
 
 
-uint DAsmElement::convertRelAbs(int reladdr)
+uint DAsmElement::convertRelAbs(int reladdr, uint _baseaddress)
 {
     unsigned int i;
-    i=(unsigned int)(*BaseAddress + MnItem->getBytesNo() + Offset + reladdr);
+    i = (unsigned int)(_baseaddress + MnItem->getBytesNo() + Offset + reladdr);
     return i;
 }
 
@@ -142,3 +139,4 @@ void DAsmElement::SetArgLabel(bool hal)
     else
         Style.hasArgumentLabel = 0;
 }
+

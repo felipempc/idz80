@@ -571,7 +571,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
         while ((!openfile.Eof()) && (str != _("[\\DASM]")))
         {
             ParseString(str, arr_str);
-            de = new DAsmElement(m_process->Program, &m_process->Program->StartAddress);
+            de = new DAsmElement(m_process->Program);
 			de->Style.hasArgumentLabel = 0;
 			de->Style.hasLabel = 0;
 			de->Style.arg1 = ast_hex;

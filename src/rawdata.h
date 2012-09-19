@@ -34,6 +34,19 @@ enum eFileType
 };
 typedef enum eFileType FileType;
 
+
+
+struct stCartHeader
+{
+	word	id;
+	word	init;
+	word	statement;
+	word	device;
+	word	text;
+};
+typedef struct stCartHeader CartHeader;
+
+
 class RawData
 {
     public:
@@ -48,7 +61,10 @@ class RawData
         FileType GetFileType();
         wxString GetFileTypeStr();
         void SetFileType(FileType filetype);
+        wxString DebugCartHeader();
         void DebugLog(wxTextCtrl *log);
+        void setCartridge(bool _cart);
+        bool isCartridge();
 
         uint            StartAddress,
                         ExecAddress,
@@ -60,14 +76,19 @@ class RawData
     private:
 		static const byte BIN_ID = 0xFE;
 		static const uint BIN_HEADER_SIZE = 7;
-		
+		static const word ID_CARTRIDGE_ROM = 0x4142;
+		static const word ID_CARTRIDGE_SUBROM = 0x4344;
+
+		CartHeader		m_cartridge;
         wxMemoryBuffer  m_buffer;
         wxString        m_filename;
         FileType        m_filetype;
         uint            m_bin_header_offset;
         wxTextCtrl      *m_TC_Log;
+        bool			m_iscartridge;
 
         bool ValidateBIN(unsigned char byte_id);
+        bool ValidateCartridge();
         void LogIt(const wxString &str);
 };
 

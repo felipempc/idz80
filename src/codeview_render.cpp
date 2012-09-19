@@ -34,12 +34,12 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
     dc.DrawText(str, x, start_y);
     x += dc.GetTextExtent(str).GetWidth();
 
-    str.Printf(_T("DB "));
+    str.Printf("DB ");
     for (i = 0; i < de->Length; i++)
     {
-        str << wxString::Format(_T("0x%.2X"),de->GetData(de->Offset + i));
+        str << wxString::Format("0x%.2X", de->GetData(de->Offset + i));
         if (i < (de->Length - 1))
-            str << _T(",");
+            str << ",";
     }
     dc.DrawText(str, x, start_y);
     argwidth = dc.GetTextExtent(str).GetWidth();
@@ -63,14 +63,15 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
 // Plots the instructions, return the last point of the plotted string
 uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 {
-    int nargs,
-        argsz,
-        x,
-        argwidth1,
-        argpos1,
-        argwidth2,
-        argpos2;
-    uint strparts;   // counts the number of mnemonic str used
+    int		nargs,
+			argsz,
+			x,
+			argwidth1,
+			argpos1,
+			argwidth2,
+			argpos2;
+    uint	strparts,   // counts the number of mnemonic str used
+			argument;
     wxString str;
     bool usedlabel;
     DAsmElement *de;
@@ -89,21 +90,23 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     x += dc.GetTextExtent(str).GetWidth();
     argpos1 = x;
 
+	argument = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
+	
     if (de->Style.hasArgumentLabel)
     {
         switch (de->MnItem->getArgType(0))
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
-                            if (m_process->prog_labels->GetLabel(de->getArgument(0),str))
+                            if (m_process->prog_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_IO_ADDR:
-                            if (m_process->io_labels->GetLabel(de->getArgument(0),str))
+                            if (m_process->io_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_VARIABLE:
-                            if (m_process->var_labels->GetLabel(de->getArgument(0),str))
+                            if (m_process->var_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_NONE:
@@ -136,14 +139,14 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     {
         dc.SetTextForeground(*wxRED);
 
-		str = FormatArg(de->getArgument(0), de->Style.arg1);
+		str = FormatArg(argument, de->Style.arg1);
 
         dc.DrawText(str, x, start_y);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
         x += argwidth1;
         if (cvi->RectArg1 == 0)
         {
-            cvi->RectArg1 = new wxRect(argpos1, start_y,argwidth1,m_fontHeight);
+            cvi->RectArg1 = new wxRect(argpos1, start_y, argwidth1, m_fontHeight);
         }
         else
         {
@@ -158,7 +161,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     {
         dc.SetTextForeground(*wxRED);
 
-		str = FormatArg(de->getArgument(0), de->Style.arg1);
+		str = FormatArg(argument, de->Style.arg1);
         //str.Printf(_T("0x%X"),de->getArgument(0));
         dc.DrawText(str, x, start_y);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
@@ -172,7 +175,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
         argpos2 = x;
 
         dc.SetTextForeground(*wxRED);
-        str = FormatArg(de->getArgument(1), de->Style.arg2);
+        str = FormatArg(de->getArgument(1, 0), de->Style.arg2);
         //str.Printf(_T("0x%X"),de->getArgument(1));
         dc.DrawText(str, x, start_y);
         argwidth2 = dc.GetTextExtent(str).GetWidth();
@@ -233,7 +236,7 @@ uint CodeView::RenderOrigin(wxDC &dc, const int start_y,uint address)
     wxString str;
 
     x = COL_MNEM;
-    str.Printf(_T("ORG %XH"),address);
+    str.Printf("ORG %XH",address);
     dc.SetTextForeground(FG_TextColor);
     dc.DrawText(str, x, start_y);
     x += dc.GetTextExtent(str).GetWidth();
@@ -286,7 +289,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 					de = m_process->m_Dasm->GetData(cvi->Dasmitem);
 					if (de != 0)
 					{
-						address = m_process->m_Dasm->GetBaseAddress() + de->Offset;
+						address = m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem) + de->Offset;
 
 						dc.SetTextForeground(FG_TextColor);
 						dc.DrawText(de->getCodeStr(), COL_CODE, linepixel);
@@ -316,9 +319,9 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                 {
                         if (cvi->LabelProgAddr != -1)   // Is it a label ?
                         {
-                            if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
+                            if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str) >= 0)
                             {
-                                str << _T(":");
+                                str << ":";
                                 RenderProgramLabel(dc, linepixel, str);
                                 address = cvi->LabelProgAddr;
                                 firstInstruction = true;
@@ -332,9 +335,9 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 
                         if (cvi->LabelVarAddr != -1)   // Is it a label ?
                         {
-                            if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str))
+                            if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str) >= 0)
                             {
-                                str << _T(":");
+                                str << ":";
                                 RenderProgramLabel(dc, linepixel, str);
                                 address = cvi->LabelVarAddr;
                                 firstInstruction = true;
@@ -353,7 +356,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 			 * -------------------------------------------------*/
 			if (firstInstruction)
 			{
-				str.Printf(_T("0x%.4X"), address);
+				str.Printf("0x%.4X", address);
 				dc.DrawText(str, COL_ADDRESS, linepixel);
 			}
 
@@ -395,15 +398,15 @@ wxString CodeView::FormatArg(uint arg, uint style)
 	switch (style)
 	{
 		case ast_dec:
-			str.Printf(_T("%dD"), arg);
+			str.Printf("%dD", arg);
 			break;
 		case ast_bin:
 			str.Printf(IntToBin(arg));
-			str << _("B");
+			str << "B";
 			break;
 		case ast_hex:
 		default:
-			str.Printf(_T("%XH"), arg);
+			str.Printf("%XH", arg);
 			break;
 	}
 	return str;
@@ -423,12 +426,12 @@ wxString IntToBin(uint conv)
 		temp = conv & bitmask;
 		if (temp > 0)
 		{
-			str << _("1");
+			str << "1";
 			printzero = true;
 		}
 		else
 			if (printzero)
-				str << _("0");
+				str << "0";
 		bitmask = bitmask >> 1;
 	}
 	return str;

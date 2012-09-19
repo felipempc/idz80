@@ -28,13 +28,14 @@
 DAsmData::DAsmData()
 {
     totalAllocated = 0;
-    BaseAddress = 0;
+    dbglog = 0;
 }
 
 
 DAsmData::~DAsmData()
 {
     Clear();
+    m_baseAddress.Clear();
 }
 
 void DAsmData::Clear()
@@ -90,8 +91,8 @@ uint DAsmData::GetUsedMem()
 void DAsmData::DelDasm(DAsmElement *dasmelement)
 {
     if (dasmelement != NULL)
-	{	//delete dasmelement;
-        Data.Remove((void *)dasmelement);
+	{
+		Data.Remove((void *)dasmelement);
 		totalAllocated -= sizeof(DAsmElement);
 	}
 }
@@ -134,9 +135,72 @@ void DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
 }
 
 
-uint DAsmData::GetBaseAddress()
+uint DAsmData::GetBaseAddress(uint index)
 {
-    return BaseAddress;
+	uint	i,
+			j,
+			count,
+			baseaddress = 0;
+	
+	count = m_baseAddress.GetCount();
+	for(i = 0; i < count; i++)
+	{
+		j = m_baseAddress[i];
+		if (index >= j)
+			baseaddress = m_baseAddress[++i];
+	}
+    return baseaddress;
 }
 
 
+void DAsmData::AddOrgAddress(uint index, uint address)
+{
+	uint	i,
+			j,
+			count;
+	bool	found = false;
+	
+	count = m_baseAddress.GetCount();
+	if (count > 0)
+	{
+		for(i = 0; i < count; i++)
+		{
+			j = m_baseAddress[i];
+			if (index == j)
+			{
+				m_baseAddress[++i] = address;
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			m_baseAddress.Add(index);
+			m_baseAddress.Add(address);
+		}
+	}
+	else
+	{
+		m_baseAddress.Add(index);
+		m_baseAddress.Add(address);
+	}
+}
+
+
+void DAsmData::DelOrgAddress(uint address)
+{
+	uint	i,
+			j,
+			count;
+	
+	count = m_baseAddress.GetCount();
+	for(i = 0; i < count; i++)
+	{
+		j = m_baseAddress[++i];
+		if (j == address)
+		{
+			m_baseAddress.RemoveAt(--i, 2);
+			break;
+		}
+	}
+}

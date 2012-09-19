@@ -20,10 +20,25 @@
 005C FCBDOS       # FCB used for BDOS (DATA)
 0080 DTA          # Initial address of DTA (DATA)
                   # command line params
-
-
 F37D DISKBASIC    # BDOS
 [/CALLS]
+
+
+
+[IOMAP]
+98 VDP_DATA
+99 VDP_STAT_CTRL
+9A VDP_REGPAL
+9B VDP_REG
+A0 PSG_ADDRESS
+A1 PSG_WR
+A2 PSG_RD
+A8 PPI_SLTSLC
+A9 PPI_RD_KEYB
+AA PPI_CLK_KEYB
+AB PPI_COMMAND
+[/IOMAP]
+
 
 [FUNCTIONS]
 # IO

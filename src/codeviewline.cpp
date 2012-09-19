@@ -357,7 +357,7 @@ bool CodeViewLine::getDataLineAddress(uint addr, int &index)
             if (cvi->Dasmitem >= 0)
             {
                 de = m_dasm->GetData(cvi->Dasmitem);
-                a = m_dasm->GetBaseAddress() + de->Offset;
+                a = m_dasm->GetBaseAddress(cvi->Dasmitem) + de->Offset;
                 if (a == addr)
                 {
                     found = true;
@@ -405,7 +405,7 @@ void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
             if (labadress >= 0)
             {
                 de = m_dasm->GetData(indexdasm);
-                address = m_dasm->GetBaseAddress() + de->Offset;
+                address = m_dasm->GetBaseAddress(indexdasm) + de->Offset;
                 if (address >= labadress)
                     indexline++;
 

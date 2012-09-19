@@ -56,21 +56,21 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     wxClientDC dc(this);
 
     font = new wxFont(9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL,
-            wxFONTWEIGHT_NORMAL, false, wxT("Courier New 10 Pitch"));
+            wxFONTWEIGHT_NORMAL, false, "Courier New 10 Pitch");
     dc.SetFont(*font);
-    m_fontHeight = dc.GetTextExtent(_("X")).GetHeight();
-    m_fontWidth = dc.GetTextExtent(_("X")).GetWidth();
+    m_fontHeight = dc.GetTextExtent("X").GetHeight();
+    m_fontWidth = dc.GetTextExtent("X").GetWidth();
 
     SetScrollRate(0,m_fontHeight);
     SetVirtualSize(wxDefaultCoord,m_fontHeight);
 
-    BackGroundColor.Set(_("WHITE"));
-    ForeGroundColor.Set(_("BLACK"));
-    SelectedItemColor.Set(_("YELLOW"));
-    BGArgumentColor.Set(_T("YELLOW"));
-    FGArgumentColor.Set(_T("GOLD"));
-    FG_TextColor.Set(_T("BLACK"));
-    FG_LabelColor.Set(_T("BLUE"));
+    BackGroundColor.Set("WHITE");
+    ForeGroundColor.Set("BLACK");
+    SelectedItemColor.Set("YELLOW");
+    BGArgumentColor.Set("YELLOW");
+    FGArgumentColor.Set("GOLD");
+    FG_TextColor.Set("BLACK");
+    FG_LabelColor.Set("BLUE");
 
 
     Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::OnScrollLineDown, this);
@@ -91,7 +91,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     Bind(wxEVT_RIGHT_DOWN, &CodeView::OnMouseRightDown, this);
     Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
     //TODO: Improve focus highlight
-    //Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
+    Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
     Bind(wxEVT_MOUSEWHEEL, &CodeView::OnMouseWheel, this);
 
     // KEYBOARD events
@@ -281,7 +281,7 @@ void CodeView::Clear()
     ClearSelection();
     IsFocused = false;
     IsEmpty = true;
-    if (!(m_process->m_Dasm == 0))
+    if (m_process->m_Dasm != 0)
         m_process->m_Dasm->Clear();
 
     m_CodeViewLine->Clear();
@@ -605,19 +605,19 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                         break;
         case C_KEY:
 						#ifdef IDZ80DEBUG
-                        LogIt(_("Event Disasm !\n"));
+                        LogIt("Event Disasm !\n");
                         #endif
                         AddPendingEvent(evtDisassemble);
                         break;
         case D_KEY:
 						#ifdef IDZ80DEBUG
-                        LogIt(_("Event makeData !\n"));
+                        LogIt("Event makeData !\n");
                         #endif
                         AddPendingEvent(evtMakeData);
                         break;
 
         default:
-                        //LogIt(wxString::Format(_("%d pressed !\n"),key));
+                        //LogIt(wxString::Format("%d pressed !\n",key));
                         event.Skip();
     }
 }
@@ -666,7 +666,7 @@ void CodeView::OnSize(wxSizeEvent& event)
 
 void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
 {
-    TC_Log->AppendText(_("Search Menu Clicked !!!\n"));
+    TC_Log->AppendText("Search Menu Clicked !!!\n");
 }
 
 
@@ -684,7 +684,7 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     ll = fl + m_linesShown - 1;
     cvi = m_CodeViewLine->getData(CursorPosition);
     de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-    address = de->getArgument(0);
+    address = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
     m_CodeViewLine->getDataLineAddress(address, i);
 
     if (i >= 0)
@@ -709,8 +709,10 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
 
 }
 
-// Returns the first and the last line of instruction / data
-bool CodeView::FilterInstructions(wxArrayInt &range)
+/* Returns the first and the last line of instruction / data
+ * Returns program labels
+ */
+bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels)
 {
     bool	foundindex;
     int		i, last_i;
@@ -739,6 +741,11 @@ bool CodeView::FilterInstructions(wxArrayInt &range)
                 last_i = i;
             }
         }
+        if ((plabels != 0) && (cvi->LabelProgAddr >= 0))
+		{
+			plabels->Add(cvi->LabelProgAddr);
+			LogIt(wxString::Format("Label to delete: %.4x\n", cvi->LabelProgAddr));
+		}
     }
     if (foundindex)
         range.Add(last_i);
@@ -750,24 +757,35 @@ bool CodeView::FilterInstructions(wxArrayInt &range)
 }
 
 
-
+/*
+ * Take selected lines of code and convert to lines
+ * of data.
+ * Delete program labels;
+ * Keeps var labels;
+ * Keeps comments;
+ * keeps org directives;
+ */
 void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
     int 			i, newLineCount, lineIndex, lineLast, lineCount,
 					j, oldLineCount;
-    wxArrayInt		cvlines;
+    wxArrayInt		cvlines, proglabels;
 	
 	//TODO: Create a function to remove unused labels
 	//FIXME: It's removing line with var labels
-	//FIXME: Duplicating lines when reassembling lines with labels
 
-    if (!FilterInstructions(cvlines))
+    if (!FilterInstructions(cvlines, &proglabels))
 		return;
 
     if (cvlines.GetCount() > 0)
     {
+		for(i = 0; i < proglabels.GetCount(); i++)
+		{
+			m_process->prog_labels->DelLabel(proglabels[i]);
+		}
+		
         lineIndex = cvlines[0];
         lineLast = cvlines[1];
         lineCount = lineLast - lineIndex + 1;
@@ -783,8 +801,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 		j = 0;
         for (i = 0; i < lineCount; i++)
 		{
-			if ((m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0) ||
-				(m_CodeViewLine->getData(lineIndex + j)->LabelVarAddr >= 0))
+			if (m_CodeViewLine->getData(lineIndex + j)->LabelVarAddr >= 0)
 				j++;
 			else
 				m_CodeViewLine->Del(lineIndex + j);
@@ -812,7 +829,7 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
     int				lineIndex, lineLast, lineCount;
     wxArrayInt		cvlines;
 
-	if (!FilterInstructions(cvlines))
+	if (!FilterInstructions(cvlines, 0))
 		return;
 
 	if (cvlines.GetCount() > 0)
@@ -864,12 +881,12 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
     {
         if (cvi->Comment == 0)
         {
-            comment=::wxGetTextFromUser(_("Add Comment"), _("Add"));
+            comment = ::wxGetTextFromUser("Add Comment", "Add");
             if (!comment.IsEmpty())
             {
                 comment=comment.Trim(false);
-                if (comment.Left(1) != _T(";"))
-                    comment.Prepend(_("; "));
+                if (comment.Left(1) != ";")
+                    comment.Prepend("; ");
                 m_CodeViewLine->AppendComment(comment, CursorPosition);
                 Refresh();
             }
@@ -884,12 +901,12 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 
     cvi = m_CodeViewLine->getData(CursorPosition);
 	if ((cvi != 0) && (cvi->Comment != 0))
-		comment = ::wxGetTextFromUser(_("Edit Comment"), _("Edit"), cvi->Comment->CommentStr);
+		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->CommentStr);
 	if (!comment.IsEmpty())
 	{
 		comment = comment.Trim(false);
-		if (comment.Left(1) != _T(";"))
-			comment.Prepend(_("; "));
+		if (comment.Left(1) != ";")
+			comment.Prepend("; ");
 		m_CodeViewLine->Edit(comment,CursorPosition);
 		Refresh();
 	}
@@ -912,17 +929,17 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuOD_Matrix(wxCommandEvent &event)
 {
-	LogIt(_("Data Matrixed !!\n"));
+	LogIt("Data Matrixed !!\n");
 }
 
 void CodeView::OnPopUpMenuOD_String(wxCommandEvent& event)
 {
-	LogIt(_("Data stringed !!\n"));
+	LogIt("Data stringed !!\n");
 }
 
 void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
 {
-	LogIt(_("Data numbered !!\n"));
+	LogIt("Data numbered !!\n");
 }
 
 void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
@@ -942,7 +959,7 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 {
-	LogIt(_("Label deleted !!\n"));
+	LogIt("Label deleted !!\n");
 }
 
 
@@ -1046,6 +1063,9 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 	DAsmElement *de;
 	CodeViewItem *cvi;
 	bool testcomment = false;
+	wxPoint mousept;
+	
+	CalcUnscrolledPosition(pt.x, pt.y, &mousept.x, &mousept.y);
 
 	m_iteminfo.type = siUnknown;
 	
@@ -1067,12 +1087,12 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 			m_iteminfo.type = siLineLabelVar;
 
 		// If clicked over an instruction argument, discover which was
-		if ((cvi->RectArg1 != 0) && (cvi->RectArg1->Contains(pt)))
+		if ((cvi->RectArg1 != 0) && (cvi->RectArg1->Contains(mousept)))
 			m_iteminfo.argSelected = 1;
 		else
 			m_iteminfo.argSelected = 0;
 
-		if ((cvi->RectArg2 != 0) && (cvi->RectArg2->Contains(pt)))
+		if ((cvi->RectArg2 != 0) && (cvi->RectArg2->Contains(mousept)))
 			m_iteminfo.argSelected = 2;
 
 		// check if line has instruction
@@ -1111,6 +1131,6 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 // TODO: Remove debug log it function
 void CodeView::LogIt(const wxString &str)
 {
-    if (TC_Log!=0)
+    if (TC_Log != 0)
         TC_Log->AppendText(str);
 }

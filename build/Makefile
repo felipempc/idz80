@@ -26,7 +26,7 @@ ifeq ($(DEBUG), 0)
 	# Release
 	CC_FLAGS = -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads
 	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
-	INCLUDE0_PATH = $(WXW)\lib\gcc_dll\mswu
+	INCLUDE0_PATH = $(WXW)\lib\mswu
 	LIBFILE1 = -lwxbase$(WXWVERSION)u_gcc_custom
 	LIBFILE2 = -lwxmsw$(WXWVERSION)u_aui_gcc_custom
 	LIBFILE3 = -lwxmsw$(WXWVERSION)u_core_gcc_custom
@@ -34,7 +34,7 @@ else
 	# DEBUG
 	CC_FLAGS = -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -g
 	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG
-	INCLUDE0_PATH = $(WXW)\lib\gcc_dll\mswud
+	INCLUDE0_PATH = $(WXW)\lib\mswud
 	LIBFILE1 = -lwxbase$(WXWVERSION)ud_gcc_custom
 	LIBFILE2 = -lwxmsw$(WXWVERSION)ud_aui_gcc_custom
 	LIBFILE3 = -lwxmsw$(WXWVERSION)ud_core_gcc_custom
@@ -53,7 +53,7 @@ LD_FLAGS = -Wl,--subsystem,windows -mwindows
 LIBS = $(LIBFILE1) $(LIBFILE2) $(LIBFILE3)
 
 # libraries's path
-LIBPATH = -L$(WXW)\lib\gcc_dll
+LIBPATH = -L$(WXW)\lib
 
 # Project's path
 ifeq ($(DEBUG), 0)
@@ -73,6 +73,7 @@ EXECFILE = $(BINDIR)\idz80_make.exe
 OBJS = $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\FileTypeDialog.o \
 	$(OBJDIR)\MnemonicItem.o \
+	$(OBJDIR)\systemlabels.o \
 	$(OBJDIR)\ProcessData.o \
 	$(OBJDIR)\codeview.o \
 	$(OBJDIR)\codeview_evmouse.o \
@@ -127,6 +128,10 @@ $(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialo
 $(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h
 	@echo $(SRCDIR)\MnemonicItem.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\MnemonicItem.cpp $(INCLUDE)
+
+$(OBJDIR)\systemlabels.o: $(SRCDIR)\systemlabels.cpp $(SRCDIR)\systemlabels.h
+	@echo $(SRCDIR)\systemlabels.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\systemlabels.cpp $(INCLUDE)
 
 $(OBJDIR)\ProcessData.o: $(SRCDIR)\ProcessData.cpp $(SRCDIR)\ProcessData.h
 	@echo $(SRCDIR)\ProcessData.cpp

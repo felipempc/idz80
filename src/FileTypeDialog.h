@@ -13,14 +13,13 @@
 #ifndef FILETYPEDIALOG_H
 #define FILETYPEDIALOG_H
 
-//(*Headers(FileTypeDialog)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/radiobox.h>
 #include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/dialog.h>
-//*)
+
 
 #include <wx/checkbox.h>
 #include "rawdata.h"
@@ -32,7 +31,7 @@ class FileTypeDialog: public wxDialog
 		FileTypeDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
 		virtual ~FileTypeDialog();
 
-		//(*Declarations(FileTypeDialog)
+
 		wxTextCtrl		*Txt_ExecAddress;
 		wxStaticText	*StaticText2;
 		wxPanel			*Panel1;
@@ -46,7 +45,8 @@ class FileTypeDialog: public wxDialog
 		wxTextCtrl		*Txt_StartAddress;
 		wxCheckBox		*cb_autodisassemble;
 		wxCheckBox		*cb_autolabel;
-		//*)
+		wxCheckBox		*cb_cartridge;
+
 
 		void SetData(RawData& program);
 		uint GetStartAddress();
@@ -55,13 +55,12 @@ class FileTypeDialog: public wxDialog
 
 	protected:
 
-		//(*Identifiers(FileTypeDialog)
-		static const long ID_STATICTEXT1;
-		static const long ID_TEXTCTRL1;
-		static const long ID_STATICTEXT2;
-		static const long ID_TEXTCTRL2;
-		static const long ID_STATICTEXT3;
-		static const long ID_TEXTCTRL3;
+		static const long ID_TXT_START;
+		static const long ID_TXTCTRL_START;
+		static const long ID_TXT_EXECUTION;
+		static const long ID_TXTCTRL_EXECUTION;
+		static const long ID_TXT_END;
+		static const long ID_TXTCTRL_END;
 		static const long ID_PANEL2;
 		static const long ID_RADIOBOX1;
 		static const long ID_PANEL1;
@@ -69,18 +68,18 @@ class FileTypeDialog: public wxDialog
 		static const long ID_PANEL4;
 		static const long ID_CHKBOX1;
 		static const long ID_CHKBOX2;
-
-		//*)
+		static const long ID_CHKBOX_CARTRIDGE;
 
 	private:
 
-		//(*Handlers(FileTypeDialog)
-		//*)
-        uint StartAddress, ExecAddress,EndAddress;
+        uint	StartAddress,
+				ExecAddress,
+				EndAddress;
         RawData *m_program;
-        void SyncAddress();
 
+		void SyncAddress();
         void OnRadioBoxSelect(wxCommandEvent &event);
+        void OnChkBoxCartridge(wxCommandEvent &event);
 
 		DECLARE_EVENT_TABLE()
 };

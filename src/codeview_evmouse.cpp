@@ -15,6 +15,7 @@
 
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
+#include <wx/mousestate.h>
 #include "codeview.h"
 #include "d_asm_element.h"
 
@@ -61,7 +62,8 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 {
-	//DEBUG:
+	
+	/* DEBUG:
     wxString str;
     DAsmElement* de;
     CodeViewItem* cvi;
@@ -92,6 +94,7 @@ void CodeView::OnMouseLeftUp(wxMouseEvent& event)
     str << wxString::Format("Arg Selected: %d\n\n", m_iteminfo.argSelected);
     
     LogIt(str);
+    */
 }
 
 
@@ -210,9 +213,9 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 				case	siLineLabelProg:
 				case	siLineLabelVar:
 										labelMenu = new wxMenu();
-										labelMenu->Append(idPOPUP_LBL_EDIT, "Edit");
+										labelMenu->Append(idPOPUP_EDITLABEL, "Edit");
 										labelMenu->AppendSeparator();
-										labelMenu->Append(idPOPUP_LBL_DEL, "Delete");
+										labelMenu->Append(idPOPUP_DELLABEL, "Delete");
 
 				case	siInstruction:
 										if ((m_iteminfo.type != siLineLabelProg) &&
@@ -243,11 +246,11 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 			
             if ((m_iteminfo.type == siComments) || (m_iteminfo.hasComment))
             {
-                PopUp->Append(idPOPUP_EDITCOMMENT,_T("Edit comment"));
-                PopUp->Append(idPOPUP_DELCOMMENT,_T("Del comment"));
+                PopUp->Append(idPOPUP_EDITCOMMENT, "Edit comment");
+                PopUp->Append(idPOPUP_DELCOMMENT, "Del comment");
             }
             else
-                PopUp->Append(idPOPUP_ADDCOMMENT,_T("Add comment"));
+                PopUp->Append(idPOPUP_ADDCOMMENT, "Add comment");
 			
         } // ************** ONE SELECTION ********************<
       
@@ -263,6 +266,14 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 // TODO: Rewrite this
 void CodeView::OnMouseMove(wxMouseEvent& event)
 {
+	wxMouseState	ms;
+	
+	if (event.Dragging() && Selecting)
+		if (ms.LeftIsDown())
+			LogIt("Selecting...\n");
+		else
+			LogIt("Dragging...\n");
+/*
     CodeViewItem *cvi;
     wxPoint pt;
     wxClientDC  dc(this);
@@ -357,6 +368,7 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
             lastfocus2=false;
         }
     }
+*/
 }
 
 

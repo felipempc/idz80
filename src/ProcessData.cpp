@@ -34,6 +34,9 @@ ProcessData::ProcessData(wxWindow *parent)
     var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    sys_calls =  new SystemLabelList("CALLS");
+    sys_vars = new SystemLabelList("SYSVAR");
+    sys_io = new SystemLabelList("IOMAP");
 
     m_gauge = NULL;
     m_log = 0;
@@ -42,6 +45,9 @@ ProcessData::ProcessData(wxWindow *parent)
 
 ProcessData::~ProcessData()
 {
+	delete sys_calls;
+	delete sys_vars;
+	delete sys_io;
     delete m_CodeViewLine;
     delete io_labels;
     delete prog_labels;
@@ -117,7 +123,7 @@ void ProcessData::DisassembleFirst()
     for (i = 0; i < f; i++)
     {
         item = MatchOpcode(i, f);
-        de = new DAsmElement(Program, &m_Dasm->BaseAddress);
+        de = new DAsmElement(Program);
         de->Style.hasArgumentLabel = 0; // false;
         de->Style.hasLabel = 0;   //false;
         de->Style.arg1 = ast_hex;
@@ -192,7 +198,7 @@ void ProcessData::DisassembleItems(RangeItems &r)
             item = MatchOpcode(i, prange.Count);
             if (item == OPCODE_NOT_MATCHED)
             {
-                de = new DAsmElement(Program, &m_Dasm->BaseAddress);
+                de = new DAsmElement(Program);
                 memset(de->Args,'\0',sizeof(OpCodeArguments));
                 memset(de->Code,'\0',sizeof(ByteCode));
 				de->Style.hasArgumentLabel = 0; // false;
@@ -215,7 +221,7 @@ void ProcessData::DisassembleItems(RangeItems &r)
             }
             else
             {
-                de = new DAsmElement(Program, &m_Dasm->BaseAddress);
+                de = new DAsmElement(Program);
 				de->Style.hasArgumentLabel = 0; // false;
 				de->Style.hasLabel = 0;   //false;
 				de->Style.arg1 = ast_hex;
@@ -273,7 +279,7 @@ void ProcessData::MakeData(RangeItems &r)
         m_Dasm->DelDasm(de);
         for (j = 0; j < length; j++)
         {
-            de = new DAsmElement(Program,&m_Dasm->BaseAddress);
+            de = new DAsmElement(Program);
 			de->Style.hasArgumentLabel = 0; // false;
 			de->Style.hasLabel = 0;   //false;
 			de->Style.arg1 = ast_hex;
@@ -317,21 +323,27 @@ void ProcessData::AutoLabel()
                 {
                     case ARG_VARIABLE:
                                         dasmtemp->Style.hasArgumentLabel = 1;
-                                        addr = dasmtemp->getArgument(0);
-                                        str.Printf(_("VAR%d"), nargsVar++);
+                                        addr = dasmtemp->getArgument(0, 0);
+                                        str = sys_vars->Find(addr);
+                                        if (str.IsEmpty())
+											str.Printf("VAR%d", nargsVar++);
                                         var_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
-                                        addr = dasmtemp->getArgument(0);
-                                        dasmtemp->Style.hasArgumentLabel = 1;
-                                        str.Printf(_("LABEL%d"), nargsProg++);
+                                        addr = dasmtemp->getArgument(0, m_Dasm->GetBaseAddress(i));
+                                        str = sys_calls->Find(addr);
+                                        if (str.IsEmpty())
+											str.Printf("LABEL%d", nargsProg++);
                                         prog_labels->AddLabel(addr, str, i);
+										dasmtemp->Style.hasArgumentLabel = 1;
                                         break;
                     case ARG_IO_ADDR:
-                                        addr = dasmtemp->getArgument(0);
+                                        addr = dasmtemp->getArgument(0, 0);
                                         dasmtemp->Style.hasArgumentLabel = 1;
-                                        str.Printf(_("PORT%d"), nargsIO++);
+                                        str = sys_io->Find(addr);
+                                        if (str.IsEmpty())
+											str.Printf("PORT%d", nargsIO++);
                                         io_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_NONE:
@@ -360,20 +372,20 @@ void ProcessData::InitData()
     if (!m_CodeViewLine->IsEmpty())
          m_CodeViewLine->Clear();
 
-    m_Comments.Add(_T("; ------------------------"));
-    m_Comments.Add(_T("; Disassembled with IDZ80"));
-    m_Comments.Add(_T("; 2010 by Felipempc"));
-    m_Comments.Add(_T("; ------------------------"));
-    m_Comments.Add(_T(""));
+    m_Comments.Add("; ------------------------");
+    m_Comments.Add("; Disassembled with IDZ80");
+    m_Comments.Add("; 2010 by Felipempc");
+    m_Comments.Add("; ------------------------");
+    m_Comments.Add("");
 
     i = 0;
     while (i < m_Comments.GetCount())
         m_CodeViewLine->Add(m_Comments[i++]);
 
-    m_CodeViewLine->AddOrg(m_Dasm->GetBaseAddress(), _(""));
+    m_CodeViewLine->AddOrg(m_Dasm->GetBaseAddress(0), "");
     i = 0;
     while (i < m_Dasm->GetCount())
-        m_CodeViewLine->AddDasm(i++, _T(""));
+        m_CodeViewLine->AddDasm(i++, "");
 }
 
 
@@ -388,14 +400,14 @@ void ProcessData::processLabel()
     while (i < prog_labels->GetItemCount())
     {
         lbl = (LabelItem *)prog_labels->GetItemData(i);
-        if ((lbl !=0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
+        if ((lbl != 0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {
-                m_CodeViewLine->InsertProgLabel(lbl->Address, _T(""), a);
+                m_CodeViewLine->InsertProgLabel(lbl->Address, "", a);
             }
             else
-                m_CodeViewLine->EditProgLabel(lbl->Address, _T(""), a);
+                m_CodeViewLine->EditProgLabel(lbl->Address, "", a);
         }
         i++;
     }
@@ -410,10 +422,10 @@ void ProcessData::processLabel()
         {
             if (a >= 0)
             {
-                m_CodeViewLine->InsertVarLabel(lbl->Address,_T(""), a);
+                m_CodeViewLine->InsertVarLabel(lbl->Address, "", a);
             }
             else
-                m_CodeViewLine->EditVarLabel(lbl->Address,_T(""), a);
+                m_CodeViewLine->EditVarLabel(lbl->Address, "", a);
         }
         i++;
     }
@@ -426,9 +438,13 @@ void ProcessData::processLabel()
 void ProcessData::SetLog(wxTextCtrl *_lg)
 {
     m_log = _lg;
+    m_Dasm->dbglog = _lg;
     io_labels->SetLog(_lg);
     var_labels->SetLog(_lg);
     prog_labels->SetLog(_lg);
     Program->DebugLog(_lg);
+    sys_io->SetLog(_lg);
+	sys_calls->SetLog(_lg);
+	sys_vars->SetLog(_lg);
 }
 

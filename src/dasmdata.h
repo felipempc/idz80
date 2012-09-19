@@ -35,16 +35,20 @@ class DAsmData
         uint GetCount();
         bool IsLoaded();
         uint GetUsedMem();
-        uint GetBaseAddress();
-
-        uint            BaseAddress;
-
+        uint GetBaseAddress(uint index);
+        void AddOrgAddress(uint index, uint address);
+        void DelOrgAddress(uint address);
+        
+        wxTextCtrl *dbglog;
+        
+        
         DAsmData();
         ~DAsmData();
 
     private:
         wxArrayPtrVoid  Data;
         uint            totalAllocated;
+        wxArrayInt		m_baseAddress;		// keeps Origin Addresses
 };
 
 

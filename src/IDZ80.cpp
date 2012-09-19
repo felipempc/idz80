@@ -14,6 +14,7 @@
 #include "version.h"
 #include "FileTypeDialog.h"
 #include "ShowFileInfo.h"
+#include "systemlabels.h"
 
 #include <wx/filefn.h>
 #include <wx/filename.h>
@@ -253,8 +254,6 @@ IDZ80::~IDZ80()
     delete icons;
     delete codeview;
     delete process;
-	//(*Destroy(IDZ80)
-	//*)
 }
 
 
@@ -270,12 +269,11 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 {
 	bool result;
 	// this is needed to stop catching this event all the time
-	//result = Disconnect(wxEVT_IDLE,(wxObjectEventFunction)&IDZ80::OnFirstIdle);
 	result = Unbind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
 
 	#ifdef IDZ80DEBUG
 	if (!result)
-		PanelLog->AppendText(_T("*** First Idle Event failed to unbind !\n\n"));
+		PanelLog->AppendText("*** First Idle Event failed to unbind !\n\n");
 	#endif
 
     StatusBar1->SetStatusText(m_currentDir);
@@ -284,6 +282,14 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	{
 		OpenProgramFile(m_commandline[1]);
 	}
+	
+	
+	process->sys_calls->Open("X:/idz80/Labels.txt");
+	process->sys_vars->Open("X:/idz80/Labels.txt");
+	if (!process->sys_io->Open("X:/idz80/Labels.txt"))
+		PanelLog->AppendText("Error in sys_io !!\n");
+		
+	PanelLog->AppendText(wxString::Format("byte = %d, word = %d, int = %d\n", sizeof(byte), sizeof(word), sizeof(uint)));
 }
 
 
@@ -295,25 +301,25 @@ bool IDZ80::LoadMnemonicsDB()
     wxString s;
     bool ret;
 
-    s = m_currentDir + _("/Z80_OpCode_AlmostFull.txt");
+    s = m_currentDir + "/Z80_OpCode_AlmostFull.txt";
 
     PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-    PanelLog->AppendText(_T("Opening mnemonic file:\n"));
+    PanelLog->AppendText("Opening mnemonic file:\n");
     PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
     PanelLog->AppendText(s);
-    PanelLog->AppendText(_T("\n"));
+    PanelLog->AppendText("\n");
 
     ret = process->Mnemonics->Open(s);
     if (ret)
     {
         PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-        PanelLog->AppendText(_T("Mnemonics OK !\n"));
+        PanelLog->AppendText("Mnemonics OK !\n");
     }
 
     else
     {
         PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
-        PanelLog->AppendText(_T("Mnemonics FAILED !\n"));
+        PanelLog->AppendText("Mnemonics FAILED !\n");
     }
 
     return ret;
@@ -332,8 +338,8 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 	ret = process->Program->Open(filename);
 	if (!ret)
 	{
-		caption.Printf(_("Could not open '%s' !"), filename.c_str());
-		wxMessageBox(caption,_("Error..."));
+		caption.Printf("Could not open '%s' !", filename.c_str());
+		wxMessageBox(caption, "Error...");
 	}
 	else
 	{
@@ -349,23 +355,24 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 		UpdateTitle(caption);
 
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-		PanelLog->AppendText(_T("Opened file:\n"));
+		PanelLog->AppendText("Opened file:\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
 		PanelLog->AppendText(filename);
-		PanelLog->AppendText(_T("\n"));
+		PanelLog->AppendText("\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-		PanelLog->AppendText(_T("File size: "));
+		PanelLog->AppendText("File size: ");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
-		info.Printf(_("%d bytes\n"),process->Program->GetBufferSize());
+		info.Printf("%d bytes\n",process->Program->GetBufferSize());
 		PanelLog->AppendText(info);
+		
 		config.SetData(*process->Program);
 		config.ShowModal();
+		
 		process->Program->StartAddress = config.GetStartAddress();
 		process->Program->ExecAddress = config.GetExecAddress();
 		process->Program->EndAddress = config.GetEndAddress();
-		process->m_Dasm->BaseAddress = config.GetStartAddress();
+		process->m_Dasm->AddOrgAddress(0, config.GetStartAddress());
 
-		Clear_all();
 		m_project->New();
 		if (config.cb_autodisassemble->IsChecked())
 		{
@@ -416,14 +423,14 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 
     if (event.GetId() == idMenuFileOpenArchive)
     {
-        caption = _("Choose a file");
-        wildcard = _("Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*");
+        caption = "Choose a file";
+        wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
     }
     else
         if (event.GetId() == idMenuFileOpenProject)
         {
-            caption = _("Choose a project");
-            wildcard = _("Project files (*.dap)|*.dap|All files (*.*)|*.*");
+            caption = "Choose a project";
+            wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
             project = true;
         }
         else
@@ -436,7 +443,7 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
         // Era : if (dialog.ShowModal() == wxID_OK)
 		//DEBUG STUFF
 		int dlgret = dialog.ShowModal();
-		PanelLog->AppendText(wxString::Format(_("Dialog returns: %d\n"), dlgret));
+		PanelLog->AppendText(wxString::Format("Dialog returns: %d\n", dlgret));
         if (dlgret == wxID_OK)
         {
             fname = dialog.GetPath();
@@ -451,12 +458,15 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 
             }
             else    //load a file
+            {
+				Clear_all();
 				OpenProgramFile(fname);
+			}
 
 		}
 	}
         else
-            StatusBar1->SetStatusText(_("Cancelled by user !"));
+            StatusBar1->SetStatusText("Cancelled by user !");
 }
 
 
@@ -474,17 +484,18 @@ void IDZ80::OnMenuMnemonicsLoad(wxCommandEvent& event)
     wxString s;
     if (!LoadMnemonicsDB())
     {
-        s=_("Could not open the file !");
-        wxMessageBox(s,_("Error.."));
+        s = "Could not open the file !";
+        wxMessageBox(s, "Error..");
     }
 }
 
 void IDZ80::OnMenuMnemonicsInfo(wxCommandEvent& event)
 {
     wxString str;
-    str.Printf(_("Num of Mnemonics: %d\nMemory allocated: %d bytes        "),process->Mnemonics->GetCount(),
-               process->Mnemonics->GetAllocated());
-    wxMessageBox(str,_("Mnemonic Info"));
+    str.Printf("Num of Mnemonics: %d\nMemory allocated: %d bytes\nSyscalls = %d\nSysVars = %d\nSysIO = %d ",
+    process->Mnemonics->GetCount(), process->Mnemonics->GetAllocated(), process->sys_calls->GetCount(),
+    process->sys_vars->GetCount(), process->sys_io->GetCount());
+    wxMessageBox(str, "Mnemonic Info");
 }
 
 
@@ -493,10 +504,10 @@ void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
 {
     using namespace AutoVersion;
     wxString msg,status(STATUS,wxConvUTF8);
-    msg.Printf(_("Interactive Disassembler for\nZ80 processors.\n2009 by Felipe"
-                 "\nVersion: %d.%d Build %d\nStatus: "),MAJOR,MINOR,BUILD,REVISION);
+    msg.Printf("Interactive Disassembler for\nZ80 processors.\n2009 by Felipe"
+                 "\nVersion: %d.%d Build %d\nStatus: ",MAJOR,MINOR,BUILD,REVISION);
     msg << status;
-    wxMessageBox(msg, _("About"));
+    wxMessageBox(msg, "About");
 }
 
 
@@ -510,15 +521,15 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
     codeview->Enable(false);
 
-    psize=GetClientSize();
-    w=psize.GetWidth()/2;
-    x=w - w/2 - 5;
-    h=w/15;
-    y=psize.GetHeight()/2 - h/2 - 5;
-    ldsize.Set(w,h);
-    ldpos.x=x;
-    ldpos.y=y;
-    wxGauge *GaugeLd = new wxGauge(this, wxID_ANY, 100, ldpos, ldsize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    psize = GetClientSize();
+    w = psize.GetWidth() / 2;
+    x = w - w / 2 - 5;
+    h = w / 15;
+    y = psize.GetHeight() / 2 - h / 2 - 5;
+    ldsize.Set(w, h);
+    ldpos.x = x;
+    ldpos.y = y;
+    wxGauge *GaugeLd = new wxGauge(this, wxID_ANY, 100, ldpos, ldsize, 0, wxDefaultValidator, "wxID_ANY");
 
     process->SetGauge(GaugeLd);
     process->DisassembleFirst();
@@ -526,10 +537,11 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
     codeview->Enable(true);
 
-    // Debug Area
+    #ifdef IDZ80DEBUG
     wxString stemp;
-    stemp.Printf(_("Used memory (dasmed)= %d bytes\n"),process->m_Dasm->GetUsedMem());
+    stemp.Printf("Used memory (dasmed)= %d bytes\n", process->m_Dasm->GetUsedMem());
     PanelLog->AppendText(stemp);
+    #endif
 
     delete GaugeLd;
     codeview->Plot();
@@ -653,8 +665,8 @@ bool IDZ80::SaveAs()
     bool    ret;
 
     ret = false;
-    caption = _("Save project as");
-    wildcard = _("Project files (*.dap)|*.dap|All files (*.*)|*.*");
+    caption = "Save project as";
+    wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
     wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard,
                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (dialog.ShowModal() == wxID_OK)
@@ -682,9 +694,9 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
     if (m_project->HasName())
     {
         if (!m_project->Save(true))
-            PanelLog->AppendText(_("Project NOT saved !\n"));
+            PanelLog->AppendText("Project NOT saved !\n");
         else
-            PanelLog->AppendText(_("Project saved !\n"));
+            PanelLog->AppendText("Project saved !\n");
     }
     else
         if (SaveAs())
@@ -742,18 +754,18 @@ void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
     wxString fname, caption, wildcard,
             defaultFilename;
 
-    wxDialog *dasmwin = new wxDialog(0, wxID_ANY, _T("Disassembled Code"), wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU, _T("TextCodeBox"));
+    wxDialog *dasmwin = new wxDialog(0, wxID_ANY, "Disassembled Code", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU, _T("TextCodeBox"));
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
-    wxTextCtrl *textCode = new wxTextCtrl(dasmwin, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
+    wxTextCtrl *textCode = new wxTextCtrl(dasmwin, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     codeGenerator *bakeCode;
     topsizer->Add(textCode, 1, wxEXPAND | wxALL,10);
 
     dasmwin->SetSizer(topsizer);
 
-    defaultFilename = m_project->GetFilename() << _T(".mac");
+    defaultFilename = m_project->GetFilename() << ".mac";
 
-    caption = _("Save source code as");
-    wildcard = _("Source code files (*.mac)|*.mac|All files (*.*)|*.*");
+    caption = "Save source code as";
+    wildcard = "Source code files (*.mac)|*.mac|All files (*.*)|*.*";
     wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard,
                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (dialog.ShowModal() == wxID_OK)

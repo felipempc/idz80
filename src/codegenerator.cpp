@@ -87,16 +87,17 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 
 wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 {
-    int nargs,
-        argsz,
-        strparts;
+    int		nargs,
+			argsz,
+			strparts;
+    uint	argument;
 
     wxString    str_1, str_2, str_ret,
                 str_number_format;
     bool usedlabel;
     DAsmElement *de;
 
-    usedlabel=false;
+    usedlabel = false;
     de = process->m_Dasm->GetData(cvi->Dasmitem);
     nargs = de->MnItem->getArgNo();
     argsz = de->MnItem->getArgSize();
@@ -106,6 +107,8 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     str_1.Clear();
     str_2.Clear();
+    
+    argument = de->getArgument(0, process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)
         str_number_format = _T("%XH");
@@ -118,13 +121,13 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
-                            usedlabel = process->prog_labels->GetLabel(de->getArgument(0),str_1);
+                            usedlabel = process->prog_labels->GetLabel(argument, str_1);
                             break;
             case ARG_IO_ADDR:
-                            usedlabel = process->io_labels->GetLabel(de->getArgument(0),str_1);
+                            usedlabel = process->io_labels->GetLabel(argument, str_1);
                             break;
             case ARG_VARIABLE:
-                            usedlabel = process->var_labels->GetLabel(de->getArgument(0),str_1);
+                            usedlabel = process->var_labels->GetLabel(argument, str_1);
                             break;
             case ARG_NONE:
             case ARG_LITERAL:
@@ -135,25 +138,25 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     if ((nargs == 1) && (!usedlabel))
     {
-        str_1.Printf(str_number_format,de->getArgument(0));
+        str_1.Printf(str_number_format, argument);
         if (m_cflags == cfM80)
             if (!isNumber(str_1[0]))
-                str_1.Prepend(_T("0"));
+                str_1.Prepend("0");
     }
     else    // two arguments
     if ((nargs == 2) && (!usedlabel))
     {
-        str_1.Printf(str_number_format,de->getArgument(0));
+        str_1.Printf(str_number_format, argument);
         if (m_cflags == cfM80)
             if (!isNumber(str_1[0]))
-                str_1.Prepend(_T("0"));
+                str_1.Prepend("0");
 
         str_1 << de->MnItem->MnemonicString[1];
         strparts++;
-        str_2.Printf(str_number_format,de->getArgument(1));
+        str_2.Printf(str_number_format, de->getArgument(1, 0));
         if (m_cflags == cfM80)
             if (!isNumber(str_2[0]))
-                str_2.Prepend(_T("0"));
+                str_2.Prepend("0");
 
     }
 

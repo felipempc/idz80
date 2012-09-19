@@ -23,22 +23,16 @@ LabelListCtrl::LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos
     m_log=0;
     m_item_selected=-1;
 
-    InsertColumn(0,_("Address"));
-    InsertColumn(1,_("Label"));
-    SetColumnWidth(0,wxLIST_AUTOSIZE_USEHEADER);
-    SetColumnWidth(1,100);
+    InsertColumn(0, "Address");
+    InsertColumn(1, "Label");
+    SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
+    SetColumnWidth(1, 100);
 
-    //Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,wxListEventHandler(LabelListCtrl::OnMouseRightDown));
     Bind(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, &LabelListCtrl::OnMouseRightDown, this);
-    //Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(LabelListCtrl::OnMouseDblLeft));
     Bind(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, &LabelListCtrl::OnMouseDblLeft, this);
-    //Connect(idMENU_POPUP_ADD,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpAdd);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpAdd, this, idMENU_POPUP_ADD);
-    //Connect(idMENU_POPUP_EDIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpEdit);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpEdit, this, idMENU_POPUP_EDIT);
-    //Connect(idMENU_POPUP_DEL,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&LabelListCtrl::OnMenuPopUpDel);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpDel, this, idMENU_POPUP_DEL);
-    //Connect(wxEVT_COMMAND_LIST_COL_CLICK,wxListEventHandler(LabelListCtrl::OnColumnClick));
     Bind(wxEVT_COMMAND_LIST_COL_CLICK, &LabelListCtrl::OnColumnClick, this);
 
 }
@@ -52,14 +46,14 @@ LabelListCtrl::~LabelListCtrl()
 void LabelListCtrl::Clear()
 {
     int i;
-    LabelItem *lbl=0;
-    for (i=0;i<GetItemCount();i++)
+    LabelItem *lbl = 0;
+    for (i = 0; i < GetItemCount(); i++)
     {
-        lbl=(LabelItem *)GetItemData(i);
-        if (!(lbl==0))
+        lbl = (LabelItem *)GetItemData(i);
+        if (lbl != 0)
         {
             lbl->LabelUsers->Clear();
-            lbl->Address=0;
+            lbl->Address = 0;
             delete lbl->LabelUsers;
             delete lbl;
         }
@@ -81,7 +75,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
 
     lbl = 0;
     p = -1;
-    buf.Printf(_T("%X"),addr);
+    buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
     if (itemfound < 0)    // item not found
     {
@@ -127,7 +121,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labeluse
 
     lbl = 0;
     p = -1;
-    buf.Printf(_T("%X"),addr);
+    buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
     if (itemfound < 0)    // item not found
     {
@@ -175,26 +169,34 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labeluse
 
 
 
-void LabelListCtrl::DelLabel(uint addr)
+bool LabelListCtrl::DelLabel(uint addr)
 {
-    int i;
-    wxListItem item;
-    LabelItem *lbl;
-    wxString str;
+    int			i;
+    wxListItem	item;
+    LabelItem	*lbl;
+    wxString	str;
+    bool		ret = false;
 
-    str.Printf(_T("%X"),addr);
-    i=FindItem(-1,str);
-    if (i>=0)
+    str.Printf("%X", addr);
+    i = FindItem(-1, str);
+    
+    #ifdef IDZ80DEBUG
+    m_log->AppendText(wxString::Format("Found item = %d\n", i));
+    #endif
+    
+    if (i >= 0)
     {
-        lbl=(LabelItem *)GetItemData(i);
-        if (!(lbl==0))
+        lbl = (LabelItem *)GetItemData(i);
+        if (lbl != 0)
         {
             lbl->LabelUsers->Clear();
             delete lbl->LabelUsers;
             delete lbl;
+            ret = true;
         }
         DeleteItem(i);
     }
+    return ret;
 }
 
 
@@ -211,7 +213,7 @@ int LabelListCtrl::GetLabel(uint addr, wxString& str)
     int i;
     wxListItem item;
 
-    str.Printf(_T("%X"), addr);
+    str.Printf("%X", addr);
     i = FindItem(-1, str);
     if (i >= 0)
     {
@@ -276,9 +278,9 @@ void LabelListCtrl::OnMouseDblLeft(wxListEvent& event)
 {
     wxCommandEvent evt;
 
-    m_item_selected=event.GetIndex();
+    m_item_selected = event.GetIndex();
 
-    if (m_item_selected<0)
+    if (m_item_selected < 0)
         OnMenuPopUpAdd(evt);
     else
         OnMenuPopUpEdit(evt);
@@ -291,10 +293,10 @@ void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
 
     m_item_selected = event.GetIndex();
 
-    popup.Append(idMENU_POPUP_ADD,_("Add Label"));
-    popup.Append(idMENU_POPUP_EDIT,_("Edit Label"));
+    popup.Append(idMENU_POPUP_ADD, "Add Label");
+    popup.Append(idMENU_POPUP_EDIT, "Edit Label");
     popup.AppendSeparator();
-    popup.Append(idMENU_POPUP_DEL,_("Del Label"));
+    popup.Append(idMENU_POPUP_DEL, "Del Label");
     PopupMenu(&popup);
 }
 
@@ -308,10 +310,10 @@ void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
 
     if (adlab.ShowModal() == wxID_OK)
     {
-        i=AddLabel(adlab.GetAddress(),adlab.GetLabel());
-        lbl=(LabelItem *)GetItemData(i);
-        if (lbl!=0)
-            lbl->LabelStr=adlab.GetLabel();
+        i = AddLabel(adlab.GetAddress(), adlab.GetLabel());
+        lbl = (LabelItem *)GetItemData(i);
+        if (lbl != 0)
+            lbl->LabelStr = adlab.GetLabel();
         SortAddress();
     }
 }
@@ -319,37 +321,17 @@ void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
 void LabelListCtrl::OnMenuPopUpDel(wxCommandEvent& event)
 {
     DeleteItem(m_item_selected);
-    m_item_selected=-1;
+    m_item_selected = -1;
 }
 
 
 void LabelListCtrl::OnMenuPopUpEdit(wxCommandEvent& event)
 {
-//    EditLabelDlg adlab(this,true);
     LabelItem *lbl;
-//    wxString str;
-//    wxListItem item;
-
 
     lbl = (LabelItem *)GetItemData(m_item_selected);
 	EditLabelDialog(lbl->Address);
-/*
-    adlab.SetAddress(lbl->Address);
 
-    item.m_itemId = m_item_selected;
-    item.m_col = 1;
-    item.m_mask = wxLIST_MASK_TEXT;
-    GetItem(item);
-    adlab.SetLabel(item.m_text);
-
-
-    if (adlab.ShowModal() == wxID_OK)
-    {
-        EditLabel(m_item_selected,adlab.GetLabel());
-        if (lbl!=0)
-            lbl->LabelStr=adlab.GetLabel();
-    }
-*/
 }
 
 
@@ -386,7 +368,7 @@ bool LabelListCtrl::EditLabelDialog(uint addr)
 
 bool LabelListCtrl::IsEmpty()
 {
-    return (GetItemCount()<1);
+    return (GetItemCount() < 1);
 }
 
 int LabelListCtrl::GetCount()
@@ -421,18 +403,18 @@ LabelItem *LabelListCtrl::GetLabelItem(const int index)
 void LabelListCtrl::SortAddress(bool crescent)
 {
     if (crescent)
-        SortItems(CompareAddress,0);
+        SortItems(CompareAddress, 0);
     else
-        SortItems(CompareAddress,1);
+        SortItems(CompareAddress, 1);
 }
 
 
 void LabelListCtrl::SortLabelStr(bool crescent)
 {
     if (crescent)
-        SortItems(CompareLabelStr,0);
+        SortItems(CompareLabelStr, 0);
     else
-        SortItems(CompareLabelStr,1);
+        SortItems(CompareLabelStr, 1);
 }
 
 

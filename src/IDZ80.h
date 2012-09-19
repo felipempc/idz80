@@ -1,13 +1,12 @@
 #ifndef IDZ80_H
 #define IDZ80_H
 
-//(*Headers(IDZ80)
+
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/aui/aui.h>
 #include <wx/frame.h>
 #include <wx/statusbr.h>
-//*)
 
 
 #include <wx/arrstr.h>
