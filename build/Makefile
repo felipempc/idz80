@@ -71,8 +71,11 @@ EXECFILE = $(BINDIR)\idz80_make.exe
 
 
 OBJS = $(OBJDIR)\EditLabelDlg.o \
+	$(OBJDIR)\IDZ80debugbase.o \
 	$(OBJDIR)\FileTypeDialog.o \
 	$(OBJDIR)\MnemonicItem.o \
+	$(OBJDIR)\segmentmgr.o \
+	$(OBJDIR)\decoder.o \
 	$(OBJDIR)\systemlabels.o \
 	$(OBJDIR)\ProcessData.o \
 	$(OBJDIR)\codeview.o \
@@ -89,6 +92,7 @@ OBJS = $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\ShowFileInfo.o \
 	$(OBJDIR)\codegenerator.o \
 	$(OBJDIR)\IDZ80.o \
+	$(OBJDIR)\IDZ80Base.o \
 	$(OBJDIR)\IDZ80App.o \
 	$(OBJDIR)\resource.o
 
@@ -117,75 +121,87 @@ make_dir:
 	@if not exist $(OBJDIR) md $(OBJDIR)
 
 
-$(OBJDIR)\EditLabelDlg.o: $(SRCDIR)\EditLabelDlg.cpp $(SRCDIR)\EditLabelDlg.h
+$(OBJDIR)\EditLabelDlg.o: $(SRCDIR)\EditLabelDlg.cpp $(SRCDIR)\EditLabelDlg.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\EditLabelDlg.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\EditLabelDlg.cpp $(INCLUDE)
 
-$(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialog.h
+$(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialog.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\FileTypeDialog.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\FileTypeDialog.cpp $(INCLUDE)
 
-$(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h
+
+$(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\MnemonicItem.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\MnemonicItem.cpp $(INCLUDE)
 
-$(OBJDIR)\systemlabels.o: $(SRCDIR)\systemlabels.cpp $(SRCDIR)\systemlabels.h
+	
+$(OBJDIR)\segmentmgr.o: $(SRCDIR)\segmentmgr.cpp $(SRCDIR)\segmentmgr.h $(SRCDIR)\IDZ80Base.h
+	@echo $(SRCDIR)\segmentmgr.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\segmentmgr.cpp $(INCLUDE)
+
+	
+$(OBJDIR)\decoder.o: $(SRCDIR)\decoder.cpp $(SRCDIR)\decoder.h $(SRCDIR)\IDZ80debugbase.cpp $(SRCDIR)\IDZ80debugbase.h $(SRCDIR)\IDZ80Base.h
+	@echo $(SRCDIR)\decoder.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\decoder.cpp $(INCLUDE)
+
+	
+$(OBJDIR)\systemlabels.o: $(SRCDIR)\systemlabels.cpp $(SRCDIR)\systemlabels.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\systemlabels.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\systemlabels.cpp $(INCLUDE)
 
-$(OBJDIR)\ProcessData.o: $(SRCDIR)\ProcessData.cpp $(SRCDIR)\ProcessData.h
+$(OBJDIR)\ProcessData.o: $(SRCDIR)\ProcessData.cpp $(SRCDIR)\ProcessData.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\ProcessData.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ProcessData.cpp $(INCLUDE)
 
-$(OBJDIR)\codeview_render.o: $(SRCDIR)\codeview_render.cpp $(SRCDIR)\codeview.h
+$(OBJDIR)\codeview_render.o: $(SRCDIR)\codeview_render.cpp $(SRCDIR)\codeview.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\codeview_render.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_render.cpp $(INCLUDE)
 
-$(OBJDIR)\codeview_evmouse.o: $(SRCDIR)\codeview_evmouse.cpp $(SRCDIR)\codeview.h
+$(OBJDIR)\codeview_evmouse.o: $(SRCDIR)\codeview_evmouse.cpp $(SRCDIR)\codeview.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\codeview_evmouse.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeview_evmouse.cpp $(INCLUDE)
 	
-$(OBJDIR)\codeview.o: $(SRCDIR)\codeview.cpp $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.h
+$(OBJDIR)\codeview.o: $(SRCDIR)\codeview.cpp $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\codeview.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(OBJDIR)\codeview_evmouse.o $(OBJDIR)\codeview_render.o $(SRCDIR)\codeview.cpp $(INCLUDE)
 
-$(OBJDIR)\codeviewline.o: $(SRCDIR)\codeviewline.cpp $(SRCDIR)\codeviewline.h
+$(OBJDIR)\codeviewline.o: $(SRCDIR)\codeviewline.cpp $(SRCDIR)\codeviewline.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\codeviewline.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codeviewline.cpp $(INCLUDE)
 
-$(OBJDIR)\d_asm_element.o: $(SRCDIR)\d_asm_element.cpp $(SRCDIR)\d_asm_element.h
+$(OBJDIR)\d_asm_element.o: $(SRCDIR)\d_asm_element.cpp $(SRCDIR)\d_asm_element.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\d_asm_element.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\d_asm_element.cpp $(INCLUDE)
 
-$(OBJDIR)\dasmdata.o: $(SRCDIR)\dasmdata.cpp $(SRCDIR)\dasmdata.h
+$(OBJDIR)\dasmdata.o: $(SRCDIR)\dasmdata.cpp $(SRCDIR)\dasmdata.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\dasmdata.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\dasmdata.cpp $(INCLUDE)
 
-$(OBJDIR)\labelslist.o: $(SRCDIR)\labelslist.cpp $(SRCDIR)\labelslist.h
+$(OBJDIR)\labelslist.o: $(SRCDIR)\labelslist.cpp $(SRCDIR)\labelslist.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\labelslist.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\labelslist.cpp $(INCLUDE)
 
-$(OBJDIR)\mndb.o: $(SRCDIR)\mndb.cpp $(SRCDIR)\mndb.h
+$(OBJDIR)\mndb.o: $(SRCDIR)\mndb.cpp $(SRCDIR)\mndb.h $(SRCDIR)\IDZ80debugbase.cpp $(SRCDIR)\IDZ80debugbase.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\mndb.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb.cpp $(INCLUDE)
 
-$(OBJDIR)\mndb_tools.o: $(SRCDIR)\mndb_tools.cpp $(SRCDIR)\mndb_tools.h
+$(OBJDIR)\mndb_tools.o: $(SRCDIR)\mndb_tools.cpp $(SRCDIR)\mndb_tools.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\mndb_tools.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\mndb_tools.cpp $(INCLUDE)
 
-$(OBJDIR)\projectmanager.o: $(SRCDIR)\projectmanager.cpp $(SRCDIR)\projectmanager.h
+$(OBJDIR)\projectmanager.o: $(SRCDIR)\projectmanager.cpp $(SRCDIR)\projectmanager.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\projectmanager.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\projectmanager.cpp $(INCLUDE)
 
-$(OBJDIR)\rawdata.o: $(SRCDIR)\rawdata.cpp $(SRCDIR)\rawdata.h
+$(OBJDIR)\rawdata.o: $(SRCDIR)\rawdata.cpp $(SRCDIR)\rawdata.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\rawdata.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\rawdata.cpp $(INCLUDE)
 
-$(OBJDIR)\codegenerator.o: $(SRCDIR)\codegenerator.cpp $(SRCDIR)\codegenerator.h
+$(OBJDIR)\codegenerator.o: $(SRCDIR)\codegenerator.cpp $(SRCDIR)\codegenerator.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\codegenerator.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\codegenerator.cpp $(INCLUDE)
 
-$(OBJDIR)\ShowFileInfo.o: $(SRCDIR)\ShowFileInfo.cpp $(SRCDIR)\ShowFileInfo.h
+$(OBJDIR)\ShowFileInfo.o: $(SRCDIR)\ShowFileInfo.cpp $(SRCDIR)\ShowFileInfo.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\ShowFileInfo.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\ShowFileInfo.cpp $(INCLUDE)
 
@@ -193,6 +209,14 @@ $(OBJDIR)\IDZ80.o: $(SRCDIR)\IDZ80.cpp $(SRCDIR)\IDZ80.h
 	@echo $(SRCDIR)\IDZ80.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80.cpp $(INCLUDE)
 
+$(OBJDIR)\IDZ80Base.o: $(SRCDIR)\IDZ80Base.cpp $(SRCDIR)\IDZ80Base.h
+	@echo $(SRCDIR)\IDZ80Base.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80Base.cpp $(INCLUDE)
+
+$(OBJDIR)\IDZ80debugbase.o: $(SRCDIR)\IDZ80debugbase.cpp $(SRCDIR)\IDZ80debugbase.h $(SRCDIR)\IDZ80Base.h
+	@echo $(SRCDIR)\IDZ80debugbase.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80debugbase.cpp $(INCLUDE)
+	
 $(OBJDIR)\IDZ80App.o: $(SRCDIR)\IDZ80App.cpp $(SRCDIR)\IDZ80App.h
 	@echo $(SRCDIR)\IDZ80App.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\IDZ80App.cpp $(INCLUDE)

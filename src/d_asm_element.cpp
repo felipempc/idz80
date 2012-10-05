@@ -42,7 +42,7 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
     uint ret = 0;
     unsigned int h, l;
     signed char rel = 0;
-    
+
     if ((ElType == et_Instruction) && (MnItem != 0))
     {
         if ((MnItem->getArgSize() == 1) && (MnItem->getArgNo() == 1))
@@ -139,4 +139,20 @@ void DAsmElement::SetArgLabel(bool hal)
     else
         Style.hasArgumentLabel = 0;
 }
+
+
+
+
+bool DAsmElement::isData()
+{
+    return (ElType == et_Data);
+}
+
+bool DAsmElement::isInstruction()
+{
+    return (ElType == et_Instruction);
+}
+
+
+
 

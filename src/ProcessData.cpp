@@ -15,6 +15,7 @@
  */
 
 #include "ProcessData.h"
+#include <stack>
 
 
 
@@ -31,12 +32,15 @@ ProcessData::ProcessData(wxWindow *parent)
     m_Dasm = new DAsmData();
     m_CodeViewLine = new CodeViewLine(m_Dasm);
     m_main_frame = parent;
+    m_disassembler = new Decoder(Program, m_Dasm, Mnemonics);
+
     var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
-    sys_calls =  new SystemLabelList("CALLS");
-    sys_vars = new SystemLabelList("SYSVAR");
-    sys_io = new SystemLabelList("IOMAP");
+
+    sys_calls =  0;
+    sys_vars = 0;
+    sys_io = 0;
 
     m_gauge = NULL;
     m_log = 0;
@@ -45,6 +49,7 @@ ProcessData::ProcessData(wxWindow *parent)
 
 ProcessData::~ProcessData()
 {
+    delete m_disassembler;
 	delete sys_calls;
 	delete sys_vars;
 	delete sys_io;
@@ -63,6 +68,45 @@ void ProcessData::SetGauge(wxGauge *g)
    m_gauge = g;
 }
 
+
+
+/*  Load system labels (IOPorts, Variables,
+ * system calls, etc) after program
+ * has been loaded.
+ */
+bool ProcessData::LoadSysLabels()
+{
+    bool ret = false;
+
+    if (Program->IsLoaded())
+    {
+        ret = true;
+        sys_io = new SystemLabelList("IOMAP");
+
+        if (Program->isCOM())
+        {
+            sys_calls =  new SystemLabelList("MSXDOSCALLS");
+            sys_vars = new SystemLabelList("MSXDOS1VAR");
+        }
+        else
+        {
+            sys_calls =  new SystemLabelList("BIOSCALLS");
+            sys_vars = new SystemLabelList("BIOSVARS");
+        }
+    }
+
+    sys_io->SetLog(m_log);
+	sys_calls->SetLog(m_log);
+	sys_vars->SetLog(m_log);
+
+    return ret;
+}
+
+
+
+
+
+
 /*
  *	Convert dasm data items to file offset
  */
@@ -77,6 +121,12 @@ void ProcessData::ConvertProgramAddress(RangeItems r, RangeData& d)
 }
 
 
+
+
+/*
+ * Search for an opcode pattern (from Program)
+ * in mndb.
+ */
 uint ProcessData::MatchOpcode(const uint i, const uint max)
 {
     uint 		j, nitems;
@@ -109,65 +159,64 @@ uint ProcessData::MatchOpcode(const uint i, const uint max)
 }
 
 
+void ProcessData::addLabels()
+{
+    int         i,
+                counter = 0,
+                address;
+    SortedIntArray *temp;
+    wxString    str;
+
+
+    temp = m_disassembler->GetVarList();
+    for(i = 0; i < temp->GetCount(); i++)
+    {
+        address = temp->Item(i);
+        str = sys_vars->Find(address);
+        if (str.IsEmpty())
+            str.Printf("VAR%d", counter++);
+        var_labels->AddLabel(address, str);
+    }
+
+    counter = 0;
+    temp = m_disassembler->GetEntryList();
+    for(i = 0; i < temp->GetCount(); i++)
+    {
+        address = temp->Item(i);
+        str = sys_calls->Find(address);
+        if (str.IsEmpty())
+            str.Printf("LABEL%d", counter++);
+        prog_labels->AddLabel(address, str);
+    }
+
+    counter = 0;
+    temp = m_disassembler->GetIOList();
+    for(i = 0; i < temp->GetCount(); i++)
+    {
+        address = temp->Item(i);
+        str = sys_io->Find(address);
+        if (str.IsEmpty())
+            str.Printf("PORT%d", counter++);
+        io_labels->AddLabel(address, str);
+    }
+}
+
+
+
+
 
 
 void ProcessData::DisassembleFirst()
 {
-    uint i, f, j, item, totargs;
-    int percent;
-    DAsmElement *de;
-
     m_Dasm->Clear();
-
-    f = Program->GetBufferSize();
-    for (i = 0; i < f; i++)
-    {
-        item = MatchOpcode(i, f);
-        de = new DAsmElement(Program);
-        de->Style.hasArgumentLabel = 0; // false;
-        de->Style.hasLabel = 0;   //false;
-        de->Style.arg1 = ast_hex;
-        de->Style.arg2 = ast_hex;
-        de->Style.arg1styled = 0;
-        de->Style.arg2styled = 0;
-        if (item == OPCODE_NOT_MATCHED)
-        {
-            memset(de->Args, '\0', sizeof(OpCodeArguments));
-            memset(de->Code, '\0', sizeof(ByteCode));
-            de->Length = 1;
-            de->Offset = i;
-            de->MnItem = 0;
-            de->ElType = et_Data;
-            m_Dasm->AddDasm(de);
-        }
-        else
-        {
-            de->MnItem = Mnemonics->GetData(item);
-            for (j = 0; j < MAX_OPCODE_SIZE; j++)
-            {
-                if (j < de->MnItem->getBytesNo())
-                    de->Code[j] = de->MnItem->getOpCode(j);
-                else
-                    de->Code[j] = 0;
-            }
-            de->Length = de->MnItem->getBytesNo();
-            de->ElType = et_Instruction;
-            de->Offset = i;
-            totargs = de->MnItem->getArgNo() * de->MnItem->getArgSize();
-            for (j = 0; j < totargs; j++)
-                de->Args[j] = Program->GetData(i + j + de->MnItem->getArgPos());
-            m_Dasm->AddDasm(de);
-        }
-
-        i += (de->Length - 1);
-
-        if (!(m_gauge == NULL))
-        {
-            percent = i * 100 / f;
-            m_gauge->SetValue(percent);
-        }
-    }
+    m_disassembler->FirstDisassemble();
+    addLabels();
+    m_log->AppendText(m_disassembler->GetCodeSegmentStr());
+    m_disassembler->OptimizeCodeSegment();
+    m_log->AppendText(m_disassembler->GetCodeSegmentStr());
 }
+
+
 
 
 
@@ -299,7 +348,14 @@ void ProcessData::MakeData(RangeItems &r)
     }
 }
 
-//TODO: Insert var labels
+
+
+
+
+
+
+
+//TODO: REmove it
 void ProcessData::AutoLabel()
 {
     DAsmElement *dasmtemp;
@@ -435,16 +491,20 @@ void ProcessData::processLabel()
 
 
 
+
+
+
+
+
 void ProcessData::SetLog(wxTextCtrl *_lg)
 {
     m_log = _lg;
-    m_Dasm->dbglog = _lg;
+    m_Dasm->SetLog(_lg);
     io_labels->SetLog(_lg);
     var_labels->SetLog(_lg);
     prog_labels->SetLog(_lg);
     Program->DebugLog(_lg);
-    sys_io->SetLog(_lg);
-	sys_calls->SetLog(_lg);
-	sys_vars->SetLog(_lg);
+    Mnemonics->SetLog(_lg);
+    m_disassembler->SetLog(_lg);
 }
 

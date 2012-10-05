@@ -56,20 +56,20 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 	}
 	else
 		CursorPosition = lastposition;
-	
+
 }
 
 
 void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 {
-	
+
 	/* DEBUG:
     wxString str;
     DAsmElement* de;
     CodeViewItem* cvi;
-    
+
     str.Printf("Type: %d\nDasmItem: ", m_iteminfo.type);
-    
+
     if (m_iteminfo.dasmitem != 0)
     {
 		de = m_iteminfo.dasmitem;
@@ -77,7 +77,7 @@ void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 	}
 	else
 		str << "NULL\n";
-	
+
 	if (m_iteminfo.lineitem >= 0)
 	{
 		cvi = m_iteminfo.lineitem;
@@ -85,14 +85,14 @@ void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 	}
 	else
 		str << "LineItem: NULL\n";
-	
+
 	if (m_iteminfo.hasComment)
 		str << "hasComment: SIM\n";
 	else
 		str << "hasComment: NAO\n";
-	
+
     str << wxString::Format("Arg Selected: %d\n\n", m_iteminfo.argSelected);
-    
+
     LogIt(str);
     */
 }
@@ -151,13 +151,11 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 
 void CodeView::OnMouseRightUp(wxMouseEvent& event)
 {
-    CodeViewItem *cvi;
     DAsmElement *de;
     wxMenu		*argStyleSubMenu = 0,
 				*organizeDataSubMenu = 0,
 				*labelMenu = 0;
     wxPoint		pt;
-    uint		pointedline;
     wxClientDC  dc(this);
 	bool		labeled = false,
 				hascomments = false;
@@ -200,7 +198,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
         else
         { // ************** ONE SELECTION ********************>
             //TODO: Implement rename/delete label routine
-            
+
             switch(m_iteminfo.type)
             {
 				case 	siInstructionLabel:
@@ -227,10 +225,10 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 
 
 			}
-			
+
 			if (labelMenu != 0)
 				PopUp->Append(idPOPUP_LBL, "Label", labelMenu);
-			
+
 			// Clicked over an argument
 			if (m_iteminfo.argSelected > 0)
 			{
@@ -243,7 +241,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 			}
 
 			PopUp->AppendSeparator();
-			
+
             if ((m_iteminfo.type == siComments) || (m_iteminfo.hasComment))
             {
                 PopUp->Append(idPOPUP_EDITCOMMENT, "Edit comment");
@@ -251,9 +249,9 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             }
             else
                 PopUp->Append(idPOPUP_ADDCOMMENT, "Add comment");
-			
+
         } // ************** ONE SELECTION ********************<
-      
+
         PopupMenu(PopUp);
         delete PopUp;
     }
@@ -267,7 +265,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 void CodeView::OnMouseMove(wxMouseEvent& event)
 {
 	wxMouseState	ms;
-	
+
 	if (event.Dragging() && Selecting)
 		if (ms.LeftIsDown())
 			LogIt("Selecting...\n");

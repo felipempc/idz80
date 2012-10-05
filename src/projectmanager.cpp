@@ -749,7 +749,7 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
 
 void ProjectManager::linkLabels()
 {
-    CodeViewItem *cvi;
+    //CodeViewItem *cvi;
     DAsmElement *de;
     int i, x, f;
     uint item;

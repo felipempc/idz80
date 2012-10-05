@@ -384,6 +384,50 @@ wxRect CodeView::CalcSelectedRect()
 }
 
 
+
+/*
+ * Take an address and show it
+ * in the center of codeview
+ */
+void CodeView::CenterAddress(uint address)
+{
+    int     i,
+            firstlineshown,
+            lastlineshown,
+            position;
+    bool    needscroll = false;
+
+    firstlineshown = GetFirstLine();
+    lastlineshown = firstlineshown + m_linesShown - 1;
+
+    m_CodeViewLine->getDataLineAddress(address, i);
+
+    if (i >= 0)
+    {
+        position = m_linesShown / 2;
+        if ((i >= firstlineshown) && (i <= lastlineshown))
+        {
+            CursorLastPosition = CursorPosition;
+            CursorPosition = i;
+        }
+        else
+        {
+            CursorLastPosition = i;
+            CursorPosition = i;
+            needscroll = true;
+        }
+
+        RefreshRect(*LastCursorRect);
+
+        if (needscroll)
+            Scroll(-1, (i - position));
+        RefreshRect(CalcCursorRfshRect());
+    }
+}
+
+
+
+
 void CodeView::Plot(void)
 {
     Refresh();
@@ -487,7 +531,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
         {
 			if (cvi->Comment != 0)
 				hcomment = true;
-				
+
             de = m_process->m_Dasm->GetData(cvi->Dasmitem);
             if (de->ElType == et_Instruction)
             {
@@ -676,38 +720,21 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
 {
     CodeViewItem	*cvi;
     DAsmElement		*de;
-    uint 			address, position;
-    int				i, fl, ll;
-    bool 			needScroll = false;
+    uint 			address;
 
-    fl = GetFirstLine();
-    ll = fl + m_linesShown - 1;
     cvi = m_CodeViewLine->getData(CursorPosition);
     de = m_process->m_Dasm->GetData(cvi->Dasmitem);
     address = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
-    m_CodeViewLine->getDataLineAddress(address, i);
-
-    if (i >= 0)
-    {
-        position = m_linesShown / 2;
-        if ((i >= fl) && (i <= ll))
-        {
-            CursorLastPosition = CursorPosition;
-            CursorPosition = i;
-        }
-        else
-        {
-            CursorLastPosition = i;
-            CursorPosition = i;
-            needScroll = true;
-        }
-        RefreshRect(*LastCursorRect);
-        if (needScroll)
-            Scroll(-1, (i - position));
-        RefreshRect(CalcCursorRfshRect());
-    }
+    CenterAddress(address);
 
 }
+
+
+
+
+
+
+
 
 /* Returns the first and the last line of instruction / data
  * Returns program labels
@@ -772,7 +799,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
     int 			i, newLineCount, lineIndex, lineLast, lineCount,
 					j, oldLineCount;
     wxArrayInt		cvlines, proglabels;
-	
+
 	//TODO: Create a function to remove unused labels
 	//FIXME: It's removing line with var labels
 
@@ -785,7 +812,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 		{
 			m_process->prog_labels->DelLabel(proglabels[i]);
 		}
-		
+
         lineIndex = cvlines[0];
         lineLast = cvlines[1];
         lineCount = lineLast - lineIndex + 1;
@@ -1064,11 +1091,11 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 	CodeViewItem *cvi;
 	bool testcomment = false;
 	wxPoint mousept;
-	
+
 	CalcUnscrolledPosition(pt.x, pt.y, &mousept.x, &mousept.y);
 
 	m_iteminfo.type = siUnknown;
-	
+
 	cvi = m_CodeViewLine->getData(CursorPosition);
 	if (cvi != 0)
 	{

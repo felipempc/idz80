@@ -14,14 +14,17 @@
 #include "EditLabelDlg.h"
 
 
+
+const int LabelListCtrl::NO_DASM_ITEM;
+
 /*
  *      Label List Control Contructor/Destructor
  */
 LabelListCtrl::LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos,const wxSize& size)
                     : wxListCtrl(parent,id,pos,size,wxLC_REPORT | wxLC_SINGLE_SEL)
 {
-    m_log=0;
-    m_item_selected=-1;
+    m_log = 0;
+    m_item_selected = -1;
 
     InsertColumn(0, "Address");
     InsertColumn(1, "Label");
@@ -52,9 +55,13 @@ void LabelListCtrl::Clear()
         lbl = (LabelItem *)GetItemData(i);
         if (lbl != 0)
         {
-            lbl->LabelUsers->Clear();
+            if (lbl->LabelUsers != 0)
+            {
+                lbl->LabelUsers->Clear();
+                delete lbl->LabelUsers;
+            }
             lbl->Address = 0;
-            delete lbl->LabelUsers;
+
             delete lbl;
         }
     }
@@ -103,7 +110,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
     else
     {
         lbl = (LabelItem *)GetItemData(itemfound);
-        if (lbl != 0)
+        if ((lbl != 0) && (lbl->LabelUsers != 0))
             if (lbl->LabelUsers->Index(dasmitem) == wxNOT_FOUND)
                 lbl->LabelUsers->Add(dasmitem);
     }
@@ -179,11 +186,11 @@ bool LabelListCtrl::DelLabel(uint addr)
 
     str.Printf("%X", addr);
     i = FindItem(-1, str);
-    
+
     #ifdef IDZ80DEBUG
     m_log->AppendText(wxString::Format("Found item = %d\n", i));
     #endif
-    
+
     if (i >= 0)
     {
         lbl = (LabelItem *)GetItemData(i);
@@ -203,7 +210,7 @@ bool LabelListCtrl::DelLabel(uint addr)
 
 void LabelListCtrl::SetLog(wxTextCtrl *_lg)
 {
-    m_log=_lg;
+    m_log = _lg;
 
 }
 
@@ -383,7 +390,7 @@ void LabelListCtrl::EditLabel(uint listitem,wxString strlabel)
     item.m_itemId = listitem;
     item.m_col = 1;
     item.m_mask = wxLIST_MASK_TEXT;
-    item.m_text=strlabel;
+    item.m_text = strlabel;
     SetItem(item);
     SortAddress();
 

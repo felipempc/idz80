@@ -93,6 +93,7 @@ public:
     void Clear();
     void ClearSelection();
     bool Enable(bool enable=true);
+	void CenterAddress(uint address);
 
 
     CodeViewLine    *m_CodeViewLine;
@@ -106,7 +107,7 @@ private:
 	static const int COL_MNEM = 230;
 
     ProcessData     *m_process;
-    
+
     SelectedItemInfo m_iteminfo;	// Holds info about the selected item
 
 
@@ -162,6 +163,7 @@ private:
     void DoSelection();
 	void FillSelectedItemInfo(const wxPoint &pt);
 
+
 	wxString FormatArg(uint arg, uint style);
 
     int GetFirstLine();
@@ -211,7 +213,7 @@ private:
     void OnPopUpMenuArgStyleBin(wxCommandEvent& event);
     void OnPopUpMenuArgStyleDec(wxCommandEvent& event);
     void OnPopUpMenuArgStyleHex(wxCommandEvent& event);
-    
+
     void OnPopUpMenuRenLabel(wxCommandEvent& event);
     void OnPopUpMenuDelLabel(wxCommandEvent& event);
 

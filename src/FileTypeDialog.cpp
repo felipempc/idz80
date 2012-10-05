@@ -117,7 +117,7 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	cb_autodisassemble->SetValue(true);
 	cb_autolabel->SetValue(true);
 	cb_cartridge->Enable(false);
-	
+
 	StartAddress = 0;
 	ExecAddress = 0;
 	EndAddress = 0;
@@ -132,6 +132,7 @@ void FileTypeDialog::SetData(RawData& program)
 {
     wxString str;
     FileType t;
+    bool    cartrom;
 
     m_program = &program;
 
@@ -147,7 +148,10 @@ void FileTypeDialog::SetData(RawData& program)
             RadioBox1->SetSelection(1);
             break;
         case ROM:
-			cb_cartridge->Enable(true);
+            cartrom = m_program->isCartridge();
+			cb_cartridge->Enable(cartrom);
+			if (cartrom)
+                cb_cartridge->SetValue(cartrom);
             RadioBox1->SetSelection(0);
             break;
 
@@ -189,22 +193,22 @@ void FileTypeDialog::SyncAddress()
 void FileTypeDialog::OnRadioBoxSelect(wxCommandEvent &event)
 {
     wxString str;
-    str=event.GetString();
+    str = event.GetString();
     if (str == "COM")
     {
-		cb_cartridge->Enable(false);
         m_program->SetFileType(COM);
+		cb_cartridge->Enable(m_program->isCartridge());
 	}
     else
         if (str == "ROM")
         {
-			cb_cartridge->Enable(true);
             m_program->SetFileType(ROM);
+            cb_cartridge->Enable(m_program->isCartridge());
 		}
         else
         {
-			cb_cartridge->Enable(false);
             m_program->SetFileType(BIN);
+            cb_cartridge->Enable(m_program->isCartridge());
 		}
 
     SyncAddress();
@@ -216,14 +220,11 @@ void FileTypeDialog::OnChkBoxCartridge(wxCommandEvent &event)
 {
 	if (cb_cartridge->IsChecked())
 	{
-		m_program->setCartridge(true);
-        m_program->SetFileType(ROM);
+        if (!m_program->CheckCartridge())
+            cb_cartridge->SetValue(false);
 	}
 	else
-	{
-		m_program->setCartridge(false);
-        m_program->SetFileType(ROM);
-	}
+		m_program->ForceNoCartridge();
 	SyncAddress();
 }
 

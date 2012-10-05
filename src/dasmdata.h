@@ -27,10 +27,10 @@ class DAsmData
 {
     public:
         void Clear();
-        void AddDasm(DAsmElement *dasmelement);
+        int  AddDasm(DAsmElement *dasmelement);
         void DelDasm(DAsmElement *dasmelement);
         void DelDasm(uint index, uint count = 1);
-        void InsertDasm(DAsmElement *dasmelement,uint beforeitem);
+        int  InsertDasm(DAsmElement *dasmelement,uint beforeitem);
         DAsmElement *GetData(uint index);
         uint GetCount();
         bool IsLoaded();
@@ -38,10 +38,12 @@ class DAsmData
         uint GetBaseAddress(uint index);
         void AddOrgAddress(uint index, uint address);
         void DelOrgAddress(uint address);
-        
-        wxTextCtrl *dbglog;
-        
-        
+        int FindAddress(uint address);
+
+        void SetLog(wxTextCtrl *_lg);
+
+
+
         DAsmData();
         ~DAsmData();
 
@@ -49,6 +51,10 @@ class DAsmData
         wxArrayPtrVoid  Data;
         uint            totalAllocated;
         wxArrayInt		m_baseAddress;		// keeps Origin Addresses
+
+        wxTextCtrl      *m_log;
+
+        void LogIt(wxString logstr);
 };
 
 

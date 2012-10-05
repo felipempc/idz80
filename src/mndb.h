@@ -19,31 +19,37 @@
 
 #include "IDZ80Base.h"
 #include "MnemonicItem.h"
+#include "idz80debugbase.h"
 
 
-class MnemonicDataBase
+WX_DECLARE_OBJARRAY(MnemonicItem *, MnemonicArray);
+
+class MnemonicDataBase: public IDZ80LogBase
 {
     public:
-    MnemonicDataBase();
-    ~MnemonicDataBase();
-    bool Open(wxString& opcf);
-    void Clear();
-    void FindItems(wxArrayInt& arrayint,byte opcode,uint scanoffset);
-    MnemonicItem *FindItem(const ByteCode& code);
-    MnemonicItem *GetData(uint index);
-    uint GetCount();
-    uint GetAllocated();
-    bool IsLoaded();
-    // DEBUG:
-    void DebugVodoo(wxTextCtrl& log);
+        MnemonicDataBase();
+        ~MnemonicDataBase();
+        bool Open(wxString& opcf);
+        void Clear();
+        void FindItems(wxArrayInt& arrayint,byte opcode,uint scanoffset);
+        MnemonicItem *FindItem(const ByteCode& code);
+        MnemonicItem *GetData(uint index);
+        uint GetCount();
+        uint GetAllocated();
+        bool IsLoaded();
+
+        // DEBUG:
+        void DebugVodoo();
 
     private:
-    static const int MIN_ARRAY_ITENS = 3;
-    
-    uint totalAllocated;
-    wxArrayPtrVoid Data;
-    bool doReadData(wxTextFile& tf);
-    bool addData(wxArrayString& arraystr, int currentSection);
+        static const int MIN_ARRAY_ITEMS = 3;
+        uint            m_totalAllocated;
+        MnemonicArray   *m_MnemonicList;
+
+        bool doReadData(wxTextFile& tf);
+        bool addData(wxArrayString& arraystr, int currentSection, int line);
+        bool SetupArgument(MnemonicItem *mnemonic, wxString &strline);
+        void SetupBranch(MnemonicItem *mnemonic);
 
 };
 

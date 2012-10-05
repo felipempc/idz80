@@ -22,12 +22,9 @@
 
 #include "IDZ80Base.h"
 
-#define NO_DASM_ITEM    -1
-
-
 enum
 {
-    idMENU_POPUP_ADD=100,
+    idMENU_POPUP_ADD = 100,
     idMENU_POPUP_EDIT,
     idMENU_POPUP_DEL
 };
@@ -52,7 +49,7 @@ class LabelListCtrl : public wxListCtrl
         ~LabelListCtrl();
 
         void SetLog(wxTextCtrl *_lg);
-        int AddLabel(uint addr, const wxString name, int dasmitem=NO_DASM_ITEM);
+        int AddLabel(uint addr, const wxString name, int dasmitem = NO_DASM_ITEM);
         int AddLabel(uint addr, const wxString name, wxArrayInt &labelusers);
         bool DelLabel(uint addr);
         void EditLabel(uint listitem,wxString strlabel);
@@ -73,6 +70,7 @@ class LabelListCtrl : public wxListCtrl
 
     protected:
     private:
+        static const int NO_DASM_ITEM = -1;
         wxTextCtrl *m_log;
         int m_item_selected;
 

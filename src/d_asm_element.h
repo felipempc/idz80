@@ -61,6 +61,9 @@ class DAsmElement
         byte GetData(uint offset);
         void SetArgLabel(bool hal = true);
 
+        bool isData();
+        bool isInstruction();
+
         MnemonicItem        *MnItem;
         ByteCode            Code;
         OpCodeArguments     Args;

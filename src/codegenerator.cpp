@@ -88,7 +88,7 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 {
     int		nargs,
-			argsz,
+			//argsz,
 			strparts;
     uint	argument;
 
@@ -100,14 +100,14 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     usedlabel = false;
     de = process->m_Dasm->GetData(cvi->Dasmitem);
     nargs = de->MnItem->getArgNo();
-    argsz = de->MnItem->getArgSize();
+    //argsz = de->MnItem->getArgSize();
 
     str_ret = de->MnItem->MnemonicString[0];
     strparts = 1;
 
     str_1.Clear();
     str_2.Clear();
-    
+
     argument = de->getArgument(0, process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)

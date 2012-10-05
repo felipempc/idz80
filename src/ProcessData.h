@@ -26,9 +26,13 @@
 #include "labelslist.h"
 #include "codeviewline.h"
 #include "systemlabels.h"
+#include "decoder.h"
 
 #include <wx/gauge.h>
+#include <wx/dynarray.h>
 
+
+//TODO:Remove it
 #define OPCODE_NOT_MATCHED  0xFFFFFFFF
 
 
@@ -48,6 +52,7 @@ struct stRangeData
     uint Count;
 };
 typedef struct stRangeData RangeData;
+
 
 class ProcessData
 {
@@ -69,6 +74,7 @@ class ProcessData
         void AutoLabel();
         void InitData();
         void processLabel();
+        bool LoadSysLabels();
 
         void SetGauge(wxGauge *g);
         void SetLog(wxTextCtrl *_lg);
@@ -80,6 +86,9 @@ class ProcessData
         wxGauge             *m_gauge;
         wxTextCtrl          *m_log;
         wxWindow            *m_main_frame;
+        Decoder             *m_disassembler;
+
+		void addLabels();
 
         uint MatchOpcode(const uint i, const uint max);
         void ConvertProgramAddress(RangeItems r, RangeData& d);

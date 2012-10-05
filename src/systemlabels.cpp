@@ -170,7 +170,7 @@ wxString &SystemLabelList::Find(const uint addr)
 {
 	int		i, f;
 	bool	endloop = false;
-	wxString	str;
+	static wxString	str;
 
 	SystemLabelItem *sli;
 

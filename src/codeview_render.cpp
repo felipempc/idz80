@@ -64,7 +64,7 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
 uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 {
     int		nargs,
-			argsz,
+			//argsz,
 			x,
 			argwidth1,
 			argpos1,
@@ -82,7 +82,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     de = m_process->m_Dasm->GetData(cvi->Dasmitem);
     nargs = de->MnItem->getArgNo();
     strparts = 0;
-    argsz = de->MnItem->getArgSize();
+    //argsz = de->MnItem->getArgSize();
     str = de->MnItem->MnemonicString[0];
     strparts++;
     dc.SetTextForeground(FG_TextColor);
@@ -91,7 +91,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     argpos1 = x;
 
 	argument = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
-	
+
     if (de->Style.hasArgumentLabel)
     {
         switch (de->MnItem->getArgType(0))
@@ -251,7 +251,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     uint			commentoffset;
     int				linecode, linepixel, i;
     uint			address;
-    bool			labelfailed;
+    //bool			labelfailed;
     DAsmElement		*de;
     bool			firstInstruction;
     wxCoord			width, heigh;
@@ -262,7 +262,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     linepixel = start_y;
 
     commentoffset = 0;
-    labelfailed = false;
+    //labelfailed = false;
     firstInstruction = false;
     i = 0;
     address = 0;
@@ -329,7 +329,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             else
                             {
                                 m_CodeViewLine->DelItem(cvi);
-                                labelfailed = true;
+                                //labelfailed = true;
                             }
                         }
 
@@ -345,7 +345,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             else
                             {
                                 m_CodeViewLine->DelItem(cvi);
-                                labelfailed = true;
+                                //labelfailed = true;
                             }
                         }
                 }

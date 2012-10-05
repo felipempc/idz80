@@ -17,221 +17,329 @@
 #include "mndb_tools.h"
 
 
+/*
+ * Define Mnemonic Array of Object
+ */
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(MnemonicArray);
+
+
 
 /*
  *  MnemonicDataBase implementation
  */
 
+const int MnemonicDataBase::MIN_ARRAY_ITEMS;
 
-const int MnemonicDataBase::MIN_ARRAY_ITENS;
 
 
-void MnemonicDataBase::DebugVodoo(wxTextCtrl& log)
+
+MnemonicDataBase::MnemonicDataBase()
 {
-    uint i,f,x,b,idebug;
-    wxString str;
-    MnemonicItem *mtemp;
-
-    f=Data.GetCount();
-
-    if ((&log==NULL) && (f==0))
-        return;
-    log.Clear();
-
-    for (i=0;i<f;i++)
-    {
-        str.Clear();
-        mtemp=(MnemonicItem *)Data[i];
-        for (x=0;x<mtemp->getBytesNo();x++)
-        {
-            b=mtemp->getOpCode(x);
-            str += str.Format(_("[%.2X] "),b);
-        }
-        str += str.Format(_("nArgs = %d "),mtemp->getArgNo());
-        str += str.Format(_("ArgSize = %d "),mtemp->getArgSize());
-        str += str.Format(_("ArgPos = %d ["),mtemp->getArgPos());
-        for (idebug=0;idebug<mtemp->MnemonicString.GetCount();
-            idebug++)
-        {
-            str << mtemp->MnemonicString[idebug];
-        }
-        str << _("] \n");
-        log.AppendText(str);
-    }
-    str.Clear();
-    str.Printf(_("Total allocated: %d bytes\n"),totalAllocated);
-    log.AppendText(str);
+    m_totalAllocated = 0;
+    m_MnemonicList = new MnemonicArray();
+    m_modulename = "MNDB:";
 }
+
+MnemonicDataBase::~MnemonicDataBase()
+{
+    Clear();
+    delete m_MnemonicList;
+}
+
+
+
+
+void MnemonicDataBase::Clear()
+{
+    m_totalAllocated = 0;
+    m_MnemonicList->Clear();
+}
+
+
+
+
 
 MnemonicItem *MnemonicDataBase::GetData(uint index)
 {
-    if (index>=Data.GetCount())
-        index = Data.GetCount()-1;
-    return (MnemonicItem *)Data[index];
+    int f = m_MnemonicList->GetCount();
+
+    if (index >= f)
+        index = f - 1;
+    return m_MnemonicList->Item(index);
 }
+
+
 
 bool MnemonicDataBase::IsLoaded()
 {
     return (GetCount() > 0);
 }
 
+
 uint MnemonicDataBase::GetCount()
 {
-    return Data.GetCount();
+    return m_MnemonicList->GetCount();
 }
 
 
 
-void MnemonicDataBase::Clear()
+bool MnemonicDataBase::SetupArgument(MnemonicItem *mnemonic, wxString &strline)
 {
-    totalAllocated=0;
-    int f = Data.GetCount();
-    if (f>0)
+    wxChar      argtype;
+    bool        ret = true;
+
+    if (strline.Find('$') != wxNOT_FOUND)
     {
-        MnemonicItem *e;
-        for(int i=0; i<f;i++)
+        argtype = strline[1];
+        switch (argtype) {
+                case 'o':  mnemonic->addArgument(ARG_OFFSET);
+                           mnemonic->addOpCode(ARG_OFFSET);
+                           break;
+                case 'n':  mnemonic->addArgument(ARG_LITERAL);
+                           mnemonic->addOpCode(ARG_LITERAL);
+                           break;
+                case 'v':  mnemonic->addArgument(ARG_VARIABLE);
+                           mnemonic->addOpCode(ARG_VARIABLE);
+                           break;
+                case 'c':  mnemonic->addArgument(ARG_ABS_ADDR);
+                           mnemonic->addOpCode(ARG_ABS_ADDR);
+                           mnemonic->setBranchType(BR_CALL);
+                           break;
+                case 's':  mnemonic->setBranchType(BR_JUMP);
+                           mnemonic->addArgument(ARG_ABS_ADDR);
+                           mnemonic->addOpCode(ARG_ABS_ADDR);
+                           break;
+                case 'j':  mnemonic->addArgument(ARG_REL_ADDR);
+                           mnemonic->addOpCode(ARG_REL_ADDR);
+                           mnemonic->setBranchType(BR_JUMP);
+                           break;
+                case 'g':  mnemonic->addArgument(ARG_ABS_ADDR);
+                           mnemonic->addOpCode(ARG_ABS_ADDR);
+                           mnemonic->setBranchType(BR_CALL_CND);
+                           break;
+                case 'x':  mnemonic->addArgument(ARG_ABS_ADDR);
+                           mnemonic->addOpCode(ARG_ABS_ADDR);
+                           mnemonic->setBranchType(BR_JUMP_CND);
+                           break;
+                case 'k':  mnemonic->addArgument(ARG_REL_ADDR);
+                           mnemonic->addOpCode(ARG_REL_ADDR);
+                           mnemonic->setBranchType(BR_JUMP_CND);
+                           break;
+                case 'p':  mnemonic->addArgument(ARG_IO_ADDR);
+                           mnemonic->addOpCode(ARG_IO_ADDR);
+                           break;
+
+                default:
+                            mnemonic->addArgument(ARG_NONE);
+                            mnemonic->addOpCode(ARG_NONE);
+                            mnemonic->setBranchType(BR_NONE);
+                            break;
+        } // switch
+    } // endif
+    else
+        ret = false;
+
+    return ret;
+}
+
+
+
+/*
+ *  Setup branch info of RETurn instructions
+ *  Compatibility routine
+ */
+void MnemonicDataBase::SetupBranch(MnemonicItem *mnemonic)
+{
+    if (mnemonic->GetInstructionType() == IT_RET)
+        switch (mnemonic->GetInstructionInfo())
         {
-            e=(MnemonicItem *)Data.Item(i);
-            delete e;
+            case II_NONE:
+                        mnemonic->setBranchType(BR_RETURN);
+                        break;
+            case II_CONDITIONAL:
+                        mnemonic->setBranchType(BR_RETURN_CND);
+                        break;
+            default:
+                        mnemonic->setBranchType(BR_NONE);
+                        break;
         }
-        Data.Clear();
-    }
 }
 
 
 
-MnemonicDataBase::MnemonicDataBase()
+
+
+bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int line)
 {
-    totalAllocated=0;
-    Data.Clear();
-}
+    bool    ret = false;
+    int     i,
+            x = 0;
+    uint    num_arguments;
+    long    templong;
 
-MnemonicDataBase::~MnemonicDataBase()
-{
-    Clear();
-}
+    wxString    temp_str,
+                ret_str;
+    //wxChar      argtype;
 
-bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection)
-{
-    if ((arraystr.GetCount()<MIN_ARRAY_ITENS) && (currentSection<1))
-        return FALSE;
+    MnemonicItem    *mnemonic = 0;
 
-    int i,x;
-    uint f;
-    long templong;
-    wxString stemp;
-    wxChar argtype,last_argtype;
-    MnemonicItem *mtemp=0;
 
-    mtemp = new MnemonicItem();
-    x=sizeof(MnemonicItem);
-    last_argtype=0;
 
-    for (i=0;i<currentSection;i++)
+    if ((arraystr.GetCount() >= MIN_ARRAY_ITEMS) && (currentSection > 0))
     {
-        stemp=arraystr[i];
-        if (!(stemp.Find('$')==wxNOT_FOUND))
-        {
-            argtype=stemp[1];
-            switch (argtype) {
-                    case wxT('o'):  mtemp->addArgument(ARG_OFFSET);
-                                    mtemp->addOpCode(ARG_OFFSET);
-                                    break;
-                    case wxT('n'):  mtemp->addArgument(ARG_LITERAL);
-                                    mtemp->addOpCode(ARG_LITERAL);
-                                    break;
-                    case wxT('v'):  mtemp->addArgument(ARG_VARIABLE);
-                                    mtemp->addOpCode(ARG_VARIABLE);
-                                    break;
-                    case wxT('c'):  mtemp->addArgument(ARG_ABS_ADDR);
-                                    mtemp->addOpCode(ARG_ABS_ADDR);
-                                    mtemp->setBranchType(BR_CALL);
-                                    break;
-                    case wxT('s'):  mtemp->setBranchType(BR_JUMP);
-                                    mtemp->addArgument(ARG_ABS_ADDR);
-                                    mtemp->addOpCode(ARG_ABS_ADDR);
-                                    break;
-                    case wxT('j'):  mtemp->addArgument(ARG_REL_ADDR);
-                                    mtemp->addOpCode(ARG_REL_ADDR);
-                                    mtemp->setBranchType(BR_JUMP);
-                                    break;
-                    case wxT('g'):
-                    case wxT('x'):  mtemp->addArgument(ARG_ABS_ADDR);
-                                    mtemp->addOpCode(ARG_ABS_ADDR);
-                                    mtemp->setBranchType(BR_JUMP_CND);
-                                    break;
-                    case wxT('k'):  mtemp->addArgument(ARG_REL_ADDR);
-                                    mtemp->addOpCode(ARG_REL_ADDR);
-                                    mtemp->setBranchType(BR_JUMP_CND);
-                                    break;
-                    case wxT('p'):  mtemp->addArgument(ARG_IO_ADDR);
-                                    mtemp->addOpCode(ARG_IO_ADDR);
-                                    break;
+        mnemonic = new MnemonicItem();
+        x = sizeof(MnemonicItem);
 
-                    default:        mtemp->addArgument(ARG_NONE);
-                                    mtemp->addOpCode(ARG_NONE);
-                                    break;
+        for (i = 0; i < currentSection; i++)
+        {
+            temp_str = arraystr[i];
+
+            if (SetupArgument(mnemonic, temp_str))
+            {
+                mnemonic->setOpCodeArgPos(i);
+                continue;                   // we've found an argument, so go to the next item...
             }
-            mtemp->setOpCodeArgPos(i);
 
-            continue;  // we've found an argument, so go to the next item...
+            if (temp_str.ToLong(&templong, 16))
+                mnemonic->addOpCode((byte) templong);
+            else
+            {
+                #ifdef IDZ80DEBUG
+                LogIt(wxString::Format("Error processing opcode in line %d ! Dropped line.\n", line));
+                #endif
+                delete mnemonic;
+                mnemonic = 0;
+                break;
+            }
         }
 
-        if (stemp.ToLong(&templong,16))
-            mtemp->addOpCode((unsigned char) templong);
-        else
+
+        /*
+         *  Get the number of arguments
+         */
+        if (mnemonic != 0)
         {
-            delete mtemp;
-            return FALSE;
+            temp_str = arraystr[i++];
+            if (!temp_str.ToLong(&templong, 16))
+            {
+                #ifdef IDZ80DEBUG
+                LogIt(wxString::Format("Error processing num of arguments in line %d ! Dropped line.\n", line));
+                #endif
+                delete mnemonic;
+                mnemonic = 0;
+            }
+        }
+
+        /*
+         * Check if num arguments found is equal to file num of arguments
+         */
+        if (mnemonic != 0)
+        {
+            num_arguments = (int)templong;
+            if (mnemonic->getArgNo() != num_arguments)
+            {
+                delete mnemonic;
+                mnemonic = 0;
+                #ifdef IDZ80DEBUG
+                LogIt(wxString::Format("Error, num of arguments doesnt match in line %d ! Dropped line.\n", line));
+                #endif
+            }
+        }
+
+
+        /*
+         *  Get Instruction type
+         */
+        if (mnemonic != 0)
+        {
+            temp_str = arraystr[i++];
+            if (temp_str.ToLong(&templong, 16))
+                mnemonic->setInstructionType(templong);
+            else
+            {
+                delete mnemonic;
+                mnemonic = 0;
+                #ifdef IDZ80DEBUG
+                LogIt(wxString::Format("Error converting instruction type in line %d ! Dropped line.\n", line));
+                #endif
+            }
+        }
+
+        /*
+         *  Get Instruction info
+         */
+        if (mnemonic != 0)
+        {
+            temp_str = arraystr[i++];
+            if (temp_str.ToLong(&templong, 16))
+                mnemonic->setInstructionInfo(templong);
+            else
+            {
+                delete mnemonic;
+                mnemonic = 0;
+                #ifdef IDZ80DEBUG
+                LogIt(wxString::Format("Error converting instruction info in line %d ! Dropped line.\n", line));
+                #endif
+            }
+        }
+
+        /*
+         *  Setup Instruction String,
+         *  branch information and
+         *  add object to the list
+         */
+        if (mnemonic != 0)
+        {
+            temp_str = arraystr[i];
+            mnemonic->setMnemonicStr(temp_str);
+            SetupBranch(mnemonic);
+            m_MnemonicList->Add(mnemonic);
+            ret = true;
+            m_totalAllocated += x;
         }
     }
-    stemp=arraystr[i++];
-    if (stemp.IsNumber())
-        stemp.ToLong(&templong);
-    f=(int)templong;
-    // Check if the counted nArgs = file's num. of args
-    if (!(mtemp->getArgNo()==f))
-    {
-        delete mtemp;
-        return FALSE;
-    }
-    stemp=arraystr[i];
-    mtemp->setMnemonicStr(stemp);
-    Data.Add(mtemp);
-    totalAllocated +=x;
-    return TRUE;
+    return ret;
 }
+
+
 
 
 bool MnemonicDataBase::doReadData(wxTextFile& tf)
 {
-    wxString str;
-    wxArrayString arraystr;
-    totalAllocated=0;
+    wxString        str;
+    wxArrayString   arraystr;
 
-    int currentSection=-1;
+    m_totalAllocated = 0;
 
-    for (str = tf.GetFirstLine(); !tf.Eof(); str=tf.GetNextLine())
+    int currentSection = -1,
+        currentline = 0;
+
+    for (str = tf.GetFirstLine(); !tf.Eof(); str = tf.GetNextLine())
     {
+        currentline++;
+
         TrimComment(str);
         if (str.IsEmpty())
             continue;
-        if (str.First('[')>=0)
+        if (str.First('[') >= 0)
         {
-            currentSection=GetSection(str);
+            currentSection = GetSection(str);
             continue;
         }
-        if ((currentSection>0) && (str.First('"')>0))
+        if ((currentSection > 0) && (str.First('"') > 0))
         {
-            ParseString(str,arraystr);
-            addData(arraystr,currentSection);
+            ParseString(str, arraystr);
+            addData(arraystr, currentSection, currentline);
         }
     }
-    if (Data.IsEmpty())
-        return FALSE;
+    if (m_MnemonicList->IsEmpty())
+        return false;
     else
-        return TRUE;
+        return true;
 }
+
+
 
 
 bool MnemonicDataBase::Open(wxString& opcf)
@@ -243,16 +351,16 @@ bool MnemonicDataBase::Open(wxString& opcf)
         if (IsLoaded())
             Clear();
         if (doReadData(mnfile))
-            return TRUE;
+            return true;
     }
-    return FALSE;
+    return false;
 }
 
 
 void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoffset)
 {
     uint			i, f, index;
-    MnemonicItem	*mtemp;
+    MnemonicItem	*mnemonic;
     wxArrayInt		arrtemp;
     bool			arg_detected;
     byte			opcodetest;
@@ -260,12 +368,12 @@ void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoff
     if (scanoffset == 0)
     {
         arrayint.Clear();
-        f = Data.GetCount();
+        f = m_MnemonicList->GetCount(); //Data.GetCount();
     }
     else
         f = arrayint.GetCount();
 
-    arg_detected = TRUE;
+    arg_detected = true;
     if (f > 1)
     {
         arrtemp.Clear();
@@ -276,15 +384,17 @@ void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoff
                 index = i;
             else
                 index = arrayint[i];
-            mtemp = (MnemonicItem *)Data[index];
-            // In four-byte instructions of Z80, there are opcodes that
-            // have its argument in the middle of it (DD CB's and FD CB's series)
-            // so we must shift right the index to take the code
-            // The test below detects this condition
-            if ((!(mtemp->getArgPos() == scanoffset)) || (mtemp->getArgPos() == 0))
+            mnemonic = m_MnemonicList->Item(index);
+
+            /* In four-byte instructions of Z80, there are opcodes that
+               have its argument in the middle of it (DD CB's and FD CB's series)
+               so we must shift right the index to take the code
+               The test below detects this condition
+             */
+            if ((!(mnemonic->getArgPos() == scanoffset)) || (mnemonic->getArgPos() == 0))
             {
-                arg_detected = FALSE;
-                opcodetest = mtemp->getOpCode(scanoffset);
+                arg_detected = false;
+                opcodetest = mnemonic->getOpCode(scanoffset);
                 if (opcode == opcodetest)
                 {
                     if (scanoffset == 0)
@@ -314,10 +424,10 @@ MnemonicItem *MnemonicDataBase::FindItem(const ByteCode& code)
     for (i = 0; i < total; i++)
     {
         ret = GetData(i);
-        if (memcmp(ret->getOpCode(),&code,MAX_OPCODE_SIZE) != 0)
+        if (memcmp(ret->getOpCode(), &code, MAX_OPCODE_SIZE) != 0)
             ret = 0;
         else
-            i = total;
+            break;
     }
 
     return ret;
@@ -327,7 +437,51 @@ MnemonicItem *MnemonicDataBase::FindItem(const ByteCode& code)
 
 uint MnemonicDataBase::GetAllocated()
 {
-    return totalAllocated;
+    return m_totalAllocated;
 }
 
+
+void MnemonicDataBase::DebugVodoo()
+{
+    uint    i,
+            f,
+            x,
+            b,
+            idebug;
+
+    wxString        str;
+    MnemonicItem    *mnemonic;
+
+    f = m_MnemonicList->GetCount();
+
+    if ((m_log == 0) || (f == 0))
+        return;
+
+    for (i = 0; i < f; i++)
+    {
+        str.Clear();
+        mnemonic = m_MnemonicList->Item(i);
+        /*
+        for (x = 0; x < mnemonic->getBytesNo(); x++)
+        {
+            b = mnemonic->getOpCode(x);
+            str += str.Format("[%.2X] ", b);
+        }
+        */
+        str += str.Format("nArgs = %d ", mnemonic->getArgNo());
+        str += str.Format("ArgSize = %d ", mnemonic->getArgSize());
+        str += str.Format("BranchType = %d ", mnemonic->getBranchType());
+        //str += str.Format("ArgPos = %d [", mnemonic->getArgPos());
+        for (idebug = 0; idebug < mnemonic->MnemonicString.GetCount();
+            idebug++)
+        {
+            str << mnemonic->MnemonicString[idebug];
+        }
+        str << "] \n";
+        LogIt(str);
+    }
+    str.Clear();
+    str.Printf("Total allocated: %d bytes\n", m_totalAllocated);
+    LogIt(str);
+}
 

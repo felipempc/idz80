@@ -59,7 +59,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 {
     wxSize s;
     wxPoint pt;
-    int i;
+    //int i;
 
 
 	wxMenuItem* MenuItem11;
@@ -74,7 +74,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	PanelLog = new wxTextCtrl(this, ID_TEXTCTRL1, _("Text"), wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH, wxDefaultValidator, _T("ID_TEXTCTRL1"));
 	wxFont PanelLogFont(8,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Courier New"),wxFONTENCODING_DEFAULT);
 	PanelLog->SetFont(PanelLogFont);
-	AuiManager1->AddPane(PanelLog, wxAuiPaneInfo().Name(_T("MessageLog")).Caption(_("Message Log")).CaptionVisible().Bottom());
+	AuiManager1->AddPane(PanelLog, wxAuiPaneInfo().Name("MessageLog").Caption(_("Message Log")).CaptionVisible().Bottom());
 	AuiManager1->Update();
 	MenuBar1 = new wxMenuBar();
 	Menu1 = new wxMenu();
@@ -189,6 +189,9 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 
     Maximize();
 
+    process->SetLog(PanelLog);
+    m_project->SetLog(PanelLog);
+    codeview->DebugLog(PanelLog);
     LoadMnemonicsDB();
 
     // Enable/Check submenus
@@ -223,9 +226,6 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     icons = new wxIconBundle(path,wxBITMAP_TYPE_ICO);
     SetIcon(icons->GetIcon(wxSize(-1,-1)));
 
-    process->SetLog(PanelLog);
-    m_project->SetLog(PanelLog);
-    codeview->DebugLog(PanelLog);
     codeview->Enable(false);
     /*
     m_commandline = arraystr;
@@ -282,13 +282,8 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	{
 		OpenProgramFile(m_commandline[1]);
 	}
-	
-	
-	process->sys_calls->Open("X:/idz80/Labels.txt");
-	process->sys_vars->Open("X:/idz80/Labels.txt");
-	if (!process->sys_io->Open("X:/idz80/Labels.txt"))
-		PanelLog->AppendText("Error in sys_io !!\n");
-		
+
+
 	PanelLog->AppendText(wxString::Format("byte = %d, word = %d, int = %d\n", sizeof(byte), sizeof(word), sizeof(uint)));
 }
 
@@ -331,8 +326,9 @@ bool IDZ80::LoadMnemonicsDB()
 
 bool IDZ80::OpenProgramFile(const wxString filename)
 {
-	bool ret;
-	wxString info, caption;
+	bool		ret;
+	wxString	info,
+				caption;
 	FileTypeDialog config(this);
 
 	ret = process->Program->Open(filename);
@@ -343,17 +339,6 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 	}
 	else
 	{
-		wxMenuBar *mb;
-		mb = GetMenuBar();
-		mb->Enable(idMenuToolsDasmAll, true);
-		mb->Enable(idMenuFileInfo, true);
-		mb->Enable(idMenuFileClose, true);
-		mb->Enable(idMenuToolsGenCode, false);
-		mb->Enable(idMenuToolsAutoLabel, false);
-
-		wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
-		UpdateTitle(caption);
-
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText("Opened file:\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
@@ -364,26 +349,44 @@ bool IDZ80::OpenProgramFile(const wxString filename)
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
 		info.Printf("%d bytes\n",process->Program->GetBufferSize());
 		PanelLog->AppendText(info);
-		
-		config.SetData(*process->Program);
-		config.ShowModal();
-		
-		process->Program->StartAddress = config.GetStartAddress();
-		process->Program->ExecAddress = config.GetExecAddress();
-		process->Program->EndAddress = config.GetEndAddress();
-		process->m_Dasm->AddOrgAddress(0, config.GetStartAddress());
 
-		m_project->New();
-		if (config.cb_autodisassemble->IsChecked())
-		{
-			wxCommandEvent ev_dasm(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsDasmAll);
-			AddPendingEvent(ev_dasm);
-		}
-		if (config.cb_autolabel->IsChecked())
-		{
-			wxCommandEvent ev_label(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsAutoLabel);
-			AddPendingEvent(ev_label);
-		}
+		config.SetData(*process->Program);
+		if (config.ShowModal() == wxID_OK)
+        {
+            wxMenuBar *mb;
+            mb = GetMenuBar();
+            mb->Enable(idMenuToolsDasmAll, true);
+            mb->Enable(idMenuFileInfo, true);
+            mb->Enable(idMenuFileClose, true);
+            mb->Enable(idMenuToolsGenCode, false);
+            mb->Enable(idMenuToolsAutoLabel, false);
+
+            wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
+            UpdateTitle(caption);
+
+            /*FIXME: If user change the addresses, it won't appear here, because
+             * they are not converted from textcntrl objects to the integer
+             * variables of FileTypeDialog.
+             */
+            process->Program->StartAddress = config.GetStartAddress();
+            process->Program->ExecAddress = config.GetExecAddress();
+            process->Program->EndAddress = config.GetEndAddress();
+
+            process->m_Dasm->AddOrgAddress(0, process->Program->StartAddress);
+
+            m_project->New();
+            if (config.cb_autodisassemble->IsChecked())
+            {
+                wxCommandEvent ev_dasm(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsDasmAll);
+                AddPendingEvent(ev_dasm);
+            }
+        }
+        else
+        {
+            process->Program->Close();
+            ret = false;
+            StatusBar1->SetStatusText("Cancelled by user !");
+        }
 	}
     return ret;
 }
@@ -420,6 +423,9 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
     bool unknown = false,
          project = false;
 
+    int     debugint;
+    SortedIntArray  debugarray(CompareSortedInt);
+
 
     if (event.GetId() == idMenuFileOpenArchive)
     {
@@ -440,11 +446,7 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
     {
         wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard, wxFD_OPEN);
 
-        // Era : if (dialog.ShowModal() == wxID_OK)
-		//DEBUG STUFF
-		int dlgret = dialog.ShowModal();
-		PanelLog->AppendText(wxString::Format("Dialog returns: %d\n", dlgret));
-        if (dlgret == wxID_OK)
+        if (dialog.ShowModal() == wxID_OK)
         {
             fname = dialog.GetPath();
             m_lastDir = dialog.GetDirectory();
@@ -460,13 +462,27 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
             else    //load a file
             {
 				Clear_all();
-				OpenProgramFile(fname);
+				if (OpenProgramFile(fname) && process->LoadSysLabels())
+                {
+                    process->sys_calls->Open("X:/idz80/Labels.txt");
+                    process->sys_vars->Open("X:/idz80/Labels.txt");
+                    process->sys_io->Open("X:/idz80/Labels.txt");
+                }
+
+				if ((process->Program->isCartridge()) && (process->Program->GetEntries(debugarray)))
+                    for(debugint = 0; debugint < debugarray.GetCount(); debugint++)
+                    {
+                        PanelLog->AppendText(wxString::Format("Entries item %d: %.4X\n", debugint, debugarray[debugint]));
+                    }
 			}
 
 		}
-	}
         else
             StatusBar1->SetStatusText("Cancelled by user !");
+
+	}
+    else
+        StatusBar1->SetStatusText("Unknown file !");
 }
 
 
@@ -515,9 +531,10 @@ void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
 
 void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 {
-    wxSize psize,ldsize;
+    wxSize  psize,ldsize;
     wxPoint ldpos;
-    int w,h,x,y;
+    int     w,h,x,y;
+    SortedIntArray  entries(CompareSortedInt);
 
     codeview->Enable(false);
 
@@ -534,6 +551,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     process->SetGauge(GaugeLd);
     process->DisassembleFirst();
     process->InitData();
+    process->processLabel();
 
     codeview->Enable(true);
 
@@ -547,11 +565,16 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     codeview->Plot();
 
     wxMenuBar *mb;
-    mb=GetMenuBar();
+    mb = GetMenuBar();
     mb->Enable(idMenuToolsAutoLabel, true);
     mb->Enable(idMenuFileSave, true);
     mb->Enable(idMenuFileSaveAs, true);
     mb->Enable(idMenuToolsGenCode, true);
+
+    process->Program->GetEntries(entries);
+
+    if (!entries.IsEmpty())
+        codeview->CenterAddress(entries[0]);
 }
 
 

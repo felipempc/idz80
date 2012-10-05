@@ -26,17 +26,17 @@ void TrimComment(wxString& str)
 
 int GetSection(wxString& s)
 {
-    int i,f;
-    long r=-1;
-    i=s.First('[');
-    f=s.Last(']');
-    if (f>i)
+    int i, f;
+    long r = -1;
+    i = s.First('[');
+    f = s.Last(']');
+    if (f > i)
     {
-        s=s.Mid((i+1),(f-i-1));
+        s = s.Mid((i + 1), (f - i - 1));
         if (s.IsNumber())
             s.ToLong(&r);
         else
-            r=-1;
+            r = -1;
     }
     return ((int) r);
 }
@@ -44,14 +44,14 @@ int GetSection(wxString& s)
 
 void ParseString(wxString& s, wxArrayString& sl)
 {
-    int			f,x;
+    int			f, x;
     wxString	stemp;
-    bool		have_string = true;
+    bool		found_string = true;
 
     sl.Clear();
     x = s.Find('"');
-    have_string = (x > 0);
-    if (have_string)
+    found_string = (x > 0);
+    if (found_string)
 		stemp = s.Left(x);
 	else
 		stemp = s;
@@ -66,7 +66,7 @@ void ParseString(wxString& s, wxArrayString& sl)
         if ((x < 0) && (f > 0))
             x = f;
     }
-    if (have_string)
+    if (found_string)
 	{
 		stemp = s.AfterFirst('"');
 		stemp = stemp.BeforeLast('"');

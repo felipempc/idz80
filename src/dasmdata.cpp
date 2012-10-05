@@ -28,7 +28,7 @@
 DAsmData::DAsmData()
 {
     totalAllocated = 0;
-    dbglog = 0;
+    m_log = 0;
 }
 
 
@@ -73,13 +73,18 @@ bool DAsmData::IsLoaded()
     return (GetCount() > 0);
 }
 
-void DAsmData::AddDasm(DAsmElement *dasmelement)
+int DAsmData::AddDasm(DAsmElement *dasmelement)
 {
+    int     ret = -1;
+
     if (dasmelement != NULL)
     {
         Data.Add(dasmelement);
+        ret = Data.GetCount() - 1;
         totalAllocated += sizeof(DAsmElement);
     }
+
+    return ret;
 }
 
 uint DAsmData::GetUsedMem()
@@ -121,27 +126,30 @@ void DAsmData::DelDasm(uint index, uint count)
     }
 }
 
-void DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
+int DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
 {
-    uint index = Data.GetCount() - 1;
+    uint    numitems = Data.GetCount();
+    int     ret = -1;
 
-    if (beforeitem > index)
-        AddDasm(dasmelement);
+    if (beforeitem >= numitems)
+        ret = AddDasm(dasmelement);
     else
     {
         Data.Insert((void *)dasmelement, beforeitem);
+        ret = beforeitem;
         totalAllocated += sizeof(DAsmElement);
     }
+    return ret;
 }
 
-
+// index = index of dasmdata
 uint DAsmData::GetBaseAddress(uint index)
 {
 	uint	i,
 			j,
 			count,
 			baseaddress = 0;
-	
+
 	count = m_baseAddress.GetCount();
 	for(i = 0; i < count; i++)
 	{
@@ -159,7 +167,7 @@ void DAsmData::AddOrgAddress(uint index, uint address)
 			j,
 			count;
 	bool	found = false;
-	
+
 	count = m_baseAddress.GetCount();
 	if (count > 0)
 	{
@@ -173,6 +181,7 @@ void DAsmData::AddOrgAddress(uint index, uint address)
 				break;
 			}
 		}
+
 		if (!found)
 		{
 			m_baseAddress.Add(index);
@@ -192,7 +201,7 @@ void DAsmData::DelOrgAddress(uint address)
 	uint	i,
 			j,
 			count;
-	
+
 	count = m_baseAddress.GetCount();
 	for(i = 0; i < count; i++)
 	{
@@ -204,3 +213,53 @@ void DAsmData::DelOrgAddress(uint address)
 		}
 	}
 }
+
+
+
+/*
+ * Find a item which address >= given address
+ * if there is no item, return -1
+ * if not found return last item plus 1
+ */
+int DAsmData::FindAddress(uint address)
+{
+    DAsmElement *de;
+    int     i,
+            f,
+            findaddress,
+            ret = -1;
+
+    f = Data.GetCount();
+    for(i = 0; i < f; i++)
+    {
+        de = GetData(i);
+        findaddress = GetBaseAddress(i) + de->Offset;
+        if (findaddress >= address)
+        {
+            ret = i;
+            break;
+        }
+    }
+    if (ret == -1)
+        ret = f + 1;
+
+    #ifdef IDZ80_DASMED
+    LogIt(wxString::Format("Number of dasmed items: %d.  Returning item: %d.   Address to find near: %.4X.  Address found: %.4X\n", f, ret, address, findaddress));
+    #endif
+
+    return ret;
+}
+
+
+
+void DAsmData::SetLog(wxTextCtrl *_lg)
+{
+    m_log = _lg;
+}
+
+void DAsmData::LogIt(wxString logstr)
+{
+    if (m_log != 0)
+        m_log->AppendText("dasmdata.cpp: " + logstr);
+}
+
