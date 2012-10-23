@@ -38,6 +38,7 @@ const long IDZ80::idMenuViewDasmWindow = wxNewId();
 const long IDZ80::idMenuViewProgLabels = wxNewId();
 const long IDZ80::idMenuViewVarLabels = wxNewId();
 const long IDZ80::idMenuViewIOLabels = wxNewId();
+const long IDZ80::idMenuViewConstLabels = wxNewId();
 const long IDZ80::idMenuToolsDasmAll = wxNewId();
 const long IDZ80::idMenuToolsAutoLabel = wxNewId();
 const long IDZ80::idMenuToolsGenCode = wxNewId();
@@ -106,6 +107,10 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	Menu3->Append(MenuItem10);
 	MenuItem11 = new wxMenuItem(Menu3, idMenuViewIOLabels, _("I/O Labels"), wxEmptyString, wxITEM_CHECK);
 	Menu3->Append(MenuItem11);
+// test begin
+	MenuItem11 = new wxMenuItem(Menu3, idMenuViewConstLabels, "Constant Labels", wxEmptyString, wxITEM_CHECK);
+	Menu3->Append(MenuItem11);
+// test end
 	MenuBar1->Append(Menu3, _("&View"));
 	Menu2 = new wxMenu();
 	MenuItem3 = new wxMenuItem(Menu2, idMenuToolsDasmAll, _("Disassemble all\tCTRL+SHIFT+d"), wxEmptyString, wxITEM_NORMAL);
@@ -151,6 +156,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewProgramLabels, this, idMenuViewProgLabels);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewVarLabels, this, idMenuViewVarLabels);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewIOLabels, this, idMenuViewIOLabels);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuViewConstLabels, this, idMenuViewConstLabels);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsDisAsm, this, idMenuToolsDasmAll);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolAutoLabel, this, idMenuToolsAutoLabel);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsGenCode, this, idMenuToolsGenCode);
@@ -170,21 +176,25 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     codeview = new CodeView(this,process);
     m_project = new ProjectManager(process,codeview);
 
-    AuiManager1->AddPane(codeview, wxAuiPaneInfo().Name(_T("MainWindow")).Caption(_("Disassembly Window")).CaptionVisible().CenterPane().MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+    AuiManager1->AddPane(codeview, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
     AuiManager1->AddPane(process->var_labels,
-    wxAuiPaneInfo().Name(_T("VarLabels")).Caption(_("Var Labels")).CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+    wxAuiPaneInfo().Name("VarLabels").Caption("Var Labels").CaptionVisible().Left().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
     AuiManager1->AddPane(process->prog_labels,
-    wxAuiPaneInfo().Name(_T("ProgLabels")).Caption(_("Program Labels")).CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+    wxAuiPaneInfo().Name("ProgLabels").Caption("Program Labels").CaptionVisible().Left().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
     AuiManager1->AddPane(process->io_labels,
-    wxAuiPaneInfo().Name(_T("IOLabels")).Caption(_("IO Labels")).CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+    wxAuiPaneInfo().Name("IOLabels").Caption("IO Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+    AuiManager1->AddPane(process->constant_label,
+    wxAuiPaneInfo().Name("ConstLabels").Caption("Constant Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+
 
     wxString cfg;
-    if (config->Read(_("/AUI_Perspective"),&cfg))
-        AuiManager1->LoadPerspective(cfg,true);
+    if (config->Read("/AUI_Perspective",&cfg))
+        AuiManager1->LoadPerspective(cfg, true);
     else
+
         AuiManager1->Update();
 
-    if (!config->Read(_("/Lastdir"),&m_lastDir))
+    if (!config->Read("/Lastdir", &m_lastDir))
             m_lastDir = m_currentDir;
 
     Maximize();
@@ -467,6 +477,7 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
                     process->sys_calls->Open("X:/idz80/Labels.txt");
                     process->sys_vars->Open("X:/idz80/Labels.txt");
                     process->sys_io->Open("X:/idz80/Labels.txt");
+                    process->sys_const->Open("X:/idz80/Labels.txt");
                 }
 
 				if ((process->Program->isCartridge()) && (process->Program->GetEntries(debugarray)))
@@ -610,6 +621,8 @@ void IDZ80::OnAuiPaneClose(wxAuiManagerEvent& event)
         mb->Check(idMenuViewProgLabels,false);
     if (event.pane->name == _("IOLabels"))
         mb->Check(idMenuViewIOLabels,false);
+    if (event.pane->name == _("ConstLabels"))
+        mb->Check(idMenuViewConstLabels,false);
 }
 
 void IDZ80::OnMenuViewProgramLabels(wxCommandEvent& event)
@@ -669,6 +682,24 @@ void IDZ80::OnMenuViewIOLabels(wxCommandEvent& event)
     AuiManager1->Update();
 }
 
+void IDZ80::OnMenuViewConstLabels(wxCommandEvent& event)
+{
+    wxMenuBar *mb;
+    bool test=false;
+    mb = GetMenuBar();
+    test = mb->IsChecked(idMenuViewConstLabels);
+    if (test)
+    {
+        mb->Check(idMenuViewConstLabels,true);
+        AuiManager1->GetPane("ConstLabels").Show();
+    }
+    else
+    {
+        mb->Check(idMenuViewConstLabels,false);
+        AuiManager1->GetPane("ConstLabels").Hide();
+    }
+    AuiManager1->Update();
+}
 
 
 

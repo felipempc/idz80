@@ -37,23 +37,29 @@ ProcessData::ProcessData(wxWindow *parent)
     var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    constant_label = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
 
     sys_calls =  0;
     sys_vars = 0;
     sys_io = 0;
+    sys_const = 0;
 
     m_gauge = NULL;
     m_log = 0;
+    m_modulename = "PROCESS: ";
 }
 
 
 ProcessData::~ProcessData()
 {
     delete m_disassembler;
+    if (sys_const != 0)
+        delete sys_const;
 	delete sys_calls;
 	delete sys_vars;
 	delete sys_io;
     delete m_CodeViewLine;
+    delete constant_label;
     delete io_labels;
     delete prog_labels;
     delete var_labels;
@@ -87,6 +93,7 @@ bool ProcessData::LoadSysLabels()
         {
             sys_calls =  new SystemLabelList("MSXDOSCALLS");
             sys_vars = new SystemLabelList("MSXDOS1VAR");
+            sys_const = new SystemLabelList("BDOSFUNCTIONS");
         }
         else
         {
@@ -98,6 +105,8 @@ bool ProcessData::LoadSysLabels()
     sys_io->SetLog(m_log);
 	sys_calls->SetLog(m_log);
 	sys_vars->SetLog(m_log);
+	if (sys_const != 0)
+        sys_const->SetLog(m_log);
 
     return ret;
 }
@@ -115,9 +124,9 @@ void ProcessData::ConvertProgramAddress(RangeItems r, RangeData& d)
     DAsmElement* temp;
 
     temp = m_Dasm->GetData(r.Index);
-    d.First = temp->Offset;
+    d.First = temp->GetOffset();
     temp = m_Dasm->GetData((r.Index + r.Count - 1));
-    d.Count = temp->Offset + temp->Length;
+    d.Count = temp->GetOffset() + temp->GetLength();
 }
 
 
@@ -209,11 +218,13 @@ void ProcessData::addLabels()
 void ProcessData::DisassembleFirst()
 {
     m_Dasm->Clear();
-    m_disassembler->FirstDisassemble();
-    addLabels();
-    m_log->AppendText(m_disassembler->GetCodeSegmentStr());
+    m_disassembler->FirstDisassemble(prog_labels, var_labels, io_labels,
+                                     constant_label, sys_calls, sys_vars,
+                                     sys_io, sys_const);
+    //addLabels();
+    LogIt(m_disassembler->GetCodeSegmentStr());
     m_disassembler->OptimizeCodeSegment();
-    m_log->AppendText(m_disassembler->GetCodeSegmentStr());
+    LogIt(m_disassembler->GetCodeSegmentStr());
 }
 
 
@@ -222,7 +233,10 @@ void ProcessData::DisassembleFirst()
 
 void ProcessData::DisassembleItems(RangeItems &r)
 {
-    uint 		i, f, x, j, totargs, item;
+    uint 		i,
+				f,
+				x,
+				item;
     DAsmElement	*de;
     RangeData	prange;
     bool		IsMiddle;
@@ -235,6 +249,7 @@ void ProcessData::DisassembleItems(RangeItems &r)
     if ((r.Index < x) || (f < x))
     {
         ConvertProgramAddress(r,prange);
+        LogIt(wxString::Format("Deleting index = %d, count = %d.\n", r.Index, r.Count));
         m_Dasm->DelDasm(r.Index,r.Count);
         if (r.Index >= m_Dasm->GetCount())
             IsMiddle = FALSE;
@@ -248,18 +263,10 @@ void ProcessData::DisassembleItems(RangeItems &r)
             if (item == OPCODE_NOT_MATCHED)
             {
                 de = new DAsmElement(Program);
-                memset(de->Args,'\0',sizeof(OpCodeArguments));
-                memset(de->Code,'\0',sizeof(ByteCode));
-				de->Style.hasArgumentLabel = 0; // false;
-				de->Style.hasLabel = 0;   //false;
-				de->Style.arg1 = ast_hex;
-				de->Style.arg2 = ast_hex;
-				de->Style.arg1styled = 0;
-				de->Style.arg2styled = 0;
-                de->Length = 1;
-                de->Offset = i;
-                de->MnItem = 0;
-                de->ElType = et_Data;
+                de->SetLength(1);
+                de->SetOffset(i);
+                de->SetMnemonic(0);
+                de->SetType(et_Data);
                 if (IsMiddle)
                     m_Dasm->InsertDasm(de, x++);
                 else
@@ -271,37 +278,31 @@ void ProcessData::DisassembleItems(RangeItems &r)
             else
             {
                 de = new DAsmElement(Program);
-				de->Style.hasArgumentLabel = 0; // false;
-				de->Style.hasLabel = 0;   //false;
-				de->Style.arg1 = ast_hex;
-				de->Style.arg2 = ast_hex;
-				de->Style.arg1styled = 0;
-				de->Style.arg2styled = 0;
-
-                de->MnItem = Mnemonics->GetData(item);
-                for (j = 0; j < MAX_OPCODE_SIZE; j++)
-                {
-                    if (j < de->MnItem->getBytesNo())
-                        de->Code[j] = de->MnItem->getOpCode(j);
-                    else
-                        de->Code[j] = 0;
-                }
-                de->Length = de->MnItem->getBytesNo();
-                de->ElType = et_Instruction;
-                de->Offset = i;
-                totargs = de->MnItem->getArgNo() * de->MnItem->getArgSize();
-                for (j=0;j<totargs;j++)
-                    de->Args[j] = Program->GetData(i + j + de->MnItem->getArgPos());
-                if (IsMiddle)
-                    m_Dasm->InsertDasm(de, x++);
-                else
-                {
-                    m_Dasm->AddDasm(de);
-                    x++;
-                }
+                de->SetMnemonic(Mnemonics->GetData(item));
+                de->SetLength();
+                de->SetType(et_Instruction);
+                de->SetOffset(i);
+				if (de->CopyArguments())
+				{
+					if (IsMiddle)
+						m_Dasm->InsertDasm(de, x++);
+					else
+					{
+						m_Dasm->AddDasm(de);
+						x++;
+					}
+				}
+				else
+				{
+					delete de;
+					de = 0;
+				}
             }
-            i += (de->Length - 1);
-            r.Count++;
+            if (de != 0)
+            {
+				i += (de->GetLength() - 1);
+				r.Count++;
+			}
         }
     }
 }
@@ -323,23 +324,16 @@ void ProcessData::MakeData(RangeItems &r)
     for (i = r.Index; i < f; i++)
     {
         de = m_Dasm->GetData(i);
-        offset = de->Offset;
-        length = de->Length;
-        m_Dasm->DelDasm(de);
+        offset = de->GetOffset();
+        length = de->GetLength();
+        m_Dasm->DelDasm(i);  //de
         for (j = 0; j < length; j++)
         {
             de = new DAsmElement(Program);
-			de->Style.hasArgumentLabel = 0; // false;
-			de->Style.hasLabel = 0;   //false;
-			de->Style.arg1 = ast_hex;
-			de->Style.arg2 = ast_hex;
-			de->Style.arg1styled = 0;
-			de->Style.arg2styled = 0;
-            memset(de->Args,'\0',sizeof(OpCodeArguments));
-            de->Length = 1;
-            de->Offset = offset + j;
-            de->MnItem = 0;
-            de->ElType = et_Data;
+            de->SetLength(1);
+            de->SetOffset(offset + j);
+            de->SetMnemonic(0);
+            de->SetType(et_Data);
             m_Dasm->InsertDasm(de, k++);
         }
         i += length - 1;
@@ -364,6 +358,7 @@ void ProcessData::AutoLabel()
     long		addr;
     wxString	str, strdebug;
     enum ArgType argtype;
+    ArgStyle	style;
 
     if (m_Dasm->IsLoaded())
     {
@@ -372,13 +367,15 @@ void ProcessData::AutoLabel()
         while (i < m_Dasm->GetCount())
         {
             dasmtemp = m_Dasm->GetData(i);
-            if (dasmtemp->ElType == et_Instruction)
+            if (dasmtemp->isInstruction())
             {
-                argtype = dasmtemp->MnItem->getArgType(0);
+                argtype = dasmtemp->GetArgumentType(0);
                 switch (argtype)
                 {
                     case ARG_VARIABLE:
-                                        dasmtemp->Style.hasArgumentLabel = 1;
+										style = dasmtemp->GetStyle();
+                                        style.hasArgumentLabel = 1;
+                                        dasmtemp->SetStyle(style);
                                         addr = dasmtemp->getArgument(0, 0);
                                         str = sys_vars->Find(addr);
                                         if (str.IsEmpty())
@@ -392,11 +389,15 @@ void ProcessData::AutoLabel()
                                         if (str.IsEmpty())
 											str.Printf("LABEL%d", nargsProg++);
                                         prog_labels->AddLabel(addr, str, i);
-										dasmtemp->Style.hasArgumentLabel = 1;
+										style = dasmtemp->GetStyle();
+                                        style.hasArgumentLabel = 1;
+                                        dasmtemp->SetStyle(style);
                                         break;
                     case ARG_IO_ADDR:
                                         addr = dasmtemp->getArgument(0, 0);
-                                        dasmtemp->Style.hasArgumentLabel = 1;
+										style = dasmtemp->GetStyle();
+                                        style.hasArgumentLabel = 1;
+                                        dasmtemp->SetStyle(style);
                                         str = sys_io->Find(addr);
                                         if (str.IsEmpty())
 											str.Printf("PORT%d", nargsIO++);

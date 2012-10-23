@@ -56,13 +56,12 @@ bool SystemLabelList::Open(const wxString& file)
 	m_file = new wxTextFile(file);
 	if (m_file->Exists())
 	{
-		#ifndef IDZ80DEBUG
+/*
 		m_file->Open();
 		ret = readData();
 		m_file->Close();
-		#endif
+*/
 
-		#ifdef IDZ80DEBUG
 		if (!m_file->Open())
 			m_log->AppendText(m_section + "-> Cannot open file !\n ");
 		ret = readData();
@@ -70,7 +69,7 @@ bool SystemLabelList::Open(const wxString& file)
 			m_log->AppendText(m_section + "-> Error reading data !\n ");
 		if (!m_file->Close())
 			m_log->AppendText(m_section + "-> Error closing file !\n ");
-		#endif
+
 	}
 	else
 	{

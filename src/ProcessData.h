@@ -27,6 +27,7 @@
 #include "codeviewline.h"
 #include "systemlabels.h"
 #include "decoder.h"
+#include "IDZ80debugbase.h"
 
 #include <wx/gauge.h>
 #include <wx/dynarray.h>
@@ -54,7 +55,7 @@ struct stRangeData
 typedef struct stRangeData RangeData;
 
 
-class ProcessData
+class ProcessData : public IDZ80LogBase
 {
     public:
         CodeViewLine        *m_CodeViewLine;
@@ -63,10 +64,12 @@ class ProcessData
         MnemonicDataBase    *Mnemonics;
         LabelListCtrl       *var_labels,
                             *prog_labels,
-                            *io_labels;
+                            *io_labels,
+                            *constant_label;
 		SystemLabelList		*sys_calls,
 							*sys_vars,
-							*sys_io;
+							*sys_io,
+							*sys_const;
 
         void DisassembleFirst();
         void DisassembleItems(RangeItems &r);
@@ -84,7 +87,7 @@ class ProcessData
 
     private:
         wxGauge             *m_gauge;
-        wxTextCtrl          *m_log;
+        //wxTextCtrl          *m_log;
         wxWindow            *m_main_frame;
         Decoder             *m_disassembler;
 

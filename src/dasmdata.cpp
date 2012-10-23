@@ -16,7 +16,6 @@
 
 
 #include "dasmdata.h"
-#include "d_asm_element.h"
 
 
 
@@ -29,6 +28,7 @@ DAsmData::DAsmData()
 {
     totalAllocated = 0;
     m_log = 0;
+    m_modulename = "DASMDATA: ";
 }
 
 
@@ -40,47 +40,39 @@ DAsmData::~DAsmData()
 
 void DAsmData::Clear()
 {
-    int 		i,f;
-    DAsmElement *dae;
-
-    totalAllocated = 0;
-    f = Data.GetCount();
-    if (f > 0)
-    {
-        for (i = 0; i < f; i++)
-        {
-            dae = (DAsmElement *)Data[i];
-            delete dae;
-        }
-        Data.Clear();
-    }
+	m_DasmList.clear();
 }
+
+
 
 DAsmElement *DAsmData::GetData(uint index)
 {
-    if (index >= Data.GetCount())
-        return (DAsmElement *)0;
-    return (DAsmElement *)Data[index];
+    if (index >= m_DasmList.size())
+        return 0;
+    return m_DasmList[index];
 }
+
 
 uint DAsmData::GetCount()
 {
-    return Data.GetCount();
+    return m_DasmList.size();
 }
+
 
 bool DAsmData::IsLoaded()
 {
     return (GetCount() > 0);
 }
 
+
 int DAsmData::AddDasm(DAsmElement *dasmelement)
 {
     int     ret = -1;
 
-    if (dasmelement != NULL)
+    if (dasmelement != 0)
     {
-        Data.Add(dasmelement);
-        ret = Data.GetCount() - 1;
+		m_DasmList.push_back(dasmelement);
+        ret = m_DasmList.size() - 1;
         totalAllocated += sizeof(DAsmElement);
     }
 
@@ -93,11 +85,17 @@ uint DAsmData::GetUsedMem()
 }
 
 
-void DAsmData::DelDasm(DAsmElement *dasmelement)
+void DAsmData::DelDasm(uint position)
 {
-    if (dasmelement != NULL)
+	DasmArray::iterator it;
+	DAsmElement *de;
+	
+    if (position < GetCount())
 	{
-		Data.Remove((void *)dasmelement);
+		de = GetData(position);
+		LogIt(wxString::Format("Erase item %d, mnemonic = %s\n", position, de->GetMnemonicStr(0)));
+		it = m_DasmList.begin() + position;
+		m_DasmList.erase(it);
 		totalAllocated -= sizeof(DAsmElement);
 	}
 }
@@ -105,42 +103,42 @@ void DAsmData::DelDasm(DAsmElement *dasmelement)
 
 void DAsmData::DelDasm(uint index, uint count)
 {
-    uint		i,f;
-    DAsmElement *dtemp;
+    DAsmElement *de;
+    int i;
 
-    f = index + count;
+    DasmArray::iterator	it_begin,
+						it_end;
+
     if (index < GetCount())
     {
-        if (f >= GetCount())
-            f = GetCount() - 1;
-        for (i = index; i < f; i++)
-        {
-            dtemp = GetData(i);
-            if (dtemp != NULL)
-            {
-                delete dtemp;
-                totalAllocated -= sizeof(DAsmElement);
-            }
-        }
-        Data.RemoveAt(index, count);
+		it_begin = m_DasmList.begin() + index;
+		it_end = it_begin + count;
+		m_DasmList.erase(it_begin, it_end);
     }
 }
 
+
 int DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
 {
-    uint    numitems = Data.GetCount();
+    uint    numitems = GetCount();
     int     ret = -1;
+    DasmArray::iterator it;
 
     if (beforeitem >= numitems)
         ret = AddDasm(dasmelement);
     else
     {
-        Data.Insert((void *)dasmelement, beforeitem);
+		it = m_DasmList.begin() + beforeitem;
+		m_DasmList.insert(it, dasmelement);
         ret = beforeitem;
         totalAllocated += sizeof(DAsmElement);
     }
     return ret;
 }
+
+
+
+
 
 // index = index of dasmdata
 uint DAsmData::GetBaseAddress(uint index)
@@ -229,11 +227,11 @@ int DAsmData::FindAddress(uint address)
             findaddress,
             ret = -1;
 
-    f = Data.GetCount();
+    f = GetCount();
     for(i = 0; i < f; i++)
     {
         de = GetData(i);
-        findaddress = GetBaseAddress(i) + de->Offset;
+        findaddress = GetBaseAddress(i) + de->GetOffset();
         if (findaddress >= address)
         {
             ret = i;
@@ -248,18 +246,5 @@ int DAsmData::FindAddress(uint address)
     #endif
 
     return ret;
-}
-
-
-
-void DAsmData::SetLog(wxTextCtrl *_lg)
-{
-    m_log = _lg;
-}
-
-void DAsmData::LogIt(wxString logstr)
-{
-    if (m_log != 0)
-        m_log->AppendText("dasmdata.cpp: " + logstr);
 }
 

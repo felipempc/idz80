@@ -35,10 +35,10 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
     x += dc.GetTextExtent(str).GetWidth();
 
     str.Printf("DB ");
-    for (i = 0; i < de->Length; i++)
+    for (i = 0; i < de->GetLength(); i++)
     {
-        str << wxString::Format("0x%.2X", de->GetData(de->Offset + i));
-        if (i < (de->Length - 1))
+        str << wxString::Format("0x%.2X", de->GetData(de->GetOffset() + i));
+        if (i < (de->GetLength() - 1))
             str << ",";
     }
     dc.DrawText(str, x, start_y);
@@ -64,7 +64,6 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
 uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 {
     int		nargs,
-			//argsz,
 			x,
 			argwidth1,
 			argpos1,
@@ -80,10 +79,9 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     usedlabel = false;
     x = COL_MNEM;
     de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-    nargs = de->MnItem->getArgNo();
+    nargs = de->GetNumArgs();
     strparts = 0;
-    //argsz = de->MnItem->getArgSize();
-    str = de->MnItem->MnemonicString[0];
+    str = de->GetMnemonicStr(0);
     strparts++;
     dc.SetTextForeground(FG_TextColor);
     dc.DrawText(str, x, start_y);
@@ -92,9 +90,9 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 
 	argument = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
 
-    if (de->Style.hasArgumentLabel)
+    if (de->HasArgumentLabel())
     {
-        switch (de->MnItem->getArgType(0))
+        switch (de->GetArgumentType(0))
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
@@ -139,7 +137,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     {
         dc.SetTextForeground(*wxRED);
 
-		str = FormatArg(argument, de->Style.arg1);
+		str = FormatArg(argument, de->GetStyleArgument(0));
 
         dc.DrawText(str, x, start_y);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
@@ -161,22 +159,21 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     {
         dc.SetTextForeground(*wxRED);
 
-		str = FormatArg(argument, de->Style.arg1);
-        //str.Printf(_T("0x%X"),de->getArgument(0));
+		str = FormatArg(argument, de->GetStyleArgument(0));
         dc.DrawText(str, x, start_y);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
         x += argwidth1;
 
         dc.SetTextForeground(FG_TextColor);
-        str = de->MnItem->MnemonicString[1];
+        str = de->GetMnemonicStr(1);
         strparts++;
         dc.DrawText(str, x, start_y);
         x += dc.GetTextExtent(str).GetWidth();
         argpos2 = x;
 
         dc.SetTextForeground(*wxRED);
-        str = FormatArg(de->getArgument(1, 0), de->Style.arg2);
-        //str.Printf(_T("0x%X"),de->getArgument(1));
+        str = FormatArg(de->getArgument(1, 0), de->GetStyleArgument(1));
+
         dc.DrawText(str, x, start_y);
         argwidth2 = dc.GetTextExtent(str).GetWidth();
         x += argwidth2;
@@ -194,7 +191,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 
         if (cvi->RectArg2 == 0)
         {
-            cvi->RectArg2 = new wxRect(argpos2, start_y,argwidth2,m_fontHeight);
+            cvi->RectArg2 = new wxRect(argpos2, start_y, argwidth2, m_fontHeight);
         }
         else
         {
@@ -206,9 +203,9 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     }
 
     dc.SetTextForeground(FG_TextColor);
-    if (de->MnItem->MnemonicString.GetCount() > strparts)
+    if (de->GetMnemonicStrNum() > strparts)
     {
-        str = de->MnItem->MnemonicString[strparts];
+        str = de->GetMnemonicStr(strparts);
         dc.DrawText(str, x, start_y);
         x += dc.GetTextExtent(str).GetWidth();
     }
@@ -289,12 +286,12 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 					de = m_process->m_Dasm->GetData(cvi->Dasmitem);
 					if (de != 0)
 					{
-						address = m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem) + de->Offset;
+						address = m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
 
 						dc.SetTextForeground(FG_TextColor);
 						dc.DrawText(de->getCodeStr(), COL_CODE, linepixel);
 						dc.DrawText(de->getAsciiStr(), COL_ASCII, linepixel);
-						switch (de->ElType)
+						switch (de->GetType())
 						{
 							case et_Data:
 												commentoffset = RenderData(dc, linepixel,cvi) + 14;

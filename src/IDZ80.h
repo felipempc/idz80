@@ -74,6 +74,7 @@ class IDZ80: public wxFrame
 		static const long idMenuViewProgLabels;
 		static const long idMenuViewVarLabels;
 		static const long idMenuViewIOLabels;
+		static const long idMenuViewConstLabels;
 		static const long idMenuToolsDasmAll;
 		static const long idMenuToolsAutoLabel;
 		static const long idMenuToolsGenCode;
@@ -118,6 +119,7 @@ class IDZ80: public wxFrame
 		void OnMenuViewProgramLabels(wxCommandEvent& event);
 		void OnMenuViewVarLabels(wxCommandEvent& event);
 		void OnMenuViewIOLabels(wxCommandEvent& event);
+		void OnMenuViewConstLabels(wxCommandEvent& event);
 		void OnMenuToolAutoLabel(wxCommandEvent& event);
 		void OnMenuFileSaveProject(wxCommandEvent& event);
 		void OnMenuFileSaveAsProject(wxCommandEvent& event);

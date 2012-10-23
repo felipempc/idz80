@@ -202,8 +202,8 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             switch(m_iteminfo.type)
             {
 				case 	siInstructionLabel:
-						                if ((de != 0) && (de->MnItem != 0) &&
-						                    (de->MnItem->getBranchType() != BR_NONE))
+						                if ((de != 0) &&
+						                    (de->GetBranchType() != BR_NONE))
 						                {
 											PopUp->Append(idPOPUP_GOTO, "Goto label");
 											PopUp->AppendSeparator();
@@ -267,10 +267,12 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
 	wxMouseState	ms;
 
 	if (event.Dragging() && Selecting)
+	{
 		if (ms.LeftIsDown())
 			LogIt("Selecting...\n");
 		else
 			LogIt("Dragging...\n");
+	}
 /*
     CodeViewItem *cvi;
     wxPoint pt;

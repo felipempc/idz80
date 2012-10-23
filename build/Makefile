@@ -33,7 +33,7 @@ ifeq ($(DEBUG), 0)
 else
 	# DEBUG
 	CC_FLAGS = -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -g
-	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG
+	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG -DIDZ80_DECODER -DIDZ80_DASMED
 	INCLUDE0_PATH = $(WXW)\lib\mswud
 	LIBFILE1 = -lwxbase$(WXWVERSION)ud_gcc_custom
 	LIBFILE2 = -lwxmsw$(WXWVERSION)ud_aui_gcc_custom
@@ -75,6 +75,8 @@ OBJS = $(OBJDIR)\EditLabelDlg.o \
 	$(OBJDIR)\FileTypeDialog.o \
 	$(OBJDIR)\MnemonicItem.o \
 	$(OBJDIR)\segmentmgr.o \
+	$(OBJDIR)\z80register.o \
+	$(OBJDIR)\z80registerlist.o \
 	$(OBJDIR)\decoder.o \
 	$(OBJDIR)\systemlabels.o \
 	$(OBJDIR)\ProcessData.o \
@@ -129,6 +131,13 @@ $(OBJDIR)\FileTypeDialog.o: $(SRCDIR)\FileTypeDialog.cpp $(SRCDIR)\FileTypeDialo
 	@echo $(SRCDIR)\FileTypeDialog.cpp
 	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\FileTypeDialog.cpp $(INCLUDE)
 
+$(OBJDIR)\z80register.o: $(SRCDIR)\z80register.cpp $(SRCDIR)\z80register.h $(SRCDIR)\IDZ80Base.h
+	@echo $(SRCDIR)\z80register.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\z80register.cpp $(INCLUDE)
+
+$(OBJDIR)\z80registerlist.o: $(SRCDIR)\z80registerlist.cpp $(SRCDIR)\z80registerlist.h $(SRCDIR)\IDZ80Base.h $(OBJDIR)\z80register.o
+	@echo $(SRCDIR)\z80registerlist.cpp
+	$(CC) $(CC_FLAGS) $(DEFS) -o $@ $(SRCDIR)\z80registerlist.cpp $(INCLUDE)
 
 $(OBJDIR)\MnemonicItem.o: $(SRCDIR)\MnemonicItem.cpp $(SRCDIR)\MnemonicItem.h $(SRCDIR)\IDZ80Base.h
 	@echo $(SRCDIR)\MnemonicItem.cpp

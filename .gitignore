@@ -9,3 +9,7 @@ obj/*
 lib/*
 IDZ80/*
 *.bat
+*.7z
+*.zip
+*.ods
+codeblocks/*

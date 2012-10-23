@@ -18,18 +18,20 @@
 #ifndef _IDZ80_DASMDATA_H
 #define _IDZ80_DASMDATA_H
 
-#include <wx/dynarray.h>
+//#include <wx/dynarray.h>
 #include "rawdata.h"
 #include "d_asm_element.h"
+#include <vector>
 
+typedef std::vector<DAsmElement *> DasmArray;
 
-class DAsmData
+class DAsmData : public IDZ80LogBase
 {
     public:
         void Clear();
         int  AddDasm(DAsmElement *dasmelement);
-        void DelDasm(DAsmElement *dasmelement);
-        void DelDasm(uint index, uint count = 1);
+        void DelDasm(uint position);
+        void DelDasm(uint index, uint count);
         int  InsertDasm(DAsmElement *dasmelement,uint beforeitem);
         DAsmElement *GetData(uint index);
         uint GetCount();
@@ -40,21 +42,14 @@ class DAsmData
         void DelOrgAddress(uint address);
         int FindAddress(uint address);
 
-        void SetLog(wxTextCtrl *_lg);
-
-
 
         DAsmData();
         ~DAsmData();
 
     private:
-        wxArrayPtrVoid  Data;
+        DasmArray		m_DasmList;
         uint            totalAllocated;
         wxArrayInt		m_baseAddress;		// keeps Origin Addresses
-
-        wxTextCtrl      *m_log;
-
-        void LogIt(wxString logstr);
 };
 
 

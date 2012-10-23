@@ -218,33 +218,33 @@ void ProjectManager::writeDasmData(wxTextFile &savefile)
     DAsmElement *de;
     if (m_process->m_Dasm->GetCount() != 0)
     {
-        savefile.AddLine(_("[DASM]"));
+        savefile.AddLine("[DASM]");
         for (i = 0; i < m_process->m_Dasm->GetCount(); i++)
         {
             de = m_process->m_Dasm->GetData(i);
-            str.Printf(_("%.2X "), de->ElType);
-            str << wxString::Format(_("%.2X "), de->Length);
-            str << wxString::Format(_("%.4X "), de->Offset);
-            for(j = 0; j < de->Length; j++)
-                str << wxString::Format(_("%.2X "), de->Code[j]);
+            str.Printf("%.2X ", de->GetType());
+            str << wxString::Format("%.2X ", de->GetLength());
+            str << wxString::Format("%.4X ", de->GetOffset());
+            for(j = 0; j < de->GetLength(); j++)
+                str << wxString::Format("%.2X ", de->GetCodeItem(j));
 
-            if (de->MnItem != 0)
-                if (de->MnItem->getArgNo() > 0)
-                {
-                    str << wxString::Format(_("%.2X "), de->MnItem->getArgNo());
-                    str << wxString::Format(_("%.2X "), de->MnItem->getArgSize());
-					arg_aux = de->MnItem->getArgNo() * de->MnItem->getArgSize();
-					for(j = 0; j < arg_aux; j++)
-					{
-						c = de->Args[j] & 0xFF;
-						str << wxString::Format(_("%.2X "), c);
-					}
-                }
+			if (de->GetNumArgs() > 0)
+			{
+				str << wxString::Format("%.2X ", de->GetNumArgs());
+				str << wxString::Format("%.2X ", de->GetArgSize());
+				arg_aux = de->GetNumArgs() * de->GetArgSize();
+				for(j = 0; j < arg_aux; j++)
+				{
+					c = de->GetArgItem(j);
+					c = c & 0xFF;
+					str << wxString::Format("%.2X ", c);
+				}
+			}
             str.Trim();
             str.Trim(false);
             savefile.AddLine(str);
         }
-        savefile.AddLine(_("[\\DASM]\n"));
+        savefile.AddLine("[\\DASM]\n");
     }
 }
 
@@ -542,15 +542,23 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 void ProjectManager::readDasmData(wxTextFile &openfile)
 {
     wxString	str;
-    int			i, j, count;
+    int			i,
+				j,
+				count;
     long		conv;
-    bool		foundHeader, mnfailed;
+    bool		foundHeader,
+				mnfailed;
     wxArrayString		arr_str;
     enum ElementType	dtype;
-    uint		len, offs, arg_num, arg_size, arg_aux;
-    ByteCode	bc;
+    uint		len,
+				offs,
+				arg_num,
+				arg_size,
+				arg_aux;
+    ByteCode		bc;
     OpCodeArguments	args;
-    DAsmElement	*de;
+    DAsmElement		*de;
+    MnemonicItem	*mi;
 
     count = 0;
 
@@ -572,46 +580,41 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
         {
             ParseString(str, arr_str);
             de = new DAsmElement(m_process->Program);
-			de->Style.hasArgumentLabel = 0;
-			de->Style.hasLabel = 0;
-			de->Style.arg1 = ast_hex;
-			de->Style.arg2 = ast_hex;
-			de->Style.arg1styled = 0;
-			de->Style.arg2styled = 0;
-
             j = 0;
 
             if (arr_str.GetCount() > 3)
             {
                 str = arr_str[j++];
-                str.ToLong(&conv,16);
+                str.ToLong(&conv, 16);
                 dtype = (enum ElementType)conv;
-                de->ElType = dtype;
+                de->SetType(dtype);
 
                 str = arr_str[j++];
-                str.ToLong(&conv,16);
+                str.ToLong(&conv, 16);
                 len = (uint)conv;
-                de->Length = len;
+                de->SetLength(len);
 
                 str = arr_str[j++];
-                str.ToLong(&conv,16);
+                str.ToLong(&conv, 16);
                 offs = (uint)conv;
-                de->Offset = offs;
+                de->SetOffset(offs);
 
                 memset(&bc, 0, MAX_OPCODE_SIZE);
                 for (i = 0; i < len; i++)
                 {
                     str = arr_str[(i + j)];
-                    str.ToLong(&conv,16);
+                    str.ToLong(&conv, 16);
                     if (i < sizeof(ByteCode))
                         bc[i] = (unsigned char)conv;
                 }
-                memcpy(de->Code, bc, MAX_OPCODE_SIZE);
+                de->CopyOpCode(bc);
+                //memcpy(de->Code, bc, MAX_OPCODE_SIZE);
 
-                de->MnItem = m_process->Mnemonics->FindItem(de->Code);
-                if (de->MnItem == 0)
+                mi = m_process->Mnemonics->FindItem(bc);
+                if (mi == 0)
                     mnfailed = true;
-
+				else
+					de->SetMnemonic(mi);
 
                 j += len;
             }
@@ -619,11 +622,11 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
             if ((arr_str.GetCount() > (3 + len)) && !mnfailed)
             {
                 str = arr_str[j++];
-                str.ToLong(&conv,16);
+                str.ToLong(&conv, 16);
                 arg_num = (uint)conv;
 
                 str = arr_str[j++];
-                str.ToLong(&conv,16);
+                str.ToLong(&conv, 16);
                 arg_size = (uint)conv;
 
                 arg_aux = arg_size * arg_num;
@@ -635,7 +638,8 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
                     if (i < sizeof(OpCodeArguments))
                         args[i] = (unsigned char)conv;
                 }
-                memcpy(de->Args, args, arg_aux);
+                de->CopyArguments(args, arg_aux);
+                //memcpy(de->Args, args, arg_aux);
             }
 
             if (!mnfailed)

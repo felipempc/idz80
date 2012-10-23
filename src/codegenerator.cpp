@@ -40,22 +40,22 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
     wxString str, str_number_format;
 
     if (m_cflags == cfM80)
-        str_number_format = _T("%.2XH");
+        str_number_format = "%.2XH";
     else
-        str_number_format = _T("0x%.2X");
+        str_number_format = "0x%.2X";
 
     de = process->m_Dasm->GetData(cvi->Dasmitem);
-    str.Printf(_T("DB "));
-    for (i=0; i < de->Length; i++)
+    str.Printf("DB ");
+    for (i=0; i < de->GetLength(); i++)
     {
-        str << wxString::Format(str_number_format,de->GetData(de->Offset+i));
+        str << wxString::Format(str_number_format, de->GetData(de->GetOffset() + i));
         if (m_cflags == cfM80)
             //FIXME: Baiano BUG, with more than one item it will crash
             if (!isNumber(str[0]))
-                str.Prepend(_T("0"));
+                str.Prepend("0");
 
-        if (i < (de->Length-1))
-            str << _T(",");
+        if (i < (de->GetLength() - 1))
+            str << ",";
     }
     return str;
 }
@@ -71,14 +71,14 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
     {
         str = process->io_labels->GetAddress(i);
         if (!isNumber(str[0]))
-            str.Prepend(_T("0"));
+            str.Prepend("0");
 
         if (m_cflags == cfM80)
-            str << _T("H");
+            str << "H";
         else
-            str.Prepend(_T("0x"));
+            str.Prepend("0x");
 
-        str_ret << process->io_labels->GetLabel(i) << _T("  EQU  ") << str << end_line;
+        str_ret << process->io_labels->GetLabel(i) << "  EQU  " << str << end_line;
     }
     return str_ret;
 
@@ -88,7 +88,6 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 {
     int		nargs,
-			//argsz,
 			strparts;
     uint	argument;
 
@@ -99,10 +98,9 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     usedlabel = false;
     de = process->m_Dasm->GetData(cvi->Dasmitem);
-    nargs = de->MnItem->getArgNo();
-    //argsz = de->MnItem->getArgSize();
+    nargs = de->GetNumArgs();
 
-    str_ret = de->MnItem->MnemonicString[0];
+    str_ret = de->GetMnemonicStr(0);
     strparts = 1;
 
     str_1.Clear();
@@ -111,13 +109,13 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     argument = de->getArgument(0, process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)
-        str_number_format = _T("%XH");
+        str_number_format = "%XH";
     else
-        str_number_format = _T("0x%X");
+        str_number_format = "0x%X";
 
-    if (de->Style.hasArgumentLabel)
+    if (de->HasArgumentLabel())
     {
-        switch (de->MnItem->getArgType(0))
+        switch (de->GetArgumentType(0))
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
@@ -151,7 +149,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
             if (!isNumber(str_1[0]))
                 str_1.Prepend("0");
 
-        str_1 << de->MnItem->MnemonicString[1];
+        str_1 << de->GetMnemonicStr(1);
         strparts++;
         str_2.Printf(str_number_format, de->getArgument(1, 0));
         if (m_cflags == cfM80)
@@ -162,9 +160,9 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     str_ret << str_1 << str_2;
 
-    if (de->MnItem->MnemonicString.GetCount() > strparts)
+    if (de->GetMnemonicStrNum() > strparts)
     {
-        str_ret << de->MnItem->MnemonicString[strparts];
+        str_ret << de->GetMnemonicStr(strparts);
     }
     return str_ret;
 }
@@ -181,25 +179,25 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
     wxString str, str_number_format;
 
     int     count,i;
-    DAsmElement *de;
     bool    first_instruction,
             file_ok;
+    DAsmElement	*de;
 
     textCode.Clear();
     m_cflags = cflags;
 
     if (m_cflags == cfM80)
     {
-        end_line = _T("\r\n");
+        end_line = "\r\n";
         end_line.Shrink();
-        str_number_format = _T("%XH");
+        str_number_format = "%XH";
         str_number_format.Shrink();
     }
     else
     {
-        end_line = _T("\n");
+        end_line = "\n";
         end_line.Shrink();
-        str_number_format = _T("0x%X");
+        str_number_format = "0x%X";
         str_number_format.Shrink();
     }
 
@@ -209,8 +207,8 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
     file.MakeLower();
 
-    textCode << _T(";") << end_line;
-    textCode << wxString::Format(_T("; Filename: %s"), file.c_str()) << end_line << _T(";") << end_line;
+    textCode << ";" << end_line;
+    textCode << wxString::Format("; Filename: %s", file.c_str()) << end_line << _T(";") << end_line;
 
     while (i < count)
     {
@@ -225,16 +223,16 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             {
                 if (m_cflags == cfM80)
                 {
-                    textCode << end_line << _T(".Z80") << end_line << _T(".RADIX 10") << end_line << end_line;
-                    textCode << _T("\t") _T("ASEG") << end_line;
+                    textCode << end_line << ".Z80" << end_line << ".RADIX 10" << end_line << end_line;
+                    textCode << "\tASEG" << end_line;
                 }
             }
 
             textCode << end_line << generateLabels(cvi) << end_line;
 
-            str = _T("ORG ");
+            str = "ORG ";
             str << str_number_format;
-            textCode << _T("\t") << wxString::Format(str, cvi->Org);
+            textCode << "\t" << wxString::Format(str, cvi->Org);
         }
         else
         {
@@ -247,14 +245,14 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
                 first_instruction = true;
 
-                switch (de->ElType)
+                switch (de->GetType())
                 {
                     case et_Data:
-                                        textCode << _T("\t") << generateTextData(cvi);
+                                        textCode << "\t" << generateTextData(cvi);
                                         break;
 
                     case et_Instruction:
-                                        textCode << _T("\t") << generateInstruction(cvi);
+                                        textCode << "\t" << generateInstruction(cvi);
                                         break;
                     default:
                                         break;
@@ -268,10 +266,10 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             {
                 first_instruction = true;
                 if (process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
-                    textCode << str << _T(":");
+                    textCode << str << ":";
                 else
                     if (process->var_labels->GetLabel(cvi->LabelVarAddr, str))
-                        textCode << str << _T(":");
+                        textCode << str << ":";
                     else
                         process->m_CodeViewLine->DelItem(cvi);
             }
@@ -285,7 +283,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
         {
             str = cvi->Comment->CommentStr;
             if (first_instruction)
-                textCode << _T("\t");
+                textCode << "\t";
 
             textCode << str << end_line;
         }
@@ -295,7 +293,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
         i++;
     }
 
-    textCode << end_line << end_line << _T("END") << end_line;
+    textCode << end_line << end_line << "END" << end_line;
 
     file_ok = file_o_code.Create(file);
     if (!file_ok)

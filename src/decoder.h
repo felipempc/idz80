@@ -21,8 +21,11 @@
 #include "dasmdata.h"
 #include "rawdata.h"
 #include "d_asm_element.h"
+#include "labelslist.h"
+#include "systemlabels.h"
 #include "segmentmgr.h"
 #include "IDZ80debugbase.h"
+#include "z80registerlist.h"
 
 
 class Decoder: public IDZ80LogBase
@@ -31,7 +34,10 @@ class Decoder: public IDZ80LogBase
         Decoder(RawData *program, DAsmData *dasmdata, MnemonicDataBase *mnemonics);
         ~Decoder();
 
-        bool FirstDisassemble();
+        bool FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabels,
+							LabelListCtrl *iolabels, LabelListCtrl *constlabels,
+							SystemLabelList *syscalls, SystemLabelList *sysvars,
+							SystemLabelList *sysio, SystemLabelList *sysconst);
         SortedIntArray *GetVarList();
         SortedIntArray *GetIOList();
         SortedIntArray *GetEntryList();
@@ -55,8 +61,18 @@ class Decoder: public IDZ80LogBase
                             *m_varlist,
                             *m_iolist;
 
+        LabelListCtrl       *m_varlabels,
+                            *m_proglabels,
+                            *m_iolabels,
+                            *m_constlabels;
+		SystemLabelList		*m_syscalls,
+							*m_sysvars,
+							*m_sysio,
+							*m_sysconst;
 
-        wxTextCtrl          *m_log;
+        Z80RegisterList     m_Register;
+
+
         uint                m_startaddress,
                             m_endaddress,
                             m_execaddress,
@@ -70,14 +86,20 @@ class Decoder: public IDZ80LogBase
         uint Fetch(const uint startpoint, uint maxitems);
         uint Decode(DAsmElement *de, uint prg_index, uint dasm_position = 0xFFFFFFFF);
         void ProcessArgument(DAsmElement *de, uint index);
-        bool ProcessConditional(uint _start, uint _end, uint &nextaddr);
         bool GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, uint &nextaddr);
         bool GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr);
         bool OutBoundaryAddress(uint _addr);
         void UpdateBoundary();
-        bool CallSubroutine(uint address);
+        bool CallSubroutine(DAsmElement *de, uint address);
         bool ReturnSubroutine(uint &dest_address);
         bool ProcessBranch(DAsmElement *de, int &num_call, bool &processing_status);
+        void ProcessLoadReg(DAsmElement *de);
+        void FillData();
+
+        void MSXCheckFunctionRegisters(DAsmElement *de);
+        void MSXWeirdRST(DAsmElement *de);
+
+        void SetCartridgeLabels();
 
         void debugShowList(const wxString &listname, SortedIntArray *_list);
         void debugShowJmpList(const wxString &listname, SortedIntArray *_list);

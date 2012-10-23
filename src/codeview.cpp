@@ -533,7 +533,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 				hcomment = true;
 
             de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-            if (de->ElType == et_Instruction)
+            if (de->isInstruction())
             {
                 if ((lastitem == et_None) || (lastitem == et_Instruction))
                 {
@@ -544,7 +544,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
                     homogeneous = false;
             }
             else
-                if (de->ElType == et_Data)
+                if (de->isData())
                 {
                     if ((lastitem == et_None) || (lastitem == et_Data))
                     {
@@ -757,8 +757,8 @@ bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels)
         if (cvi->Dasmitem >= 0)
         {
             de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-            if ((de->ElType == et_Instruction) ||
-                (de->ElType == et_Data))
+            if (de->isInstruction() ||
+                de->isData())
             {
                 if (!foundindex)
                 {
@@ -994,80 +994,37 @@ void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
-//	DAsmElement *de;
-
-
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->Style.arg1 = ast_bin;
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bin);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->Style.arg2 = ast_bin;
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bin);
 
-/*
-	if (m_styleData.arg != 0)
-	{
-		de = m_process->m_Dasm->GetData(m_styleData.item);
-		if (m_styleData.arg == 1)
-			de->Style.arg1 = ast_bin;
-		else
-			de->Style.arg2 = ast_bin;
-
-		m_styleData.arg = 0;
-		m_styleData.item = 0;
-*/
 	RefreshRect(CalcCursorRfshRect());
-//	}
 }
+
 
 void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
-//	DAsmElement *de;
-
-
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->Style.arg1 = ast_dec;
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_dec);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->Style.arg2 = ast_dec;
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_dec);
 
-/*
-	if (m_styleData.arg != 0)
-	{
-		de = m_process->m_Dasm->GetData(m_styleData.item);
-		if (m_styleData.arg == 1)
-			de->Style.arg1 = ast_dec;
-		else
-			de->Style.arg2 = ast_dec;
-
-		m_styleData.arg = 0;
-		m_styleData.item = 0;
-*/
 	RefreshRect(CalcCursorRfshRect());
-//	}
 }
+
 
 void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
-	//DAsmElement *de;
-
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->Style.arg1 = ast_hex;
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_hex);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->Style.arg2 = ast_hex;
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_hex);
 
-/*
-		de = m_process->m_Dasm->GetData(m_styleData.item);
-		if (m_styleData.arg == 1)
-			de->Style.arg1 = ast_hex;
-		else
-			de->Style.arg2 = ast_hex;
-
-		m_styleData.arg = 0;
-		m_styleData.item = 0;
-*/
 		RefreshRect(CalcCursorRfshRect());
-//	}
 }
 
 
@@ -1129,12 +1086,12 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 			if (de != 0)
 			{
 				m_iteminfo.dasmitem = de;
-				if (de->Style.hasArgumentLabel)
+				if (de->HasArgumentLabel())
 					m_iteminfo.type = siInstructionLabel;
 				else
 					m_iteminfo.type = siInstruction;
 
-				if (de->ElType == et_Data)
+				if (de->isData())
 					m_iteminfo.type = siData;
 
 			}
