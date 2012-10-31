@@ -37,7 +37,7 @@ ProcessData::ProcessData(wxWindow *parent)
     var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
     io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
-    constant_label = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    constant_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
 
     sys_calls =  0;
     sys_vars = 0;
@@ -59,7 +59,7 @@ ProcessData::~ProcessData()
 	delete sys_vars;
 	delete sys_io;
     delete m_CodeViewLine;
-    delete constant_label;
+    delete constant_labels;
     delete io_labels;
     delete prog_labels;
     delete var_labels;
@@ -80,7 +80,7 @@ void ProcessData::SetGauge(wxGauge *g)
  * system calls, etc) after program
  * has been loaded.
  */
-bool ProcessData::LoadSysLabels()
+bool ProcessData::SetupSystemLabels()
 {
     bool ret = false;
 
@@ -168,49 +168,6 @@ uint ProcessData::MatchOpcode(const uint i, const uint max)
 }
 
 
-void ProcessData::addLabels()
-{
-    int         i,
-                counter = 0,
-                address;
-    SortedIntArray *temp;
-    wxString    str;
-
-
-    temp = m_disassembler->GetVarList();
-    for(i = 0; i < temp->GetCount(); i++)
-    {
-        address = temp->Item(i);
-        str = sys_vars->Find(address);
-        if (str.IsEmpty())
-            str.Printf("VAR%d", counter++);
-        var_labels->AddLabel(address, str);
-    }
-
-    counter = 0;
-    temp = m_disassembler->GetEntryList();
-    for(i = 0; i < temp->GetCount(); i++)
-    {
-        address = temp->Item(i);
-        str = sys_calls->Find(address);
-        if (str.IsEmpty())
-            str.Printf("LABEL%d", counter++);
-        prog_labels->AddLabel(address, str);
-    }
-
-    counter = 0;
-    temp = m_disassembler->GetIOList();
-    for(i = 0; i < temp->GetCount(); i++)
-    {
-        address = temp->Item(i);
-        str = sys_io->Find(address);
-        if (str.IsEmpty())
-            str.Printf("PORT%d", counter++);
-        io_labels->AddLabel(address, str);
-    }
-}
-
-
 
 
 
@@ -218,10 +175,7 @@ void ProcessData::addLabels()
 void ProcessData::DisassembleFirst()
 {
     m_Dasm->Clear();
-    m_disassembler->FirstDisassemble(prog_labels, var_labels, io_labels,
-                                     constant_label, sys_calls, sys_vars,
-                                     sys_io, sys_const);
-    //addLabels();
+    m_disassembler->FirstDisassemble(this);
     LogIt(m_disassembler->GetCodeSegmentStr());
     m_disassembler->OptimizeCodeSegment();
     LogIt(m_disassembler->GetCodeSegmentStr());
@@ -357,7 +311,7 @@ void ProcessData::AutoLabel()
 
     long		addr;
     wxString	str, strdebug;
-    enum ArgType argtype;
+    enum ArgumentTypes argtype;
     ArgStyle	style;
 
     if (m_Dasm->IsLoaded())

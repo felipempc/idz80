@@ -36,6 +36,7 @@ Decoder::Decoder(RawData *program, DAsmData *dasmdata, MnemonicDataBase *mnemoni
     m_callList = new SortedIntArray(CompareSortedInt);
     m_codesegments = new SegmentMgr();
     m_datasegments = 0;
+
     m_varlist = new SortedIntArray(CompareSortedInt);
     m_iolist = new SortedIntArray(CompareSortedInt);
     m_entrylist = new SortedIntArray(CompareSortedInt);
@@ -74,24 +75,6 @@ void Decoder::UpdateBoundary()
         m_execaddress = m_program->ExecAddress;
     }
 }
-
-
-
-SortedIntArray *Decoder::GetVarList()
-{
-    return m_varlist;
-}
-
-SortedIntArray *Decoder::GetIOList()
-{
-    return m_iolist;
-}
-
-SortedIntArray *Decoder::GetEntryList()
-{
-    return m_entrylist;
-}
-
 
 
 
@@ -193,16 +176,16 @@ uint Decoder::Decode(DAsmElement *de, uint prg_index, uint dasm_position)
  */
 void Decoder::ProcessArgument(DAsmElement *de, uint index)
 {
-    enum ArgType	argtype;
+    enum ArgumentTypes	argtype;
     uint            argument;
     wxString		str;
     static int		prog = 0,
 					var = 0,
 					io = 0;
 
-	if ((m_varlabels->GetCount() == 0) &&
-		(m_proglabels->GetCount() == 0) &&
-		(m_iolabels->GetCount() == 0))
+	if ((Labels->var_labels->GetCount() == 0) &&
+		(Labels->prog_labels->GetCount() == 0) &&
+		(Labels->io_labels->GetCount() == 0))
 	{
 		prog = 0;
 		var = 0;
@@ -214,10 +197,10 @@ void Decoder::ProcessArgument(DAsmElement *de, uint index)
 	{
 		case ARG_VARIABLE:
                             argument = de->getArgument(0, 0);
-							str = m_sysvars->Find(argument);
+							str = Labels->sys_vars->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("VAR%d", var++);
-							m_varlabels->AddLabel(argument, str);
+							Labels->var_labels->AddLabel(argument, str);
 							de->SetArgLabel();
                             if (m_varlist->Index(argument) == wxNOT_FOUND)
                                 m_varlist->Add(argument);
@@ -225,20 +208,20 @@ void Decoder::ProcessArgument(DAsmElement *de, uint index)
 		case ARG_ABS_ADDR:
 		case ARG_REL_ADDR:
                             argument = de->getArgument(0, m_dasmeditems->GetBaseAddress(index));
-							str = m_syscalls->Find(argument);
+							str = Labels->sys_calls->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("LABEL%d", prog++);
-							m_proglabels->AddLabel(argument, str);
+							Labels->prog_labels->AddLabel(argument, str);
 							de->SetArgLabel();
                             if (m_entrylist->Index(argument) == wxNOT_FOUND)
                                 m_entrylist->Add(argument);
 							break;
 		case ARG_IO_ADDR:
                             argument = de->getArgument(0, 0);
-							str = m_sysio->Find(argument);
+							str = Labels->sys_io->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("PORT%d", io++);
-							m_iolabels->AddLabel(argument, str);
+							Labels->io_labels->AddLabel(argument, str);
 							de->SetArgLabel();
                             if (m_iolist->Index(argument) == wxNOT_FOUND)
                                 m_iolist->Add(argument);
@@ -340,9 +323,9 @@ void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
     case 5:
         if (m_Register.C->isLoaded())
         {
-            wxString str = m_sysconst->Find(m_Register.C->GetValue());
+            wxString str = Labels->sys_const->Find(m_Register.C->GetValue());
             if (!str.IsEmpty())
-                m_constlabels->AddLabel(m_Register.C->GetValue(), str);
+                Labels->constant_labels->AddLabel(m_Register.C->GetValue(), str);
         }
 
         break;
@@ -351,28 +334,45 @@ void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
 
 
 
-void Decoder::MSXWeirdRST(DAsmElement *de)
+bool Decoder::MSXWeirdRST(DAsmElement *de, uint dasm_position)
 {
     uint offset;
+    uint temp;
+    bool ret = false;
 
     if (de->GetInstructionType() == IT_RST)
     {
         offset = de->GetOffset();
 
-        switch (de->GetInstructionInfo())
+        switch (de->GetInstructionDetail())
         {
             case II_RST_08:
-                            break;
+                        LogIt(wxString::Format("[%.4X] Rst 08h detected !\n", m_actualaddress));
+                        break;
 
             case II_RST_30:
+                        // ID of Slot
+                        LogIt(wxString::Format("[%.4X] Rst 30h detected !\n", m_actualaddress));
                         de = new DAsmElement(m_program);
                         de->SetLength(1);
                         de->SetOffset(++offset);
                         de->SetMnemonic(0);
                         de->SetType(et_Data);
+                        m_dasmeditems->InsertDasm(de, dasm_position++);
+                        LogIt(wxString::Format("[%.4X] Slot = %d.\n", m_actualaddress,
+                                               m_program->GetData(offset)));
+                        // address to be called
+                        de = new DAsmElement(m_program);
+                        de->SetLength(2);
+                        de->SetOffset(++offset);
+                        de->SetMnemonic(0);
+                        de->SetType(et_Data);
                         m_dasmeditems->InsertDasm(de, dasm_position);
-
-                            break;
+                        temp = m_program->GetData(offset) + m_program->GetData(offset + 1) * 0xFF;
+                        LogIt(wxString::Format("[%.4X] Calling address = %.4X.\n", m_actualaddress,
+                                               temp));
+                        ret = true;
+                        break;
         }
     }
 }
@@ -496,16 +496,6 @@ bool Decoder::ProcessBranch(DAsmElement *de, int &num_call, bool &processing_sta
         case BR_JUMP:
                         if (OutBoundaryAddress(address))
                         {
-                            if ((num_call > 0) && ReturnSubroutine(m_nextaddress))
-                            {
-                                num_call--;
-                                update_dasm_item = true;
-                                returning = true;
-                                #ifdef IDZ80_DECODER
-                                LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X] inside a sub-routine. Returning to 0x%.4X !\n", m_actualaddress, address, m_nextaddress));
-                                #endif
-                            }
-
                             if (num_call == 0)
                             {
                                 #ifdef IDZ80_DECODER
@@ -519,6 +509,17 @@ bool Decoder::ProcessBranch(DAsmElement *de, int &num_call, bool &processing_sta
                                     #endif
                                 }
                             }
+
+                            if ((num_call > 0) && ReturnSubroutine(m_nextaddress))
+                            {
+                                num_call--;
+                                update_dasm_item = true;
+                                returning = true;
+                                #ifdef IDZ80_DECODER
+                                LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X] inside a sub-routine. Returning to 0x%.4X !\n", m_actualaddress, address, m_nextaddress));
+                                #endif
+                            }
+
                         }
                         else
                         {
@@ -638,13 +639,13 @@ bool Decoder::ProcessBranch(DAsmElement *de, int &num_call, bool &processing_sta
 
 void Decoder::ProcessLoadReg(DAsmElement *de)
 {
-    enum InstruInfo info;
+    enum InstructionDetails info;
 
     m_Register.UpdateLife();
 
     if (de->GetInstructionType() == IT_LOAD)
     {
-        switch (de->GetInstructionInfo())
+        switch (de->GetInstructionDetail())
         {
             case II_LD_A_N:
                             m_Register.A->Init(de->getArgument(0, 0), de->GetOffset());
@@ -748,10 +749,7 @@ void Decoder::FillData()
 
 
 
-bool Decoder::FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabels,
-							LabelListCtrl *iolabels, LabelListCtrl *constlabels,
-							SystemLabelList *syscalls, SystemLabelList *sysvars,
-							SystemLabelList *sysio, SystemLabelList *sysconst)
+bool Decoder::FirstDisassemble(LabelManager *parent)
 {
     bool    ret = false,
             processing = true,
@@ -766,22 +764,10 @@ bool Decoder::FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabe
 
     DAsmElement     *de;
 
-
-	m_proglabels = proglabels;
-	m_varlabels = varlabels;
-	m_iolabels = iolabels;
-	m_constlabels = constlabels;
-	m_syscalls = syscalls;
-	m_sysvars = sysvars;
-	m_sysio = sysio;
-	m_sysconst = sysconst;
+    Labels = parent;
+    Labels->ClearUserLabels();
 
     UpdateBoundary();
-
-	m_proglabels->Clear();
-	m_varlabels->Clear();
-	m_iolabels->Clear();
-	m_constlabels->Clear();
 
     m_iolist->Clear();
     m_varlist->Clear();
@@ -806,7 +792,7 @@ bool Decoder::FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabe
 	else
     {
         m_nextaddress = m_program->ExecAddress;
-        m_proglabels->AddLabel(m_nextaddress, "START");
+        Labels->prog_labels->AddLabel(m_nextaddress, "START");
     }
     program_size = m_program->GetBufferSize();
 
@@ -830,7 +816,13 @@ bool Decoder::FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabe
         {
             ProcessArgument(de, dsm_item);
             ProcessLoadReg(de);
-            update_item = ProcessBranch(de, num_call, processing);
+            if (MSXWeirdRST(de, (dsm_item + 1)))
+            {
+                update_item = true;
+                m_nextaddress += 3;
+            }
+            else
+                update_item = ProcessBranch(de, num_call, processing);
 
         } // endif
 
@@ -882,19 +874,19 @@ void Decoder::SetCartridgeLabels()
 
 	address = m_program->GetCartridgeHeader()->init;
 	if (address != 0)
-		m_proglabels->AddLabel(address, "INIT");
+		Labels->prog_labels->AddLabel(address, "INIT");
 
 	address = m_program->GetCartridgeHeader()->statement;
 	if (address != 0)
-		m_proglabels->AddLabel(address, "STATEMENT");
+		Labels->prog_labels->AddLabel(address, "STATEMENT");
 
 	address = m_program->GetCartridgeHeader()->device;
 	if (address != 0)
-		m_proglabels->AddLabel(address, "DEVICE");
+		Labels->prog_labels->AddLabel(address, "DEVICE");
 
 	address = m_program->GetCartridgeHeader()->text;
 	if (address != 0)
-		m_proglabels->AddLabel(address, "TEXT");
+		Labels->prog_labels->AddLabel(address, "TEXT");
 }
 
 

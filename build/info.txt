@@ -1,9 +1,29 @@
-Checking dirs...
-..\src\IDZ80debugbase.cpp
-K:\MinGW\bin\g++ -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -o ..\obj\Release\IDZ80debugbase.o ..\src\IDZ80debugbase.cpp -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
-Linking...
-K:\MinGW\bin\g++ -o ..\bin\Release\idz80_make.exe -Wl,--subsystem,windows -mwindows -LK:\wxw\wx294\lib -lwxbase294u_gcc_custom -lwxmsw294u_aui_gcc_custom -lwxmsw294u_core_gcc_custom ..\obj\Release\EditLabelDlg.o ..\obj\Release\IDZ80debugbase.o ..\obj\Release\FileTypeDialog.o ..\obj\Release\MnemonicItem.o ..\obj\Release\segmentmgr.o ..\obj\Release\decoder.o ..\obj\Release\systemlabels.o ..\obj\Release\ProcessData.o ..\obj\Release\codeview.o ..\obj\Release\codeview_evmouse.o ..\obj\Release\codeview_render.o ..\obj\Release\codeviewline.o ..\obj\Release\d_asm_element.o ..\obj\Release\dasmdata.o ..\obj\Release\labelslist.o ..\obj\Release\mndb.o ..\obj\Release\mndb_tools.o ..\obj\Release\projectmanager.o ..\obj\Release\rawdata.o ..\obj\Release\ShowFileInfo.o ..\obj\Release\codegenerator.o ..\obj\Release\IDZ80.o ..\obj\Release\IDZ80Base.o ..\obj\Release\IDZ80App.o ..\obj\Release\resource.o 
---------------------------------------------------------
-all done !
-09:47 05/10/2012 
-File is ..\bin\Release\idz80_make.exe
+K:\MinGW\bin\g++ ..\src/IDZ80.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/labelmanager.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/z80register.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/mndb_tools.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/EditLabelDlg.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/DebugView.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/decoder.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/d_asm_element.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/MnemonicItem.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/rawdata.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/codeviewline.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/ProcessData.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/projectmanager.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/systemlabels.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/codeview_render.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/segmentmgr.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/IDZ80App.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/z80registerlist.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/labelslist.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/mndb.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/FileTypeDialog.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/IDZ80Base.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/idz80debugbase.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/dasmdata.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/ShowFileInfo.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/codeview_evmouse.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/codegenerator.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+K:\MinGW\bin\g++ ..\src/codeview.cpp -MM -MT '..\obj\Release\*.o *.d ' -MD -O2 -Wredundant-decls -march=pentium-mmx -c -Wall -pipe -mthreads -IK:\wxw\wx294\lib\mswu -IK:\wxw\wx294\include -IK:\wxw\wx294\contrib\include
+mingw32-make: *** No rule to make target `..\obj\Release/codeview.o', needed by `idz80'.  Stop.

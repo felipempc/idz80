@@ -26,6 +26,7 @@
 #include "segmentmgr.h"
 #include "IDZ80debugbase.h"
 #include "z80registerlist.h"
+#include "labelmanager.h"
 
 
 class Decoder: public IDZ80LogBase
@@ -34,13 +35,7 @@ class Decoder: public IDZ80LogBase
         Decoder(RawData *program, DAsmData *dasmdata, MnemonicDataBase *mnemonics);
         ~Decoder();
 
-        bool FirstDisassemble(LabelListCtrl *proglabels, LabelListCtrl *varlabels,
-							LabelListCtrl *iolabels, LabelListCtrl *constlabels,
-							SystemLabelList *syscalls, SystemLabelList *sysvars,
-							SystemLabelList *sysio, SystemLabelList *sysconst);
-        SortedIntArray *GetVarList();
-        SortedIntArray *GetIOList();
-        SortedIntArray *GetEntryList();
+        bool FirstDisassemble(LabelManager *parent);
 
         wxString GetCodeSegmentStr();
         void OptimizeCodeSegment();
@@ -61,14 +56,7 @@ class Decoder: public IDZ80LogBase
                             *m_varlist,
                             *m_iolist;
 
-        LabelListCtrl       *m_varlabels,
-                            *m_proglabels,
-                            *m_iolabels,
-                            *m_constlabels;
-		SystemLabelList		*m_syscalls,
-							*m_sysvars,
-							*m_sysio,
-							*m_sysconst;
+        LabelManager        *Labels;
 
         Z80RegisterList     m_Register;
 
@@ -86,6 +74,10 @@ class Decoder: public IDZ80LogBase
         uint Fetch(const uint startpoint, uint maxitems);
         uint Decode(DAsmElement *de, uint prg_index, uint dasm_position = 0xFFFFFFFF);
         void ProcessArgument(DAsmElement *de, uint index);
+
+        void ProcessCallSubrotine();
+        void ProcessReturnSubrotine();
+
         bool GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, uint &nextaddr);
         bool GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr);
         bool OutBoundaryAddress(uint _addr);
@@ -97,7 +89,7 @@ class Decoder: public IDZ80LogBase
         void FillData();
 
         void MSXCheckFunctionRegisters(DAsmElement *de);
-        void MSXWeirdRST(DAsmElement *de);
+        bool MSXWeirdRST(DAsmElement *de, uint dasm_position);
 
         void SetCartridgeLabels();
 

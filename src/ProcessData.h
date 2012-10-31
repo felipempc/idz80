@@ -28,6 +28,7 @@
 #include "systemlabels.h"
 #include "decoder.h"
 #include "IDZ80debugbase.h"
+#include "labelmanager.h"
 
 #include <wx/gauge.h>
 #include <wx/dynarray.h>
@@ -55,21 +56,13 @@ struct stRangeData
 typedef struct stRangeData RangeData;
 
 
-class ProcessData : public IDZ80LogBase
+class ProcessData : public LabelManager, IDZ80LogBase
 {
     public:
         CodeViewLine        *m_CodeViewLine;
         DAsmData            *m_Dasm;
         RawData             *Program;
         MnemonicDataBase    *Mnemonics;
-        LabelListCtrl       *var_labels,
-                            *prog_labels,
-                            *io_labels,
-                            *constant_label;
-		SystemLabelList		*sys_calls,
-							*sys_vars,
-							*sys_io,
-							*sys_const;
 
         void DisassembleFirst();
         void DisassembleItems(RangeItems &r);
@@ -77,7 +70,7 @@ class ProcessData : public IDZ80LogBase
         void AutoLabel();
         void InitData();
         void processLabel();
-        bool LoadSysLabels();
+        bool SetupSystemLabels();
 
         void SetGauge(wxGauge *g);
         void SetLog(wxTextCtrl *_lg);
@@ -87,11 +80,8 @@ class ProcessData : public IDZ80LogBase
 
     private:
         wxGauge             *m_gauge;
-        //wxTextCtrl          *m_log;
         wxWindow            *m_main_frame;
         Decoder             *m_disassembler;
-
-		void addLabels();
 
         uint MatchOpcode(const uint i, const uint max);
         void ConvertProgramAddress(RangeItems r, RangeData& d);

@@ -5,7 +5,7 @@
  * Created:   2009-11-09
  * Copyright: Felipe Mainieri ()
  * License:   GPL
- * This module holds one line in CodeView
+ * This module manages lines in CodeView
  **************************************************************/
 
 #ifndef CODEVIEWLINE_H

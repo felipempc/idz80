@@ -1,4 +1,4 @@
-# IDZ80 Makefile
+﻿# IDZ80 Makefile
 
 #MainDrive
 DRV = K:
@@ -70,34 +70,8 @@ RESDIR = ..
 EXECFILE = $(BINDIR)\idz80_make.exe
 
 
-OBJS = $(OBJDIR)\EditLabelDlg.o \
-	$(OBJDIR)\IDZ80debugbase.o \
-	$(OBJDIR)\FileTypeDialog.o \
-	$(OBJDIR)\MnemonicItem.o \
-	$(OBJDIR)\segmentmgr.o \
-	$(OBJDIR)\z80register.o \
-	$(OBJDIR)\z80registerlist.o \
-	$(OBJDIR)\decoder.o \
-	$(OBJDIR)\systemlabels.o \
-	$(OBJDIR)\ProcessData.o \
-	$(OBJDIR)\codeview.o \
-	$(OBJDIR)\codeview_evmouse.o \
-	$(OBJDIR)\codeview_render.o \
-	$(OBJDIR)\codeviewline.o \
-	$(OBJDIR)\d_asm_element.o \
-	$(OBJDIR)\dasmdata.o \
-	$(OBJDIR)\labelslist.o \
-	$(OBJDIR)\mndb.o \
-	$(OBJDIR)\mndb_tools.o \
-	$(OBJDIR)\projectmanager.o \
-	$(OBJDIR)\rawdata.o \
-	$(OBJDIR)\ShowFileInfo.o \
-	$(OBJDIR)\codegenerator.o \
-	$(OBJDIR)\IDZ80.o \
-	$(OBJDIR)\IDZ80Base.o \
-	$(OBJDIR)\IDZ80App.o \
-	$(OBJDIR)\resource.o
-
+	
+	
 all: make_dir $(OBJS)
 	@echo Linking...
 	$(CC) -o $(EXECFILE) $(LD_FLAGS) $(LIBPATH) $(LIBS) $(OBJS) 

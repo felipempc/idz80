@@ -65,7 +65,7 @@ class DAsmElement: public IDZ80LogBase
         uint GetOffset();
         uint GetLength();
         enum ElementType GetType();
-        enum ArgType GetArgumentType(uint arg_num);
+        enum ArgumentTypes GetArgumentType(uint arg_num);
         enum BranchType GetBranchType();
         int GetNumArgs();
         int GetArgSize();
@@ -73,8 +73,8 @@ class DAsmElement: public IDZ80LogBase
         uint GetMnemonicStrNum();
         byte GetCodeItem(uint index);
         byte GetArgItem(uint index);
-        enum InstruType GetInstructionType();
-        enum InstruInfo GetInstructionInfo();
+        enum InstructionTypes GetInstructionType();
+        enum InstructionDetails GetInstructionDetail();
         bool HasArgumentLabel();
 
         void SetArgLabel(bool hal = true);
@@ -93,12 +93,13 @@ class DAsmElement: public IDZ80LogBase
         bool isData();
         bool isInstruction();
 
+        MnemonicItem        *MnemonicObject;
+
         DAsmElement(RawData* rawdata);
         ~DAsmElement();
 
     private:
         RawData				*FileData;
-        MnemonicItem        *MnItem;
 
         ByteCode            Code;
         OpCodeArguments     Args;

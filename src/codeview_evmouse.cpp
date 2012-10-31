@@ -203,7 +203,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
             {
 				case 	siInstructionLabel:
 						                if ((de != 0) &&
-						                    (de->GetBranchType() != BR_NONE))
+						                    (de->MnemonicObject->isCall() || de->MnemonicObject->isJump()))//de->GetBranchType() != BR_NONE))
 						                {
 											PopUp->Append(idPOPUP_GOTO, "Goto label");
 											PopUp->AppendSeparator();

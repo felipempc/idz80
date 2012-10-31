@@ -183,7 +183,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id, const wxP
     wxAuiPaneInfo().Name("ProgLabels").Caption("Program Labels").CaptionVisible().Left().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
     AuiManager1->AddPane(process->io_labels,
     wxAuiPaneInfo().Name("IOLabels").Caption("IO Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
-    AuiManager1->AddPane(process->constant_label,
+    AuiManager1->AddPane(process->constant_labels,
     wxAuiPaneInfo().Name("ConstLabels").Caption("Constant Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
 
 
@@ -294,7 +294,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	}
 
 
-	PanelLog->AppendText(wxString::Format("byte = %d, word = %d, int = %d\n", sizeof(byte), sizeof(word), sizeof(uint)));
+	PanelLog->AppendText(wxString::Format("byte = %d, word = %d, int = %d, long = %d, long long = %d\n", sizeof(byte), sizeof(word), sizeof(uint), sizeof(long), sizeof(long long)));
 }
 
 
@@ -472,12 +472,9 @@ void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
             else    //load a file
             {
 				Clear_all();
-				if (OpenProgramFile(fname) && process->LoadSysLabels())
+				if (OpenProgramFile(fname) && process->SetupSystemLabels())
                 {
-                    process->sys_calls->Open("X:/idz80/Labels.txt");
-                    process->sys_vars->Open("X:/idz80/Labels.txt");
-                    process->sys_io->Open("X:/idz80/Labels.txt");
-                    process->sys_const->Open("X:/idz80/Labels.txt");
+                    process->LoadSystemLabels("X:/idz80/Labels.txt");
                 }
 
 				if ((process->Program->isCartridge()) && (process->Program->GetEntries(debugarray)))

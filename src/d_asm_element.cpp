@@ -56,10 +56,10 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
     unsigned int h, l;
     signed char rel = 0;
 
-    if ((ElType == et_Instruction) && (MnItem != 0))
+    if ((ElType == et_Instruction) && (MnemonicObject != 0))
     {
-        if ((MnItem->getArgSize() == 1) && (MnItem->getArgNo() == 1))
-            if (MnItem->getArgType(0) == ARG_REL_ADDR)
+        if ((MnemonicObject->getArgSize() == 1) && (MnemonicObject->getArgNo() == 1))
+            if (MnemonicObject->getArgType(0) == ARG_REL_ADDR)
             {
                 rel = (signed char)Args[0];
                 ret = convertRelAbs(rel, _baseaddress);
@@ -69,7 +69,7 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
                 ret = (int)Args[0] & 0xFF;
             }
         else
-        if ((MnItem->getArgSize() == 1) && (MnItem->getArgNo() == 2))
+        if ((MnemonicObject->getArgSize() == 1) && (MnemonicObject->getArgNo() == 2))
             ret = (int)Args[arg] & 0xFF;
         else
         {
@@ -86,7 +86,7 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
 
 void DAsmElement::Clear()
 {
-    MnItem = 0;
+    MnemonicObject = 0;
     memset(Args, '\0', sizeof(OpCodeArguments));
     memset(Code, '\0', sizeof(ByteCode));
     Offset = Length = 0;
@@ -131,14 +131,14 @@ wxString DAsmElement::getAsciiStr()
 }
 
 
-enum InstruType DAsmElement::GetInstructionType()
+enum InstructionTypes DAsmElement::GetInstructionType()
 {
-    return MnItem->GetInstructionType();
+    return MnemonicObject->GetInstructionType();
 }
 
-enum InstruInfo DAsmElement::GetInstructionInfo()
+enum InstructionDetails DAsmElement::GetInstructionDetail()
 {
-    return MnItem->GetInstructionInfo();
+    return MnemonicObject->GetInstructionDetail();
 }
 
 
@@ -149,8 +149,8 @@ void DAsmElement::CopyOpcode()
 
 	for (i = 0; i < MAX_OPCODE_SIZE; i++)
 	{
-		if (i < MnItem->getBytesNo())
-			Code[i] = MnItem->getOpCode(i);
+		if (i < MnemonicObject->getBytesNo())
+			Code[i] = MnemonicObject->getOpCode(i);
 		else
 			Code[i] = 0;
 	}
@@ -163,11 +163,11 @@ bool DAsmElement::CopyArguments()
 			totargs;
 	bool	ret = false;
 
-	if ((MnItem > 0) && (Offset >= 0))
+	if ((MnemonicObject > 0) && (Offset >= 0))
 	{
-		totargs = MnItem->getArgNo() * MnItem->getArgSize();
+		totargs = MnemonicObject->getArgNo() * MnemonicObject->getArgSize();
 		for (i = 0; i < totargs; i++)
-			Args[i] = FileData->GetData(Offset + i + MnItem->getArgPos());
+			Args[i] = FileData->GetData(Offset + i + MnemonicObject->getArgPos());
 		ret = true;
 	}
 	return ret;
@@ -193,7 +193,7 @@ void DAsmElement::CopyOpCode(ByteCode &bytecode)
 uint DAsmElement::convertRelAbs(int reladdr, uint _baseaddress)
 {
     unsigned int i;
-    i = (unsigned int)(_baseaddress + MnItem->getBytesNo() + Offset + reladdr);
+    i = (unsigned int)(_baseaddress + MnemonicObject->getBytesNo() + Offset + reladdr);
     return i;
 }
 
@@ -211,8 +211,8 @@ void DAsmElement::SetLength(uint _length)
 
 void DAsmElement::SetLength()
 {
-	if (MnItem > 0)
-		Length = MnItem->getBytesNo();
+	if (MnemonicObject > 0)
+		Length = MnemonicObject->getBytesNo();
 	else
 		Length = 0;
 }
@@ -260,7 +260,7 @@ aStyleType DAsmElement::GetStyleArgument(uint arg_idx)
 
 void DAsmElement::SetMnemonic(MnemonicItem *mnemonic)
 {
-	MnItem = mnemonic;
+	MnemonicObject = mnemonic;
 	if (mnemonic > 0)
 		CopyOpcode();
 }
@@ -287,33 +287,32 @@ enum ElementType DAsmElement::GetType()
 }
 
 
-enum ArgType DAsmElement::GetArgumentType(uint arg_num)
+enum ArgumentTypes DAsmElement::GetArgumentType(uint arg_num)
 {
-	if (MnItem > 0)
-		return MnItem->getArgType(arg_num);
+	if (MnemonicObject > 0)
+		return MnemonicObject->getArgType(arg_num);
 	return ARG_NONE;
 }
 
 int DAsmElement::GetNumArgs()
 {
-	if (MnItem > 0)
-		return MnItem->getArgNo();
+	if (MnemonicObject > 0)
+		return MnemonicObject->getArgNo();
 	return -1;
 }
 
 
 int DAsmElement::GetArgSize()
 {
-	return MnItem->getArgSize();
+	return MnemonicObject->getArgSize();
 }
 
 enum BranchType DAsmElement::GetBranchType()
 {
-	if (MnItem > 0)
-		return MnItem->getBranchType();
+	if (MnemonicObject > 0)
+		return MnemonicObject->getBranchType();
 	return BR_NONE;
 }
-
 
 
 wxString &DAsmElement::GetMnemonicStr(uint index)
@@ -321,15 +320,15 @@ wxString &DAsmElement::GetMnemonicStr(uint index)
 	static wxString ret;
 	ret = "Error !";
 
-	if (index < MnItem->MnemonicString.GetCount())
-		return MnItem->MnemonicString[index];
+	if ((MnemonicObject != 0) && (index < MnemonicObject->MnemonicString.GetCount()))
+		return MnemonicObject->MnemonicString[index];
 	return ret;
 }
 
 
 uint DAsmElement::GetMnemonicStrNum()
 {
-	return MnItem->MnemonicString.GetCount();
+	return MnemonicObject->MnemonicString.GetCount();
 }
 
 

@@ -24,7 +24,7 @@
 
 #define ARG_POSITION_CHAR   '$'
 
-enum ArgType
+enum ArgumentTypes
 {
     ARG_NONE = 0,
     ARG_LITERAL,
@@ -47,7 +47,7 @@ enum BranchType
 };
 
 
-enum InstruType
+enum InstructionTypes
 {
     IT_NONE = 0,
     IT_RST,
@@ -57,7 +57,7 @@ enum InstruType
     IT_LOAD
 };
 
-enum InstruInfo
+enum InstructionDetails
 {
     II_NONE = 0,
     II_RST_00,
@@ -92,27 +92,27 @@ class MnemonicItem
     public:
         MnemonicItem();
         bool hasArgument();
-        enum ArgType getArgType(unsigned int argno);
-        unsigned int getArgNo();
+        enum ArgumentTypes getArgType(unsigned int argno);
+        uint getArgNo();
         enum BranchType getBranchType();
         void addOpCode(unsigned char opcode);
-        void addArgument(enum ArgType argument);
+        void addArgument(enum ArgumentTypes argument);
         void setMnemonicStr(wxString str);
         void setOpCodeArgPos(unsigned int argpos);
         void setBranchType(enum BranchType brunchtype);
-        void setInstructionType(enum InstruType itype);
+        void setInstructionType(enum InstructionTypes itype);
         bool setInstructionType(uint itype);
-        void setInstructionInfo(enum InstruInfo iinfo);
-        bool setInstructionInfo(uint iinfo);
-        enum InstruType GetInstructionType();
-        enum InstruInfo GetInstructionInfo();
+        void setInstructionDetail(enum InstructionDetails iinfo);
+        bool setInstructionDetail(uint iinfo);
+        enum InstructionTypes GetInstructionType();
+        enum InstructionDetails GetInstructionDetail();
         void Clear();
 
-        unsigned int getBytesNo();
-        unsigned int getOpCode(unsigned int opcode);
+        uint getBytesNo();
+        uint getOpCode(unsigned int opcode);
         ByteCode *getOpCode();
-        unsigned int getArgSize();
-        unsigned int getArgPos();
+        uint getArgSize();
+        uint getArgPos();
 
         bool isUnconditionalJump();
         bool isConditionalJump();
@@ -125,19 +125,16 @@ class MnemonicItem
     protected:
     private:
 
-        ByteCode        m_opCode;       // the opcode itself
-        byte            m_bytesNo;      // opcode´s number of bytes
-        byte            m_argNo;        // number of arguments
-        byte            m_argSize;      // size of argument
-        byte   m_argPos;               // position of argument within opcode
+        ByteCode        Opcode;
+        byte            OpcodeSize;
+        byte            ArgumentCount;
+        byte            ArgumentSize;
+        byte            ArgumentOpcodePostion;
 
-        unsigned int    m_argCount;     // internal use
-        enum ArgType    m_lastArg;      //     "     "
-
-        enum BranchType m_branchType;   // deviation type : none,jump or call
-        enum ArgType    m_argType[MAX_NUM_ARG];      // type of argument
-        enum InstruType m_type;         // Type of instruction
-        enum InstruInfo m_info;
+        enum BranchType         m_branchType;
+        enum ArgumentTypes      ArgumentTypeList[MAX_NUM_ARG];
+        enum InstructionTypes   InstructionType;
+        enum InstructionDetails InstructionDetail;
 };
 
 

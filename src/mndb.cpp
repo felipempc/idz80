@@ -105,6 +105,7 @@ bool MnemonicDataBase::SetupArgument(MnemonicItem *mnemonic, wxString &strline)
                 case 'c':  mnemonic->addArgument(ARG_ABS_ADDR);
                            mnemonic->addOpCode(ARG_ABS_ADDR);
                            mnemonic->setBranchType(BR_CALL);
+
                            break;
                 case 's':  mnemonic->setBranchType(BR_JUMP);
                            mnemonic->addArgument(ARG_ABS_ADDR);
@@ -152,7 +153,7 @@ bool MnemonicDataBase::SetupArgument(MnemonicItem *mnemonic, wxString &strline)
 void MnemonicDataBase::SetupBranch(MnemonicItem *mnemonic)
 {
     if (mnemonic->GetInstructionType() == IT_RET)
-        switch (mnemonic->GetInstructionInfo())
+        switch (mnemonic->GetInstructionDetail())
         {
             case II_NONE:
                         mnemonic->setBranchType(BR_RETURN);
@@ -180,7 +181,6 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
 
     wxString    temp_str,
                 ret_str;
-    //wxChar      argtype;
 
     MnemonicItem    *mnemonic = 0;
 
@@ -273,7 +273,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
         {
             temp_str = arraystr[i++];
             if (temp_str.ToLong(&templong, 16))
-                mnemonic->setInstructionInfo(templong);
+                mnemonic->setInstructionDetail(templong);
             else
             {
                 delete mnemonic;
@@ -342,18 +342,18 @@ bool MnemonicDataBase::doReadData(wxTextFile& tf)
 
 
 
-bool MnemonicDataBase::Open(wxString& opcf)
+bool MnemonicDataBase::Open(wxString& filename)
 {
     wxTextFile mnfile;
+    bool ret = false;
 
-    if (mnfile.Open(opcf,wxConvLocal))
+    if (mnfile.Open(filename, wxConvLocal))
     {
         if (IsLoaded())
             Clear();
-        if (doReadData(mnfile))
-            return true;
+        ret = doReadData(mnfile);
     }
-    return false;
+    return ret;
 }
 
 
@@ -368,7 +368,7 @@ void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoff
     if (scanoffset == 0)
     {
         arrayint.Clear();
-        f = m_MnemonicList->GetCount(); //Data.GetCount();
+        f = m_MnemonicList->GetCount();
     }
     else
         f = arrayint.GetCount();
@@ -440,48 +440,4 @@ uint MnemonicDataBase::GetAllocated()
     return m_totalAllocated;
 }
 
-
-void MnemonicDataBase::DebugVodoo()
-{
-    uint    i,
-            f,
-            x,
-            b,
-            idebug;
-
-    wxString        str;
-    MnemonicItem    *mnemonic;
-
-    f = m_MnemonicList->GetCount();
-
-    if ((m_log == 0) || (f == 0))
-        return;
-
-    for (i = 0; i < f; i++)
-    {
-        str.Clear();
-        mnemonic = m_MnemonicList->Item(i);
-        /*
-        for (x = 0; x < mnemonic->getBytesNo(); x++)
-        {
-            b = mnemonic->getOpCode(x);
-            str += str.Format("[%.2X] ", b);
-        }
-        */
-        str += str.Format("nArgs = %d ", mnemonic->getArgNo());
-        str += str.Format("ArgSize = %d ", mnemonic->getArgSize());
-        str += str.Format("BranchType = %d ", mnemonic->getBranchType());
-        //str += str.Format("ArgPos = %d [", mnemonic->getArgPos());
-        for (idebug = 0; idebug < mnemonic->MnemonicString.GetCount();
-            idebug++)
-        {
-            str << mnemonic->MnemonicString[idebug];
-        }
-        str << "] \n";
-        LogIt(str);
-    }
-    str.Clear();
-    str.Printf("Total allocated: %d bytes\n", m_totalAllocated);
-    LogIt(str);
-}
 

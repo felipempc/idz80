@@ -1,4 +1,4 @@
-# Version of 02-10-2012 (D-M-Y)
+# Version of 29-10-2012 (D-M-Y)
 --------------------------------
 
 # Format:
@@ -16,7 +16,7 @@
 # k - relative program address with condition (JUMP)
 # p - I/O Address
 
-# instr_type - Type of Instruction
+# instr_types - Types of Instruction
 # 00 - None
 # 01 - RST
 # 02 - CALL
@@ -24,7 +24,7 @@
 # 04 - JUMP
 # 05 - LOAD
 
-# instr_info - Info about instruction
+# instr_details - Details about instruction
 # 00 - None
 # 01 - RST_00
 # 02 - RST_08

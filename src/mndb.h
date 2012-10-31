@@ -29,17 +29,14 @@ class MnemonicDataBase: public IDZ80LogBase
     public:
         MnemonicDataBase();
         ~MnemonicDataBase();
-        bool Open(wxString& opcf);
+        bool Open(wxString& filename);
         void Clear();
-        void FindItems(wxArrayInt& arrayint,byte opcode,uint scanoffset);
+        void FindItems(wxArrayInt& arrayint, byte opcode, uint scanoffset);
         MnemonicItem *FindItem(const ByteCode& code);
         MnemonicItem *GetData(uint index);
         uint GetCount();
         uint GetAllocated();
         bool IsLoaded();
-
-        // DEBUG:
-        void DebugVodoo();
 
     private:
         static const int MIN_ARRAY_ITEMS = 3;
