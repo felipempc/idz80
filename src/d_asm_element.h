@@ -32,9 +32,12 @@ enum ElementType
 
 enum aStyleType //: byte
 {
-	ast_hex,
-	ast_bin,
-	ast_dec
+	ast_bytehex,
+	ast_bytebin,
+	ast_bytedec,
+	ast_wordhex,
+	ast_wordbin,
+	ast_worddec
 };
 
 

@@ -38,15 +38,6 @@
 #define OPCODE_NOT_MATCHED  0xFFFFFFFF
 
 
-// Items of the instructions array
-struct stRangeItems
-{
-    uint Index;
-    uint Count;
-};
-
-typedef struct stRangeItems RangeItems;
-
 // Range of addresses
 struct stRangeData
 {
@@ -64,7 +55,7 @@ class ProcessData : public LabelManager, IDZ80LogBase
         RawData             *Program;
         MnemonicDataBase    *Mnemonics;
 
-        void DisassembleFirst();
+        void DisassembleFirst(bool simulateexecution = false);
         void DisassembleItems(RangeItems &r);
         void MakeData(RangeItems &r);
         void AutoLabel();
@@ -83,8 +74,7 @@ class ProcessData : public LabelManager, IDZ80LogBase
         wxWindow            *m_main_frame;
         Decoder             *m_disassembler;
 
-        uint MatchOpcode(const uint i, const uint max);
-        void ConvertProgramAddress(RangeItems r, RangeData& d);
+//        void ConvertProgramAddress(RangeItems r, RangeData& d);
 };
 
 

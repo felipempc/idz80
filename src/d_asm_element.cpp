@@ -43,8 +43,8 @@ void DAsmElement::SetStyleDefault()
 {
     Style.hasArgumentLabel = 0;
 	Style.hasLabel = 0;
-	Style.arg1 = ast_hex;
-	Style.arg2 = ast_hex;
+	Style.arg1 = ast_bytehex;
+	Style.arg2 = ast_bytehex;
 	Style.arg1styled = 0;
 	Style.arg2styled = 0;
 }
@@ -133,12 +133,18 @@ wxString DAsmElement::getAsciiStr()
 
 enum InstructionTypes DAsmElement::GetInstructionType()
 {
-    return MnemonicObject->GetInstructionType();
+    if (MnemonicObject != 0)
+        return MnemonicObject->GetInstructionType();
+    else
+        return IT_ERROR;
 }
 
 enum InstructionDetails DAsmElement::GetInstructionDetail()
 {
-    return MnemonicObject->GetInstructionDetail();
+    if (MnemonicObject != 0)
+        return MnemonicObject->GetInstructionDetail();
+    else
+        return II_ERROR;
 }
 
 
@@ -249,7 +255,7 @@ ArgStyle DAsmElement::GetStyle()
 
 aStyleType DAsmElement::GetStyleArgument(uint arg_idx)
 {
-	aStyleType ret = ast_hex;
+	aStyleType ret = ast_bytehex;
 	if (arg_idx == 0)
 		ret = Style.arg1;
 	if (arg_idx == 1)

@@ -77,35 +77,37 @@ BranchType MnemonicItem::getBranchType()
     return m_branchType;
 }
 
+
+
 bool MnemonicItem::isUnconditionalJump()
 {
-	return (m_branchType == BR_JUMP);
+	return ((InstructionType == IT_JUMP) && (InstructionDetail == II_NONE));
 }
 
 bool MnemonicItem::isConditionalJump()
 {
-	return (m_branchType == BR_JUMP_CND);
+	return ((InstructionType == IT_JUMP) && (InstructionDetail == II_CONDITIONAL));
 }
-
 
 bool MnemonicItem::isJump()
 {
-	return ((m_branchType == BR_JUMP_CND) || (m_branchType == BR_JUMP));
+	return (InstructionType == IT_JUMP);
 }
-
 
 bool MnemonicItem::isCall()
 {
-	return ((m_branchType == BR_CALL_CND) || (m_branchType == BR_CALL));
+	return (InstructionType == IT_CALL);
 }
-
-
 
 bool MnemonicItem::isReturn()
 {
-	return (m_branchType == BR_RETURN);
+	return (InstructionType == IT_RET);
 }
 
+bool MnemonicItem::isConditionalReturn()
+{
+    return ((InstructionType == IT_RET) && (InstructionDetail == II_CONDITIONAL));
+}
 
 
 bool MnemonicItem::hasArgument()

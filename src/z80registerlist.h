@@ -13,6 +13,8 @@
 
 #include "IDZ80Base.h"
 #include "z80register.h"
+#include "d_asm_element.h"
+
 
 class Z80RegisterList
 {
@@ -37,6 +39,7 @@ class Z80RegisterList
 	    Z80RegisterList();
 	    ~Z80RegisterList();
 
+        void LoadRegister(DAsmElement *de);
         void UpdateLife();
 };
 

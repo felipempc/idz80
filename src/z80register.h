@@ -13,27 +13,6 @@
 
 #include "IDZ80Base.h"
 
-/*
-enum Z80REGISTER
-{
-	REG_NONE = 0,
-	REG_A,
-	REG_B,
-	REG_C,
-	REG_D,
-	REG_E,
-	REG_H,
-	REG_L,
-	REG_BC,
-	REG_DE,
-	REG_HL,
-	REG_SP,
-	REG_IX,
-	REG_IY
-
-};
-*/
-
 
 class Z80Register
 {

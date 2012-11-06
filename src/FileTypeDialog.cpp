@@ -89,7 +89,7 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	RadioBox1 = new wxRadioBox(Panel1, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
 	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
 	cb_autodisassemble = new wxCheckBox(Panel3, ID_CHKBOX1, "Auto disassemble", wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX1");
-	cb_autolabel = new wxCheckBox(Panel3, ID_CHKBOX2, "Auto label", wxPoint(8,48), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX2");
+	cb_simulateexecution = new wxCheckBox(Panel3, ID_CHKBOX2, "Simulate Execution", wxPoint(8,48), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX2");
 	cb_cartridge = new wxCheckBox(Panel3, ID_CHKBOX_CARTRIDGE, "Cartridge", wxPoint(8, 72), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX_CARTRIDGE");
 	RightSizer->Add(Panel3, 1, wxTOP|wxALL, 10);
 	UpsideSizer->Add(RightSizer, 1, wxRIGHT|wxALL, 10);
@@ -115,7 +115,7 @@ FileTypeDialog::FileTypeDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &FileTypeDialog::OnChkBoxCartridge, this, ID_CHKBOX_CARTRIDGE);
 
 	cb_autodisassemble->SetValue(true);
-	cb_autolabel->SetValue(true);
+	cb_simulateexecution->SetValue(false);
 	cb_cartridge->Enable(false);
 
 	StartAddress = 0;

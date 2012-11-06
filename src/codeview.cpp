@@ -995,10 +995,10 @@ void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bin);
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytebin);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bin);
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytebin);
 
 	RefreshRect(CalcCursorRfshRect());
 }
@@ -1007,10 +1007,10 @@ void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_dec);
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytedec);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_dec);
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytedec);
 
 	RefreshRect(CalcCursorRfshRect());
 }
@@ -1019,10 +1019,10 @@ void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
 	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_hex);
+		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytehex);
 
 	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_hex);
+		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytehex);
 
 		RefreshRect(CalcCursorRfshRect());
 }

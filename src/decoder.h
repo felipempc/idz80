@@ -21,12 +21,10 @@
 #include "dasmdata.h"
 #include "rawdata.h"
 #include "d_asm_element.h"
-#include "labelslist.h"
-#include "systemlabels.h"
-#include "segmentmgr.h"
 #include "IDZ80debugbase.h"
 #include "z80registerlist.h"
 #include "labelmanager.h"
+#include "subroutine.h"
 
 
 class Decoder: public IDZ80LogBase
@@ -36,6 +34,8 @@ class Decoder: public IDZ80LogBase
         ~Decoder();
 
         bool FirstDisassemble(LabelManager *parent);
+        void FullDisassemble(LabelManager *parent);
+        void DisassembleItems(RangeItems &dasm_range);
 
         wxString GetCodeSegmentStr();
         void OptimizeCodeSegment();
@@ -45,20 +45,14 @@ class Decoder: public IDZ80LogBase
         RawData             *m_program;
         DAsmData            *m_dasmeditems;
         MnemonicDataBase    *m_mnemonics;
-
-        SegmentMgr          *m_codesegments,
-                            *m_datasegments;
+        SubRoutineCtrl      *SubRoutine;
 
         SortedIntArray      *m_unconditionaljumplist,
-                            *m_conditionaljumplist,
-                            *m_callList,
-                            *m_entrylist,
-                            *m_varlist,
-                            *m_iolist;
+                            *m_conditionaljumplist;
 
         LabelManager        *Labels;
 
-        Z80RegisterList     m_Register;
+        Z80RegisterList     Registers;
 
 
         uint                m_startaddress,
@@ -67,13 +61,15 @@ class Decoder: public IDZ80LogBase
                             m_prg_counter,
                             m_last_prg_counter,
                             m_nextaddress,
-                            m_actualaddress;
-        std::stack<int>     m_CallStack;
+                            m_actualaddress,
+                            io_label_counter,
+                            var_label_counter,
+                            program_label_counter;
 
 
         uint Fetch(const uint startpoint, uint maxitems);
         uint Decode(DAsmElement *de, uint prg_index, uint dasm_position = 0xFFFFFFFF);
-        void ProcessArgument(DAsmElement *de, uint index);
+        void SetupArgumentLabels(DAsmElement *de, uint index);
 
         void ProcessCallSubrotine();
         void ProcessReturnSubrotine();
@@ -82,10 +78,9 @@ class Decoder: public IDZ80LogBase
         bool GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr);
         bool OutBoundaryAddress(uint _addr);
         void UpdateBoundary();
-        bool CallSubroutine(DAsmElement *de, uint address);
-        bool ReturnSubroutine(uint &dest_address);
-        bool ProcessBranch(DAsmElement *de, int &num_call, bool &processing_status);
-        void ProcessLoadReg(DAsmElement *de);
+        bool CallSubroutine(DAsmElement *de);
+        bool ReturnSubroutine(DAsmElement *de, uint &dest_address);
+        bool ProcessBranch(DAsmElement *de, bool &processing_status);
         void FillData();
 
         void MSXCheckFunctionRegisters(DAsmElement *de);

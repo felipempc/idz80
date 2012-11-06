@@ -18,10 +18,17 @@
 #ifndef _IDZ80_DASMDATA_H
 #define _IDZ80_DASMDATA_H
 
-//#include <wx/dynarray.h>
 #include "rawdata.h"
 #include "d_asm_element.h"
 #include <vector>
+
+
+struct RangeItems
+{
+    uint Index;
+    uint Count;
+};
+
 
 typedef std::vector<DAsmElement *> DasmArray;
 

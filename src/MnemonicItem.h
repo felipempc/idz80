@@ -54,7 +54,8 @@ enum InstructionTypes
     IT_CALL,
     IT_RET,
     IT_JUMP,
-    IT_LOAD
+    IT_LOAD,
+    IT_ERROR
 };
 
 enum InstructionDetails
@@ -81,7 +82,8 @@ enum InstructionDetails
     II_LD_BC_N,
     II_LD_SP_N,
     II_LD_IX_N,
-    II_LD_IY_N
+    II_LD_IY_N,
+    II_ERROR
 };
 
 typedef unsigned char ByteCode [MAX_OPCODE_SIZE];
@@ -119,6 +121,7 @@ class MnemonicItem
         bool isJump();
         bool isCall();
         bool isReturn();
+        bool isConditionalReturn();
 
         wxArrayString MnemonicString;
 

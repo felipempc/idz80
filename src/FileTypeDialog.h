@@ -44,7 +44,7 @@ class FileTypeDialog: public wxDialog
 		wxRadioBox		*RadioBox1;
 		wxTextCtrl		*Txt_StartAddress;
 		wxCheckBox		*cb_autodisassemble;
-		wxCheckBox		*cb_autolabel;
+		wxCheckBox		*cb_simulateexecution;
 		wxCheckBox		*cb_cartridge;
 
 

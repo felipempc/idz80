@@ -394,14 +394,14 @@ wxString CodeView::FormatArg(uint arg, uint style)
 
 	switch (style)
 	{
-		case ast_dec:
+		case ast_bytedec:
 			str.Printf("%dD", arg);
 			break;
-		case ast_bin:
+		case ast_bytebin:
 			str.Printf(IntToBin(arg));
 			str << "B";
 			break;
-		case ast_hex:
+		case ast_bytehex:
 		default:
 			str.Printf("%XH", arg);
 			break;

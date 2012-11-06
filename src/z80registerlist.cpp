@@ -68,3 +68,52 @@ void Z80RegisterList::UpdateLife()
     IX->DecLife();
     IY->DecLife();
 }
+
+
+void Z80RegisterList::LoadRegister(DAsmElement *de)
+{
+    UpdateLife();
+
+    switch (de->GetInstructionDetail())
+    {
+        case II_LD_A_N:
+                        A->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_B_N:
+                        B->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_C_N:
+                        C->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_D_N:
+                        D->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_E_N:
+                        E->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_H_N:
+                        H->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_L_N:
+                        L->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_BC_N:
+                        BC->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_DE_N:
+                        DE->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_HL_N:
+                        HL->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_SP_N:
+                        SP->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_IX_N:
+                        IX->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+        case II_LD_IY_N:
+                        IY->Init(de->getArgument(0, 0), de->GetOffset());
+                        break;
+    }
+}

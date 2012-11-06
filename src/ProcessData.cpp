@@ -116,69 +116,20 @@ bool ProcessData::SetupSystemLabels()
 
 
 
-/*
- *	Convert dasm data items to file offset
- */
-void ProcessData::ConvertProgramAddress(RangeItems r, RangeData& d)
-{
-    DAsmElement* temp;
-
-    temp = m_Dasm->GetData(r.Index);
-    d.First = temp->GetOffset();
-    temp = m_Dasm->GetData((r.Index + r.Count - 1));
-    d.Count = temp->GetOffset() + temp->GetLength();
-}
-
-
-
-
-/*
- * Search for an opcode pattern (from Program)
- * in mndb.
- */
-uint ProcessData::MatchOpcode(const uint i, const uint max)
-{
-    uint 		j, nitems;
-    wxArrayInt	foundItems;
-    byte		scan;
-    bool		quit = false;
-    MnemonicItem	*mi;
-
-    foundItems.Clear();
-    j = 0;
-    while ((j < MAX_OPCODE_SIZE) && ((j + i) < max) && (!quit))
-    {
-        scan = Program->GetData(i + j);
-        Mnemonics->FindItems(foundItems, scan, j);
-        j++;
-        if (foundItems.GetCount() < 2)
-			quit = true;
-    }
-    nitems = foundItems.GetCount();
-    if (nitems == 1)
-	{
-		mi = Mnemonics->GetData(foundItems.Last());
-		if (mi->getBytesNo() > (max - i))
-			nitems = 0;
-	}
-    if ((nitems == 0) || (nitems > max))
-        return (OPCODE_NOT_MATCHED);
-    else
-        return (foundItems.Last());
-}
-
-
-
-
-
-
-void ProcessData::DisassembleFirst()
+void ProcessData::DisassembleFirst(bool simulateexecution)
 {
     m_Dasm->Clear();
-    m_disassembler->FirstDisassemble(this);
-    LogIt(m_disassembler->GetCodeSegmentStr());
-    m_disassembler->OptimizeCodeSegment();
-    LogIt(m_disassembler->GetCodeSegmentStr());
+
+    if (simulateexecution)
+    {
+        LogIt("Disassemble by simulating execution of code.\n");
+        m_disassembler->FirstDisassemble(this);
+    }
+    else
+    {
+        LogIt("Full disassembling.\n");
+        m_disassembler->FullDisassemble(this);
+    }
 }
 
 
@@ -187,80 +138,8 @@ void ProcessData::DisassembleFirst()
 
 void ProcessData::DisassembleItems(RangeItems &r)
 {
-    uint 		i,
-				f,
-				x,
-				item;
-    DAsmElement	*de;
-    RangeData	prange;
-    bool		IsMiddle;
-
-
-    f = r.Index + r.Count - 1;
-    x = m_Dasm->GetCount();
-    IsMiddle = TRUE;
-
-    if ((r.Index < x) || (f < x))
-    {
-        ConvertProgramAddress(r,prange);
-        LogIt(wxString::Format("Deleting index = %d, count = %d.\n", r.Index, r.Count));
-        m_Dasm->DelDasm(r.Index,r.Count);
-        if (r.Index >= m_Dasm->GetCount())
-            IsMiddle = FALSE;
-        else
-            IsMiddle = TRUE;
-        x = r.Index;
-        r.Count = 0;
-        for (i = prange.First; i < prange.Count; i++)
-        {
-            item = MatchOpcode(i, prange.Count);
-            if (item == OPCODE_NOT_MATCHED)
-            {
-                de = new DAsmElement(Program);
-                de->SetLength(1);
-                de->SetOffset(i);
-                de->SetMnemonic(0);
-                de->SetType(et_Data);
-                if (IsMiddle)
-                    m_Dasm->InsertDasm(de, x++);
-                else
-                {
-                    m_Dasm->AddDasm(de);
-                    x++;
-                }
-            }
-            else
-            {
-                de = new DAsmElement(Program);
-                de->SetMnemonic(Mnemonics->GetData(item));
-                de->SetLength();
-                de->SetType(et_Instruction);
-                de->SetOffset(i);
-				if (de->CopyArguments())
-				{
-					if (IsMiddle)
-						m_Dasm->InsertDasm(de, x++);
-					else
-					{
-						m_Dasm->AddDasm(de);
-						x++;
-					}
-				}
-				else
-				{
-					delete de;
-					de = 0;
-				}
-            }
-            if (de != 0)
-            {
-				i += (de->GetLength() - 1);
-				r.Count++;
-			}
-        }
-    }
+    m_disassembler->DisassembleItems(r);
 }
-
 
 
 

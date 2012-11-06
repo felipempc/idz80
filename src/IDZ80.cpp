@@ -337,6 +337,7 @@ bool IDZ80::LoadMnemonicsDB()
 bool IDZ80::OpenProgramFile(const wxString filename)
 {
 	bool		ret;
+	static bool simulateexecution = false;
 	wxString	info,
 				caption;
 	FileTypeDialog config(this);
@@ -387,7 +388,13 @@ bool IDZ80::OpenProgramFile(const wxString filename)
             m_project->New();
             if (config.cb_autodisassemble->IsChecked())
             {
+                if (config.cb_simulateexecution->IsChecked())
+                    simulateexecution = true;
+                else
+                    simulateexecution = false;
+
                 wxCommandEvent ev_dasm(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsDasmAll);
+                ev_dasm.SetClientData(&simulateexecution);
                 AddPendingEvent(ev_dasm);
             }
         }
@@ -543,7 +550,9 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     wxPoint ldpos;
     int     w,h,x,y;
     SortedIntArray  entries(CompareSortedInt);
+    bool *simulateexecution;
 
+    simulateexecution = (bool *)event.GetClientData();
     codeview->Enable(false);
 
     psize = GetClientSize();
@@ -557,7 +566,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     wxGauge *GaugeLd = new wxGauge(this, wxID_ANY, 100, ldpos, ldsize, 0, wxDefaultValidator, "wxID_ANY");
 
     process->SetGauge(GaugeLd);
-    process->DisassembleFirst();
+    process->DisassembleFirst(*simulateexecution);
     process->InitData();
     process->processLabel();
 
@@ -734,9 +743,7 @@ void IDZ80::Clear_all()
 {
     codeview->Clear();
     codeview->Enable(false);
-    process->io_labels->Clear();
-    process->var_labels->Clear();
-    process->prog_labels->Clear();
+    process->ClearUserLabels();
 }
 
 
