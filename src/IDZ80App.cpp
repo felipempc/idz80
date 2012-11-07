@@ -11,6 +11,7 @@
 #include <wx/arrstr.h>
 
 #include "IDZ80.h"
+
 #include <wx/image.h>
 
 
@@ -21,18 +22,22 @@ bool IDZ80App::OnInit()
 	int i;
 	wxArrayString	astr;
 
-
     bool wxsOK = true;
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
     	for (i = 0; i < argc; i++)
 			astr.Add(argv[i]);
+
     	IDZ80* Frame = new IDZ80(0, astr);
+
     	Frame->Show();
+
     	SetTopWindow(Frame);
     }
 
     return wxsOK;
 
 }
+
+

@@ -19,12 +19,13 @@
 #include "labelslist.h"
 #include "projectmanager.h"
 #include "codegenerator.h"
+#include "logwindow.h"
 
 #include <wx/config.h>
 
 enum
 {
-    id_CD_EVT=111
+    id_CD_EVT = 111
 };
 static const wxString LocalPath = "X:/idz80";
 
@@ -32,32 +33,12 @@ class IDZ80: public wxFrame
 {
 	public:
 
-		IDZ80(wxWindow* parent, wxArrayString &arraystr, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+		IDZ80(wxWindow* parent, wxArrayString &arraystr);
 		virtual ~IDZ80();
 
 		wxAuiManager* AuiManager1;
-		wxMenuItem* MenuItem8;
-		wxMenuItem* MenuItem7;
-		wxMenuItem* MenuItem5;
-		wxMenuItem* MenuItem2;
-		wxMenu* Menu3;
-		wxMenuItem* MenuItem4;
-		wxMenuItem* MenuItem14;
 		wxTextCtrl* PanelLog;
-		wxMenuItem* MenuItem15;
-		wxMenuItem* MenuItem17;
-		wxMenuItem* MenuItem13;
-		wxMenu* Menu1;
-		wxMenuItem* MenuItem3;
 		wxStatusBar* StatusBar1;
-		wxMenuItem* MenuItem6;
-		wxMenuBar* MenuBar1;
-		wxMenuItem* MenuItem16;
-		wxMenu* Menu2;
-		wxMenu* MenuItem1;
-		wxMenuItem* MenuItem18;
-		wxMenu* Menu5;
-		wxMenu* Menu4;
 
 	protected:
 
@@ -75,6 +56,7 @@ class IDZ80: public wxFrame
 		static const long idMenuViewVarLabels;
 		static const long idMenuViewIOLabels;
 		static const long idMenuViewConstLabels;
+		static const long idMenuViewLabels;
 		static const long idMenuToolsDasmAll;
 		static const long idMenuToolsAutoLabel;
 		static const long idMenuToolsGenCode;
@@ -88,7 +70,6 @@ class IDZ80: public wxFrame
 		static const long ID_VARLABELPANE;
 
 	private:
-        bool LoadMnemonicsDB();
         ProcessData     *process;
         CodeView        *codeview;
         wxIconBundle    *icons;
@@ -97,15 +78,20 @@ class IDZ80: public wxFrame
                         m_lastDir;
         ProjectManager  *m_project;
         wxArrayString	m_commandline;
-
-
+        LogWindow      *Log;
         wxSize LastSize;
 
+        bool LoadMnemonicsDB();
         bool SaveAs();
         void Clear_all();
         bool OpenProgramFile(const wxString filename);
         bool OpenProjectFile(const wxString filename);
         void UpdateTitle(const wxString str);
+        void SetupMenuItemStatus();
+        void SetupStoredConfiguration();
+        void SetupIcon();
+        void SetupAUIPanes();
+        void SetupMenuEvents();
 
 
 		void OnMenuFileOpen(wxCommandEvent& event);
@@ -127,9 +113,6 @@ class IDZ80: public wxFrame
 		void OnMenuFileClose(wxCommandEvent& event);
 		void OnMenuToolsGenCode(wxCommandEvent& event);
 		void OnFirstIdle(wxIdleEvent &event);
-
-
-		DECLARE_EVENT_TABLE()
 };
 
 #endif

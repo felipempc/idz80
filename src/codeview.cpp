@@ -27,7 +27,7 @@ const int CodeView::COL_MNEM;
 
 
 CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
-        : wxScrolledWindow(parent)
+        : wxScrolledCanvas(parent)
 {
     m_process = _proc;
     m_linesShown = 0;
@@ -308,7 +308,7 @@ bool CodeView::Enable(bool enable)
 
     if (enable)
     {
-        wxScrolledWindow::Enable(true);
+        wxScrolledCanvas::Enable(true);
         SetVirtualSize(wxDefaultCoord, m_CodeViewLine->GetCount() * m_fontHeight);
         IsEmpty = m_CodeViewLine->IsEmpty();
         ret = true;
@@ -316,7 +316,7 @@ bool CodeView::Enable(bool enable)
     else
     {
     	SetVirtualSize(0, 0);
-        wxScrolledWindow::Enable(false);
+        wxScrolledCanvas::Enable(false);
     }
     return ret;
 }

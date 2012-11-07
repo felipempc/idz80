@@ -79,7 +79,7 @@ struct styledata
 };
 
 
-class CodeView : public wxScrolledWindow
+class CodeView : public wxScrolledCanvas
 {
 public:
 	CodeView(wxWindow *parent, ProcessData *_proc);

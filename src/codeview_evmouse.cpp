@@ -31,6 +31,7 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
         return;
     }
 
+    SetFocus();
     if (!MultiSelection)
         CursorLastPosition = CursorPosition;
 
@@ -49,7 +50,7 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 		DoSelection();
 
-		SetFocusIgnoringChildren();
+		//SetFocusIgnoringChildren();
 		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
@@ -109,6 +110,8 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
         return;
     }
 
+    SetFocus();
+
     if (!MultiSelection)
         CursorLastPosition = CursorPosition;
 
@@ -138,7 +141,7 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 				SelectedLastItem = SelectedItemIndex;
 			}
 
-		SetFocusIgnoringChildren();
+		//SetFocusIgnoringChildren();
 		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
@@ -162,7 +165,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 
     if (!IsEmpty)
     {
-        SetFocusIgnoringChildren();
+        //SetFocusIgnoringChildren();
 
         PopUp = new wxMenu();
         de = m_iteminfo.dasmitem;

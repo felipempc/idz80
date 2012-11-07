@@ -16,6 +16,7 @@ class IDZ80App : public wxApp
 {
     public:
         virtual bool OnInit();
+
 };
 
 #endif // IDZ80APP_H
