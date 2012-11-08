@@ -668,26 +668,26 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
         {
         case IT_CALL:
             update_item = CallSubroutine(de);
+            #ifdef IDZ80_DECODER
             if (update_item)
-                #ifdef IDZ80_DECODER
+            {
                 LogIt(wxString::Format("[0x%.4X] Entering subroutine No. %d  [0x%.4X].\n", m_actualaddress, SubRoutine->GetCounter(), address));
-                #endif
+            }
             else
             {
-                #ifdef IDZ80_DECODER
                 LogIt(wxString::Format("[0x%.4X] Call to out of boundary [0x%.4X]. Ignored !\n", m_actualaddress, address));
-                #endif
             }
+            #endif
             break;
 
         case IT_RET:
             update_item = ReturnSubroutine(de, m_nextaddress);
+            #ifdef IDZ80_DECODER
             if (update_item)
             {
-                #ifdef IDZ80_DECODER
                 LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.\n", m_actualaddress, SubRoutine->GetCounter()));
-                #endif
             }
+            #endif
             break;
 
         case IT_JUMP:

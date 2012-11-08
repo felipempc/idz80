@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="IDZ80" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/IDZ80" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="K:/wxw/wx294/lib" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-DIDZ80DEBUG" />
+					<Add option="-DIDZ80_DECODER" />
+					<Add directory="$(WXW)/include" />
+					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_core_gcc_custom.dll" />
+					<Add directory="$(WXW)/lib/gcc_dll" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/IDZ80" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="$(WXW)/include" />
+					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase294u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_core_gcc_custom.dll" />
+					<Add directory="$(WXW)/lib/gcc_dll" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WXW" value="K:\wxw\wx294" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="K:/wxw/wx294/include" />
+			<Add directory="K:/wxw/wx294/contrib/include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="K:/wxw/wx294/include" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-mthreads" />
+		</Linker>
+		<Unit filename="../src/DebugView.cpp" />
+		<Unit filename="../src/DebugView.h" />
+		<Unit filename="../src/EditLabelDlg.cpp" />
+		<Unit filename="../src/EditLabelDlg.h" />
+		<Unit filename="../src/FileTypeDialog.cpp" />
+		<Unit filename="../src/FileTypeDialog.h" />
+		<Unit filename="../src/IDZ80.cpp" />
+		<Unit filename="../src/IDZ80.h" />
+		<Unit filename="../src/IDZ80App.cpp" />
+		<Unit filename="../src/IDZ80App.h" />
+		<Unit filename="../src/IDZ80Base.cpp" />
+		<Unit filename="../src/IDZ80Base.h" />
+		<Unit filename="../src/MnemonicItem.cpp" />
+		<Unit filename="../src/MnemonicItem.h" />
+		<Unit filename="../src/ProcessData.cpp" />
+		<Unit filename="../src/ProcessData.h" />
+		<Unit filename="../src/ShowFileInfo.cpp" />
+		<Unit filename="../src/ShowFileInfo.h" />
+		<Unit filename="../src/codegenerator.cpp" />
+		<Unit filename="../src/codegenerator.h" />
+		<Unit filename="../src/codeview.cpp" />
+		<Unit filename="../src/codeview.h" />
+		<Unit filename="../src/codeview_evmouse.cpp" />
+		<Unit filename="../src/codeview_render.cpp" />
+		<Unit filename="../src/codeviewline.cpp" />
+		<Unit filename="../src/codeviewline.h" />
+		<Unit filename="../src/d_asm_element.cpp" />
+		<Unit filename="../src/d_asm_element.h" />
+		<Unit filename="../src/dasmdata.cpp" />
+		<Unit filename="../src/dasmdata.h" />
+		<Unit filename="../src/decoder.cpp" />
+		<Unit filename="../src/decoder.h" />
+		<Unit filename="../src/idz80debugbase.cpp" />
+		<Unit filename="../src/idz80debugbase.h" />
+		<Unit filename="../src/labelmanager.cpp" />
+		<Unit filename="../src/labelmanager.h" />
+		<Unit filename="../src/labelslist.cpp" />
+		<Unit filename="../src/labelslist.h" />
+		<Unit filename="../src/logwindow.cpp" />
+		<Unit filename="../src/logwindow.h" />
+		<Unit filename="../src/mndb.cpp" />
+		<Unit filename="../src/mndb.h" />
+		<Unit filename="../src/mndb_tools.cpp" />
+		<Unit filename="../src/mndb_tools.h" />
+		<Unit filename="../src/projectmanager.cpp" />
+		<Unit filename="../src/projectmanager.h" />
+		<Unit filename="../src/rawdata.cpp" />
+		<Unit filename="../src/rawdata.h" />
+		<Unit filename="../src/segmentmgr.cpp" />
+		<Unit filename="../src/segmentmgr.h" />
+		<Unit filename="../src/subroutine.cpp" />
+		<Unit filename="../src/subroutine.h" />
+		<Unit filename="../src/systemlabels.cpp" />
+		<Unit filename="../src/systemlabels.h" />
+		<Unit filename="../src/version.h" />
+		<Unit filename="../src/z80register.cpp" />
+		<Unit filename="../src/z80register.h" />
+		<Unit filename="../src/z80registerlist.cpp" />
+		<Unit filename="../src/z80registerlist.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
