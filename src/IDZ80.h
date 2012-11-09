@@ -29,7 +29,7 @@ enum
 };
 static const wxString LocalPath = "X:/idz80";
 
-class IDZ80: public wxFrame
+class IDZ80: public wxFrame, LogBase
 {
 	public:
 
@@ -39,6 +39,7 @@ class IDZ80: public wxFrame
 		wxAuiManager* AuiManager1;
 		wxTextCtrl* PanelLog;
 		wxStatusBar* StatusBar1;
+        LogWindow      *Log;
 
 	protected:
 
@@ -78,7 +79,6 @@ class IDZ80: public wxFrame
                         m_lastDir;
         ProjectManager  *m_project;
         wxArrayString	m_commandline;
-        LogWindow      *Log;
         wxSize LastSize;
 
         bool LoadMnemonicsDB();
@@ -88,6 +88,7 @@ class IDZ80: public wxFrame
         bool OpenProjectFile(const wxString filename);
         void UpdateTitle(const wxString str);
         void SetupMenuItemStatus();
+        void SetupAUIStoredConfiguration();
         void SetupStoredConfiguration();
         void SetupIcon();
         void SetupAUIPanes();

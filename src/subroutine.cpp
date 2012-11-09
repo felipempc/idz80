@@ -11,14 +11,15 @@
 #include "subroutine.h"
 
 
-SubRoutineCtrl::SubRoutineCtrl()
+SubRoutineCtrl::SubRoutineCtrl(LogWindow *logparent)
 {
     StackPointer = 0;
     ActualSubRoutine = 0;
     ReturnConditional = false;
     CalledSubroutines = new SortedIntArray(CompareSortedInt);
     CalledSubroutines->Clear();
-    m_modulename = "SubRoutine: ";
+    SetTextLog(logparent);
+    ModuleName = "SubRoutine";
 }
 
 SubRoutineCtrl::~SubRoutineCtrl()

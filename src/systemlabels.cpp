@@ -13,11 +13,12 @@
  #include "systemlabels.h"
  #include "mndb_tools.h"
 
-SystemLabelList::SystemLabelList(const wxString& section)
+SystemLabelList::SystemLabelList(const wxString& section, LogWindow *logparent)
 {
 	m_section = section;
 	m_file = 0;
-	m_log = 0;
+    ModuleName = "SystemLabel";
+    SetTextLog(logparent);
 }
 
 
@@ -63,18 +64,18 @@ bool SystemLabelList::Open(const wxString& file)
 */
 
 		if (!m_file->Open())
-			m_log->AppendText(m_section + "-> Cannot open file !\n ");
+			LogIt(m_section + "-> Cannot open file !\n ");
 		ret = readData();
 		if (!ret)
-			m_log->AppendText(m_section + "-> Error reading data !\n ");
+			LogIt(m_section + "-> Error reading data !\n ");
 		if (!m_file->Close())
-			m_log->AppendText(m_section + "-> Error closing file !\n ");
+			LogIt(m_section + "-> Error closing file !\n ");
 
 	}
 	else
 	{
 		#ifdef IDZ80DEBUG
-		m_log->AppendText(m_section + "-> File not found !\n ");
+		LogIt(m_section + "-> File not found !\n ");
 		#endif
 
 		delete m_file;
@@ -128,7 +129,7 @@ bool SystemLabelList::readData()
 				}
 				#ifdef IDZ80DEBUG
 				else
-					m_log->AppendText(wxString::Format("%s [%d] -> Cant convert number !\n", m_section, line));
+					LogIt(wxString::Format("%s [%d] -> Cant convert number !\n", m_section, line));
 				#endif
 			}
 			#ifdef IDZ80DEBUG
@@ -136,7 +137,7 @@ bool SystemLabelList::readData()
 			{
 				str.Clear();
 				str << m_section << wxString::Format("[%d] -> Cant find 2 columms ! (columms = %d)\n ", line, arrstr.GetCount());
-				m_log->AppendText(str);
+				LogIt(str);
 			}
 			#endif
             str = m_file->GetNextLine();
@@ -144,7 +145,7 @@ bool SystemLabelList::readData()
     }
     #ifdef IDZ80DEBUG
     if (!foundHeader)
-		m_log->AppendText(m_section + "-> Header not found !\n ");
+		LogIt(m_section + "-> Header not found !\n ");
 	#endif
     return (m_data.GetCount() > 0);
 }
@@ -203,8 +204,3 @@ uint SystemLabelList::GetCount()
 	return (m_data.GetCount());
 }
 
-
-void SystemLabelList::SetLog(wxTextCtrl *_lg)
-{
-	m_log = _lg;
-}

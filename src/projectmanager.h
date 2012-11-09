@@ -41,7 +41,7 @@ class ProjectManager
         bool        m_saved;
         bool        m_named;
         wxString    m_filename;
-        ProcessData *m_process;
+        ProcessData *Process;
         CodeView    *m_codeview;
 
         wxTextCtrl  *m_log;

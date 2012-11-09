@@ -19,15 +19,12 @@
 #define _IDZ80_PROCESSDATA_H
 
 #include "IDZ80Base.h"
-#include "mndb.h"
-#include "dasmdata.h"
-#include "rawdata.h"
+#include "processbase.h"
 #include "d_asm_element.h"
 #include "labelslist.h"
-#include "codeviewline.h"
 #include "systemlabels.h"
 #include "decoder.h"
-#include "IDZ80debugbase.h"
+#include "logwindow.h"
 #include "labelmanager.h"
 
 #include <wx/gauge.h>
@@ -47,14 +44,9 @@ struct stRangeData
 typedef struct stRangeData RangeData;
 
 
-class ProcessData : public LabelManager, IDZ80LogBase
+class ProcessData : public LabelManager, public LogBase, public ProcessBase
 {
     public:
-        CodeViewLine        *m_CodeViewLine;
-        DAsmData            *m_Dasm;
-        RawData             *Program;
-        MnemonicDataBase    *Mnemonics;
-
         void DisassembleFirst(bool simulateexecution = false);
         void DisassembleItems(RangeItems &r);
         void MakeData(RangeItems &r);
@@ -64,17 +56,14 @@ class ProcessData : public LabelManager, IDZ80LogBase
         bool SetupSystemLabels();
 
         void SetGauge(wxGauge *g);
-        void SetLog(wxTextCtrl *_lg);
 
-        ProcessData(wxWindow *parent);
+        ProcessData(wxWindow *parent, LogWindow *logparent);
         ~ProcessData();
 
     private:
-        wxGauge             *m_gauge;
-        wxWindow            *m_main_frame;
-        Decoder             *m_disassembler;
-
-//        void ConvertProgramAddress(RangeItems r, RangeData& d);
+        wxGauge     *m_gauge;
+        Decoder     *m_disassembler;
+        LogWindow   *WindowLog;
 };
 
 

@@ -29,7 +29,7 @@ DAsmElement::DAsmElement(RawData* rawdata)
     FileData = rawdata;
     Clear();
     SetStyleDefault();
-    m_modulename = "dasmelement: ";
+    ModuleName = "Dasmelement";
 }
 
 DAsmElement::~DAsmElement()

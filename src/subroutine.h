@@ -16,7 +16,7 @@
 #include <stack>
 #include <vector>
 #include "IDZ80Base.h"
-#include "idz80debugbase.h"
+#include "logbase.h"
 
 struct SubRoutineData
 {
@@ -28,7 +28,7 @@ struct SubRoutineData
 typedef std::vector<SubRoutineData *> SubRoutineList;
 
 
-class SubRoutineCtrl: public IDZ80LogBase
+class SubRoutineCtrl: public LogBase
 {
     public:
         bool Call(uint entryaddress, uint nextaddress);
@@ -42,7 +42,7 @@ class SubRoutineCtrl: public IDZ80LogBase
         int GetCounter();
         //uint GetAddress();
 
-        SubRoutineCtrl();
+        SubRoutineCtrl(LogWindow *logparent);
         ~SubRoutineCtrl();
 
     private:

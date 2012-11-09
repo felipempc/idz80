@@ -18,6 +18,7 @@
 #ifndef _IDZ80_DASMDATA_H
 #define _IDZ80_DASMDATA_H
 
+#include "logbase.h"
 #include "rawdata.h"
 #include "d_asm_element.h"
 #include <vector>
@@ -32,7 +33,7 @@ struct RangeItems
 
 typedef std::vector<DAsmElement *> DasmArray;
 
-class DAsmData : public IDZ80LogBase
+class DAsmData : public LogBase
 {
     public:
         void Clear();
@@ -50,7 +51,7 @@ class DAsmData : public IDZ80LogBase
         int FindAddress(uint address);
 
 
-        DAsmData();
+        DAsmData(LogWindow *logparent);
         ~DAsmData();
 
     private:

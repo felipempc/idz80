@@ -25,19 +25,18 @@
  * ProcessData Implementation
  */
 
-ProcessData::ProcessData(wxWindow *parent)
+ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
 {
-    Mnemonics = new MnemonicDataBase();
+    Mnemonics = new MnemonicDataBase(logparent);
     Program = new RawData();
-    m_Dasm = new DAsmData();
-    m_CodeViewLine = new CodeViewLine(m_Dasm);
-    m_main_frame = parent;
-    m_disassembler = new Decoder(Program, m_Dasm, Mnemonics);
+    Disassembled = new DAsmData(logparent);
+    CodeViewLines = new CodeViewLine(Disassembled);
+    m_disassembler = new Decoder(this, logparent);
 
-    var_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
-    prog_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
-    io_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
-    constant_labels = new LabelListCtrl(m_main_frame, wxID_ANY, wxDefaultPosition, wxSize(170, 170));
+    var_labels = new LabelListCtrl(parent, logparent);
+    prog_labels = new LabelListCtrl(parent, logparent);
+    io_labels = new LabelListCtrl(parent, logparent);
+    constant_labels = new LabelListCtrl(parent, logparent);
 
     sys_calls =  0;
     sys_vars = 0;
@@ -45,8 +44,8 @@ ProcessData::ProcessData(wxWindow *parent)
     sys_const = 0;
 
     m_gauge = NULL;
-    m_log = 0;
-    m_modulename = "PROCESS: ";
+    WindowLog = logparent;
+    ModuleName = "PROCESS";
 }
 
 
@@ -58,14 +57,14 @@ ProcessData::~ProcessData()
 	delete sys_calls;
 	delete sys_vars;
 	delete sys_io;
-    delete m_CodeViewLine;
+    delete CodeViewLines;
     delete constant_labels;
     delete io_labels;
     delete prog_labels;
     delete var_labels;
     delete Mnemonics;
     delete Program;
-    delete m_Dasm;
+    delete Disassembled;
 }
 
 
@@ -87,26 +86,20 @@ bool ProcessData::SetupSystemLabels()
     if (Program->IsLoaded())
     {
         ret = true;
-        sys_io = new SystemLabelList("IOMAP");
+        sys_io = new SystemLabelList("IOMAP", WindowLog);
 
         if (Program->isCOM())
         {
-            sys_calls =  new SystemLabelList("MSXDOSCALLS");
-            sys_vars = new SystemLabelList("MSXDOS1VAR");
-            sys_const = new SystemLabelList("BDOSFUNCTIONS");
+            sys_calls =  new SystemLabelList("MSXDOSCALLS", WindowLog);
+            sys_vars = new SystemLabelList("MSXDOS1VAR", WindowLog);
+            sys_const = new SystemLabelList("BDOSFUNCTIONS", WindowLog);
         }
         else
         {
-            sys_calls =  new SystemLabelList("BIOSCALLS");
-            sys_vars = new SystemLabelList("BIOSVARS");
+            sys_calls =  new SystemLabelList("BIOSCALLS", WindowLog);
+            sys_vars = new SystemLabelList("BIOSVARS", WindowLog);
         }
     }
-
-    sys_io->SetLog(m_log);
-	sys_calls->SetLog(m_log);
-	sys_vars->SetLog(m_log);
-	if (sys_const != 0)
-        sys_const->SetLog(m_log);
 
     return ret;
 }
@@ -118,7 +111,7 @@ bool ProcessData::SetupSystemLabels()
 
 void ProcessData::DisassembleFirst(bool simulateexecution)
 {
-    m_Dasm->Clear();
+    Disassembled->Clear();
 
     if (simulateexecution)
     {
@@ -149,17 +142,17 @@ void ProcessData::MakeData(RangeItems &r)
     DAsmElement	*de;
 
     f = r.Index + r.Count;
-    if (f > m_Dasm->GetCount())
-        f = m_Dasm->GetCount();
+    if (f > Disassembled->GetCount())
+        f = Disassembled->GetCount();
 
     r.Count = 0;    // prepare the new item's count
     k = r.Index;
     for (i = r.Index; i < f; i++)
     {
-        de = m_Dasm->GetData(i);
+        de = Disassembled->GetData(i);
         offset = de->GetOffset();
         length = de->GetLength();
-        m_Dasm->DelDasm(i);  //de
+        Disassembled->DelDasm(i);  //de
         for (j = 0; j < length; j++)
         {
             de = new DAsmElement(Program);
@@ -167,7 +160,7 @@ void ProcessData::MakeData(RangeItems &r)
             de->SetOffset(offset + j);
             de->SetMnemonic(0);
             de->SetType(et_Data);
-            m_Dasm->InsertDasm(de, k++);
+            Disassembled->InsertDasm(de, k++);
         }
         i += length - 1;
         f += length - 1;
@@ -193,13 +186,13 @@ void ProcessData::AutoLabel()
     enum ArgumentTypes argtype;
     ArgStyle	style;
 
-    if (m_Dasm->IsLoaded())
+    if (Disassembled->IsLoaded())
     {
         i = 0;
         nargsVar = nargsIO = nargsProg = 0;
-        while (i < m_Dasm->GetCount())
+        while (i < Disassembled->GetCount())
         {
-            dasmtemp = m_Dasm->GetData(i);
+            dasmtemp = Disassembled->GetData(i);
             if (dasmtemp->isInstruction())
             {
                 argtype = dasmtemp->GetArgumentType(0);
@@ -217,7 +210,7 @@ void ProcessData::AutoLabel()
                                         break;
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
-                                        addr = dasmtemp->getArgument(0, m_Dasm->GetBaseAddress(i));
+                                        addr = dasmtemp->getArgument(0, Disassembled->GetBaseAddress(i));
                                         str = sys_calls->Find(addr);
                                         if (str.IsEmpty())
 											str.Printf("LABEL%d", nargsProg++);
@@ -259,8 +252,8 @@ void ProcessData::InitData()
 {
     uint i;
     wxArrayString m_Comments;
-    if (!m_CodeViewLine->IsEmpty())
-         m_CodeViewLine->Clear();
+    if (!CodeViewLines->IsEmpty())
+         CodeViewLines->Clear();
 
     m_Comments.Add("; ------------------------");
     m_Comments.Add("; Disassembled with IDZ80");
@@ -270,12 +263,12 @@ void ProcessData::InitData()
 
     i = 0;
     while (i < m_Comments.GetCount())
-        m_CodeViewLine->Add(m_Comments[i++]);
+        CodeViewLines->Add(m_Comments[i++]);
 
-    m_CodeViewLine->AddOrg(m_Dasm->GetBaseAddress(0), "");
+    CodeViewLines->AddOrg(Disassembled->GetBaseAddress(0), "");
     i = 0;
-    while (i < m_Dasm->GetCount())
-        m_CodeViewLine->AddDasm(i++, "");
+    while (i < Disassembled->GetCount())
+        CodeViewLines->AddDasm(i++, "");
 }
 
 
@@ -290,14 +283,14 @@ void ProcessData::processLabel()
     while (i < prog_labels->GetItemCount())
     {
         lbl = (LabelItem *)prog_labels->GetItemData(i);
-        if ((lbl != 0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
+        if ((lbl != 0) && (!CodeViewLines->getDataLineAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {
-                m_CodeViewLine->InsertProgLabel(lbl->Address, "", a);
+                CodeViewLines->InsertProgLabel(lbl->Address, "", a);
             }
             else
-                m_CodeViewLine->EditProgLabel(lbl->Address, "", a);
+                CodeViewLines->EditProgLabel(lbl->Address, "", a);
         }
         i++;
     }
@@ -308,14 +301,14 @@ void ProcessData::processLabel()
     while (i <  var_labels->GetItemCount())
     {
         lbl = (LabelItem *)var_labels->GetItemData(i);
-        if ((lbl != 0) && (!m_CodeViewLine->getDataLineAddress(lbl->Address, a)))
+        if ((lbl != 0) && (!CodeViewLines->getDataLineAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {
-                m_CodeViewLine->InsertVarLabel(lbl->Address, "", a);
+                CodeViewLines->InsertVarLabel(lbl->Address, "", a);
             }
             else
-                m_CodeViewLine->EditVarLabel(lbl->Address, "", a);
+                CodeViewLines->EditVarLabel(lbl->Address, "", a);
         }
         i++;
     }
@@ -324,21 +317,4 @@ void ProcessData::processLabel()
 }
 
 
-
-
-
-
-
-
-void ProcessData::SetLog(wxTextCtrl *_lg)
-{
-    m_log = _lg;
-    m_Dasm->SetLog(_lg);
-    io_labels->SetLog(_lg);
-    var_labels->SetLog(_lg);
-    prog_labels->SetLog(_lg);
-    Program->DebugLog(_lg);
-    Mnemonics->SetLog(_lg);
-    m_disassembler->SetLog(_lg);
-}
 

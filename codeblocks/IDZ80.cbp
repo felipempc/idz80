@@ -89,6 +89,7 @@
 		<Unit filename="../src/IDZ80Base.h" />
 		<Unit filename="../src/MnemonicItem.cpp" />
 		<Unit filename="../src/MnemonicItem.h" />
+		<Unit filename="../src/ProcessBase.h" />
 		<Unit filename="../src/ProcessData.cpp" />
 		<Unit filename="../src/ProcessData.h" />
 		<Unit filename="../src/ShowFileInfo.cpp" />
@@ -107,12 +108,12 @@
 		<Unit filename="../src/dasmdata.h" />
 		<Unit filename="../src/decoder.cpp" />
 		<Unit filename="../src/decoder.h" />
-		<Unit filename="../src/idz80debugbase.cpp" />
-		<Unit filename="../src/idz80debugbase.h" />
 		<Unit filename="../src/labelmanager.cpp" />
 		<Unit filename="../src/labelmanager.h" />
 		<Unit filename="../src/labelslist.cpp" />
 		<Unit filename="../src/labelslist.h" />
+		<Unit filename="../src/logbase.cpp" />
+		<Unit filename="../src/logbase.h" />
 		<Unit filename="../src/logwindow.cpp" />
 		<Unit filename="../src/logwindow.h" />
 		<Unit filename="../src/mndb.cpp" />

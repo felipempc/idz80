@@ -24,11 +24,11 @@
  * DAsmData implementation
  */
 
-DAsmData::DAsmData()
+DAsmData::DAsmData(LogWindow *logparent)
 {
     totalAllocated = 0;
-    m_log = 0;
-    m_modulename = "DASMDATA: ";
+    SetTextLog(logparent);
+    ModuleName = "DASMDATA";
 }
 
 
@@ -89,7 +89,7 @@ void DAsmData::DelDasm(uint position)
 {
 	DasmArray::iterator it;
 	DAsmElement *de;
-	
+
     if (position < GetCount())
 	{
 		de = GetData(position);

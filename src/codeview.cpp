@@ -26,10 +26,10 @@ const int CodeView::COL_MNEM;
 
 
 
-CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
+CodeView::CodeView(wxWindow *parent, ProcessData *processparent)
         : wxScrolledCanvas(parent)
 {
-    m_process = _proc;
+    Process = processparent;
     m_linesShown = 0;
     CursorPosition = -1;
     CursorLastPosition = -1;
@@ -50,7 +50,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *_proc)
     m_iteminfo.lineitem = (CodeViewItem *)0;
     m_iteminfo.hasComment = false;
 
-    m_CodeViewLine = m_process->m_CodeViewLine;
+    m_CodeViewLine = Process->CodeViewLines;
     LastCursorRect = new wxRect();
 
     wxClientDC dc(this);
@@ -281,8 +281,8 @@ void CodeView::Clear()
     ClearSelection();
     IsFocused = false;
     IsEmpty = true;
-    if (m_process->m_Dasm != 0)
-        m_process->m_Dasm->Clear();
+    if (Process->Disassembled != 0)
+        Process->Disassembled->Clear();
 
     m_CodeViewLine->Clear();
     Refresh();
@@ -532,7 +532,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 			if (cvi->Comment != 0)
 				hcomment = true;
 
-            de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+            de = Process->Disassembled->GetData(cvi->Dasmitem);
             if (de->isInstruction())
             {
                 if ((lastitem == et_None) || (lastitem == et_Instruction))
@@ -723,8 +723,8 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     uint 			address;
 
     cvi = m_CodeViewLine->getData(CursorPosition);
-    de = m_process->m_Dasm->GetData(cvi->Dasmitem);
-    address = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
+    de = Process->Disassembled->GetData(cvi->Dasmitem);
+    address = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
     CenterAddress(address);
 
 }
@@ -756,7 +756,7 @@ bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels)
         cvi = m_CodeViewLine->getData(i);
         if (cvi->Dasmitem >= 0)
         {
-            de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+            de = Process->Disassembled->GetData(cvi->Dasmitem);
             if (de->isInstruction() ||
                 de->isData())
             {
@@ -810,7 +810,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
     {
 		for(i = 0; i < proglabels.GetCount(); i++)
 		{
-			m_process->prog_labels->DelLabel(proglabels[i]);
+			Process->prog_labels->DelLabel(proglabels[i]);
 		}
 
         lineIndex = cvlines[0];
@@ -823,7 +823,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
         dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
         oldLineCount = dasmed_items.Count;
 
-        m_process->MakeData(dasmed_items);
+        Process->MakeData(dasmed_items);
 
 		j = 0;
         for (i = 0; i < lineCount; i++)
@@ -880,7 +880,7 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 				m_CodeViewLine->Del(lineIndex + j);
 		}
 
-		m_process->DisassembleItems(dasmed_items);
+		Process->DisassembleItems(dasmed_items);
 
 		m_CodeViewLine->linkData(dasmed_items.Index,lineIndex,dasmed_items.Count);
 
@@ -977,9 +977,9 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 	if (cvi != 0)
 	{
 		if (cvi->LabelProgAddr >= 0)
-			m_process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
+			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
 		if (cvi->LabelVarAddr >= 0)
-			m_process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
+			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
 	}
 	LogIt("Label renamed !!\n");
 }
@@ -1082,7 +1082,7 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 		// check if line has instruction
 		if (cvi->Dasmitem >= 0)
 		{
-			de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+			de = Process->Disassembled->GetData(cvi->Dasmitem);
 			if (de != 0)
 			{
 				m_iteminfo.dasmitem = de;

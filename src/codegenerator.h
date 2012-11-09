@@ -14,7 +14,7 @@
 #define CODEGENERATOR_H
 
 #include <wx/textfile.h>
-#include "ProcessData.h"
+#include "processdata.h"
 
 
 enum eCompilerFlag
@@ -28,12 +28,12 @@ typedef enum eCompilerFlag CompilerFlag;
 class codeGenerator
 {
     public:
-        codeGenerator(ProcessData *pd);
+        codeGenerator(ProcessData *parent);
         virtual ~codeGenerator();
         wxString GenerateCode(wxString file, const CompilerFlag cflags);
     protected:
     private:
-        ProcessData     *process;
+        ProcessData     *Process;
         wxString        textCode, end_line;
         CompilerFlag    m_cflags;
 

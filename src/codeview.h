@@ -82,7 +82,7 @@ struct styledata
 class CodeView : public wxScrolledCanvas
 {
 public:
-	CodeView(wxWindow *parent, ProcessData *_proc);
+	CodeView(wxWindow *parent, ProcessData *processparent);
 	~CodeView();
 
     void Plot(void);
@@ -106,7 +106,7 @@ private:
 	static const int COL_LABEL = 200;
 	static const int COL_MNEM = 230;
 
-    ProcessData     *m_process;
+    ProcessData     *Process;
 
     SelectedItemInfo m_iteminfo;	// Holds info about the selected item
 

@@ -16,18 +16,18 @@
 #include <wx/textctrl.h>
 
 
+
 class LogWindow : public wxFrame
 {
     public:
         LogWindow(wxWindow *parent, const wxString &title);
-        void LogIt(const wxString &logstring);
+
+        wxTextCtrl *GetTextLog();
+        void Print(const wxString &logstring);
 
     private:
         bool        SaveOnExit;
         wxTextCtrl  *TextLog;
-
-        void SetupFont();
-
 };
 
 

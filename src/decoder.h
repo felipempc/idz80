@@ -17,20 +17,18 @@
 #include <stack>
 
 #include "IDZ80Base.h"
-#include "mndb.h"
-#include "dasmdata.h"
-#include "rawdata.h"
+#include "processbase.h"
 #include "d_asm_element.h"
-#include "IDZ80debugbase.h"
+#include "logbase.h"
 #include "z80registerlist.h"
 #include "labelmanager.h"
 #include "subroutine.h"
 
 
-class Decoder: public IDZ80LogBase
+class Decoder: public LogBase
 {
     public:
-        Decoder(RawData *program, DAsmData *dasmdata, MnemonicDataBase *mnemonics);
+        Decoder(ProcessBase *parent, LogWindow *logparent);
         ~Decoder();
 
         bool FirstDisassemble(LabelManager *parent);
@@ -42,9 +40,13 @@ class Decoder: public IDZ80LogBase
 
     private:
         static const int OPCODE_NOT_FOUND = -1;
+/*
         RawData             *m_program;
         DAsmData            *m_dasmeditems;
         MnemonicDataBase    *m_mnemonics;
+*/
+        ProcessBase         *Process;
+
         SubRoutineCtrl      *SubRoutine;
 
         SortedIntArray      *m_unconditionaljumplist,

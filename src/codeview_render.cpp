@@ -29,7 +29,7 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
     wxString str;
 
     x = COL_MNEM;
-    de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->Dasmitem);
     dc.SetTextForeground(FG_TextColor);
     dc.DrawText(str, x, start_y);
     x += dc.GetTextExtent(str).GetWidth();
@@ -78,7 +78,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     argwidth1 = argwidth2 = argpos1 = argpos2 = 0;
     usedlabel = false;
     x = COL_MNEM;
-    de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->Dasmitem);
     nargs = de->GetNumArgs();
     strparts = 0;
     str = de->GetMnemonicStr(0);
@@ -88,7 +88,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     x += dc.GetTextExtent(str).GetWidth();
     argpos1 = x;
 
-	argument = de->getArgument(0, m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
+	argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
 
     if (de->HasArgumentLabel())
     {
@@ -96,15 +96,15 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
-                            if (m_process->prog_labels->GetLabel(argument, str) >= 0)
+                            if (Process->prog_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_IO_ADDR:
-                            if (m_process->io_labels->GetLabel(argument, str) >= 0)
+                            if (Process->io_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_VARIABLE:
-                            if (m_process->var_labels->GetLabel(argument, str) >= 0)
+                            if (Process->var_labels->GetLabel(argument, str) >= 0)
                                 usedlabel = true;
                             break;
             case ARG_NONE:
@@ -283,10 +283,10 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 				 * -------------------------------------------------*/
 				if (cvi->Dasmitem >= 0)    // is It data/code ?
 				{
-					de = m_process->m_Dasm->GetData(cvi->Dasmitem);
+					de = Process->Disassembled->GetData(cvi->Dasmitem);
 					if (de != 0)
 					{
-						address = m_process->m_Dasm->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
+						address = Process->Disassembled->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
 
 						dc.SetTextForeground(FG_TextColor);
 						dc.DrawText(de->getCodeStr(), COL_CODE, linepixel);
@@ -316,7 +316,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                 {
                         if (cvi->LabelProgAddr != -1)   // Is it a label ?
                         {
-                            if (m_process->prog_labels->GetLabel(cvi->LabelProgAddr, str) >= 0)
+                            if (Process->prog_labels->GetLabel(cvi->LabelProgAddr, str) >= 0)
                             {
                                 str << ":";
                                 RenderProgramLabel(dc, linepixel, str);
@@ -332,7 +332,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 
                         if (cvi->LabelVarAddr != -1)   // Is it a label ?
                         {
-                            if (m_process->var_labels->GetLabel(cvi->LabelVarAddr, str) >= 0)
+                            if (Process->var_labels->GetLabel(cvi->LabelVarAddr, str) >= 0)
                             {
                                 str << ":";
                                 RenderProgramLabel(dc, linepixel, str);

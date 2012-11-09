@@ -19,15 +19,15 @@
 
 #include "IDZ80Base.h"
 #include "MnemonicItem.h"
-#include "idz80debugbase.h"
+#include "logbase.h"
 
 
 WX_DECLARE_OBJARRAY(MnemonicItem *, MnemonicArray);
 
-class MnemonicDataBase: public IDZ80LogBase
+class MnemonicDataBase: public LogBase
 {
     public:
-        MnemonicDataBase();
+        MnemonicDataBase(LogWindow *logparent);
         ~MnemonicDataBase();
         bool Open(wxString& filename);
         void Clear();

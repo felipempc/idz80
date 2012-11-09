@@ -22,7 +22,7 @@ ProjectManager::ProjectManager(ProcessData *process, CodeView *codeview)
     m_saved = false;
     m_named = false;
     m_filename.Clear();
-    m_process = process;
+    Process = process;
     m_codeview = codeview;
 
     m_log = 0;
@@ -99,9 +99,9 @@ void ProjectManager::writeHeader(wxTextFile &savefile)
     wxString str;
     savefile.AddLine(_("[HEADER]"));
     str = _("File = ");
-    str << m_process->Program->GetFileName();
+    str << Process->Program->GetFileName();
     savefile.AddLine(str);
-    switch (m_process->Program->GetFileType())
+    switch (Process->Program->GetFileType())
     {
         case COM:
                     str = _("Type = COM");
@@ -117,11 +117,11 @@ void ProjectManager::writeHeader(wxTextFile &savefile)
                     break;
     }
     savefile.AddLine(str);
-    str.Printf(_("StartAddress = %X"),m_process->Program->StartAddress);
+    str.Printf(_("StartAddress = %X"),Process->Program->StartAddress);
     savefile.AddLine(str);
-    str.Printf(_("ExecutionAddress = %X"),m_process->Program->ExecAddress);
+    str.Printf(_("ExecutionAddress = %X"),Process->Program->ExecAddress);
     savefile.AddLine(str);
-    str.Printf(_("EndAddress = %X"),m_process->Program->EndAddress);
+    str.Printf(_("EndAddress = %X"),Process->Program->EndAddress);
     savefile.AddLine(str);
     str = _("[\\HEADER]\n");
     savefile.AddLine(str);
@@ -133,12 +133,12 @@ void ProjectManager::writeProglabel(wxTextFile &savefile)
     wxString str;
     LabelItem *label;
     int i,j;
-    if (!m_process->prog_labels->IsEmpty())
+    if (!Process->prog_labels->IsEmpty())
     {
         savefile.AddLine(_("[PROGLABEL]"));
-        for (i = 0; i < m_process->prog_labels->GetCount(); i++)
+        for (i = 0; i < Process->prog_labels->GetCount(); i++)
         {
-            label = m_process->prog_labels->GetLabelItem(i);
+            label = Process->prog_labels->GetLabelItem(i);
             if (label != 0)
             {
                 str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
@@ -160,12 +160,12 @@ void ProjectManager::writeVarlabel(wxTextFile &savefile)
     wxString str;
     LabelItem *label;
     int i,j;
-    if (!m_process->var_labels->IsEmpty())
+    if (!Process->var_labels->IsEmpty())
     {
         savefile.AddLine(_("[VARLABEL]"));
-        for (i = 0; i < m_process->var_labels->GetCount(); i++)
+        for (i = 0; i < Process->var_labels->GetCount(); i++)
         {
-            label = m_process->var_labels->GetLabelItem(i);
+            label = Process->var_labels->GetLabelItem(i);
             if (label != 0)
             {
                 str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
@@ -186,12 +186,12 @@ void ProjectManager::writeIOlabel(wxTextFile &savefile)
     wxString str;
     LabelItem *label;
     int i,j;
-    if (!m_process->io_labels->IsEmpty())
+    if (!Process->io_labels->IsEmpty())
     {
         savefile.AddLine(_("[IOLABEL]"));
-        for (i = 0; i < m_process->io_labels->GetCount(); i++)
+        for (i = 0; i < Process->io_labels->GetCount(); i++)
         {
-            label = m_process->io_labels->GetLabelItem(i);
+            label = Process->io_labels->GetLabelItem(i);
             if (label !=0)
             {
                 str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
@@ -216,12 +216,12 @@ void ProjectManager::writeDasmData(wxTextFile &savefile)
     uint	arg_aux;
     wxString	str;
     DAsmElement *de;
-    if (m_process->m_Dasm->GetCount() != 0)
+    if (Process->Disassembled->GetCount() != 0)
     {
         savefile.AddLine("[DASM]");
-        for (i = 0; i < m_process->m_Dasm->GetCount(); i++)
+        for (i = 0; i < Process->Disassembled->GetCount(); i++)
         {
-            de = m_process->m_Dasm->GetData(i);
+            de = Process->Disassembled->GetData(i);
             str.Printf("%.2X ", de->GetType());
             str << wxString::Format("%.2X ", de->GetLength());
             str << wxString::Format("%.4X ", de->GetOffset());
@@ -324,7 +324,7 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
-                ret = m_process->Program->Open(str_arg);
+                ret = Process->Program->Open(str_arg);
                 str_debug << str_arg << _(" ");
             }
 
@@ -334,16 +334,16 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 str_arg = str.Right(str.Len() - i - 1);
 
                 if (str_arg == _("COM"))
-                    m_process->Program->SetFileType(COM);
+                    Process->Program->SetFileType(COM);
                 else
                     if (str_arg == _("ROM"))
-                        m_process->Program->SetFileType(ROM);
+                        Process->Program->SetFileType(ROM);
                     else
                         if (str_arg == _("BIN"))
-                            m_process->Program->SetFileType(BIN);
+                            Process->Program->SetFileType(BIN);
                         else
-                            m_process->Program->SetFileType(UNKNOWN);
-                str_debug << wxString::Format(_("Type = %d "),m_process->Program->GetFileType());
+                            Process->Program->SetFileType(UNKNOWN);
+                str_debug << wxString::Format(_("Type = %d "),Process->Program->GetFileType());
 
             }
             if ((str.Left(12) == _("StartAddress")) && (i != wxNOT_FOUND))
@@ -354,10 +354,10 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 str_arg.Trim(false);
 
                 if (str_arg.ToLong(&conv,16))
-                    m_process->Program->StartAddress = (uint)conv;
+                    Process->Program->StartAddress = (uint)conv;
                 else
-                    m_process->Program->StartAddress = 0;
-                str_debug << wxString::Format(_("Start = %X "),m_process->Program->StartAddress);
+                    Process->Program->StartAddress = 0;
+                str_debug << wxString::Format(_("Start = %X "),Process->Program->StartAddress);
             }
 
             if ((str.Left(16) == _("ExecutionAddress")) && (i != wxNOT_FOUND))
@@ -368,10 +368,10 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 str_arg.Trim(false);
 
                 if (str_arg.ToLong(&conv, 16))
-                    m_process->Program->ExecAddress = (uint)conv;
+                    Process->Program->ExecAddress = (uint)conv;
                 else
-                    m_process->Program->ExecAddress = 0;
-                str_debug << wxString::Format(_("Exec = %X "),m_process->Program->ExecAddress);
+                    Process->Program->ExecAddress = 0;
+                str_debug << wxString::Format(_("Exec = %X "),Process->Program->ExecAddress);
             }
 
             if ((str.Left(10) == _("EndAddress")) && (i != wxNOT_FOUND))
@@ -382,11 +382,11 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 str_arg.Trim(false);
 
                 if (str_arg.ToLong(&conv, 16))
-                    m_process->Program->EndAddress = (uint)conv;
+                    Process->Program->EndAddress = (uint)conv;
                 else
-                    m_process->Program->EndAddress = 0;
+                    Process->Program->EndAddress = 0;
 
-                str_debug << wxString::Format(_("End = %X\n"),m_process->Program->EndAddress);
+                str_debug << wxString::Format(_("End = %X\n"),Process->Program->EndAddress);
             }
             str = openfile.GetNextLine();
         }
@@ -431,7 +431,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 				str_addr = arrstr[0];
 				str_addr.ToLong(&conv,16);
 				addr = (uint)conv;
-				m_process->prog_labels->AddLabel(addr, str_name, conv);
+				Process->prog_labels->AddLabel(addr, str_name, conv);
 				arrstr.RemoveAt(0);
 				if (!arrstr.IsEmpty())
 				{
@@ -441,7 +441,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 						if (str.ToLong(&conv))
 							labelusers.Add((uint)conv);
 					}
-					m_process->prog_labels->AddLabel(addr, str_name, labelusers);
+					Process->prog_labels->AddLabel(addr, str_name, labelusers);
 				}
 				labelusers.Clear();
 			}
@@ -473,7 +473,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 				str_addr = arrstr[0];
 				str_addr.ToLong(&conv,16);
 				addr = (uint)conv;
-				m_process->var_labels->AddLabel(addr, str_name, conv);
+				Process->var_labels->AddLabel(addr, str_name, conv);
 				arrstr.RemoveAt(0);
 				if (!arrstr.IsEmpty())
 				{
@@ -483,7 +483,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 						if (str.ToLong(&conv))
 							labelusers.Add((uint)conv);
 					}
-					m_process->var_labels->AddLabel(addr, str_name, labelusers);
+					Process->var_labels->AddLabel(addr, str_name, labelusers);
 				}
 			}
 			labelusers.Clear();
@@ -514,7 +514,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 				str_addr = arrstr[0];
 				str_addr.ToLong(&conv,16);
 				addr = (uint)conv;
-				m_process->io_labels->AddLabel(addr, str_name, conv);
+				Process->io_labels->AddLabel(addr, str_name, conv);
 				arrstr.RemoveAt(0);
 				if (!arrstr.IsEmpty())
 				{
@@ -524,7 +524,7 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 						if (str.ToLong(&conv))
 							labelusers.Add((uint)conv);
 					}
-					m_process->io_labels->AddLabel(addr, str_name, labelusers);
+					Process->io_labels->AddLabel(addr, str_name, labelusers);
 				}
 			}
 			labelusers.Clear();
@@ -579,7 +579,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
         while ((!openfile.Eof()) && (str != _("[\\DASM]")))
         {
             ParseString(str, arr_str);
-            de = new DAsmElement(m_process->Program);
+            de = new DAsmElement(Process->Program);
             j = 0;
 
             if (arr_str.GetCount() > 3)
@@ -610,7 +610,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
                 de->CopyOpCode(bc);
                 //memcpy(de->Code, bc, MAX_OPCODE_SIZE);
 
-                mi = m_process->Mnemonics->FindItem(bc);
+                mi = Process->Mnemonics->FindItem(bc);
                 if (mi == 0)
                     mnfailed = true;
 				else
@@ -644,7 +644,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
 
             if (!mnfailed)
             {
-                m_process->m_Dasm->AddDasm(de);
+                Process->Disassembled->AddDasm(de);
                 count++;
             }
 
@@ -761,16 +761,16 @@ void ProjectManager::linkLabels()
 
     i = 0;
     item = 0;
-    f = m_process->prog_labels->GetCount();
-    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+    f = Process->prog_labels->GetCount();
+    if ((f > 0) && (!Process->CodeViewLines->IsEmpty()))
         for(i = 0; i < f; i++)
         {
-            users = m_process->prog_labels->GetLabelUsers(i);
+            users = Process->prog_labels->GetLabelUsers(i);
             if (users > 0)
                 for(x = 0; x < users->GetCount(); x++)
                 {
                     item = users->Item(x);
-                    de = m_process->m_Dasm->GetData(item);
+                    de = Process->Disassembled->GetData(item);
                     de->SetArgLabel();
                 }
         }
@@ -778,16 +778,16 @@ void ProjectManager::linkLabels()
     // *** var labels
     i = 0;
     item = 0;
-    f = m_process->var_labels->GetCount();
-    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+    f = Process->var_labels->GetCount();
+    if ((f > 0) && (!Process->CodeViewLines->IsEmpty()))
         for(i = 0; i < f; i++)
         {
-            users = m_process->var_labels->GetLabelUsers(i);
+            users = Process->var_labels->GetLabelUsers(i);
             if (users > 0)
                 for(x = 0; x < users->GetCount(); x++)
                 {
                     item = users->Item(x);
-                    de = m_process->m_Dasm->GetData(item);
+                    de = Process->Disassembled->GetData(item);
                     de->SetArgLabel();
                 }
         }
@@ -795,16 +795,16 @@ void ProjectManager::linkLabels()
     // *** io labels
     i = 0;
     item = 0;
-    f = m_process->io_labels->GetCount();
-    if ((f > 0) && (!m_process->m_CodeViewLine->IsEmpty()))
+    f = Process->io_labels->GetCount();
+    if ((f > 0) && (!Process->CodeViewLines->IsEmpty()))
         for(i = 0; i < f; i++)
         {
-            users = m_process->io_labels->GetLabelUsers(i);
+            users = Process->io_labels->GetLabelUsers(i);
             if (users > 0)
                 for(x = 0; x < users->GetCount(); x++)
                 {
                     item = users->Item(x);
-                    de = m_process->m_Dasm->GetData(item);
+                    de = Process->Disassembled->GetData(item);
                     de->SetArgLabel();
                 }
         }

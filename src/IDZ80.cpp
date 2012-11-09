@@ -64,6 +64,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	Create(parent, wxID_ANY, "Interactive Disassembler Z80", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, "id");
 
     Log = new LogWindow(this, "IDZ80 - Log Window");
+    SetTextLog(Log);
+    ModuleName = "Main";
 
 	SetClientSize(wxSize(600,465));
 	Move(wxDefaultPosition);
@@ -77,15 +79,15 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	AuiManager1->Update();
 
 	main_menu_bar = new wxMenuBar();
-	main_menu = new wxMenu(); // Menu1
-	sub_menu = new wxMenu(); //MenuItem1
-	menu_item = new wxMenuItem(sub_menu, idMenuFileOpenProject, "Project\tAlt+r", wxEmptyString, wxITEM_NORMAL); // MenuItem14
+	main_menu = new wxMenu();
+	sub_menu = new wxMenu();
+	menu_item = new wxMenuItem(sub_menu, idMenuFileOpenProject, "Project\tAlt+r", wxEmptyString, wxITEM_NORMAL);
 	sub_menu->Append(menu_item);
 	menu_item = new wxMenuItem(sub_menu, idMenuFileOpenArchive, "Archive\tAlt+l", wxEmptyString, wxITEM_NORMAL);
 	sub_menu->Append(menu_item);
 	main_menu->Append(idMenuFileOpen, "&Open", sub_menu, wxEmptyString);
 
-	menu_item = new wxMenuItem(main_menu, idMenuFileSave, "&Save\tAlt+s", wxEmptyString, wxITEM_NORMAL); // MenuItem13
+	menu_item = new wxMenuItem(main_menu, idMenuFileSave, "&Save\tAlt+s", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
 	menu_item = new wxMenuItem(main_menu, idMenuFileSaveAs, "&Save As...\tAlt+s", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
@@ -99,7 +101,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	main_menu->Append(menu_item);
 	main_menu_bar->Append(main_menu, "&File");
 
-	main_menu = new wxMenu(); // Menu3
+	main_menu = new wxMenu();
 	sub_menu = new wxMenu();
 	menu_item = new wxMenuItem(main_menu, idMenuViewDasmWindow, "Disassembly Window", wxEmptyString, wxITEM_CHECK);
 	main_menu->Append(menu_item);
@@ -114,7 +116,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	main_menu->Append(idMenuViewLabels, "&Labels", sub_menu, wxEmptyString);
 	main_menu_bar->Append(main_menu, "&View");
 
-	main_menu = new wxMenu(); // Menu2
+	main_menu = new wxMenu();
 	menu_item = new wxMenuItem(main_menu, idMenuToolsDasmAll, "Disassemble all\tCTRL+SHIFT+d", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
 	menu_item = new wxMenuItem(main_menu, idMenuToolsAutoLabel, "Auto Label", wxEmptyString, wxITEM_NORMAL);
@@ -149,8 +151,6 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	SetStatusBar(StatusBar1);
 
 	Bind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
-
-    Maximize();
 }
 
 
@@ -175,14 +175,13 @@ IDZ80::~IDZ80()
 
 
 /*
- *	Process things after main window shows up
+ *	Initialize after main window shows up
  */
 void IDZ80::OnFirstIdle(wxIdleEvent &event)
 {
 	bool result;
 	// this is needed to stop catching this event all the time
 	result = Unbind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
-
 	#ifdef IDZ80DEBUG
 	if (!result)
 		PanelLog->AppendText("*** First Idle Event failed to unbind !\n\n");
@@ -193,7 +192,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     SetupIcon();
     SetupMenuItemStatus();
 
-    process = new ProcessData(this);
+    process = new ProcessData(this, Log);
     codeview = new CodeView(this, process);
     m_project = new ProjectManager(process, codeview);
 
@@ -208,15 +207,13 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 		OpenProgramFile(m_commandline[1]);
 	}
 
-    process->SetLog(PanelLog);
-    m_project->SetLog(PanelLog);
-    codeview->DebugLog(PanelLog);
-
     codeview->Enable(false);
 
 	Log->Show();
 
 	SetupMenuEvents();
+
+	Maximize();
 }
 
 
@@ -277,7 +274,7 @@ bool IDZ80::LoadMnemonicsDB()
     {
         PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
         PanelLog->AppendText("Mnemonics OK !\n");
-        Log->LogIt("Mnemonics OK !\n");
+        LogIt("Mnemonics OK !\n");
     }
 
     else
@@ -290,20 +287,6 @@ bool IDZ80::LoadMnemonicsDB()
 }
 
 
-
-void IDZ80::SetupStoredConfiguration()
-{
-    config = new wxConfig("IDZ80");
-
-    wxString cfg;
-    if (config->Read("/AUI_Perspective", &cfg))
-        AuiManager1->LoadPerspective(cfg, true);
-    else
-        AuiManager1->Update();
-
-    if (!config->Read("/Lastdir", &m_lastDir))
-            m_lastDir = m_currentDir;
-}
 
 
 void IDZ80::SetupIcon()
@@ -328,7 +311,32 @@ void IDZ80::SetupAUIPanes()
         wxAuiPaneInfo().Name("IOLabels").Caption("IO Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
         AuiManager1->AddPane(process->constant_labels,
         wxAuiPaneInfo().Name("ConstLabels").Caption("Constant Labels").CaptionVisible().Right().TopDockable(false).BottomDockable(false).MinSize(170,170).DockFixed().FloatingSize(170,170).Fixed());
+
+        SetupAUIStoredConfiguration();
     }
+}
+
+
+
+void IDZ80::SetupAUIStoredConfiguration()
+{
+    config = new wxConfig("IDZ80");
+
+    wxString cfg;
+
+    if (config->Read("/AUI_Perspective", &cfg))
+        AuiManager1->LoadPerspective(cfg, true);
+    else
+        AuiManager1->Update();
+}
+
+
+
+void IDZ80::SetupStoredConfiguration()
+{
+    config = new wxConfig("IDZ80");
+    if (!config->Read("/Lastdir", &m_lastDir))
+            m_lastDir = m_currentDir;
 }
 
 
@@ -410,7 +418,7 @@ bool IDZ80::OpenProgramFile(const wxString filename)
             process->Program->ExecAddress = config.GetExecAddress();
             process->Program->EndAddress = config.GetEndAddress();
 
-            process->m_Dasm->AddOrgAddress(0, process->Program->StartAddress);
+            process->Disassembled->AddOrgAddress(0, process->Program->StartAddress);
 
             m_project->New();
             if (config.cb_autodisassemble->IsChecked())
@@ -602,7 +610,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
     #ifdef IDZ80DEBUG
     wxString stemp;
-    stemp.Printf("Used memory (dasmed)= %d bytes\n", process->m_Dasm->GetUsedMem());
+    stemp.Printf("Used memory (dasmed)= %d bytes\n", process->Disassembled->GetUsedMem());
     PanelLog->AppendText(stemp);
     #endif
 

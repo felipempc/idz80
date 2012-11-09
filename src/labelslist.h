@@ -21,6 +21,7 @@
 #include <wx/dynarray.h>
 
 #include "IDZ80Base.h"
+#include "logbase.h"
 
 enum
 {
@@ -41,14 +42,12 @@ typedef struct st_label LabelItem;
 
 
 
-class LabelListCtrl : public wxListCtrl
+class LabelListCtrl : public wxListCtrl, public LogBase
 {
     public:
-        LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
-                            const wxSize& size = wxDefaultSize);
+        LabelListCtrl(wxWindow* parent, LogWindow *logparent);
         ~LabelListCtrl();
 
-        void SetLog(wxTextCtrl *_lg);
         int AddLabel(uint addr, const wxString name, int dasmitem = NO_DASM_ITEM);
         int AddLabel(uint addr, const wxString name, wxArrayInt &labelusers);
         bool DelLabel(uint addr);
@@ -71,7 +70,6 @@ class LabelListCtrl : public wxListCtrl
     protected:
     private:
         static const int NO_DASM_ITEM = -1;
-        wxTextCtrl *m_log;
         int m_item_selected;
 
 

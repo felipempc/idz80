@@ -34,11 +34,12 @@ const int MnemonicDataBase::MIN_ARRAY_ITEMS;
 
 
 
-MnemonicDataBase::MnemonicDataBase()
+MnemonicDataBase::MnemonicDataBase(LogWindow *logparent)
 {
     m_totalAllocated = 0;
     m_MnemonicList = new MnemonicArray();
-    m_modulename = "MNDB:";
+    SetTextLog(logparent);
+    ModuleName = "MNDB";
 }
 
 MnemonicDataBase::~MnemonicDataBase()

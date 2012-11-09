@@ -11,9 +11,9 @@
 
 #include "codegenerator.h"
 
-codeGenerator::codeGenerator(ProcessData *pd)
+codeGenerator::codeGenerator(ProcessData *parent)
 {
-    process = pd;
+    Process = parent;
     end_line = _T("\r\n");
     end_line.Shrink();
     m_cflags = cfM80;
@@ -44,7 +44,7 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
     else
         str_number_format = "0x%.2X";
 
-    de = process->m_Dasm->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->Dasmitem);
     str.Printf("DB ");
     for (i=0; i < de->GetLength(); i++)
     {
@@ -67,9 +67,9 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
     wxString str_ret,str;
     uint i;
 
-    for (i = 0; i < process->io_labels->GetCount(); i++)
+    for (i = 0; i < Process->io_labels->GetCount(); i++)
     {
-        str = process->io_labels->GetAddress(i);
+        str = Process->io_labels->GetAddress(i);
         if (!isNumber(str[0]))
             str.Prepend("0");
 
@@ -78,7 +78,7 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
         else
             str.Prepend("0x");
 
-        str_ret << process->io_labels->GetLabel(i) << "  EQU  " << str << end_line;
+        str_ret << Process->io_labels->GetLabel(i) << "  EQU  " << str << end_line;
     }
     return str_ret;
 
@@ -97,7 +97,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     DAsmElement *de;
 
     usedlabel = false;
-    de = process->m_Dasm->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->Dasmitem);
     nargs = de->GetNumArgs();
 
     str_ret = de->GetMnemonicStr(0);
@@ -106,7 +106,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     str_1.Clear();
     str_2.Clear();
 
-    argument = de->getArgument(0, process->m_Dasm->GetBaseAddress(cvi->Dasmitem));
+    argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)
         str_number_format = "%XH";
@@ -119,13 +119,13 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
         {
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
-                            usedlabel = process->prog_labels->GetLabel(argument, str_1);
+                            usedlabel = Process->prog_labels->GetLabel(argument, str_1);
                             break;
             case ARG_IO_ADDR:
-                            usedlabel = process->io_labels->GetLabel(argument, str_1);
+                            usedlabel = Process->io_labels->GetLabel(argument, str_1);
                             break;
             case ARG_VARIABLE:
-                            usedlabel = process->var_labels->GetLabel(argument, str_1);
+                            usedlabel = Process->var_labels->GetLabel(argument, str_1);
                             break;
             case ARG_NONE:
             case ARG_LITERAL:
@@ -203,7 +203,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
     i = 0;
     first_instruction = false;
-    count = process->m_CodeViewLine->GetCount();
+    count = Process->CodeViewLines->GetCount();
 
     file.MakeLower();
 
@@ -212,7 +212,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
     while (i < count)
     {
-        cvi = process->m_CodeViewLine->getData(i);
+        cvi = Process->CodeViewLines->getData(i);
 
         /* -------------------------------------------------
          *  Render Origin
@@ -241,7 +241,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
              * -------------------------------------------------*/
             if (cvi->Dasmitem >= 0)    // is It data/code ?
             {
-                de = process->m_Dasm->GetData(cvi->Dasmitem);
+                de = Process->Disassembled->GetData(cvi->Dasmitem);
 
                 first_instruction = true;
 
@@ -265,13 +265,13 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             if ((cvi->LabelProgAddr != -1) || (cvi->LabelVarAddr != -1))   // Is it a label ?
             {
                 first_instruction = true;
-                if (process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
+                if (Process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
                     textCode << str << ":";
                 else
-                    if (process->var_labels->GetLabel(cvi->LabelVarAddr, str))
+                    if (Process->var_labels->GetLabel(cvi->LabelVarAddr, str))
                         textCode << str << ":";
                     else
-                        process->m_CodeViewLine->DelItem(cvi);
+                        Process->CodeViewLines->DelItem(cvi);
             }
         }
 

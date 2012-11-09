@@ -20,10 +20,9 @@ const int LabelListCtrl::NO_DASM_ITEM;
 /*
  *      Label List Control Contructor/Destructor
  */
-LabelListCtrl::LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos,const wxSize& size)
-                    : wxListCtrl(parent,id,pos,size,wxLC_REPORT | wxLC_SINGLE_SEL)
+LabelListCtrl::LabelListCtrl(wxWindow* parent, LogWindow *logparent)
+                    : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL)
 {
-    m_log = 0;
     m_item_selected = -1;
 
     InsertColumn(0, "Address");
@@ -38,6 +37,8 @@ LabelListCtrl::LabelListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos
     Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpDel, this, idMENU_POPUP_DEL);
     Bind(wxEVT_COMMAND_LIST_COL_CLICK, &LabelListCtrl::OnColumnClick, this);
 
+    SetTextLog(logparent);
+    ModuleName = "Label";
 }
 
 LabelListCtrl::~LabelListCtrl()
@@ -188,7 +189,7 @@ bool LabelListCtrl::DelLabel(uint addr)
     i = FindItem(-1, str);
 
     #ifdef IDZ80DEBUG
-    m_log->AppendText(wxString::Format("Found item = %d\n", i));
+    LogIt(wxString::Format("Found item = %d\n", i));
     #endif
 
     if (i >= 0)
@@ -207,12 +208,6 @@ bool LabelListCtrl::DelLabel(uint addr)
 }
 
 
-
-void LabelListCtrl::SetLog(wxTextCtrl *_lg)
-{
-    m_log = _lg;
-
-}
 
 
 int LabelListCtrl::GetLabel(uint addr, wxString& str)

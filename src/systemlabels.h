@@ -11,14 +11,16 @@
 
 
 
- #ifndef SYSTEMLABELS_H
- #define SYSTEMLABELS_H
+#ifndef SYSTEMLABELS_H
+#define SYSTEMLABELS_H
 
- #include <wx/dynarray.h>
- #include <wx/string.h>
- #include <wx/textfile.h>
- #include "idz80base.h"
- #include <wx/textctrl.h>
+#include <wx/dynarray.h>
+#include <wx/string.h>
+#include <wx/textfile.h>
+#include <wx/textctrl.h>
+
+#include "idz80base.h"
+#include "logbase.h"
 
 struct st_systemlabel
 {
@@ -28,10 +30,10 @@ struct st_systemlabel
 
 typedef struct st_systemlabel SystemLabelItem;
 
-class SystemLabelList
+class SystemLabelList: public LogBase
 {
 	public:
-		SystemLabelList(const wxString& section);
+		SystemLabelList(const wxString& section, LogWindow *logparent);
 		~SystemLabelList();
 
 		bool Open(const wxString& file);

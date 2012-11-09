@@ -20,7 +20,7 @@
 #include "MnemonicItem.h"
 #include "rawdata.h"
 #include "labelslist.h"
-#include "IDZ80debugbase.h"
+#include "logbase.h"
 
 
 typedef char OpCodeArguments [2];
@@ -53,7 +53,7 @@ struct ArgStyle
 };
 
 
-class DAsmElement: public IDZ80LogBase
+class DAsmElement: public LogBase
 {
     public:
 
