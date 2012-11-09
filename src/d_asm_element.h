@@ -30,7 +30,7 @@ enum ElementType
     et_None, et_Data, et_Instruction
 };
 
-enum aStyleType //: byte
+enum StyleType
 {
 	ast_bytehex,
 	ast_bytebin,
@@ -43,8 +43,8 @@ enum aStyleType //: byte
 
 struct ArgStyle
 {
-	aStyleType arg1;
-	aStyleType arg2;
+	StyleType arg1;
+	StyleType arg2;
 	unsigned char reserved;
 	unsigned char arg1styled:1;
 	unsigned char arg2styled:1;
@@ -64,29 +64,29 @@ class DAsmElement: public LogBase
         uint getArgument(uint arg, uint _baseaddress);
         byte GetData(uint offset);
         ArgStyle GetStyle();
-        aStyleType GetStyleArgument(uint arg_idx) ;
+        StyleType GetStyleArgument(uint arg_idx) ;
         uint GetOffset();
         uint GetLength();
-        enum ElementType GetType();
-        enum ArgumentTypes GetArgumentType(uint arg_num);
-        enum BranchType GetBranchType();
+        ElementType GetType();
+        ArgumentTypes GetArgumentType(uint arg_num);
+        BranchType GetBranchType();
         int GetNumArgs();
         int GetArgSize();
         wxString &GetMnemonicStr(uint index);
         uint GetMnemonicStrNum();
         byte GetCodeItem(uint index);
         byte GetArgItem(uint index);
-        enum InstructionTypes GetInstructionType();
-        enum InstructionDetails GetInstructionDetail();
+        InstructionTypes GetInstructionType();
+        InstructionDetails GetInstructionDetail();
         bool HasArgumentLabel();
 
         void SetArgLabel(bool hal = true);
         void SetOffset(uint _offset);
         void SetLength(uint _length);
         void SetLength();
-        void SetType(enum ElementType _etype);
+        void SetType(ElementType _etype);
         void SetStyle(ArgStyle &_style);
-        void SetStyleArgument(uint arg_idx, aStyleType ast);
+        void SetStyleArgument(uint arg_idx, StyleType ast);
         void SetMnemonic(MnemonicItem *mnemonic);
         bool CopyArguments();
         void CopyArguments(OpCodeArguments &arg, uint size);
@@ -108,7 +108,7 @@ class DAsmElement: public LogBase
         OpCodeArguments     Args;
         unsigned int        Offset,         // File address (0..EOF)
                             Length;         // How many BYTEs
-        enum ElementType    ElType;
+        ElementType         ElType;
         ArgStyle			Style;
 
 		void CopyOpcode();

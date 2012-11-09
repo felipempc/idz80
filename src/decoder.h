@@ -40,13 +40,8 @@ class Decoder: public LogBase
 
     private:
         static const int OPCODE_NOT_FOUND = -1;
-/*
-        RawData             *m_program;
-        DAsmData            *m_dasmeditems;
-        MnemonicDataBase    *m_mnemonics;
-*/
-        ProcessBase         *Process;
 
+        ProcessBase         *Process;
         SubRoutineCtrl      *SubRoutine;
 
         SortedIntArray      *m_unconditionaljumplist,

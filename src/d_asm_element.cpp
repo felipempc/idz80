@@ -131,7 +131,9 @@ wxString DAsmElement::getAsciiStr()
 }
 
 
-enum InstructionTypes DAsmElement::GetInstructionType()
+
+
+InstructionTypes DAsmElement::GetInstructionType()
 {
     if (MnemonicObject != 0)
         return MnemonicObject->GetInstructionType();
@@ -139,13 +141,16 @@ enum InstructionTypes DAsmElement::GetInstructionType()
         return IT_ERROR;
 }
 
-enum InstructionDetails DAsmElement::GetInstructionDetail()
+
+
+InstructionDetails DAsmElement::GetInstructionDetail()
 {
     if (MnemonicObject != 0)
         return MnemonicObject->GetInstructionDetail();
     else
         return II_ERROR;
 }
+
 
 
 
@@ -224,7 +229,7 @@ void DAsmElement::SetLength()
 }
 
 
-void DAsmElement::SetType(enum ElementType _etype)
+void DAsmElement::SetType(ElementType _etype)
 {
 	ElType = _etype;
 }
@@ -239,7 +244,7 @@ void DAsmElement::SetStyle(ArgStyle &_style)
     Style.arg2styled = _style.arg2styled;
 }
 
-void DAsmElement::SetStyleArgument(uint arg_idx, aStyleType ast)
+void DAsmElement::SetStyleArgument(uint arg_idx, StyleType ast)
 {
 	if (arg_idx == 0)
 		Style.arg1 = ast;
@@ -253,9 +258,9 @@ ArgStyle DAsmElement::GetStyle()
 }
 
 
-aStyleType DAsmElement::GetStyleArgument(uint arg_idx)
+StyleType DAsmElement::GetStyleArgument(uint arg_idx)
 {
-	aStyleType ret = ast_bytehex;
+	StyleType ret = ast_bytehex;
 	if (arg_idx == 0)
 		ret = Style.arg1;
 	if (arg_idx == 1)
@@ -287,13 +292,13 @@ uint DAsmElement::GetLength()
 	return Length;
 }
 
-enum ElementType DAsmElement::GetType()
+ElementType DAsmElement::GetType()
 {
 	return ElType;
 }
 
 
-enum ArgumentTypes DAsmElement::GetArgumentType(uint arg_num)
+ArgumentTypes DAsmElement::GetArgumentType(uint arg_num)
 {
 	if (MnemonicObject > 0)
 		return MnemonicObject->getArgType(arg_num);
@@ -313,7 +318,7 @@ int DAsmElement::GetArgSize()
 	return MnemonicObject->getArgSize();
 }
 
-enum BranchType DAsmElement::GetBranchType()
+BranchType DAsmElement::GetBranchType()
 {
 	if (MnemonicObject > 0)
 		return MnemonicObject->getBranchType();

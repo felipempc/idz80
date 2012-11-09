@@ -24,7 +24,7 @@
 // Plots Data item, returns the last point of the plotted string
 uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
 {
-    uint i, x, argwidth;
+    uint i, x, argwidth, lenght;
     DAsmElement *de;
     wxString str;
 
@@ -34,13 +34,32 @@ uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
     dc.DrawText(str, x, start_y);
     x += dc.GetTextExtent(str).GetWidth();
 
-    str.Printf("DB ");
-    for (i = 0; i < de->GetLength(); i++)
+    if (de->GetStyleArgument(0) == ast_wordhex)
     {
-        str << wxString::Format("0x%.2X", de->GetData(de->GetOffset() + i));
-        if (i < (de->GetLength() - 1))
-            str << ",";
+        str.Printf("DW ");
+        lenght = de->GetLength() / 2;
+        for (i = 0; i < lenght; i++)
+        {
+            argwidth = de->GetData(de->GetOffset() + i + 1) * 0xFF + de->GetData(de->GetOffset() + i);
+            argwidth = argwidth & 0xFFFF;
+            str << wxString::Format("0x%.4X", argwidth);
+            if (i < (lenght - 1))
+                str << ",";
+        }
+
     }
+    else
+    {
+        str.Printf("DB ");
+
+        for (i = 0; i < de->GetLength(); i++)
+        {
+            str << wxString::Format("0x%.2X", de->GetData(de->GetOffset() + i));
+            if (i < (de->GetLength() - 1))
+                str << ",";
+        }
+    }
+
     dc.DrawText(str, x, start_y);
     argwidth = dc.GetTextExtent(str).GetWidth();
     x += argwidth;

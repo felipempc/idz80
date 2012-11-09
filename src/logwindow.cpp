@@ -14,7 +14,7 @@
 
 
 LogWindow::LogWindow(wxWindow *parent, const wxString &title)
-        :wxFrame(parent, wxID_ANY, title)
+        :wxFrame(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION | wxCLIP_CHILDREN)
 {
     TextLog = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH);
     wxFont PanelLogFont(8, wxSWISS, wxFONTSTYLE_NORMAL, wxNORMAL, false, "Courier New", wxFONTENCODING_DEFAULT);
@@ -37,7 +37,12 @@ void LogWindow::Print(const wxString &logstring)
     {
         str = "[";
         now_time.SetToCurrent();
-        str = str << now_time.FormatISOTime() << "] "<< logstring << "\n";
+        str = str << now_time.FormatISOTime() << wxString::Format(".%d] ", now_time.GetMillisecond());
+        TextLog->SetDefaultStyle(wxTextAttr(*wxLIGHT_GREY));
+        TextLog->AppendText(str);
+
+        str = logstring + "\n";
+        TextLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
         TextLog->AppendText(str);
     }
 }

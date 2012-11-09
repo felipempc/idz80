@@ -31,9 +31,6 @@
 #include <wx/dynarray.h>
 
 
-//TODO:Remove it
-#define OPCODE_NOT_MATCHED  0xFFFFFFFF
-
 
 // Range of addresses
 struct stRangeData

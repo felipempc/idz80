@@ -15,6 +15,7 @@
 #include "FileTypeDialog.h"
 #include "ShowFileInfo.h"
 #include "systemlabels.h"
+#include "wx/dir.h"
 
 #include <wx/filefn.h>
 #include <wx/filename.h>
@@ -60,6 +61,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	wxMenu      *sub_menu;
 	wxMenuItem  *menu_item;
 	wxMenuBar   *main_menu_bar;
+
+	MaximizeMainWindow = true;
 
 	Create(parent, wxID_ANY, "Interactive Disassembler Z80", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, "id");
 
@@ -158,16 +161,47 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 
 IDZ80::~IDZ80()
 {
-    wxString cfg;
-    cfg = AuiManager1->SavePerspective();
-    config->Write("/AUI_Perspective", cfg);
-    config->Write("/Lastdir", m_lastDir);
+    StoreConfiguration();
     AuiManager1->UnInit();
     delete m_project;
     delete config;
     delete icons;
     delete codeview;
     delete process;
+}
+
+
+
+
+
+void IDZ80::StoreConfiguration()
+{
+    config = new wxConfig("IDZ80");
+    wxString cfg;
+    int    x, y, width, height;
+
+    cfg = AuiManager1->SavePerspective();
+    config->SetPath("/AUI");
+    config->Write("Perspective", cfg);
+
+    config->SetPath("/Directory");
+    config->Write("Last", m_lastDir);
+
+    GetSize(&width, &height);
+    GetPosition(&x, &y);
+    config->SetPath("/MainWindow");
+    config->Write("X", x);
+    config->Write("Y", y);
+    config->Write("WIDTH", width);
+    config->Write("HEIGHT", height);
+
+    Log->GetSize(&width, &height);
+    Log->GetPosition(&x, &y);
+    config->SetPath("/LogWindow");
+    config->Write("X", x);
+    config->Write("Y", y);
+    config->Write("WIDTH", width);
+    config->Write("HEIGHT", height);
 }
 
 
@@ -197,7 +231,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     m_project = new ProjectManager(process, codeview);
 
     SetupAUIPanes();
-    SetupStoredConfiguration();
+    ReadStoredConfiguration();
     LoadMnemonicsDB();
 
     StatusBar1->SetStatusText(m_currentDir);
@@ -213,7 +247,8 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
 	SetupMenuEvents();
 
-	Maximize();
+    if (MaximizeMainWindow)
+        Maximize();
 }
 
 
@@ -324,7 +359,8 @@ void IDZ80::SetupAUIStoredConfiguration()
 
     wxString cfg;
 
-    if (config->Read("/AUI_Perspective", &cfg))
+    config->SetPath("/AUI");
+    if (config->Read("Perspective", &cfg))
         AuiManager1->LoadPerspective(cfg, true);
     else
         AuiManager1->Update();
@@ -332,11 +368,42 @@ void IDZ80::SetupAUIStoredConfiguration()
 
 
 
-void IDZ80::SetupStoredConfiguration()
+void IDZ80::ReadStoredConfiguration()
 {
+    long x, y, width, height;
+
     config = new wxConfig("IDZ80");
-    if (!config->Read("/Lastdir", &m_lastDir))
+
+    config->SetPath("/Directory");
+    if (config->Read("Last", &m_lastDir))
+    {
+        wxDir dir;
+        if (!dir.Exists(m_lastDir))
             m_lastDir = m_currentDir;
+    }
+    else
+        m_lastDir = m_currentDir;
+
+    config->SetPath("/MainWindow");
+    if (config->Read("X", &x) &&
+        config->Read("Y", &y) &&
+        config->Read("WIDTH", &width) &&
+        config->Read("HEIGHT", &height))
+    {
+        SetPosition(wxPoint(x, y));
+        SetSize(width, height);
+        MaximizeMainWindow = false;
+    }
+
+    config->SetPath("/LogWindow");
+    if (config->Read("X", &x) &&
+        config->Read("Y", &y) &&
+        config->Read("WIDTH", &width) &&
+        config->Read("HEIGHT", &height))
+    {
+        Log->SetPosition(wxPoint(x, y));
+        Log->SetSize(width, height);
+    }
 }
 
 
@@ -632,6 +699,9 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
 
 
+
+
+
 void IDZ80::OnMenuViewDisassemblyWindow(wxCommandEvent& event)
 {
     wxMenuBar *mb;
@@ -641,31 +711,38 @@ void IDZ80::OnMenuViewDisassemblyWindow(wxCommandEvent& event)
     if (test)
     {
         mb->Check(idMenuViewDasmWindow,true);
-        AuiManager1->GetPane(_("MainWindow")).Show();
+        AuiManager1->GetPane("MainWindow").Show();
     }
     else
     {
         mb->Check(idMenuViewDasmWindow,false);
-        AuiManager1->GetPane(_("MainWindow")).Hide();
+        AuiManager1->GetPane("MainWindow").Hide();
     }
     AuiManager1->Update();
 }
+
+
+
+
 
 void IDZ80::OnAuiPaneClose(wxAuiManagerEvent& event)
 {
     wxMenuBar *mb;
     mb = GetMenuBar();
-    if (event.pane->name == _("MainWindow"))
-        mb->Check(idMenuViewDasmWindow,false);
-    if (event.pane->name == _("VarLabels"))
-        mb->Check(idMenuViewVarLabels,false);
-    if (event.pane->name == _("ProgLabels"))
-        mb->Check(idMenuViewProgLabels,false);
-    if (event.pane->name == _("IOLabels"))
-        mb->Check(idMenuViewIOLabels,false);
-    if (event.pane->name == _("ConstLabels"))
-        mb->Check(idMenuViewConstLabels,false);
+    if (event.pane->name == "MainWindow")
+        mb->Check(idMenuViewDasmWindow, false);
+    if (event.pane->name == "VarLabels")
+        mb->Check(idMenuViewVarLabels, false);
+    if (event.pane->name == "ProgLabels")
+        mb->Check(idMenuViewProgLabels, false);
+    if (event.pane->name == "IOLabels")
+        mb->Check(idMenuViewIOLabels, false);
+    if (event.pane->name == "ConstLabels")
+        mb->Check(idMenuViewConstLabels, false);
 }
+
+
+
 
 void IDZ80::OnMenuViewProgramLabels(wxCommandEvent& event)
 {
@@ -676,15 +753,18 @@ void IDZ80::OnMenuViewProgramLabels(wxCommandEvent& event)
     if (test)
     {
         mb->Check(idMenuViewProgLabels,true);
-        AuiManager1->GetPane(_("ProgLabels")).Show();
+        AuiManager1->GetPane("ProgLabels").Show();
     }
     else
     {
-        mb->Check(idMenuViewProgLabels,false);
-        AuiManager1->GetPane(_("ProgLabels")).Hide();
+        mb->Check(idMenuViewProgLabels, false);
+        AuiManager1->GetPane("ProgLabels").Hide();
     }
     AuiManager1->Update();
 }
+
+
+
 
 void IDZ80::OnMenuViewVarLabels(wxCommandEvent& event)
 {
@@ -695,34 +775,40 @@ void IDZ80::OnMenuViewVarLabels(wxCommandEvent& event)
     if (test)
     {
         mb->Check(idMenuViewVarLabels,true);
-        AuiManager1->GetPane(_("VarLabels")).Show();
+        AuiManager1->GetPane("VarLabels").Show();
     }
     else
     {
         mb->Check(idMenuViewVarLabels,false);
-        AuiManager1->GetPane(_("VarLabels")).Hide();
+        AuiManager1->GetPane("VarLabels").Hide();
     }
     AuiManager1->Update();
 }
 
+
+
+
 void IDZ80::OnMenuViewIOLabels(wxCommandEvent& event)
 {
     wxMenuBar *mb;
-    bool test=false;
+    bool test = false;
     mb = GetMenuBar();
     test = mb->IsChecked(idMenuViewIOLabels);
     if (test)
     {
         mb->Check(idMenuViewIOLabels,true);
-        AuiManager1->GetPane(_("IOLabels")).Show();
+        AuiManager1->GetPane("IOLabels").Show();
     }
     else
     {
         mb->Check(idMenuViewIOLabels,false);
-        AuiManager1->GetPane(_("IOLabels")).Hide();
+        AuiManager1->GetPane("IOLabels").Hide();
     }
     AuiManager1->Update();
 }
+
+
+
 
 void IDZ80::OnMenuViewConstLabels(wxCommandEvent& event)
 {
@@ -745,6 +831,7 @@ void IDZ80::OnMenuViewConstLabels(wxCommandEvent& event)
 
 
 
+
 void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
 {
     process->AutoLabel();
@@ -752,6 +839,8 @@ void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
     codeview->ClearSelection();
     codeview->Refresh();
 }
+
+
 
 
 bool IDZ80::SaveAs()
@@ -768,11 +857,14 @@ bool IDZ80::SaveAs()
     if (dialog.ShowModal() == wxID_OK)
     {
         fname=dialog.GetPath();
-        if (m_project->Save(fname,true))
+        if (m_project->Save(fname, true))
             ret = true;
     }
     return ret;
 }
+
+
+
 
 
 void IDZ80::Clear_all()
@@ -781,6 +873,8 @@ void IDZ80::Clear_all()
     codeview->Enable(false);
     process->ClearUserLabels();
 }
+
+
 
 
 void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
@@ -801,6 +895,8 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
 }
 
 
+
+
 void IDZ80::OnMenuFileSaveAsProject(wxCommandEvent& event)
 {
     if (SaveAs())
@@ -811,12 +907,12 @@ void IDZ80::OnMenuFileSaveAsProject(wxCommandEvent& event)
 
 
 
+
 void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 {
     ShowFileInfo dialog(this);
     dialog.SendInfo(process);
     dialog.ShowModal();
-
 }
 
 
@@ -834,7 +930,7 @@ void IDZ80::OnMenuFileClose(wxCommandEvent& event)
     mb->Enable(idMenuFileClose, false);
     mb->Enable(idMenuToolsGenCode, false);
 
-    UpdateTitle(_(""));
+    UpdateTitle("");
 
     Clear_all();
 }
@@ -848,11 +944,11 @@ void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
     wxString fname, caption, wildcard,
             defaultFilename;
 
-    wxDialog *dasmwin = new wxDialog(0, wxID_ANY, "Disassembled Code", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU, _T("TextCodeBox"));
+    wxDialog *dasmwin = new wxDialog(0, wxID_ANY, "Disassembled Code", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER | wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU, "TextCodeBox");
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
     wxTextCtrl *textCode = new wxTextCtrl(dasmwin, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     codeGenerator *bakeCode;
-    topsizer->Add(textCode, 1, wxEXPAND | wxALL,10);
+    topsizer->Add(textCode, 1, wxEXPAND | wxALL, 10);
 
     dasmwin->SetSizer(topsizer);
 
@@ -887,7 +983,7 @@ void IDZ80::UpdateTitle(const wxString str)
 	info = info.BeforeFirst('-');
 	info.Trim();
 	if (!str.IsEmpty())
-		info << _(" - ") << str;
+		info << " - " << str;
 	SetTitle(info);
 }
 

@@ -79,7 +79,7 @@ class IDZ80: public wxFrame, LogBase
                         m_lastDir;
         ProjectManager  *m_project;
         wxArrayString	m_commandline;
-        wxSize LastSize;
+        bool            MaximizeMainWindow;
 
         bool LoadMnemonicsDB();
         bool SaveAs();
@@ -89,7 +89,8 @@ class IDZ80: public wxFrame, LogBase
         void UpdateTitle(const wxString str);
         void SetupMenuItemStatus();
         void SetupAUIStoredConfiguration();
-        void SetupStoredConfiguration();
+        void ReadStoredConfiguration();
+        void StoreConfiguration();
         void SetupIcon();
         void SetupAUIPanes();
         void SetupMenuEvents();

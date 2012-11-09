@@ -85,7 +85,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
     p = -1;
     buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
-    if (itemfound < 0)    // item not found
+    if (itemfound < 0)
     {
 		lbl = new LabelItem;
 		lbl->Address = addr;
@@ -131,7 +131,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labeluse
     p = -1;
     buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
-    if (itemfound < 0)    // item not found
+    if (itemfound < 0)
     {
 		lbl = new LabelItem;
 		lbl->Address = addr;
@@ -189,7 +189,7 @@ bool LabelListCtrl::DelLabel(uint addr)
     i = FindItem(-1, str);
 
     #ifdef IDZ80DEBUG
-    LogIt(wxString::Format("Found item = %d\n", i));
+    LogIt(wxString::Format("Found item = %d", i));
     #endif
 
     if (i >= 0)

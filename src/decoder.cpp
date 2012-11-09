@@ -22,11 +22,6 @@ const int Decoder::OPCODE_NOT_FOUND;
 
 Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
 {
-/*
-    m_program = program;
-    m_dasmeditems = dasmdata;
-    m_mnemonics = mnemonics;
-*/
     Process = parent;
     SetTextLog(logparent);
     ModuleName = "DECODER";
@@ -285,6 +280,8 @@ bool Decoder::GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr)
 
 
 
+
+
 void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
 {
     switch(de->getArgument(0, 0))
@@ -303,6 +300,8 @@ void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
 
 
 
+
+
 bool Decoder::MSXWeirdRST(DAsmElement *de, uint dasm_position)
 {
     uint offset;
@@ -314,19 +313,19 @@ bool Decoder::MSXWeirdRST(DAsmElement *de, uint dasm_position)
     switch (de->GetInstructionDetail())
     {
         case II_RST_08:
-                    LogIt(wxString::Format("[%.4X] Rst 08h detected !", m_actualaddress));
+                    LogIt(wxString::Format("[0x%.4X] Rst 08h detected !", m_actualaddress));
                     break;
 
         case II_RST_30:
                     // ID of Slot
-                    LogIt(wxString::Format("[%.4X] Rst 30h detected !", m_actualaddress));
+                    LogIt(wxString::Format("[0x%.4X] Rst 30h detected !", m_actualaddress));
                     de = new DAsmElement(Process->Program);
                     de->SetLength(1);
                     de->SetOffset(++offset);
                     de->SetMnemonic(0);
                     de->SetType(et_Data);
                     Process->Disassembled->InsertDasm(de, dasm_position++);
-                    LogIt(wxString::Format("[%.4X] Slot = %d.", m_actualaddress,
+                    LogIt(wxString::Format("[0x%.4X] Slot = %d.", m_actualaddress,
                                            Process->Program->GetData(offset)));
                     // address to be called
                     de = new DAsmElement(Process->Program);
@@ -337,7 +336,7 @@ bool Decoder::MSXWeirdRST(DAsmElement *de, uint dasm_position)
                     de->SetStyleArgument(0, ast_wordhex);
                     Process->Disassembled->InsertDasm(de, dasm_position);
                     temp = Process->Program->GetData(offset) + Process->Program->GetData(offset + 1) * 0xFF;
-                    LogIt(wxString::Format("[%.4X] Calling address = %.4X.", m_actualaddress,
+                    LogIt(wxString::Format("[0x%.4X] Calling address = %.4X.", m_actualaddress,
                                            temp));
                     ret = true;
                     break;
@@ -367,6 +366,9 @@ bool Decoder::CallSubroutine(DAsmElement *de)
 
 
 
+
+
+
 bool Decoder::ReturnSubroutine(DAsmElement *de, uint &dest_address)
 {
     bool ret = false;
@@ -382,8 +384,6 @@ bool Decoder::ReturnSubroutine(DAsmElement *de, uint &dest_address)
 
     return ret;
 }
-
-
 
 
 
@@ -447,7 +447,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
                 {
                     processing_status = false;
                     #ifdef IDZ80_DECODER
-                    LogIt("End processing.\n");
+                    LogIt("End processing.");
                     #endif
                 }
             }
@@ -465,7 +465,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
             {
                 #ifdef IDZ80_DECODER
                 LogIt(wxString::Format("[0x%.4X] Deviation back [0x%.4X].", m_actualaddress, address));
-                debugShowJmpList("COND_Backtest", m_conditionaljumplist);
+                debugShowJmpList("CONDITIONAL Back Test", m_conditionaljumplist);
                 #endif
 
                 if (GetNextNearJump(m_conditionaljumplist, m_nextaddress, m_endaddress, m_nextaddress))
@@ -481,7 +481,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
                     if (GetNextFarJump(m_unconditionaljumplist, m_nextaddress))
                     {
                         #ifdef IDZ80_DECODER
-                        debugShowJmpList("UNCOND_BackTest", m_unconditionaljumplist);
+                        debugShowJmpList("UNCONDITIONAL BACK Test", m_unconditionaljumplist);
                         #endif
                         update_dasm_item = true;
                     }
@@ -520,7 +520,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
             {
                 #ifdef IDZ80_DECODER
                 LogIt(wxString::Format("[0x%.4X] Deviation point forward to 0x%.4X", m_actualaddress, address));
-                debugShowJmpList("COND_Forwardtest", m_conditionaljumplist);
+                debugShowJmpList("CONDITIONAL Forward test", m_conditionaljumplist);
                 #endif
                 if (GetNextNearJump(m_conditionaljumplist, m_nextaddress, address, tempaddress))
                 {
@@ -528,7 +528,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
                         m_unconditionaljumplist->Add(address);
                     #ifdef IDZ80_DECODER
                     LogIt("Save forward address to process later.");
-                    debugShowJmpList("UNCOND_ForwardTest", m_unconditionaljumplist);
+                    debugShowJmpList("UNCONDITIONAL Forward Test", m_unconditionaljumplist);
                     #endif
                 }
                 else
@@ -710,7 +710,7 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
             }
             break;
         case IT_ERROR:
-            LogIt("Error !!!!");
+            LogIt(wxString::Format("[0x%.4X] Error: opcode = %s, dasmitem = %d", m_actualaddress, de->getCodeStr(), dsm_item));
             break;
         }
 

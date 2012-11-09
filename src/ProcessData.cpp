@@ -115,12 +115,12 @@ void ProcessData::DisassembleFirst(bool simulateexecution)
 
     if (simulateexecution)
     {
-        LogIt("Disassemble by simulating execution of code.\n");
+        LogIt("Disassemble by simulating execution of code.");
         m_disassembler->FirstDisassemble(this);
     }
     else
     {
-        LogIt("Full disassembling.\n");
+        LogIt("Full disassembling.");
         m_disassembler->FullDisassemble(this);
     }
 }

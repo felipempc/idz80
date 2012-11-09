@@ -64,18 +64,18 @@ bool SystemLabelList::Open(const wxString& file)
 */
 
 		if (!m_file->Open())
-			LogIt(m_section + "-> Cannot open file !\n ");
+			LogIt(m_section + "-> Cannot open file !");
 		ret = readData();
 		if (!ret)
-			LogIt(m_section + "-> Error reading data !\n ");
+			LogIt(m_section + "-> Error reading data !");
 		if (!m_file->Close())
-			LogIt(m_section + "-> Error closing file !\n ");
+			LogIt(m_section + "-> Error closing file !");
 
 	}
 	else
 	{
 		#ifdef IDZ80DEBUG
-		LogIt(m_section + "-> File not found !\n ");
+		LogIt(m_section + "-> File not found !");
 		#endif
 
 		delete m_file;
@@ -129,14 +129,14 @@ bool SystemLabelList::readData()
 				}
 				#ifdef IDZ80DEBUG
 				else
-					LogIt(wxString::Format("%s [%d] -> Cant convert number !\n", m_section, line));
+					LogIt(wxString::Format("%s [%d] -> Cant convert number !", m_section, line));
 				#endif
 			}
 			#ifdef IDZ80DEBUG
 			else
 			{
 				str.Clear();
-				str << m_section << wxString::Format("[%d] -> Cant find 2 columms ! (columms = %d)\n ", line, arrstr.GetCount());
+				str << m_section << wxString::Format("[%d] -> Cant find 2 columms ! (columms = %d)", line, arrstr.GetCount());
 				LogIt(str);
 			}
 			#endif
@@ -145,7 +145,7 @@ bool SystemLabelList::readData()
     }
     #ifdef IDZ80DEBUG
     if (!foundHeader)
-		LogIt(m_section + "-> Header not found !\n ");
+		LogIt(m_section + "-> Header not found !");
 	#endif
     return (m_data.GetCount() > 0);
 }

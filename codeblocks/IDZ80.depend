@@ -3797,11 +3797,11 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1352417210 source:x:\idz80\src\processdata.cpp
+1352477229 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
-1352423586 x:\idz80\src\processdata.h
+1352475735 x:\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
 	"d_asm_element.h"
@@ -3827,7 +3827,7 @@
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 
-1352409267 x:\idz80\src\d_asm_element.h
+1352478198 x:\idz80\src\d_asm_element.h
 	"mndb.h"
 	"MnemonicItem.h"
 	"rawdata.h"
@@ -3858,7 +3858,7 @@
 	"idz80base.h"
 	"logbase.h"
 
-1352415057 x:\idz80\src\decoder.h
+1352477728 x:\idz80\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
@@ -3903,7 +3903,7 @@
 	"ProcessData.h"
 	"codeviewline.h"
 
-1352413481 source:x:\idz80\src\systemlabels.cpp
+1352476020 source:x:\idz80\src\systemlabels.cpp
 	"systemlabels.h"
 	"mndb_tools.h"
 
@@ -3961,7 +3961,7 @@
 1351602936 source:x:\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
-1352417064 source:x:\idz80\src\d_asm_element.cpp
+1352478221 source:x:\idz80\src\d_asm_element.cpp
 	"d_asm_element.h"
 	"mndb_tools.h"
 	"IDZ80Base.h"
@@ -3969,26 +3969,27 @@
 1352423416 source:x:\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 
-1352423755 source:x:\idz80\src\decoder.cpp
+1352478752 source:x:\idz80\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
 1351285955 source:x:\idz80\src\idz80debugbase.cpp
 	"idz80debugbase.h"
 
-1352416363 source:x:\idz80\src\idz80.cpp
+1352485139 source:x:\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
 	"ShowFileInfo.h"
 	"systemlabels.h"
+	"wx/dir.h"
 	<wx/filefn.h>
 	<wx/filename.h>
 	<wx/font.h>
 	<wx/intl.h>
 	<wx/string.h>
 
-1352408950 x:\idz80\src\idz80.h
+1352485139 x:\idz80\src\idz80.h
 	<wx/menu.h>
 	<wx/textctrl.h>
 	<wx/aui/aui.h>
@@ -4036,7 +4037,7 @@
 	<wx/button.h>
 	<wx/string.h>
 
-1352413166 source:x:\idz80\src\labelslist.cpp
+1352475913 source:x:\idz80\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
@@ -4070,7 +4071,7 @@
 1352123221 source:x:\idz80\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1352412689 source:x:\idz80\src\logwindow.cpp
+1352485437 source:x:\idz80\src\logwindow.cpp
 	"logwindow.h"
 	<wx/font.h>
 	<wx/datetime.h>
@@ -4097,4 +4098,9 @@
 	"dasmdata.h"
 	"rawdata.h"
 	"codeviewline.h"
+
+1341842582 k:\wxw\wx294\include\wx\dir.h
+	"wx/longlong.h"
+	"wx/string.h"
+	"wx/filefn.h"
 
