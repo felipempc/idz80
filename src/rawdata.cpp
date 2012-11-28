@@ -27,7 +27,7 @@ const word RawData::ID_CARTRIDGE_ROM;
 const word RawData::ID_CARTRIDGE_SUBROM;
 
 
-RawData::RawData()
+RawData::RawData(LogWindow *logparent)
 {
     m_buffer.SetDataLen(0);
     SetFileType(UNKNOWN);
@@ -35,15 +35,13 @@ RawData::RawData()
     m_cartridge = 0;
     m_binheader = 0;
     m_iscartridge = false;
+    ModuleName = "RawData";
+    SetTextLog(logparent);
 }
 
 RawData::~RawData(void)
 {
-    if (m_cartridge != 0)
-        delete m_cartridge;
-    if (m_binheader != 0)
-        delete m_binheader;
-    m_buffer.SetBufSize(0);
+    Clear();
 }
 
 
@@ -105,9 +103,9 @@ bool RawData::Open(wxString filename)
 
     #ifdef IDZ80DEBUG
     if (ret)
-        LogIt(wxString::Format("rawdata.c: File opened is %s.\n",filename.c_str()));
+        LogIt(wxString::Format("File opened is %s.\n",filename.c_str()));
     else
-        LogIt("rawdata.c: File not found !\n");
+        LogIt("File not found !\n");
     #endif
 
     return ret;
@@ -116,10 +114,36 @@ bool RawData::Open(wxString filename)
 
 void RawData::Close()
 {
-    memset(m_buffer.GetData(), '\0', m_buffer.GetDataLen());
-    m_buffer.SetDataLen(0);
-    m_filename.Clear();
+    Clear();
 }
+
+
+
+
+void RawData::Clear()
+{
+    if (m_cartridge != 0)
+    {
+        delete m_cartridge;
+        m_cartridge = 0;
+    }
+
+    if (m_binheader != 0)
+    {
+        delete m_binheader;
+        m_binheader = 0;
+    }
+
+    memset(m_buffer.GetData(), '\0', m_buffer.GetDataLen());
+    m_buffer.SetBufSize(0);
+
+    m_filename.Clear();
+
+    SetFileType(UNKNOWN);
+}
+
+
+
 
 bool RawData::IsLoaded()
 {
@@ -427,17 +451,3 @@ const BinHeader *RawData::GetBinHeader()
 {
     return m_binheader;
 }
-
-
-// TODO: Remove debug log it function
-void RawData::DebugLog(wxTextCtrl *log)
-{
-    m_TC_Log = log;
-}
-
-void RawData::LogIt(const wxString &str)
-{
-    if (m_TC_Log!=0)
-        m_TC_Log->AppendText(str);
-}
-

@@ -24,6 +24,7 @@
 #include <wx/textctrl.h>
 #include <wx/dynarray.h>
 #include "IDZ80Base.h"
+#include "logbase.h"
 
 
 enum eFileType
@@ -57,7 +58,7 @@ struct stBinHeader
 };
 typedef struct stBinHeader BinHeader;
 
-class RawData
+class RawData : public LogBase
 {
     public:
 		static const uint BIN_HEADER_SIZE = 7;
@@ -65,6 +66,7 @@ class RawData
 
         bool Open(wxString filename);
         void Close();
+        void Clear();
         byte GetData(uint offset);
         uint GetBufferSize();
         bool IsLoaded();
@@ -88,7 +90,7 @@ class RawData
                         ExecAddress,
                         EndAddress;
 
-        RawData();
+        RawData(LogWindow *logparent);
         ~RawData(void);
 
     private:
@@ -102,12 +104,10 @@ class RawData
         wxString        m_filename;
         FileType        m_filetype;
         uint            m_header_offset;
-        wxTextCtrl      *m_TC_Log;
         bool			m_iscartridge;
 
         bool ValidateBIN();
         bool ValidateCartridge();
-        void LogIt(const wxString &str);
 };
 
 #endif

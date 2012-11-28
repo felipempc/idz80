@@ -84,8 +84,11 @@ class IDZ80: public wxFrame, LogBase
         bool LoadMnemonicsDB();
         bool SaveAs();
         void Clear_all();
-        bool OpenProgramFile(const wxString filename);
-        bool OpenProjectFile(const wxString filename);
+        //bool OpenProgramFile(const wxString filename);
+        void OpenProgramFile(wxString filename = "");
+        //bool OpenProjectFile(const wxString filename);
+        void OpenProjectFile();
+
         void UpdateTitle(const wxString str);
         void SetupMenuItemStatus();
         void SetupAUIStoredConfiguration();
@@ -94,6 +97,9 @@ class IDZ80: public wxFrame, LogBase
         void SetupIcon();
         void SetupAUIPanes();
         void SetupMenuEvents();
+
+        wxString DialogLoadProgramFile();
+        wxString DialogLoadProjectFile();
 
 
 		void OnMenuFileOpen(wxCommandEvent& event);

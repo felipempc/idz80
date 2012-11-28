@@ -36,6 +36,7 @@ class SubRoutineCtrl: public LogBase
         void UpdateSize();
         bool IsInside();
         bool HasConditionalReturn();
+        bool AlreadyCalled(uint address);
         void SetConditionalReturn();
         void Clear();
 

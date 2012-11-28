@@ -51,6 +51,7 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         void InitData();
         void processLabel();
         bool SetupSystemLabels();
+        void Clear();
 
         void SetGauge(wxGauge *g);
 

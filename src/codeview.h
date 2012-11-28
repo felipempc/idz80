@@ -79,10 +79,10 @@ struct styledata
 };
 
 
-class CodeView : public wxScrolledCanvas
+class CodeView : public wxScrolledCanvas, public LogBase
 {
 public:
-	CodeView(wxWindow *parent, ProcessData *processparent);
+	CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logparent);
 	~CodeView();
 
     void Plot(void);
@@ -139,10 +139,6 @@ private:
     wxColour    FG_LabelColor;
 
     wxMenu      *PopUp;
-
-    // Debug Area
-    wxTextCtrl *TC_Log;
-    void LogIt(const wxString &str);
 
     // Utilities
     void PaintBackground(wxDC &dc, const int start_y, const int fromline, const int toline, const wxBrush backcolour);

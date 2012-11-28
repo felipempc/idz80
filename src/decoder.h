@@ -35,6 +35,8 @@ class Decoder: public LogBase
         void FullDisassemble(LabelManager *parent);
         void DisassembleItems(RangeItems &dasm_range);
 
+        void Clear();
+
         wxString GetCodeSegmentStr();
         void OptimizeCodeSegment();
 
@@ -44,8 +46,10 @@ class Decoder: public LogBase
         ProcessBase         *Process;
         SubRoutineCtrl      *SubRoutine;
 
-        SortedIntArray      *m_unconditionaljumplist,
-                            *m_conditionaljumplist;
+        SortedIntArray      //*m_unconditionaljumplist,
+                            //*m_conditionaljumplist,
+                            *AddressList,
+                            *AddressListProcessed;
 
         LabelManager        *Labels;
 

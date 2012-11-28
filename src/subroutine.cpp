@@ -105,6 +105,11 @@ bool SubRoutineCtrl::HasConditionalReturn()
 }
 
 
+bool SubRoutineCtrl::AlreadyCalled(uint address)
+{
+    return (CalledSubroutines->Index(address) != wxNOT_FOUND);
+}
+
 void SubRoutineCtrl::Clear()
 {
     CalledSubroutines->Clear();

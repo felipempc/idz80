@@ -30,8 +30,10 @@ Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
     m_endaddress = 0;
     m_execaddress = 0;
 
-    m_conditionaljumplist = new SortedIntArray(CompareSortedInt);
-    m_unconditionaljumplist = new SortedIntArray(CompareSortedInt);
+    //m_conditionaljumplist = new SortedIntArray(CompareSortedInt);
+    //m_unconditionaljumplist = new SortedIntArray(CompareSortedInt);
+    AddressList = new SortedIntArray(CompareSortedInt);
+    AddressListProcessed = new SortedIntArray(CompareSortedInt);
 
     SubRoutine = new SubRoutineCtrl(logparent);
 }
@@ -41,11 +43,28 @@ Decoder::~Decoder()
 {
     delete SubRoutine;
 
-    if (m_conditionaljumplist != 0)
-        delete m_conditionaljumplist;
-    if (m_unconditionaljumplist != 0)
-        delete m_unconditionaljumplist;
+//    if (m_conditionaljumplist != 0)
+//        delete m_conditionaljumplist;
+//    if (m_unconditionaljumplist != 0)
+//        delete m_unconditionaljumplist;
+    if (AddressList != 0)
+        delete AddressList;
+    if (AddressListProcessed != 0)
+        delete AddressListProcessed;
 }
+
+
+
+void Decoder::Clear()
+{
+    //m_conditionaljumplist->Clear();
+    //m_unconditionaljumplist->Clear();
+    AddressList->Clear();
+    AddressListProcessed->Clear();
+    SubRoutine->Clear();
+}
+
+
 
 //TODO: REwrite it
 void Decoder::UpdateBoundary()
@@ -74,7 +93,7 @@ uint Decoder::Fetch(const uint prg_index, uint maxitems)
                 ret = 0;
     wxArrayInt	foundItems;
     byte		scan;
-    MnemonicItem    *mnemonic;
+    MnemonicItem    *mnemonic = 0;
 
     foundItems.Clear();
     offset = 0;
@@ -217,7 +236,12 @@ bool Decoder::GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, u
             ret = true;
             nextaddr = address;
             if (jmplist->Index(address) != wxNOT_FOUND)
+            {
                 jmplist->Remove(address);
+                #ifdef IDZ80_DECODER
+                LogIt(wxString::Format("Removed : 0x%.4X", address));
+                #endif // IDZ80_DECODER
+            }
             #ifdef IDZ80_DECODER
             LogIt(wxString::Format("Chosen : 0x%.4X", nextaddr));
             #endif
@@ -226,23 +250,11 @@ bool Decoder::GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, u
         else
             i++;
     }
-/*
-    else
-    {
-        #ifdef IDZ80_DECODER
-        LogIt(wxString::Format("[0x%.4X] Address 0x%.4X already processed. Removed !\n", m_actualaddress, address));
-        #endif
-        if (jmplist->Index(address) != wxNOT_FOUND)
-            jmplist->Remove(address);
-        f = jmplist->GetCount();
-    }
-*/
-    return ret;
 }
 
 
 
-
+/*
 bool Decoder::GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr)
 {
     bool    ret = false;
@@ -265,19 +277,9 @@ bool Decoder::GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr)
         #endif
         break;
     }
-/*
-    else
-    {
-        #ifdef IDZ80_DECODER
-        LogIt(wxString::Format("[0x%.4X] Far address 0x%.4X already processed. Removed !\n", m_actualaddress, address));
-        #endif
-        if (jmplist->Index(address) != wxNOT_FOUND)
-            jmplist->Remove(address);
-    }
-*/
     return ret;
 }
-
+*/
 
 
 
@@ -353,13 +355,21 @@ bool Decoder::CallSubroutine(DAsmElement *de)
 
     if (OutBoundaryAddress(address))
     {
+        LogIt(wxString::Format("[0x%.4X] Subroutine out of boundaries [0x%.4X].", m_actualaddress, address));
         MSXCheckFunctionRegisters(de);
     }
     else
     {
-        ret = SubRoutine->Call(address, m_nextaddress);
-        if (ret)
-            m_nextaddress = address;
+        if (SubRoutine->AlreadyCalled(address))
+        {
+            LogIt(wxString::Format("[0x%.4X] Subroutine already called [0x%.4X].", m_actualaddress, address));
+        }
+        else
+        {
+            ret = SubRoutine->Call(address, m_nextaddress);
+            if (ret)
+                m_nextaddress = address;
+        }
     }
     return ret;
 }
@@ -400,29 +410,16 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
             tempaddress;
     bool    update_dasm_item = false;
 
-
-    if (m_unconditionaljumplist->Index(m_actualaddress) != wxNOT_FOUND)
-    {
-        m_unconditionaljumplist->Remove(m_actualaddress);
-        #ifdef IDZ80_DECODER
-        LogIt(wxString::Format("[0x%.4X] Removed this address from unconditional list !", m_actualaddress));
-        #endif
-    }
-
-    if (m_conditionaljumplist->Index(m_actualaddress) != wxNOT_FOUND)
-    {
-        m_conditionaljumplist->Remove(m_actualaddress);
-        #ifdef IDZ80_DECODER
-        LogIt(wxString::Format("[0x%.4X] Removed this address from conditional list !", m_actualaddress));
-        #endif
-    }
-
     address = de->getArgument(0, Process->Disassembled->GetBaseAddress(0));
 
     if (de->MnemonicObject->isConditionalJump())
     {
         if (!OutBoundaryAddress(address))
-            m_conditionaljumplist->Add(address);
+        {
+            if ((AddressList->Index(address) == wxNOT_FOUND) &&
+                (address > m_actualaddress))
+                AddressList->Add(address);
+        }
     }
     else
     {
@@ -464,47 +461,30 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
             if ((address >= m_execaddress) && (address <= m_actualaddress))
             {
                 #ifdef IDZ80_DECODER
-                LogIt(wxString::Format("[0x%.4X] Deviation back [0x%.4X].", m_actualaddress, address));
-                debugShowJmpList("CONDITIONAL Back Test", m_conditionaljumplist);
+                LogIt(wxString::Format("[0x%.4X] Loop detected to 0x%.4X.", m_actualaddress, address));
+                debugShowJmpList("         CONDITIONAL Back Test", AddressList);
                 #endif
 
-                if (GetNextNearJump(m_conditionaljumplist, m_nextaddress, m_endaddress, m_nextaddress))
+                if (GetNextNearJump(AddressList, m_nextaddress, m_endaddress, m_nextaddress))
                 {
                     update_dasm_item = true;
                 }
                 else
                 {
-                    #ifdef IDZ80_DECODER
-                    LogIt("Check for unconditional entries :");
-                    #endif
-
-                    if (GetNextFarJump(m_unconditionaljumplist, m_nextaddress))
+                    if ((SubRoutine->HasConditionalReturn()) && (SubRoutine->IsInside()) &&
+                        (ReturnSubroutine(de, m_nextaddress)))
                     {
-                        #ifdef IDZ80_DECODER
-                        debugShowJmpList("UNCONDITIONAL BACK Test", m_unconditionaljumplist);
-                        #endif
                         update_dasm_item = true;
+                        #ifdef IDZ80_DECODER
+                        LogIt(wxString::Format("[0x%.4X] Conditional return to 0x%.4X.", m_actualaddress, m_nextaddress));
+                        #endif
                     }
                     else
                     {
+                        processing_status = false;
                         #ifdef IDZ80_DECODER
-                        LogIt("No unconditional entries.");
+                        LogIt("End processing.");
                         #endif
-                        if ((SubRoutine->HasConditionalReturn()) && (SubRoutine->IsInside()) &&
-                            (ReturnSubroutine(de, m_nextaddress)))
-                        {
-                            update_dasm_item = true;
-                            #ifdef IDZ80_DECODER
-                            LogIt(wxString::Format("[0x%.4X] Conditional return to 0x%.4X.", m_actualaddress, m_nextaddress));
-                            #endif
-                        }
-                        else
-                        {
-                            processing_status = false;
-                            #ifdef IDZ80_DECODER
-                            LogIt("End processing.");
-                            #endif
-                        }
                     }
                 }
 
@@ -519,25 +499,48 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
             if (address > m_actualaddress)
             {
                 #ifdef IDZ80_DECODER
-                LogIt(wxString::Format("[0x%.4X] Deviation point forward to 0x%.4X", m_actualaddress, address));
-                debugShowJmpList("CONDITIONAL Forward test", m_conditionaljumplist);
+                LogIt(wxString::Format("[0x%.4X] Jumping forward to 0x%.4X", m_actualaddress, address));
+                debugShowJmpList("         CONDITIONAL Forward test", AddressList);
                 #endif
-                if (GetNextNearJump(m_conditionaljumplist, m_nextaddress, address, tempaddress))
+                if (GetNextNearJump(AddressList, m_nextaddress, address, tempaddress))
                 {
-                    if (m_unconditionaljumplist->Index(address) == wxNOT_FOUND)
-                        m_unconditionaljumplist->Add(address);
+                    if (AddressList->Index(address) == wxNOT_FOUND)
+                        AddressList->Add(address);
                     #ifdef IDZ80_DECODER
-                    LogIt("Save forward address to process later.");
-                    debugShowJmpList("UNCONDITIONAL Forward Test", m_unconditionaljumplist);
+                    LogIt(wxString::Format("[0x%.4X] Save forward address to process later.", m_actualaddress));
                     #endif
                 }
                 else
                 {
-                    tempaddress = address;
-                    update_dasm_item = true;
                     #ifdef IDZ80_DECODER
-                    LogIt("Proceed forward.");
+                    debugShowJmpList("Processed List", AddressListProcessed);
                     #endif
+                    if (AddressListProcessed->Index(address) == wxNOT_FOUND)
+                    {
+                        tempaddress = address;
+                        update_dasm_item = true;
+                        #ifdef IDZ80_DECODER
+                        LogIt("Proceed forward.");
+                        #endif
+                    }
+                    else
+                    {
+                        if (AddressList->IsEmpty())
+                        {
+                            processing_status = false;
+                            #ifdef IDZ80_DECODER
+                            LogIt("No more entries. End processing.");
+                            #endif
+                        }
+                        else
+                        {
+                            tempaddress = AddressList->Item(0);
+                            update_dasm_item = true;
+                            #ifdef IDZ80_DECODER
+                            LogIt(wxString::Format("Address 0x%.4X already processed. Jumping to 0x%.4X.", address, tempaddress));
+                            #endif
+                        }
+                    }
                 }
 
                 m_nextaddress = tempaddress;
@@ -635,8 +638,8 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
 
     UpdateBoundary();
 
-    m_unconditionaljumplist->Clear();
-    m_conditionaljumplist->Clear();
+    AddressList->Clear();
+    AddressListProcessed->Clear();
 
 
 	if (Process->Program->isCartridge())
@@ -657,12 +660,22 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
         m_last_prg_counter = m_nextaddress - Process->Disassembled->GetBaseAddress(0);
         m_actualaddress = m_nextaddress;
 
+        if (AddressList->Index(m_actualaddress) != wxNOT_FOUND)
+        {
+            AddressList->Remove(m_actualaddress);
+            #ifdef IDZ80_DECODER
+            LogIt(wxString::Format("[0x%.4X] Removed this address from list !", m_actualaddress));
+            #endif
+        }
+
+        if (AddressListProcessed->Index(m_nextaddress) == wxNOT_FOUND)
+            AddressListProcessed->Add(m_actualaddress);
+
         de = new DAsmElement(Process->Program);
         dsm_item = Decode(de, m_last_prg_counter, dsm_item);
         m_nextaddress += de->GetLength();
         counter += de->GetLength();
         m_prg_counter = m_last_prg_counter + de->GetLength();
-
 
         address = de->getArgument(0, Process->Disassembled->GetBaseAddress(0));
 
@@ -677,10 +690,6 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
             {
                 LogIt(wxString::Format("[0x%.4X] Entering subroutine No. %d  [0x%.4X].", m_actualaddress, SubRoutine->GetCounter(), address));
             }
-            else
-            {
-                LogIt(wxString::Format("[0x%.4X] Call to out of boundary [0x%.4X]. Ignored !", m_actualaddress, address));
-            }
             #endif
             break;
 
@@ -689,7 +698,7 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
             #ifdef IDZ80_DECODER
             if (update_item)
             {
-                LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.", m_actualaddress, SubRoutine->GetCounter()));
+                LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.", m_actualaddress, (SubRoutine->GetCounter() + 1)));
             }
             #endif
             break;
@@ -790,6 +799,10 @@ void Decoder::FullDisassemble(LabelManager *parent)
 
     Labels = parent;
     Labels->ClearUserLabels();
+    var_label_counter = 0;
+    io_label_counter = 0;
+    program_label_counter = 0;
+
 
     f = Process->Program->GetBufferSize();
     for (i = 0; i < f; i++)

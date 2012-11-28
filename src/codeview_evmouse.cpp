@@ -44,13 +44,12 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 		if (CursorPosition > GetLastLine())
 		{
-			Scroll(-1,GetFirstLine() + 1);
+			Scroll(-1, GetFirstLine() + 1);
 			RefreshRect(CalcCursorRfshRect());
 		}
 
 		DoSelection();
 
-		//SetFocusIgnoringChildren();
 		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
@@ -63,39 +62,7 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 {
-
-	/* DEBUG:
-    wxString str;
-    DAsmElement* de;
-    CodeViewItem* cvi;
-
-    str.Printf("Type: %d\nDasmItem: ", m_iteminfo.type);
-
-    if (m_iteminfo.dasmitem != 0)
-    {
-		de = m_iteminfo.dasmitem;
-		str << de->getCodeStr() << "\n";
-	}
-	else
-		str << "NULL\n";
-
-	if (m_iteminfo.lineitem >= 0)
-	{
-		cvi = m_iteminfo.lineitem;
-		str << wxString::Format("LineItem: %d\n", cvi->Dasmitem);
-	}
-	else
-		str << "LineItem: NULL\n";
-
-	if (m_iteminfo.hasComment)
-		str << "hasComment: SIM\n";
-	else
-		str << "hasComment: NAO\n";
-
-    str << wxString::Format("Arg Selected: %d\n\n", m_iteminfo.argSelected);
-
-    LogIt(str);
-    */
+    FillSelectedItemInfo(event.GetPosition());
 }
 
 
@@ -165,7 +132,6 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 
     if (!IsEmpty)
     {
-        //SetFocusIgnoringChildren();
 
         PopUp = new wxMenu();
         de = m_iteminfo.dasmitem;
@@ -267,111 +233,25 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 // TODO: Rewrite this
 void CodeView::OnMouseMove(wxMouseEvent& event)
 {
-	wxMouseState	ms;
-
-	if (event.Dragging() && Selecting)
+	if (event.Dragging())
 	{
-		if (ms.LeftIsDown())
-			LogIt("Selecting...\n");
-		else
-			LogIt("Dragging...\n");
+	    CalcCursorPosition(event.GetPosition());
+        ClearCursor();
+
+		if (CursorPosition > GetLastLine())
+		{
+			Scroll(-1, GetFirstLine() + 1);
+			RefreshRect(CalcCursorRfshRect());
+		}
+
+	    if (Selecting)
+        {
+            UpdateSelectedRect();
+            RefreshRect(CalcSelectedRect());
+        }
+
+        RefreshRect(CalcCursorRfshRect());
 	}
-/*
-    CodeViewItem *cvi;
-    wxPoint pt;
-    wxClientDC  dc(this);
-    DoPrepareDC(dc);
-
-    uint pointedline;
-    static uint lastpointedline=0;
-    static wxRect *lastrect=0;
-    static bool lastfocus1=false;
-    static bool lastfocus2=false;
-    static bool arg_erased=false;
-
-    bool    m_Arg1focused,
-            m_Arg2focused,
-            linechanged=false;
-
-
-    pt=event.GetLogicalPosition(dc);
-    pointedline = pt.y/m_fontHeight;
-    cvi=m_CodeViewLine->getData(pointedline);
-    if (lastpointedline!=pointedline)
-    {
-        linechanged=true;
-        lastpointedline=pointedline;
-    }
-    else
-    {
-        linechanged=false;
-        lastpointedline=pointedline;
-    }
-
-    if (((!m_Arg1focused) && (!m_Arg2focused)) || (linechanged))
-    {
-        if ((lastrect!=0) && (!arg_erased))
-        {
-            wxPen pen(*wxWHITE,1,wxSOLID);
-            wxBrush brush(*wxWHITE,wxTRANSPARENT);
-            dc.SetPen(pen);
-            dc.SetBrush(brush);
-            dc.DrawRectangle(*lastrect);
-            arg_erased=true;
-            lastfocus1=false;
-            lastfocus2=false;
-        }
-    }
-
-    if (cvi->RectArg1!=0)
-    {
-        if (cvi->RectArg1->Contains(wxPoint(pt.x,pt.y)))
-        {
-            lastrect=cvi->RectArg1;
-            m_Arg1focused=true;
-
-            if (m_Arg1focused!=lastfocus1)
-            {
-                wxPen pen(FGArgumentColor,1,wxSOLID);
-                wxBrush brush(BGArgumentColor,wxTRANSPARENT);
-                dc.SetPen(pen);
-                dc.SetBrush(brush);
-                dc.DrawRectangle(*cvi->RectArg1);
-                lastfocus1=m_Arg1focused;
-                arg_erased=false;
-            }
-        }
-        else
-        {
-            m_Arg1focused=false;
-            lastfocus1=false;
-        }
-    }
-    if  (cvi->RectArg2!=0)
-    {
-        if (cvi->RectArg2->Contains(wxPoint(pt.x,pt.y)))
-        {
-            lastrect=cvi->RectArg2;
-            m_Arg2focused=true;
-
-            if (m_Arg2focused!=lastfocus2)
-            {
-                wxPen pen(FGArgumentColor,1,wxSOLID);
-                wxBrush brush(BGArgumentColor,wxSOLID);       //wxTRANSPARENT);
-                dc.SetPen(pen);
-                dc.SetBrush(brush);
-                dc.DrawRectangle(*cvi->RectArg2);
-                lastfocus2=m_Arg2focused;
-                arg_erased=false;
-            }
-        }
-        else
-        {
-            m_Arg2focused=false;
-            lastfocus2=false;
-        }
-    }
-*/
 }
 
 

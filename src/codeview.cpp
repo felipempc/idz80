@@ -26,7 +26,7 @@ const int CodeView::COL_MNEM;
 
 
 
-CodeView::CodeView(wxWindow *parent, ProcessData *processparent)
+CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logparent)
         : wxScrolledCanvas(parent)
 {
     Process = processparent;
@@ -73,6 +73,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent)
     FG_LabelColor.Set("BLUE");
 
 
+    Bind(wxEVT_SIZE, &CodeView::OnSize, this);
     Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::OnScrollLineDown, this);
     Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::OnScrollLineUp, this);
     Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
@@ -85,7 +86,6 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent)
 
 
     // MOUSE Events
-    Bind(wxEVT_SIZE, &CodeView::OnSize, this);
     Bind(wxEVT_LEFT_DOWN, &CodeView::OnMouseLeftDown, this);
     Bind(wxEVT_LEFT_UP, &CodeView::OnMouseLeftUp, this);
     Bind(wxEVT_RIGHT_DOWN, &CodeView::OnMouseRightDown, this);
@@ -118,7 +118,8 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent)
     PopUp = 0;
 
     // Debug Area
-    TC_Log = 0;
+    SetTextLog(logparent);
+    ModuleName = "CodeView";
 }
 
 
@@ -336,6 +337,29 @@ wxRect CodeView::CalcCursorRfshRect()
 }
 
 
+
+void CodeView::DoSelection()
+{
+    if (Selecting)
+    {
+        UpdateSelectedRect();
+        if (MultiSelection)
+            RefreshRect(CalcSelectedRect());
+    }
+    else
+    {
+        if (MultiSelection)
+            RefreshRect(CalcSelectedRect());
+        SelectedCount = 1;
+        MultiSelection = false;
+        SelectedItemIndex = CursorPosition;
+        CursorLastPosition = CursorPosition;
+        SelectedLastItem = SelectedItemIndex;
+    }
+}
+
+
+
 void CodeView::UpdateSelectedRect()
 {
     int index;
@@ -343,26 +367,26 @@ void CodeView::UpdateSelectedRect()
     if (CursorPosition >= CursorLastPosition)
     {
         index = CursorLastPosition;
-        SelectedCount = CursorPosition-CursorLastPosition + 1;
+        SelectedCount = CursorPosition - CursorLastPosition + 1;
     }
     else
     {
         index = CursorPosition;
-        SelectedCount = CursorLastPosition-CursorPosition + 1;
+        SelectedCount = CursorLastPosition - CursorPosition + 1;
     }
     SelectedItemIndex = index;
     SelectedLastItem = SelectedItemIndex + SelectedCount - 1;
     if (SelectedCount > 1)
-        MultiSelection=true;
+        MultiSelection = true;
     else
-        MultiSelection=false;
+        MultiSelection = false;
 }
 
 // Returns the current Selected items' rectangle
 wxRect CodeView::CalcSelectedRect()
 {
     wxRect rect;
-    int y,count;
+    int y, count;
     if (SelectedItemIndex < GetFirstLine())
     {
         y = GetFirstLine();
@@ -379,7 +403,7 @@ wxRect CodeView::CalcSelectedRect()
     rect.y = y * m_fontHeight;
     rect.width = GetClientSize().x;
     rect.height = count * m_fontHeight;
-    CalcScrolledPosition(rect.x,rect.y,0,&rect.y);
+    CalcScrolledPosition(rect.x, rect.y, 0, &rect.y);
     return rect;
 }
 
@@ -492,25 +516,7 @@ void CodeView::ClearCursor()
 
 
 
-void CodeView::DoSelection()
-{
-    if (Selecting)
-    {
-        UpdateSelectedRect();
-        if (MultiSelection)
-            RefreshRect(CalcSelectedRect());
-    }
-    else
-    {
-        if (MultiSelection)
-            RefreshRect(CalcSelectedRect());
-        SelectedCount = 1;
-        MultiSelection = false;
-        SelectedItemIndex = CursorPosition;
-        CursorLastPosition = CursorPosition;
-        SelectedLastItem = SelectedItemIndex;
-    }
-}
+
 
 
 
@@ -565,12 +571,6 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
 
 
-void CodeView::DebugLog(wxTextCtrl *log)
-{
-    TC_Log = log;
-}
-
-
 
 
 
@@ -581,8 +581,6 @@ void CodeView::DebugLog(wxTextCtrl *log)
 
 
 // Event handler for Page up/down and direction keys
-// Works only if its parent is NOT wxTAB_TRAVERSAL style
-// and use SetFocusIgnoringChildren
 void CodeView::OnKeyPress(wxKeyEvent& event)
 {
     int key;
@@ -710,7 +708,7 @@ void CodeView::OnSize(wxSizeEvent& event)
 
 void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
 {
-    TC_Log->AppendText("Search Menu Clicked !!!\n");
+    LogIt("Search Menu Clicked !!!\n");
 }
 
 
@@ -1111,10 +1109,3 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 		m_iteminfo.lineitem = (CodeViewItem *)0;
 }
 
-
-// TODO: Remove debug log it function
-void CodeView::LogIt(const wxString &str)
-{
-    if (TC_Log != 0)
-        TC_Log->AppendText(str);
-}

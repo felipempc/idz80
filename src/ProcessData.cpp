@@ -28,7 +28,7 @@
 ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
 {
     Mnemonics = new MnemonicDataBase(logparent);
-    Program = new RawData();
+    Program = new RawData(logparent);
     Disassembled = new DAsmData(logparent);
     CodeViewLines = new CodeViewLine(Disassembled);
     m_disassembler = new Decoder(this, logparent);
@@ -65,6 +65,25 @@ ProcessData::~ProcessData()
     delete Mnemonics;
     delete Program;
     delete Disassembled;
+}
+
+
+void ProcessData::Clear()
+{
+    ClearUserLabels();
+    delete sys_calls;
+    delete sys_io;
+    delete sys_const;
+    delete sys_vars;
+    sys_calls = 0;
+    sys_io = 0;
+    sys_const = 0;
+    sys_vars = 0;
+
+    Program->Clear();
+    Disassembled->Clear();
+    CodeViewLines->Clear();
+    m_disassembler->Clear();
 }
 
 

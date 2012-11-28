@@ -326,7 +326,6 @@ bool CodeViewLine::IsEmpty()
 }
 
 
-
 uint CodeViewLine::GetCount()
 {
     return (m_CodeLine.GetCount());

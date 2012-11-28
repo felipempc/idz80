@@ -227,7 +227,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     SetupMenuItemStatus();
 
     process = new ProcessData(this, Log);
-    codeview = new CodeView(this, process);
+    codeview = new CodeView(this, process, Log);
     m_project = new ProjectManager(process, codeview);
 
     SetupAUIPanes();
@@ -436,22 +436,19 @@ void IDZ80::SetupMenuEvents()
 
 
 
-bool IDZ80::OpenProgramFile(const wxString filename)
+//bool IDZ80::OpenProgramFile(const wxString filename)
+void IDZ80::OpenProgramFile(wxString filename)
 {
-	bool		ret;
 	static bool simulateexecution = false;
-	wxString	info,
+	wxString    info,
 				caption;
 	FileTypeDialog config(this);
 
-	ret = process->Program->Open(filename);
-	if (!ret)
-	{
-		caption.Printf("Could not open '%s' !", filename.c_str());
-		wxMessageBox(caption, "Error...");
-	}
-	else
-	{
+    if (filename.IsEmpty())
+        filename = DialogLoadProgramFile();
+
+    if ((!filename.IsEmpty()) && process->Program->Open(filename))
+    {
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText("Opened file:\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
@@ -477,8 +474,13 @@ bool IDZ80::OpenProgramFile(const wxString filename)
             wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
             UpdateTitle(caption);
 
+            if (process->SetupSystemLabels())
+            {
+                process->LoadSystemLabels("X:/idz80/Labels.txt");
+            }
+
             /*FIXME: If user change the addresses, it won't appear here, because
-             * they are not converted from textcntrl objects to the integer
+             * they are not converted from textcntrl objects to integer
              * variables of FileTypeDialog.
              */
             process->Program->StartAddress = config.GetStartAddress();
@@ -503,21 +505,45 @@ bool IDZ80::OpenProgramFile(const wxString filename)
         else
         {
             process->Program->Close();
-            ret = false;
             StatusBar1->SetStatusText("Cancelled by user !");
         }
+    }
+	else
+	{
+		caption.Printf("Could not open '%s' !", filename.c_str());
+		wxMessageBox(caption, "Error...");
 	}
+}
+
+
+
+wxString IDZ80::DialogLoadProgramFile()
+{
+    wxString caption = "Choose a file";
+    wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
+    wxFileDialog dialog(this, caption, m_lastDir, wxEmptyString, wildcard, wxFD_OPEN);
+    wxString ret = "";
+
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        ret = dialog.GetPath();
+        m_lastDir = dialog.GetDirectory();
+    }
+
     return ret;
 }
 
 
-bool IDZ80::OpenProjectFile(const wxString filename)
-{
-	bool ret;
 
-	ret = m_project->Open(filename);
-	if (ret)
-	{
+
+//bool IDZ80::OpenProjectFile(const wxString filename)
+void IDZ80::OpenProjectFile()
+{
+	wxString filename;
+
+	filename = DialogLoadProjectFile();
+	if ((!filename.IsEmpty()) && m_project->Open(filename))
+    {
 		codeview->Enable(true);
 		codeview->Plot();
 		wxMenuBar *mb;
@@ -530,77 +556,35 @@ bool IDZ80::OpenProjectFile(const wxString filename)
 		mb->Enable(idMenuToolsGenCode, true);
 		mb->Enable(idMenuToolsAutoLabel, true);
 	}
-	return ret;
 }
+
+
+
+wxString IDZ80::DialogLoadProjectFile()
+{
+    wxString caption = "Choose a project";
+    wxString wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
+    wxFileDialog dialog(this, caption, m_lastDir, wxEmptyString, wildcard, wxFD_OPEN);
+    wxString ret = "";
+
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        ret = dialog.GetPath();
+        m_lastDir = dialog.GetDirectory();
+    }
+    return ret;
+}
+
 
 
 
 void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 {
-    wxString fname, caption, wildcard,
-            defaultFilename = wxEmptyString;
-    bool unknown = false,
-         project = false;
-
-    int     debugint;
-    SortedIntArray  debugarray(CompareSortedInt);
-
-
+    Clear_all();
     if (event.GetId() == idMenuFileOpenArchive)
-    {
-        caption = "Choose a file";
-        wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    }
+        OpenProgramFile();
     else
-        if (event.GetId() == idMenuFileOpenProject)
-        {
-            caption = "Choose a project";
-            wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
-            project = true;
-        }
-        else
-            unknown = true;
-
-    if (!unknown)
-    {
-        wxFileDialog dialog(this, caption, m_lastDir, defaultFilename,wildcard, wxFD_OPEN);
-
-        if (dialog.ShowModal() == wxID_OK)
-        {
-            fname = dialog.GetPath();
-            m_lastDir = dialog.GetDirectory();
-            StatusBar1->SetStatusText(fname,0);
-            // Open a project
-            if (project)
-            {
-                // load the project
-                Clear_all();
-                OpenProjectFile(fname);
-                SetFocus();
-
-            }
-            else    //load a file
-            {
-				Clear_all();
-				if (OpenProgramFile(fname) && process->SetupSystemLabels())
-                {
-                    process->LoadSystemLabels("X:/idz80/Labels.txt");
-                }
-
-				if ((process->Program->isCartridge()) && (process->Program->GetEntries(debugarray)))
-                    for(debugint = 0; debugint < debugarray.GetCount(); debugint++)
-                    {
-                        PanelLog->AppendText(wxString::Format("Entries item %d: %.4X\n", debugint, debugarray[debugint]));
-                    }
-			}
-
-		}
-        else
-            StatusBar1->SetStatusText("Cancelled by user !");
-
-	}
-    else
-        StatusBar1->SetStatusText("Unknown file !");
+        OpenProjectFile();
 }
 
 
@@ -871,7 +855,7 @@ void IDZ80::Clear_all()
 {
     codeview->Clear();
     codeview->Enable(false);
-    process->ClearUserLabels();
+    process->Clear();
 }
 
 
