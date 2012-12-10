@@ -852,6 +852,7 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
         dasm_range.Count = 0;
         for (i = program_first; i < program_last; i++)
         {
+            de = new DAsmElement(Process->Program);
             Decode(de, i, x++);
             i += (de->GetLength() - 1);
             dasm_range.Count++;

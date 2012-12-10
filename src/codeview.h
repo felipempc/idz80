@@ -121,12 +121,14 @@ private:
                 SelectedLastItem,   // Last Disassembled Item Selected
                 CursorPosition,     // Index of Disassembled item that cursor is over
                 CursorLastPosition;
-    wxRect      *LastCursorRect;    // The rectangle of last cursor
+    wxRect      *LastCursorRect,    // The rectangle of last cursor
+                IncompleteArea;
 
     bool        IsFocused,
                 IsEmpty,            // Is the Data Base of disassembled items empty ?
                 MultiSelection,     // we have selected more than one item
                 Selecting;          // we're selecting items
+
 
     wxFont      *font;
 
@@ -138,35 +140,47 @@ private:
     wxColour    FG_TextColor;
     wxColour    FG_LabelColor;
 
-    wxMenu      *PopUp;
 
-    // Utilities
+    // Configuration
+    void SetupEvents();
+    void SetupColors();
+    void SetupFont();
+
+    // window render
     void PaintBackground(wxDC &dc, const int start_y, const int fromline, const int toline, const wxBrush backcolour);
     void Render(wxDC &dc, const int start_y, const int fromline, const int count);
     uint RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi);
     uint RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi);
     uint RenderProgramLabel(wxDC &dc, const int start_y, wxString str);
     uint RenderOrigin(wxDC &dc, const int start_y, uint address);
+
+    //utilities
     void CalcItemsShown(void);
-    void UpdateVirtualSize(void);
     void CalcCursorPosition(wxPoint point);
     wxRect CalcCursorRfshRect();
-    void UpdateSelectedRect();
+    void CalcIncompleteArea();
     wxRect CalcSelectedRect();
+	wxString FormatArg(uint arg, uint style);
+    int GetFirstLine();
+    int GetLastLine();
+    int GetLastItem();
+    void UpdateSelectedRect();
     void UpdateLastCursorRect();
+    void UpdateVirtualSize(void);
+
+    //cursor
     void ShowCursor(wxDC &dc);
     void ClearCursor();
+
+    //selection
     void DoSelection();
 	void FillSelectedItemInfo(const wxPoint &pt);
 
-
-	wxString FormatArg(uint arg, uint style);
-
-    int GetFirstLine();
-    int GetLastLine();
-
+    //Pop up Menu
     bool FilterInstructions(wxArrayInt &range, wxArrayInt *plabels);
     ElementType GetTypeMultiselection(bool &hcomment);
+    void CreatePopupMenuMultiSelection(wxMenu *popup);
+    void CreatePopupMenuSingleSelection(wxMenu *popup);
 
 
     /*
@@ -183,6 +197,7 @@ private:
     void OnScrollLineUp(wxScrollWinEvent& event);
     void OnScrollPageDown(wxScrollWinEvent& event);
     void OnScrollPageUp(wxScrollWinEvent& event);
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
 
     // Mouse Event handlers
     void OnMouseLeftUp(wxMouseEvent& event);
@@ -191,6 +206,8 @@ private:
     void OnMouseRightDown(wxMouseEvent& event);
     void OnMouseMove(wxMouseEvent& event);
     void OnMouseWheel(wxMouseEvent& event);
+    void OnMouseEnterWindow(wxMouseEvent& event);
+    void OnMouseLeaveWindow(wxMouseEvent& event);
 
     // Keyboard event handlers
     void OnKeyPress(wxKeyEvent& event);

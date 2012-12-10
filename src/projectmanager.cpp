@@ -15,7 +15,7 @@
 #include "mndb_tools.h"
 
 
-const wxString ProjectManager::projectExtension = _(".dap");
+const wxString ProjectManager::projectExtension = ".dap";
 
 ProjectManager::ProjectManager(ProcessData *process, CodeView *codeview)
 {
@@ -97,33 +97,33 @@ bool ProjectManager::Save(const wxString &filename, bool overwrite)
 void ProjectManager::writeHeader(wxTextFile &savefile)
 {
     wxString str;
-    savefile.AddLine(_("[HEADER]"));
-    str = _("File = ");
+    savefile.AddLine("[HEADER]");
+    str = "File = ";
     str << Process->Program->GetFileName();
     savefile.AddLine(str);
     switch (Process->Program->GetFileType())
     {
         case COM:
-                    str = _("Type = COM");
+                    str = "Type = COM";
                     break;
         case BIN:
-                    str = _("Type = BIN");
+                    str = "Type = BIN";
                     break;
         case ROM:
-                    str = _("Type = ROM");
+                    str = "Type = ROM";
                     break;
         default:
-                    str = _("Type = UNKNOWN");
+                    str = "Type = UNKNOWN";
                     break;
     }
     savefile.AddLine(str);
-    str.Printf(_("StartAddress = %X"),Process->Program->StartAddress);
+    str.Printf("StartAddress = %X", Process->Program->StartAddress);
     savefile.AddLine(str);
-    str.Printf(_("ExecutionAddress = %X"),Process->Program->ExecAddress);
+    str.Printf("ExecutionAddress = %X", Process->Program->ExecAddress);
     savefile.AddLine(str);
-    str.Printf(_("EndAddress = %X"),Process->Program->EndAddress);
+    str.Printf("EndAddress = %X", Process->Program->EndAddress);
     savefile.AddLine(str);
-    str = _("[\\HEADER]\n");
+    str = "[\\HEADER]\n";
     savefile.AddLine(str);
 }
 
@@ -135,15 +135,16 @@ void ProjectManager::writeProglabel(wxTextFile &savefile)
     int i,j;
     if (!Process->prog_labels->IsEmpty())
     {
-        savefile.AddLine(_("[PROGLABEL]"));
+        savefile.AddLine("[PROGLABEL]");
         for (i = 0; i < Process->prog_labels->GetCount(); i++)
         {
             label = Process->prog_labels->GetLabelItem(i);
             if (label != 0)
             {
-                str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
-                for (j = 0; j < label->LabelUsers->GetCount(); j++)
-                    str << wxString::Format(_(" %d"),label->LabelUsers->Item(j));
+                str.Printf("%s = %X", label->LabelStr.c_str(), label->Address);
+                if (label->LabelUsers != 0)
+                    for (j = 0; j < label->LabelUsers->GetCount(); j++)
+                        str << wxString::Format(" %d",label->LabelUsers->Item(j));
                 savefile.AddLine(str);
             }
         }
@@ -162,20 +163,21 @@ void ProjectManager::writeVarlabel(wxTextFile &savefile)
     int i,j;
     if (!Process->var_labels->IsEmpty())
     {
-        savefile.AddLine(_("[VARLABEL]"));
+        savefile.AddLine("[VARLABEL]");
         for (i = 0; i < Process->var_labels->GetCount(); i++)
         {
             label = Process->var_labels->GetLabelItem(i);
             if (label != 0)
             {
-                str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
-                for (j = 0; j < label->LabelUsers->GetCount(); j++)
-                    str << wxString::Format(_(" %d"),label->LabelUsers->Item(j));
+                str.Printf("%s = %X", label->LabelStr.c_str(), label->Address);
+                if (label->LabelUsers != 0)
+                    for (j = 0; j < label->LabelUsers->GetCount(); j++)
+                        str << wxString::Format(" %d",label->LabelUsers->Item(j));
                 savefile.AddLine(str);
             }
         }
 
-        str = _("[\\VARLABEL]\n");
+        str = "[\\VARLABEL]\n";
         savefile.AddLine(str);
     }
 }
@@ -188,20 +190,21 @@ void ProjectManager::writeIOlabel(wxTextFile &savefile)
     int i,j;
     if (!Process->io_labels->IsEmpty())
     {
-        savefile.AddLine(_("[IOLABEL]"));
+        savefile.AddLine("[IOLABEL]");
         for (i = 0; i < Process->io_labels->GetCount(); i++)
         {
             label = Process->io_labels->GetLabelItem(i);
             if (label !=0)
             {
-                str.Printf(_("%s = %X"),label->LabelStr.c_str(),label->Address);
-                for (j = 0; j < label->LabelUsers->GetCount(); j++)
-                    str << wxString::Format(_(" %d"),label->LabelUsers->Item(j));
+                str.Printf("%s = %X", label->LabelStr.c_str(), label->Address);
+                if (label->LabelUsers != 0)
+                    for (j = 0; j < label->LabelUsers->GetCount(); j++)
+                        str << wxString::Format(" %d",label->LabelUsers->Item(j));
                 savefile.AddLine(str);
             }
         }
 
-        str = _("[\\IOLABEL]\n");
+        str = "[\\IOLABEL]\n";
         savefile.AddLine(str);
     }
 }
@@ -256,18 +259,18 @@ void ProjectManager::writeCodeLine(wxTextFile &savefile)
     CodeViewItem *cvi;
     if (m_codeview->m_CodeViewLine->GetCount() > 0)
     {
-        savefile.AddLine(_("[CVLINE]"));
+        savefile.AddLine("[CVLINE]");
         for (i = 0; i < m_codeview->m_CodeViewLine->GetCount(); i++)
         {
             cvi = m_codeview->m_CodeViewLine->getData(i);
-            str.Printf(_("%d %d %d %d"),cvi->Org, cvi->Dasmitem, cvi->LabelProgAddr, cvi->LabelVarAddr);
+            str.Printf("%d %d %d %d", cvi->Org, cvi->Dasmitem, cvi->LabelProgAddr, cvi->LabelVarAddr);
             if (cvi->Comment != 0)
             {
-                str << wxString::Format(_(" \"%s\""),cvi->Comment->CommentStr.c_str());
+                str << wxString::Format(" \"%s\"",cvi->Comment->CommentStr.c_str());
             }
             savefile.AddLine(str);
         }
-        savefile.AddLine(_("[\\CVLINE]"));
+        savefile.AddLine("[\\CVLINE]");
     }
 }
 
@@ -307,20 +310,20 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
     bool foundHeader;
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[HEADER]"));
+    foundHeader = str.IsSameAs("[HEADER]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[HEADER]"));
+        foundHeader = str.IsSameAs("[HEADER]");
     }
 
     if ((!openfile.Eof()) && foundHeader)
     {
         str = openfile.GetNextLine();
-        while ((!openfile.Eof()) && (str != _("[\\HEADER]")))
+        while ((!openfile.Eof()) && (str != "[\\HEADER]"))
         {
             i = str.Find('=');
-            if ((str.Left(4) == _("File")) && (i != wxNOT_FOUND))
+            if ((str.Left(4) == "File") && (i != wxNOT_FOUND))
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
@@ -328,25 +331,25 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 str_debug << str_arg << _(" ");
             }
 
-            if ((str.Left(4) == _("Type")) && (i != wxNOT_FOUND))
+            if ((str.Left(4) == "Type") && (i != wxNOT_FOUND))
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
 
-                if (str_arg == _("COM"))
+                if (str_arg == "COM")
                     Process->Program->SetFileType(COM);
                 else
-                    if (str_arg == _("ROM"))
+                    if (str_arg == "ROM")
                         Process->Program->SetFileType(ROM);
                     else
-                        if (str_arg == _("BIN"))
+                        if (str_arg == "BIN")
                             Process->Program->SetFileType(BIN);
                         else
                             Process->Program->SetFileType(UNKNOWN);
-                str_debug << wxString::Format(_("Type = %d "),Process->Program->GetFileType());
+                str_debug << wxString::Format("Type = %d ",Process->Program->GetFileType());
 
             }
-            if ((str.Left(12) == _("StartAddress")) && (i != wxNOT_FOUND))
+            if ((str.Left(12) == "StartAddress") && (i != wxNOT_FOUND))
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
@@ -357,10 +360,10 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                     Process->Program->StartAddress = (uint)conv;
                 else
                     Process->Program->StartAddress = 0;
-                str_debug << wxString::Format(_("Start = %X "),Process->Program->StartAddress);
+                str_debug << wxString::Format("Start = %X ",Process->Program->StartAddress);
             }
 
-            if ((str.Left(16) == _("ExecutionAddress")) && (i != wxNOT_FOUND))
+            if ((str.Left(16) == "ExecutionAddress") && (i != wxNOT_FOUND))
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
@@ -371,10 +374,10 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                     Process->Program->ExecAddress = (uint)conv;
                 else
                     Process->Program->ExecAddress = 0;
-                str_debug << wxString::Format(_("Exec = %X "),Process->Program->ExecAddress);
+                str_debug << wxString::Format("Exec = %X ", Process->Program->ExecAddress);
             }
 
-            if ((str.Left(10) == _("EndAddress")) && (i != wxNOT_FOUND))
+            if ((str.Left(10) == "EndAddress") && (i != wxNOT_FOUND))
             {
                 i++;
                 str_arg = str.Right(str.Len() - i - 1);
@@ -386,7 +389,7 @@ bool ProjectManager::readHeader(wxTextFile &openfile)
                 else
                     Process->Program->EndAddress = 0;
 
-                str_debug << wxString::Format(_("End = %X\n"),Process->Program->EndAddress);
+                str_debug << wxString::Format("End = %X\n", Process->Program->EndAddress);
             }
             str = openfile.GetNextLine();
         }
@@ -409,16 +412,16 @@ void ProjectManager::readLabels(wxTextFile &openfile)
     bool			foundHeader;
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[PROGLABEL]"));
+    foundHeader = str.IsSameAs("[PROGLABEL]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[PROGLABEL]"));
+        foundHeader = str.IsSameAs("[PROGLABEL]");
     }
     if (foundHeader)
     {
         str = openfile.GetNextLine();
-        while ((!openfile.Eof()) && (str != _("[\\PROGLABEL]")))
+        while ((!openfile.Eof()) && (str != "[\\PROGLABEL]"))
         {
             i = str.Find('=');
             str_name = str.Left(i);
@@ -451,16 +454,16 @@ void ProjectManager::readLabels(wxTextFile &openfile)
 
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[VARLABEL]"));
+    foundHeader = str.IsSameAs("[VARLABEL]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[VARLABEL]"));
+        foundHeader = str.IsSameAs("[VARLABEL]");
     }
     if (foundHeader)
     {
         str = openfile.GetNextLine();
-        while ((!openfile.Eof()) && (str != _("[\\VARLABEL]")))
+        while ((!openfile.Eof()) && (str != "[\\VARLABEL]"))
         {
             i = str.Find('=');
             str_name = str.Left(i);
@@ -492,16 +495,16 @@ void ProjectManager::readLabels(wxTextFile &openfile)
     }
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[IOLABEL]"));
+    foundHeader = str.IsSameAs("[IOLABEL]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[IOLABEL]"));
+        foundHeader = str.IsSameAs("[IOLABEL]");
     }
     if (foundHeader)
     {
         str = openfile.GetNextLine();
-        while ((!openfile.Eof()) && (str != _("[\\IOLABEL]")))
+        while ((!openfile.Eof()) && (str != "[\\IOLABEL]"))
         {
             i = str.Find('=');
             str_name = str.Left(i);
@@ -563,11 +566,11 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
     count = 0;
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[DASM]"));
+    foundHeader = str.IsSameAs("[DASM]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[DASM]"));
+        foundHeader = str.IsSameAs("[DASM]");
     }
 
     if (foundHeader)
@@ -576,7 +579,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
 
         mnfailed = false;
 
-        while ((!openfile.Eof()) && (str != _("[\\DASM]")))
+        while ((!openfile.Eof()) && (str != "[\\DASM]"))
         {
             ParseString(str, arr_str);
             de = new DAsmElement(Process->Program);
@@ -651,7 +654,7 @@ void ProjectManager::readDasmData(wxTextFile &openfile)
             str = openfile.GetNextLine();
         }
     }
-    LogIt(wxString::Format(_("readDasmData: Dasm Lines %d.\n"),count));
+    LogIt(wxString::Format("readDasmData: Dasm Lines %d.\n", count));
 }
 
 
@@ -670,18 +673,18 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
     j = 0;
 
     str = openfile.GetFirstLine();
-    foundHeader = str.IsSameAs(_("[CVLINE]"));
+    foundHeader = str.IsSameAs("[CVLINE]");
     while ((!openfile.Eof()) && (!foundHeader))
     {
         str = openfile.GetNextLine();
-        foundHeader = str.IsSameAs(_("[CVLINE]"));
+        foundHeader = str.IsSameAs("[CVLINE]");
     }
 
     if (foundHeader)
     {
         lineOK = false;
         str = openfile.GetNextLine();
-        while ((!openfile.Eof()) && (str != _("[\\CVLINE]")))
+        while ((!openfile.Eof()) && (str != "[\\CVLINE]"))
         {
             org = dsm = la = lb = -1;
             ParseString(str,arr_str);
@@ -746,7 +749,7 @@ void ProjectManager::readCodeLine(wxTextFile &openfile)
             str = openfile.GetNextLine();
         }
     }
-    LogIt(wxString::Format(_("readCodeLine: Code lines %d.\n"),count));
+    LogIt(wxString::Format("readCodeLine: Code lines %d.\n", count));
 }
 
 

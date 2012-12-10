@@ -40,7 +40,18 @@ DAsmData::~DAsmData()
 
 void DAsmData::Clear()
 {
-	m_DasmList.clear();
+    DAsmElement *de;
+    int size;
+
+    size = m_DasmList.size();
+
+    for(int i = 0; i < size; i++)
+    {
+        de = m_DasmList.back();
+        if (de != 0)
+            delete de;
+        m_DasmList.pop_back();
+    }
 }
 
 
@@ -93,7 +104,7 @@ void DAsmData::DelDasm(uint position)
     if (position < GetCount())
 	{
 		de = GetData(position);
-		LogIt(wxString::Format("Erase item %d, mnemonic = %s\n", position, de->GetMnemonicStr(0)));
+		LogIt(wxString::Format("Erase item %d, mnemonic = %s", position, de->GetMnemonicStr(0)));
 		it = m_DasmList.begin() + position;
 		m_DasmList.erase(it);
 		totalAllocated -= sizeof(DAsmElement);
@@ -242,7 +253,7 @@ int DAsmData::FindAddress(uint address)
         ret = f + 1;
 
     #ifdef IDZ80_DASMED
-    LogIt(wxString::Format("Number of dasmed items: %d.  Returning item: %d.   Address to find near: %.4X.  Address found: %.4X\n", f, ret, address, findaddress));
+    LogIt(wxString::Format("Number of dasmed items: %d.  Returning item: %d.   Address to find near: %.4X.  Address found: %.4X", f, ret, address, findaddress));
     #endif
 
     return ret;

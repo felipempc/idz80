@@ -129,12 +129,14 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	main_menu->Append(menu_item);
 	main_menu_bar->Append(main_menu, "&Tools");
 
+    #ifdef IDZ80DEBUG
 	main_menu = new wxMenu();
 	menu_item = new wxMenuItem(main_menu, idMenuMnemLoad, "&Load", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
 	menu_item = new wxMenuItem(main_menu, idMenuMnemInfo, "&Info\tAlt+i", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
 	main_menu_bar->Append(main_menu, "&Mnemonics");
+    #endif
 
 	main_menu = new wxMenu();
 	menu_item = new wxMenuItem(main_menu, idMenuHelpContents, "&Contents\tAlt+c", wxEmptyString, wxITEM_NORMAL);
@@ -428,8 +430,12 @@ void IDZ80::SetupMenuEvents()
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsDisAsm, this, idMenuToolsDasmAll);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolAutoLabel, this, idMenuToolsAutoLabel);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuToolsGenCode, this, idMenuToolsGenCode);
+
+	#ifdef IDZ80DEBUG
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsLoad, this, idMenuMnemLoad);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsInfo, this, idMenuMnemInfo);
+	#endif
+
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuHelpAbout, this, IdMenuHelpAbout);
 }
 

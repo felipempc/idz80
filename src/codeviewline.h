@@ -17,13 +17,13 @@
 #include "d_asm_element.h"
 #include "dasmdata.h"
 
-struct stComment
+struct CommentItem //stComment
 {
     wxString CommentStr;
 };
-typedef struct stComment CommentItem;
+//typedef struct stComment CommentItem;
 
-struct stCodeViewLine
+struct CodeViewItem//stCodeViewLine
 {
     CommentItem *Comment;
     short int LabelProgAddr;
@@ -32,7 +32,7 @@ struct stCodeViewLine
     int Org;
     wxRect *RectArg1, *RectArg2;
 };
-typedef struct stCodeViewLine CodeViewItem;
+//typedef struct stCodeViewLine CodeViewItem;
 
 class CodeViewLine
 {

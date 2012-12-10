@@ -265,7 +265,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     CodeViewItem	*cvi;
     wxString		str;
     uint			commentoffset;
-    int				linecode, linepixel, i;
+    int				linepixel, i;
     uint			address;
     //bool			labelfailed;
     DAsmElement		*de;
@@ -274,7 +274,6 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 
     GetClientSize(&width, &heigh);
 
-    linecode = fromline;
     linepixel = start_y;
 
     commentoffset = 0;
@@ -284,7 +283,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     address = 0;
     while (i < count)
     {
-        cvi = m_CodeViewLine->getData(linecode + i);
+        cvi = m_CodeViewLine->getData(fromline + i);
         if (cvi != 0)
 		{
 			/* -------------------------------------------------

@@ -98,6 +98,7 @@
 		<Unit filename="../src/codegenerator.h" />
 		<Unit filename="../src/codeview.cpp" />
 		<Unit filename="../src/codeview.h" />
+		<Unit filename="../src/codeview_events.cpp" />
 		<Unit filename="../src/codeview_evmouse.cpp" />
 		<Unit filename="../src/codeview_render.cpp" />
 		<Unit filename="../src/codeviewline.cpp" />

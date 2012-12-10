@@ -24,6 +24,7 @@ SubRoutineCtrl::SubRoutineCtrl(LogWindow *logparent)
 
 SubRoutineCtrl::~SubRoutineCtrl()
 {
+    Clear();
     delete CalledSubroutines;
 }
 
@@ -114,9 +115,29 @@ void SubRoutineCtrl::Clear()
 {
     CalledSubroutines->Clear();
     ActualSubRoutine = 0;
-    SubRoutines.clear();
+    ClearSubRoutines();
     StackPointer = 0;
 }
+
+
+
+
+void SubRoutineCtrl::ClearSubRoutines()
+{
+    SubRoutineData *srd;
+    int size;
+
+    size = SubRoutines.size();
+
+    for(int i = 0; i < size; i++)
+    {
+        srd = SubRoutines.back();
+        if (srd != 0)
+            delete srd;
+        SubRoutines.pop_back();
+    }
+}
+
 
 
 int SubRoutineCtrl::GetCounter()

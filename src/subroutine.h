@@ -53,6 +53,8 @@ class SubRoutineCtrl: public LogBase
     SubRoutineData      *ActualSubRoutine;
     SortedIntArray      *CalledSubroutines;
     bool                ReturnConditional;
+
+    void ClearSubRoutines();
 };
 
 

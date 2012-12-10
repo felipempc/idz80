@@ -197,8 +197,11 @@ bool LabelListCtrl::DelLabel(uint addr)
         lbl = (LabelItem *)GetItemData(i);
         if (lbl != 0)
         {
-            lbl->LabelUsers->Clear();
-            delete lbl->LabelUsers;
+            if (lbl->LabelUsers != 0)
+            {
+                lbl->LabelUsers->Clear();
+                delete lbl->LabelUsers;
+            }
             delete lbl;
             ret = true;
         }

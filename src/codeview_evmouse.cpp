@@ -63,6 +63,10 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 {
     FillSelectedItemInfo(event.GetPosition());
+
+    if (HasCapture())
+        ReleaseMouse();
+
 }
 
 
@@ -121,105 +125,20 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 
 void CodeView::OnMouseRightUp(wxMouseEvent& event)
 {
-    DAsmElement *de;
-    wxMenu		*argStyleSubMenu = 0,
-				*organizeDataSubMenu = 0,
-				*labelMenu = 0;
-    wxPoint		pt;
-    wxClientDC  dc(this);
-	bool		labeled = false,
-				hascomments = false;
+    wxMenu      *PopUp;
 
     if (!IsEmpty)
     {
-
         PopUp = new wxMenu();
-        de = m_iteminfo.dasmitem;
 
-		// ************** MULTISELECTION ********************>
         if (SelectedCount > 1)
         {
-            switch (GetTypeMultiselection(hascomments))
-            {
-                case et_Instruction:
-                                PopUp->Append(idPOPUP_MAKEDATA, "Make data\td");
-                                break;
-                case et_Data:
-								organizeDataSubMenu = new wxMenu();
-                                PopUp->Append(idPOPUP_DISASM, "Disassemble\tc");
-                                organizeDataSubMenu->Append(idPOPUP_OD_STRING, "String");
-                                organizeDataSubMenu->Append(idPOPUP_OD_MATRIX, "Matrix");
-                                organizeDataSubMenu->Append(idPOPUP_OD_NUMBER, "Number");
-                                PopUp->AppendSeparator();
-								PopUp->Append(idPOPUP_ORGANIZEDATA, "Organize data", organizeDataSubMenu);
-                                break;
-                default:
-                                PopUp->Append(idPOPUP_MAKEDATA, "Make it data\td");
-                                break;
-            }
-            if (hascomments)
-            {
-				PopUp->AppendSeparator();
-				PopUp->Append(idPOPUP_DELCOMMENT,  "Del comments");
-			}
+            CreatePopupMenuMultiSelection(PopUp);
         }
-        // ************** MULTISELECTION ********************<
         else
-        { // ************** ONE SELECTION ********************>
-            //TODO: Implement rename/delete label routine
-
-            switch(m_iteminfo.type)
-            {
-				case 	siInstructionLabel:
-						                if ((de != 0) &&
-						                    (de->MnemonicObject->isCall() || de->MnemonicObject->isJump()))//de->GetBranchType() != BR_NONE))
-						                {
-											PopUp->Append(idPOPUP_GOTO, "Goto label");
-											PopUp->AppendSeparator();
-										}
-				case	siLineLabelProg:
-				case	siLineLabelVar:
-										labelMenu = new wxMenu();
-										labelMenu->Append(idPOPUP_EDITLABEL, "Edit");
-										labelMenu->AppendSeparator();
-										labelMenu->Append(idPOPUP_DELLABEL, "Delete");
-
-				case	siInstruction:
-										if ((m_iteminfo.type != siLineLabelProg) &&
-										    (m_iteminfo.type != siLineLabelVar))
-											PopUp->Append(idPOPUP_MAKEDATA,_T("Make data"));
-										break;
-				case	siData:
-										PopUp->Append(idPOPUP_DISASM, "Disassemble");
-
-
-			}
-
-			if (labelMenu != 0)
-				PopUp->Append(idPOPUP_LBL, "Label", labelMenu);
-
-			// Clicked over an argument
-			if (m_iteminfo.argSelected > 0)
-			{
-				argStyleSubMenu = new wxMenu();
-
-				argStyleSubMenu->Append(idPOPUP_ARG_BIN, "Binary");
-				argStyleSubMenu->Append(idPOPUP_ARG_DEC, "Decimal");
-				argStyleSubMenu->Append(idPOPUP_ARG_HEX, "Hexadecimal");
-				PopUp->Append(idPOPUP_ARG_STYLE, "Style data", argStyleSubMenu);
-			}
-
-			PopUp->AppendSeparator();
-
-            if ((m_iteminfo.type == siComments) || (m_iteminfo.hasComment))
-            {
-                PopUp->Append(idPOPUP_EDITCOMMENT, "Edit comment");
-                PopUp->Append(idPOPUP_DELCOMMENT, "Del comment");
-            }
-            else
-                PopUp->Append(idPOPUP_ADDCOMMENT, "Add comment");
-
-        } // ************** ONE SELECTION ********************<
+        {
+            CreatePopupMenuSingleSelection(PopUp);
+        }
 
         PopupMenu(PopUp);
         delete PopUp;
@@ -235,10 +154,16 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
 {
 	if (event.Dragging())
 	{
+	    if (!Selecting)
+            CursorLastPosition = CursorPosition;
+
+        if (!HasCapture())
+            CaptureMouse();
+
 	    CalcCursorPosition(event.GetPosition());
         ClearCursor();
 
-		if (CursorPosition > GetLastLine())
+		if (IncompleteArea.Contains(event.GetPosition()) && (CursorPosition < GetLastItem()))
 		{
 			Scroll(-1, GetFirstLine() + 1);
 			RefreshRect(CalcCursorRfshRect());
@@ -249,11 +174,10 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
             UpdateSelectedRect();
             RefreshRect(CalcSelectedRect());
         }
-
-        RefreshRect(CalcCursorRfshRect());
+        else
+            RefreshRect(CalcCursorRfshRect());
 	}
 }
-
 
 
 
@@ -281,4 +205,13 @@ void CodeView::OnMouseWheel(wxMouseEvent& event)
     }
 }
 
+void CodeView::OnMouseEnterWindow(wxMouseEvent& event)
+{
+    LogIt("Mouse enter the CodeView window...");
+}
 
+
+void CodeView::OnMouseLeaveWindow(wxMouseEvent& event)
+{
+    LogIt("...Mouse leave the CodeView window.");
+}
