@@ -46,6 +46,7 @@ const long IDZ80::idMenuToolsAutoLabel = wxNewId();
 const long IDZ80::idMenuToolsGenCode = wxNewId();
 const long IDZ80::idMenuMnemLoad = wxNewId();
 const long IDZ80::idMenuMnemInfo = wxNewId();
+const long IDZ80::idMenuSettingsColors = wxNewId();
 const long IDZ80::idMenuHelpContents = wxNewId();
 const long IDZ80::IdMenuHelpAbout = wxNewId();
 const long IDZ80::ID_STATUSBAR1 = wxNewId();
@@ -128,6 +129,13 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	menu_item = new wxMenuItem(main_menu, idMenuToolsGenCode, "Generate Code", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
 	main_menu_bar->Append(main_menu, "&Tools");
+
+	main_menu = new wxMenu();
+	menu_item = new wxMenuItem(main_menu, idMenuSettingsColors, "Colors", wxEmptyString, wxITEM_NORMAL);
+	main_menu->Append(menu_item);
+	main_menu_bar->Append(main_menu, "&Settings");
+
+
 
     #ifdef IDZ80DEBUG
 	main_menu = new wxMenu();
@@ -435,6 +443,8 @@ void IDZ80::SetupMenuEvents()
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsLoad, this, idMenuMnemLoad);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuMnemonicsInfo, this, idMenuMnemInfo);
 	#endif
+
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuSettingsColor, this, idMenuSettingsColors);
 
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuHelpAbout, this, IdMenuHelpAbout);
 }
@@ -830,6 +840,12 @@ void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
     codeview->Refresh();
 }
 
+
+
+void IDZ80::OnMenuSettingsColor(wxCommandEvent& event)
+{
+    LogIt("Change colors !");
+}
 
 
 

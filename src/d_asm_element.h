@@ -58,7 +58,6 @@ class DAsmElement: public LogBase
     public:
 
         void Clear();
-        wxString getMnemonic(LabelListCtrl *labels);
         wxString getCodeStr();
         wxString getAsciiStr();
         uint getArgument(uint arg, uint _baseaddress);
@@ -95,6 +94,8 @@ class DAsmElement: public LogBase
 
         bool isData();
         bool isInstruction();
+        bool isArgumentProgramAddress();
+        bool isArgumentVariableAddress();
 
         MnemonicItem        *MnemonicObject;
 

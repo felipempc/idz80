@@ -46,8 +46,6 @@ enum {
     idPOPUP_DELCOMMENT,
     idPOPUP_ADDCOMMENT,
     idPOPUP_LBL,
-    //idPOPUP_LBL_EDIT,
-    //idPOPUP_LBL_DEL
 };
 
 

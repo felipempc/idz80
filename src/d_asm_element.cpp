@@ -34,7 +34,6 @@ DAsmElement::DAsmElement(RawData* rawdata)
 
 DAsmElement::~DAsmElement()
 {
-	LogIt("I was deleted !\n");
     Clear();
 }
 
@@ -394,5 +393,18 @@ bool DAsmElement::isInstruction()
 }
 
 
+bool DAsmElement::isArgumentProgramAddress()
+{
+    ArgumentTypes argtype = GetArgumentType(0);
 
+    return ((argtype == ARG_ABS_ADDR) || (argtype == ARG_REL_ADDR));
+}
+
+
+bool DAsmElement::isArgumentVariableAddress()
+{
+    ArgumentTypes argtype = GetArgumentType(0);
+
+    return (argtype == ARG_VARIABLE);
+}
 

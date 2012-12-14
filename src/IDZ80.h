@@ -63,6 +63,7 @@ class IDZ80: public wxFrame, LogBase
 		static const long idMenuToolsGenCode;
 		static const long idMenuMnemLoad;
 		static const long idMenuMnemInfo;
+		static const long idMenuSettingsColors;
 		static const long idMenuHelpContents;
 		static const long IdMenuHelpAbout;
 		static const long ID_STATUSBAR1;
@@ -107,19 +108,26 @@ class IDZ80: public wxFrame, LogBase
 		void OnMenuMnemonicsLoad(wxCommandEvent& event);
 		void OnMenuMnemonicsInfo(wxCommandEvent& event);
 		void OnMenuHelpAbout(wxCommandEvent& event);
-		void OnMenuToolsDisAsm(wxCommandEvent& event);
-		void OnMenuViewDisassemblyWindow(wxCommandEvent& event);
+
 		void OnAuiPaneClose(wxAuiManagerEvent& event);
+
+		void OnMenuViewDisassemblyWindow(wxCommandEvent& event);
 		void OnMenuViewProgramLabels(wxCommandEvent& event);
 		void OnMenuViewVarLabels(wxCommandEvent& event);
 		void OnMenuViewIOLabels(wxCommandEvent& event);
 		void OnMenuViewConstLabels(wxCommandEvent& event);
-		void OnMenuToolAutoLabel(wxCommandEvent& event);
+
 		void OnMenuFileSaveProject(wxCommandEvent& event);
 		void OnMenuFileSaveAsProject(wxCommandEvent& event);
 		void OnMenuFileInfo(wxCommandEvent& event);
 		void OnMenuFileClose(wxCommandEvent& event);
+
+		void OnMenuToolsDisAsm(wxCommandEvent& event);
 		void OnMenuToolsGenCode(wxCommandEvent& event);
+		void OnMenuToolAutoLabel(wxCommandEvent& event);
+
+		void OnMenuSettingsColor(wxCommandEvent& event);
+
 		void OnFirstIdle(wxIdleEvent &event);
 };
 

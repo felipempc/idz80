@@ -254,34 +254,6 @@ bool Decoder::GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, u
 
 
 
-/*
-bool Decoder::GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr)
-{
-    bool    ret = false;
-    int     address;
-
-    #ifdef IDZ80_DECODER
-    LogIt(wxString::Format("[0x%.4X] Searching for FAR entries.", m_actualaddress));
-    #endif
-
-    while (jmplist->GetCount() > 0)
-    {
-        address = jmplist->Item(0);
-
-        ret = true;
-        nextaddr = address;
-        if (jmplist->Index(address) != wxNOT_FOUND)
-            jmplist->Remove(address);
-        #ifdef IDZ80_DECODER
-        LogIt(wxString::Format("Chosen : 0x%.4X", nextaddr));
-        #endif
-        break;
-    }
-    return ret;
-}
-*/
-
-
 
 
 void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)

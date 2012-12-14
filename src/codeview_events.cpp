@@ -413,21 +413,34 @@ void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
 void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
+    DAsmElement *de;
     cvi = m_CodeViewLine->getData(CursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi != 0)
 	{
+	    de = m_iteminfo.dasmitem;
+
 		if (cvi->LabelProgAddr >= 0)
 			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
+        else
+            if ((de != 0) && (de->isArgumentProgramAddress()))
+                Process->prog_labels->EditLabelDialog(de->getArgument(0, 0));
 		if (cvi->LabelVarAddr >= 0)
 			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
+        else
+            if ((de != 0) && (de->isArgumentVariableAddress()))
+                Process->var_labels->EditLabelDialog(de->getArgument(0, 0));
+
+        Refresh();
 	}
-	LogIt("Label renamed !!\n");
 }
 
 void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 {
-	LogIt("Label deleted !!\n");
+    if ((m_iteminfo.type == siLineLabelProg) || (m_iteminfo.type == siLineLabelVar))
+        LogIt("Address Label deleted !!");
+    if (m_iteminfo.type == siInstructionLabel)
+        LogIt("Instruction Label deleted !!");
 }
 
 

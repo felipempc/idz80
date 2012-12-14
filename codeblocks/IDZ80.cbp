@@ -75,8 +75,6 @@
 		<Linker>
 			<Add option="-mthreads" />
 		</Linker>
-		<Unit filename="../src/DebugView.cpp" />
-		<Unit filename="../src/DebugView.h" />
 		<Unit filename="../src/EditLabelDlg.cpp" />
 		<Unit filename="../src/EditLabelDlg.h" />
 		<Unit filename="../src/FileTypeDialog.cpp" />
@@ -109,6 +107,8 @@
 		<Unit filename="../src/dasmdata.h" />
 		<Unit filename="../src/decoder.cpp" />
 		<Unit filename="../src/decoder.h" />
+		<Unit filename="../src/dialog_file_settings.cpp" />
+		<Unit filename="../src/dialog_file_settings.h" />
 		<Unit filename="../src/labelmanager.cpp" />
 		<Unit filename="../src/labelmanager.h" />
 		<Unit filename="../src/labelslist.cpp" />
