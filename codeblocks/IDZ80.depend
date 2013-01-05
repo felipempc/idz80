@@ -3977,7 +3977,7 @@
 1351285955 source:x:\idz80\src\idz80debugbase.cpp
 	"idz80debugbase.h"
 
-1355518781 source:x:\idz80\src\idz80.cpp
+1356763906 source:x:\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -3989,6 +3989,7 @@
 	<wx/font.h>
 	<wx/intl.h>
 	<wx/string.h>
+	"dialog_file_settings.h"
 
 1355518671 x:\idz80\src\idz80.h
 	<wx/menu.h>
@@ -4111,4 +4112,21 @@
 	"codeview.h"
 
 1341842582 k:\wxw\wx294\lib\gcc_dll\mswu\wx\setup.h
+
+1356764110 source:x:\idz80\src\dialog_file_settings.cpp
+	"dialog_file_settings.h"
+	<wx/intl.h>
+	<wx/button.h>
+	<wx/string.h>
+
+1356764136 x:\idz80\src\dialog_file_settings.h
+	<wx/notebook.h>
+	<wx/sizer.h>
+	<wx/stattext.h>
+	<wx/radiobox.h>
+	<wx/textctrl.h>
+	<wx/panel.h>
+	<wx/dialog.h>
+	<wx/checkbox.h>
+	"rawdata.h"
 

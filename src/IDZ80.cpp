@@ -24,6 +24,7 @@
 #include <wx/intl.h>
 #include <wx/string.h>
 
+#include "dialog_file_settings.h"
 
 
 const long IDZ80::ID_TEXTCTRL1 = wxNewId();
@@ -259,6 +260,8 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     if (MaximizeMainWindow)
         Maximize();
+
+
 }
 
 
@@ -458,7 +461,8 @@ void IDZ80::OpenProgramFile(wxString filename)
 	static bool simulateexecution = false;
 	wxString    info,
 				caption;
-	FileTypeDialog config(this);
+	//FileTypeDialog config(this);
+	FileSettingsDialog config(process->Program);
 
     if (filename.IsEmpty())
         filename = DialogLoadProgramFile();
@@ -476,7 +480,7 @@ void IDZ80::OpenProgramFile(wxString filename)
 		info.Printf("%d bytes\n",process->Program->GetBufferSize());
 		PanelLog->AppendText(info);
 
-		config.SetData(*process->Program);
+		config.SetData();
 		if (config.ShowModal() == wxID_OK)
         {
             wxMenuBar *mb;
@@ -506,12 +510,9 @@ void IDZ80::OpenProgramFile(wxString filename)
             process->Disassembled->AddOrgAddress(0, process->Program->StartAddress);
 
             m_project->New();
-            if (config.cb_autodisassemble->IsChecked())
+            if (config.WantsAutoDisassembly())
             {
-                if (config.cb_simulateexecution->IsChecked())
-                    simulateexecution = true;
-                else
-                    simulateexecution = false;
+                simulateexecution = config.WantsSimulateExecution();
 
                 wxCommandEvent ev_dasm(wxEVT_COMMAND_MENU_SELECTED, idMenuToolsDasmAll);
                 ev_dasm.SetClientData(&simulateexecution);

@@ -24,27 +24,27 @@
 #include <wx/checkbox.h>
 #include "rawdata.h"
 
+
 class FileSettingsDialog: public wxDialog
 {
 	public:
 
-		FileSettingsDialog();
+		FileSettingsDialog(RawData *program);
 		virtual ~FileSettingsDialog();
 
 
 		wxTextCtrl		*Txt_ExecAddress;
 		wxTextCtrl		*Txt_EndAddress;
 		wxTextCtrl		*Txt_StartAddress;
-		wxRadioBox		*RadioBox1;
-		wxCheckBox		*cb_autodisassemble;
-		wxCheckBox		*cb_simulateexecution;
-		wxCheckBox		*cb_cartridge;
 
 
-		void SetData(RawData& program);
+		void SetData();
 		uint GetStartAddress();
 		uint GetExecAddress();
 		uint GetEndAddress();
+		bool WantsAutoDisassembly();
+		bool WantsAutoLabel();
+		bool WantsSimulateExecution();
 
 	protected:
 
@@ -54,18 +54,17 @@ class FileSettingsDialog: public wxDialog
 		static const long ID_TXTCTRL_EXECUTION;
 		static const long ID_TXT_END;
 		static const long ID_TXTCTRL_END;
-		static const long ID_PANEL2;
 		static const long ID_RADIOBOX1;
 		static const long ID_PANEL1;
-		static const long ID_PANEL3;
-		static const long ID_PANEL4;
-		static const long ID_CHKBOX1;
-		static const long ID_CHKBOX2;
-		static const long ID_CHKBOX_CARTRIDGE;
 
 	private:
-        wxBookCtrlBase  *bookCtrl;
-        wxPanel         *main_panel;
+        wxNotebook      *bookCtrl;
+        wxPanel         *main_panel,
+                        *yesno_panel;
+        wxRadioBox      *RadioFileTypeBox;
+        wxCheckBox      *AutoLabel_CheckBox,
+                        *AutoDisassemble_CheckBox,
+                        *SimulateExecution_CheckBox;
 
         uint	StartAddress,
 				ExecAddress,
@@ -74,10 +73,12 @@ class FileSettingsDialog: public wxDialog
 
 		void SyncAddress();
         void OnRadioBoxSelect(wxCommandEvent &event);
-        void OnChkBoxCartridge(wxCommandEvent &event);
+        void OnSizeEvent(wxSizeEvent &event);
 
-        wxPanel *SetupProgramSettings();
+        void SetupProgramSettings(wxNotebook *book);
+        void CreateAddressBox(wxStaticBoxSizer *boxsizer);
 
+        void SetupDAsmSettings(wxNotebook *book);
 };
 
 #endif

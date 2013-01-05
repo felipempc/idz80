@@ -24,103 +24,46 @@ const long FileSettingsDialog::ID_TXT_EXECUTION = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_EXECUTION = wxNewId();
 const long FileSettingsDialog::ID_TXT_END = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_END = wxNewId();
-const long FileSettingsDialog::ID_PANEL2 = wxNewId();
 const long FileSettingsDialog::ID_RADIOBOX1 = wxNewId();
 const long FileSettingsDialog::ID_PANEL1 = wxNewId();
-const long FileSettingsDialog::ID_PANEL3 = wxNewId();
-const long FileSettingsDialog::ID_PANEL4 = wxNewId();
-const long FileSettingsDialog::ID_CHKBOX1 = wxNewId();
-const long FileSettingsDialog::ID_CHKBOX2 = wxNewId();
-const long FileSettingsDialog::ID_CHKBOX_CARTRIDGE = wxNewId();
 
 
-FileSettingsDialog::FileSettingsDialog()
+
+FileSettingsDialog::FileSettingsDialog(RawData *program)
 {
-	wxBoxSizer		*UpsideSizer;
-	wxFlexGridSizer	*MainSizer;
-	wxFlexGridSizer	*RightSizer;
-	wxStdDialogButtonSizer	*OkCancelSizer;
-	wxStaticBox		*AddressBox;
-	int             addr_x, addr_y;
+	Create(0, wxID_ANY, "Configuration", wxPoint(100, 100), wxSize(300, 200), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "id");
 
-	Create(0, wxID_ANY, "Configuration", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "id");
+	main_panel = new wxPanel(this);
+	yesno_panel = new wxPanel(main_panel);
+	bookCtrl = new wxNotebook(main_panel, wxID_ANY, wxPoint(0,0), wxSize(300, 200), wxNB_TOP);
+    SetupProgramSettings(bookCtrl);
+    SetupDAsmSettings(bookCtrl);
+    bookCtrl->AddPage(new wxPanel(bookCtrl), "Teste");
 
-	//SetClientSize(wxDefaultSize);
-	//Move(wxDefaultPosition);
+    wxBoxSizer *yesno_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxButton *yes_button = new wxButton(yesno_panel, wxID_OK, "OK");
+    yesno_sizer->Add(yes_button, wxSizerFlags(1).Left());
+    yesno_sizer->AddStretchSpacer(1);
+    wxButton *no_button = new wxButton(yesno_panel, wxID_CANCEL, "Cancel");
+    yesno_sizer->Add(no_button, wxSizerFlags(1).Right());
+    yesno_panel->SetSizer(yesno_sizer);
 
-	main_panel = new wxPanel();
-	bookCtrl = new wxBookCtrl(main_panel, wxID_ANY);
+    wxBoxSizer *d_sizer = new wxBoxSizer(wxVERTICAL);
+    d_sizer->Add(bookCtrl, wxSizerFlags(1).Left());
+    d_sizer->Add(yesno_panel, wxSizerFlags(1).Bottom().Center());
+    SetSizerAndFit(d_sizer);
 
-    bookCtrl->AddPage(SetupProgramSettings(), "Program");
 
-/*
-	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(263,257), wxTAB_TRAVERSAL, "ID_PANEL1");
-	Panel3 = new wxPanel(Panel1, ID_PANEL3, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, "ID_PANEL3");
-	Panel4 = new wxPanel(this, ID_PANEL4, wxDefaultPosition, wxSize(339,145), wxTAB_TRAVERSAL, "ID_PANEL4");
-
-	MainSizer = new wxFlexGridSizer(2,1,0,0);
-	UpsideSizer = new wxBoxSizer(wxHORIZONTAL);
-	RightSizer = new wxFlexGridSizer(2,1,0,0);
-
-	AddressBox = new wxStaticBox(Panel1, wxID_ANY, "Address", wxDefaultPosition, wxDefaultSize, 0, "wxID_ANY");
-
-    addr_x = 15;
-    addr_y = 20;
-	StaticText1 = new wxStaticText(AddressBox, ID_TXT_START, "Start", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_START");
-	addr_y += 13;
-	Txt_StartAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_START, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_START");
-	addr_y += 32;
-	StaticText2 = new wxStaticText(AddressBox, ID_TXT_EXECUTION, "Execution", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_EXECUTION");
-	addr_y += 13;
-	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_EXECUTION, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_EXECUTION");
-	addr_y += 32;
-	StaticText3 = new wxStaticText(AddressBox, ID_TXT_END, "End", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_END");
-	addr_y += 13;
-	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_END, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_END");
-	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
-
-	wxString __wxRadioBoxChoices_1[3] =
-	{
-		"ROM",
-		"COM",
-		"BIN"
-	};
-
-	RadioBox1 = new wxRadioBox(Panel1, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
-	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
-	cb_autodisassemble = new wxCheckBox(Panel3, ID_CHKBOX1, "Auto disassemble", wxPoint(8,24), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX1");
-	cb_simulateexecution = new wxCheckBox(Panel3, ID_CHKBOX2, "Simulate Execution", wxPoint(8,48), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX2");
-	cb_cartridge = new wxCheckBox(Panel3, ID_CHKBOX_CARTRIDGE, "Cartridge", wxPoint(8, 72), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX_CARTRIDGE");
-	RightSizer->Add(Panel3, 1, wxTOP|wxALL, 10);
-	UpsideSizer->Add(RightSizer, 1, wxRIGHT|wxALL, 10);
-	Panel1->SetSizer(UpsideSizer);
-	UpsideSizer->SetSizeHints(Panel1);
-	MainSizer->Add(Panel1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 100);
-
-	OkCancelSizer = new wxStdDialogButtonSizer();
-	OkCancelSizer->AddButton(new wxButton(Panel4, wxID_OK, wxEmptyString));
-	OkCancelSizer->AddButton(new wxButton(Panel4, wxID_CANCEL, wxEmptyString));
-	OkCancelSizer->Realize();
-	Panel4->SetSizer(OkCancelSizer);
-	OkCancelSizer->Fit(Panel4);
-	OkCancelSizer->SetSizeHints(Panel4);
-	MainSizer->Add(Panel4, 1, wxALL|wxALIGN_CENTER, 10);
-
-	SetSizer(MainSizer);
-	MainSizer->Fit(this);
-	MainSizer->SetSizeHints(this);
-
-*/
 	Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
-	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &FileSettingsDialog::OnChkBoxCartridge, this, ID_CHKBOX_CARTRIDGE);
-
-	cb_autodisassemble->SetValue(true);
-	cb_simulateexecution->SetValue(false);
-	cb_cartridge->Enable(false);
+    Bind(wxEVT_SIZE, &FileSettingsDialog::OnSizeEvent, this);
 
 	StartAddress = 0;
 	ExecAddress = 0;
 	EndAddress = 0;
+
+	m_program = program;
+
+	Txt_StartAddress->SetFocus();
 }
 
 
@@ -136,96 +79,145 @@ FileSettingsDialog::~FileSettingsDialog()
 
 
 
-wxPanel *FileSettingsDialog::SetupProgramSettings()
+void FileSettingsDialog::SetupProgramSettings(wxNotebook *book)
 {
-    wxPanel *panel_file_type,
-            *panel_options;
-
-    wxStaticText    *text;
-
-	wxBoxSizer		*UpsideSizer;
-	wxFlexGridSizer	*MainSizer;
-	wxFlexGridSizer	*RightSizer;
-
-	wxStaticBox		*AddressBox;
-	int             addr_x, addr_y;
+    wxPanel *panel_file_type;
+	wxBoxSizer  *MainSizer;
+	wxStaticBoxSizer    *AddressBox;
 
 
-    panel_file_type = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(263,257), wxTAB_TRAVERSAL, "ID_PANEL1");
-    panel_options = new wxPanel(panel_file_type, ID_PANEL3, wxDefaultPosition, wxSize(139,145), wxTAB_TRAVERSAL, "ID_PANEL3");
+    panel_file_type = new wxPanel(book, ID_PANEL1, wxDefaultPosition, wxSize(200,200), wxTAB_TRAVERSAL, "ID_PANEL1");
+	MainSizer = new wxBoxSizer(wxHORIZONTAL);
 
-
-	MainSizer = new wxFlexGridSizer(2,1,0,0);
-	UpsideSizer = new wxBoxSizer(wxHORIZONTAL);
-	RightSizer = new wxFlexGridSizer(2,1,0,0);
-
-	AddressBox = new wxStaticBox(panel_file_type, wxID_ANY, "Address", wxDefaultPosition, wxDefaultSize, 0, "wxID_ANY");
-
-    addr_x = 15;
-    addr_y = 20;
-	text = new wxStaticText(AddressBox, ID_TXT_START, "Start", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_START");
-	addr_y += 13;
-	Txt_StartAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_START, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_START");
-	addr_y += 32;
-	text = new wxStaticText(AddressBox, ID_TXT_EXECUTION, "Execution", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_EXECUTION");
-	addr_y += 13;
-	Txt_ExecAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_EXECUTION, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_EXECUTION");
-	addr_y += 32;
-	text = new wxStaticText(AddressBox, ID_TXT_END, "End", wxPoint(addr_x,addr_y), wxDefaultSize, 0, "ID_TXT_END");
-	addr_y += 13;
-	Txt_EndAddress = new wxTextCtrl(AddressBox, ID_TXTCTRL_END, wxEmptyString, wxPoint(addr_x,addr_y), wxDefaultSize, 0, wxDefaultValidator, "ID_TXTCTRL_END");
-	UpsideSizer->Add(AddressBox, 1, wxLEFT|wxEXPAND, 10);
-
-	wxString file_type_list[3] =
+	wxString file_type_list[4] =
 	{
 		"ROM",
+		"ROM (Cartridge)",
 		"COM",
 		"BIN"
 	};
+	RadioFileTypeBox = new wxRadioBox(panel_file_type, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
+    MainSizer->Add(RadioFileTypeBox, wxSizerFlags(0).Left().Top().Border(wxALL, 10).FixedMinSize());
 
-	RadioBox1 = new wxRadioBox(panel_file_type, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 3, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
-	RightSizer->Add(RadioBox1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 1);
-	cb_cartridge = new wxCheckBox(panel_options, ID_CHKBOX_CARTRIDGE, "Cartridge", wxPoint(8, 72), wxDefaultSize, 0, wxDefaultValidator, "ID_CHKBOX_CARTRIDGE");
-	RightSizer->Add(panel_options, 1, wxTOP|wxALL, 10);
-	UpsideSizer->Add(RightSizer, 1, wxRIGHT|wxALL, 10);
-	panel_file_type->SetSizer(UpsideSizer);
-	UpsideSizer->SetSizeHints(panel_file_type);
-	MainSizer->Add(panel_file_type, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 100);
 
-	SetSizer(MainSizer);
-	MainSizer->Fit(this);
-	MainSizer->SetSizeHints(this);
+	AddressBox = new wxStaticBoxSizer(wxVERTICAL, panel_file_type, "Address");
+	CreateAddressBox(AddressBox);
 
-	return (panel_file_type);
+    MainSizer->Add(AddressBox, wxSizerFlags(0).Left().Top().Border(wxALL, 10));
+
+
+	panel_file_type->SetSizer(MainSizer);
+
+
+	book->AddPage(panel_file_type, "Boundary", true);
 }
 
 
 
-void FileSettingsDialog::SetData(RawData& program)
+
+void FileSettingsDialog::CreateAddressBox(wxStaticBoxSizer *boxsizer)
+{
+    wxPanel *panel_address_start,
+            *panel_address_exec,
+            *panel_address_end;
+
+    wxBoxSizer  *address_start_sizer,
+                *address_exec_sizer,
+                *address_end_sizer;
+
+    wxStaticText    *text;
+
+    panel_address_start = new wxPanel(boxsizer->GetStaticBox());
+    address_start_sizer = new wxBoxSizer(wxVERTICAL);
+    text = new wxStaticText(panel_address_start, ID_TXT_START, "Start", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_START");
+    address_start_sizer->Add(text, wxALIGN_LEFT);
+    Txt_StartAddress = new wxTextCtrl(panel_address_start, ID_TXTCTRL_START, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "START_ADDRESS");
+    address_start_sizer->Add(Txt_StartAddress, wxALIGN_LEFT);
+    panel_address_start->SetSizer(address_start_sizer);
+
+    panel_address_exec = new wxPanel(boxsizer->GetStaticBox());
+    address_exec_sizer = new wxBoxSizer(wxVERTICAL);
+    text = new wxStaticText(panel_address_exec, ID_TXT_EXECUTION, "Execution", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_EXECUTION");
+    address_exec_sizer->Add(text, wxALIGN_LEFT);
+    Txt_ExecAddress = new wxTextCtrl(panel_address_exec, ID_TXTCTRL_EXECUTION, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "EXECUTION_ADDRESS");
+    address_exec_sizer->Add(Txt_ExecAddress, wxALIGN_LEFT);
+    panel_address_exec->SetSizer(address_exec_sizer);
+
+    panel_address_end = new wxPanel(boxsizer->GetStaticBox());
+    address_end_sizer = new wxBoxSizer(wxVERTICAL);
+    text = new wxStaticText(panel_address_end, ID_TXT_END, "End", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_END");
+    address_end_sizer->Add(text, wxALIGN_LEFT);
+    Txt_EndAddress = new wxTextCtrl(panel_address_end, ID_TXTCTRL_END, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "END_ADDRESS");
+    address_end_sizer->Add(Txt_EndAddress, wxALIGN_LEFT);
+    panel_address_end->SetSizer(address_end_sizer);
+
+    boxsizer->Add(panel_address_start, wxSizerFlags(1).Left().Border(wxALL, 5));
+    boxsizer->Add(panel_address_exec, wxSizerFlags(1).Left().Border(wxALL, 5));
+    boxsizer->Add(panel_address_end, wxSizerFlags(1).Left().Border(wxALL, 5));
+}
+
+
+
+
+void FileSettingsDialog::SetupDAsmSettings(wxNotebook *book)
+{
+    wxPanel *checkbox_panel, *dasm_box_panel;
+    wxBoxSizer *chkbox_sizer;
+    wxStaticBoxSizer *box_dasm;
+
+    checkbox_panel = new wxPanel(book);
+    dasm_box_panel = new wxPanel(checkbox_panel, wxID_ANY, wxDefaultPosition, wxSize(200, 200));
+    box_dasm = new wxStaticBoxSizer(wxVERTICAL, dasm_box_panel, "Disassemble");
+
+    chkbox_sizer = new wxBoxSizer(wxVERTICAL);
+
+    AutoDisassemble_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Auto disassemble");
+    box_dasm->Add(AutoDisassemble_CheckBox, wxSizerFlags(1).Left());
+
+    AutoLabel_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Auto label");
+    box_dasm->Add(AutoLabel_CheckBox, wxSizerFlags(1).Left());
+
+    SimulateExecution_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Simulate execution");
+    box_dasm->Add(SimulateExecution_CheckBox, wxSizerFlags(1).Left());
+
+    chkbox_sizer->Add(box_dasm);
+    checkbox_panel->SetSizer(chkbox_sizer);
+
+    AutoDisassemble_CheckBox->SetValue(true);
+    AutoLabel_CheckBox->SetValue(true);
+    SimulateExecution_CheckBox->SetValue(false);
+
+    book->AddPage(checkbox_panel, "Options");
+}
+
+
+
+
+
+void FileSettingsDialog::SetData()
 {
     wxString str;
     FileType t;
     bool    cartrom;
 
-    m_program = &program;
-
     SyncAddress();
 
-    t = program.GetFileType();
+    t = m_program->GetFileType();
     switch (t)
     {
         case BIN:
-            RadioBox1->SetSelection(2);
+            RadioFileTypeBox->SetSelection(3);
             break;
         case COM:
-            RadioBox1->SetSelection(1);
+            RadioFileTypeBox->SetSelection(2);
             break;
         case ROM:
             cartrom = m_program->isCartridge();
-			cb_cartridge->Enable(cartrom);
+
 			if (cartrom)
-                cb_cartridge->SetValue(cartrom);
-            RadioBox1->SetSelection(0);
+                RadioFileTypeBox->SetSelection(1);
+            else
+                RadioFileTypeBox->SetSelection(0);
             break;
 
     }
@@ -249,57 +241,71 @@ uint FileSettingsDialog::GetEndAddress()
     return EndAddress;
 }
 
+
+bool FileSettingsDialog::WantsAutoDisassembly()
+{
+    return AutoDisassemble_CheckBox->IsChecked();
+}
+
+bool FileSettingsDialog::WantsAutoLabel()
+{
+    return AutoLabel_CheckBox->IsChecked();
+}
+
+bool FileSettingsDialog::WantsSimulateExecution()
+{
+    return SimulateExecution_CheckBox->IsChecked();
+}
+
+
 void FileSettingsDialog::SyncAddress()
 {
     wxString str;
     StartAddress = m_program->StartAddress;
     EndAddress = m_program->EndAddress;
     ExecAddress = m_program->ExecAddress;
-    str.Printf("%.4Xh",StartAddress);
+    str.Printf("%.4X", StartAddress);
     Txt_StartAddress->SetValue(str);
-    str.Printf("%.4Xh",EndAddress);
+    str.Printf("%.4X", EndAddress);
     Txt_EndAddress->SetValue(str);
-    str.Printf("%.4Xh",ExecAddress);
+    str.Printf("%.4X", ExecAddress);
     Txt_ExecAddress->SetValue(str);
 }
 
+
+
 void FileSettingsDialog::OnRadioBoxSelect(wxCommandEvent &event)
 {
-    wxString str;
-    str = event.GetString();
-    if (str == "COM")
+    int selection = event.GetSelection();
+    Txt_StartAddress->SetValue(wxString::Format("DEBUG = %d",selection));
+
+    switch (selection)
     {
-        m_program->SetFileType(COM);
-		cb_cartridge->Enable(m_program->isCartridge());
-	}
-    else
-        if (str == "ROM")
-        {
+    case 0: //ROM
             m_program->SetFileType(ROM);
-            cb_cartridge->Enable(m_program->isCartridge());
-		}
-        else
-        {
+            m_program->ForceNoCartridge();
+            break;
+    case 1: //ROM Cartridge
+            m_program->SetFileType(ROM);
+            m_program->CheckCartridge();
+            break;
+    case 2: //COM
+            m_program->SetFileType(COM);
+            break;
+    case 3: //BIN
             m_program->SetFileType(BIN);
-            cb_cartridge->Enable(m_program->isCartridge());
-		}
+            break;
+    }
 
     SyncAddress();
 }
 
 
 
-void FileSettingsDialog::OnChkBoxCartridge(wxCommandEvent &event)
+void FileSettingsDialog::OnSizeEvent(wxSizeEvent &event)
 {
-	if (cb_cartridge->IsChecked())
-	{
-        if (!m_program->CheckCartridge())
-            cb_cartridge->SetValue(false);
-	}
-	else
-		m_program->ForceNoCartridge();
-	SyncAddress();
+    main_panel->SetSize(event.GetSize());
+    bookCtrl->SetSize(event.GetSize());
 }
-
 
 
