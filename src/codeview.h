@@ -30,6 +30,7 @@
 enum {
     idPOPUP_SEARCH = 100,
     idPOPUP_GOTO,
+    idPOPUP_GOTO_ADDRESS,
     idPOPUP_MAKEDATA,
     idPOPUP_ORGANIZEDATA,
     idPOPUP_OD_STRING,
@@ -92,6 +93,7 @@ public:
     void ClearSelection();
     bool Enable(bool enable=true);
 	void CenterAddress(uint address);
+	void TestBlur();
 
 
     CodeViewLine    *m_CodeViewLine;
@@ -128,7 +130,9 @@ private:
                 Selecting;          // we're selecting items
 
 
+
     wxFont      *font;
+    wxBitmap    DisassembleWindowBitmap;
 
     wxColour    BackGroundColor;
     wxColour    ForeGroundColor;
@@ -151,6 +155,7 @@ private:
     uint RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi);
     uint RenderProgramLabel(wxDC &dc, const int start_y, wxString str);
     uint RenderOrigin(wxDC &dc, const int start_y, uint address);
+    void RenderBackGroundBlur(wxDC &dc, wxRect region);
 
     //utilities
     void CalcItemsShown(void);
@@ -215,6 +220,7 @@ private:
     // Pop up Menu Event Handlers
     void OnPopUpMenuSearch(wxCommandEvent& event);
     void OnPopUpMenuGoto(wxCommandEvent& event);
+    void OnPopUpMenuGotoAddress(wxCommandEvent& event);
     void OnPopUpMenuMakeData(wxCommandEvent& event);
     void OnPopUpMenuOD_Matrix(wxCommandEvent& event);
     void OnPopUpMenuOD_String(wxCommandEvent& event);

@@ -148,6 +148,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labeluse
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
+        li.SetId(addr);
         p = InsertItem(li);
         SetItem(p, 1, name);
         itemfound = p;
@@ -295,8 +296,28 @@ void LabelListCtrl::OnMouseDblLeft(wxListEvent& event)
 void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
 {
     wxMenu popup;
+    #ifdef IDZ80DEBUG
+    LabelItem *selected_label;
+    int i;
+    wxString str;
+    #endif
 
     m_item_selected = event.GetIndex();
+
+    #ifdef IDZ80DEBUG
+    selected_label = GetLabelItem(m_item_selected);
+    if (selected_label->LabelUsers != 0)
+    {
+        for(i = 0; i < selected_label->LabelUsers->GetCount(); i++)
+        {
+            str << wxString::Format(" %x", selected_label->LabelUsers->Item(i));
+        }
+        str.Trim(false);
+        LogIt("Label users->" + str + "\n");
+    }
+    else
+        LogIt("No users for this label.\n");
+    #endif
 
     popup.Append(idMENU_POPUP_ADD, "Add Label");
     popup.Append(idMENU_POPUP_EDIT, "Edit Label");

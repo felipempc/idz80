@@ -65,6 +65,7 @@ bool RawData::Open(wxString filename)
 
     ret = false;
 
+
     if (f.Open(filename))
     {
         if (IsLoaded())
@@ -81,8 +82,8 @@ bool RawData::Open(wxString filename)
         if (bytesread == buffer_size)
         {
             m_buffer.UngetWriteBuf(buffer_size);
-            m_filename = filename;
-            ext = m_filename.AfterLast('.');
+            rawdata_filename.Assign(filename);
+            ext = filename.AfterLast('.');
             ext = ext.Lower();
             if (ext == "com")
                 SetFileType(COM);
@@ -137,7 +138,7 @@ void RawData::Clear()
     memset(m_buffer.GetData(), '\0', m_buffer.GetDataLen());
     m_buffer.SetBufSize(0);
 
-    m_filename.Clear();
+    rawdata_filename.Clear();
 
     SetFileType(UNKNOWN);
 }
@@ -177,7 +178,17 @@ uint RawData::GetBufferSize()
 
 wxString RawData::GetFileName()
 {
-    return m_filename;
+    return rawdata_filename.GetFullName();
+}
+
+wxString RawData::GetFileNameAndPath()
+{
+    return rawdata_filename.GetFullPath();
+}
+
+wxString RawData::GetFilePath()
+{
+    return rawdata_filename.GetPath();
 }
 
 uint RawData::GetFileSize()
@@ -218,7 +229,7 @@ bool RawData::SetFileType(FileType filetype)
                 m_iscartridge = false;
                 m_header_offset = 0;
                 StartAddress = 0x100;
-                EndAddress = 0x100 + GetBufferSize();
+                EndAddress = 0x100 + GetBufferSize() - 1;
                 ExecAddress = 0x100;
                 m_filetype = filetype;
                 ret = true;
@@ -237,7 +248,7 @@ bool RawData::SetFileType(FileType filetype)
                 else
                 {
                     StartAddress = 0;
-                    EndAddress = GetBufferSize();
+                    EndAddress = GetBufferSize() - 1;
                     ExecAddress = 0;
                     m_header_offset = 0;
                     m_filetype = UNKNOWN;
@@ -251,14 +262,14 @@ bool RawData::SetFileType(FileType filetype)
 					m_header_offset = CARTRIDGE_HEADER_SIZE;
 					StartAddress = 0x4000 + m_header_offset;
 					ExecAddress = StartAddress;
-					EndAddress = 0x4000 + GetBufferSize();
+					EndAddress = 0x4000 + GetBufferSize() - 1;
 					m_iscartridge = true;
 				}
 				else
 				{
 					m_header_offset = 0;
 					StartAddress = 0;
-					EndAddress = GetBufferSize();
+					EndAddress = GetBufferSize() - 1;
 					ExecAddress = 0;
 					m_iscartridge = false;
 				}
@@ -268,13 +279,31 @@ bool RawData::SetFileType(FileType filetype)
                     m_iscartridge = false;
 					m_header_offset = 0;
 					StartAddress = 0;
-					EndAddress = GetBufferSize();
+					EndAddress = GetBufferSize() - 1;
 					ExecAddress = 0;
                     m_filetype = UNKNOWN;
 					ret = true;
 					break;
     }
     return ret;
+}
+
+
+
+void RawData::SetStrFileType(const wxString &str_type)
+{
+    str_type.Upper();
+
+    if (str_type == "COM")
+        SetFileType(COM);
+    else
+        if (str_type == "ROM")
+            SetFileType(ROM);
+        else
+            if (str_type == "BIN")
+                SetFileType(BIN);
+            else
+                SetFileType(UNKNOWN);
 }
 
 
@@ -328,7 +357,7 @@ bool RawData::ValidateCartridge()
 		m_cartridge->text = (GetData(8) + 0x100 * GetData(9)) & 0xFFFF;
 
 		startaddr = 0x4000;
-		endaddr = startaddr + GetBufferSize();
+		endaddr = startaddr + GetBufferSize() - 1;
 
 		if (m_cartridge->init != 0)
 		{

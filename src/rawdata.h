@@ -23,6 +23,7 @@
 #include <wx/buffer.h>
 #include <wx/textctrl.h>
 #include <wx/dynarray.h>
+#include <wx/filename.h>
 #include "IDZ80Base.h"
 #include "logbase.h"
 
@@ -71,10 +72,13 @@ class RawData : public LogBase
         uint GetBufferSize();
         bool IsLoaded();
         wxString GetFileName();
+        wxString GetFileNameAndPath();
+        wxString GetFilePath();
         uint GetFileSize();
         FileType GetFileType();
         wxString GetFileTypeStr();
         bool SetFileType(FileType filetype);
+        void SetStrFileType(const wxString &str_type);
         void DebugLog(wxTextCtrl *log);
         bool isCartridge();
         bool isROM();
@@ -101,7 +105,7 @@ class RawData : public LogBase
 		CartHeader		*m_cartridge;
 		BinHeader       *m_binheader;
         wxMemoryBuffer  m_buffer;
-        wxString        m_filename;
+        wxFileName      rawdata_filename;
         FileType        m_filetype;
         uint            m_header_offset;
         bool			m_iscartridge;

@@ -774,7 +774,8 @@ void ProjectManager::linkLabels()
                 {
                     item = users->Item(x);
                     de = Process->Disassembled->GetData(item);
-                    de->SetArgLabel();
+                    if (de != 0)
+                        de->SetArgLabel();
                 }
         }
 
@@ -791,7 +792,8 @@ void ProjectManager::linkLabels()
                 {
                     item = users->Item(x);
                     de = Process->Disassembled->GetData(item);
-                    de->SetArgLabel();
+                    if (de != 0)
+                        de->SetArgLabel();
                 }
         }
 
@@ -808,7 +810,8 @@ void ProjectManager::linkLabels()
                 {
                     item = users->Item(x);
                     de = Process->Disassembled->GetData(item);
-                    de->SetArgLabel();
+                    if (de != 0)
+                        de->SetArgLabel();
                 }
         }
 }

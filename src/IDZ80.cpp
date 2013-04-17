@@ -48,6 +48,7 @@ const long IDZ80::idMenuToolsGenCode = wxNewId();
 const long IDZ80::idMenuMnemLoad = wxNewId();
 const long IDZ80::idMenuMnemInfo = wxNewId();
 const long IDZ80::idMenuSettingsColors = wxNewId();
+const long IDZ80::idMenuSettingsBlur = wxNewId();
 const long IDZ80::idMenuHelpContents = wxNewId();
 const long IDZ80::IdMenuHelpAbout = wxNewId();
 const long IDZ80::ID_STATUSBAR1 = wxNewId();
@@ -134,6 +135,11 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	main_menu = new wxMenu();
 	menu_item = new wxMenuItem(main_menu, idMenuSettingsColors, "Colors", wxEmptyString, wxITEM_NORMAL);
 	main_menu->Append(menu_item);
+
+	menu_item = new wxMenuItem(main_menu, idMenuSettingsBlur, "Make Blur", wxEmptyString, wxITEM_NORMAL);
+	main_menu->Append(menu_item);
+
+
 	main_menu_bar->Append(main_menu, "&Settings");
 
 
@@ -239,7 +245,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     process = new ProcessData(this, Log);
     codeview = new CodeView(this, process, Log);
-    m_project = new ProjectManager(process, codeview);
+    m_project = new ProjectManagerXML(process, codeview);
 
     SetupAUIPanes();
     ReadStoredConfiguration();
@@ -255,6 +261,8 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     codeview->Enable(false);
 
 	Log->Show();
+	//TODO: Implement Log in project class
+	m_project->SetLog(PanelLog);
 
 	SetupMenuEvents();
 
@@ -448,6 +456,7 @@ void IDZ80::SetupMenuEvents()
 	#endif
 
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuSettingsColor, this, idMenuSettingsColors);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuSettingsBlur, this, idMenuSettingsBlur);
 
 	Bind(wxEVT_COMMAND_MENU_SELECTED, &IDZ80::OnMenuHelpAbout, this, IdMenuHelpAbout);
 }
@@ -673,6 +682,10 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     process->DisassembleFirst(*simulateexecution);
     process->InitData();
     process->processLabel();
+    process->prog_labels->SortAddress(true);
+    process->io_labels->SortAddress(true);
+    process->var_labels->SortAddress(true);
+    process->constant_labels->SortAddress(true);
 
     codeview->Enable(true);
 
@@ -849,6 +862,13 @@ void IDZ80::OnMenuSettingsColor(wxCommandEvent& event)
 }
 
 
+void IDZ80::OnMenuSettingsBlur(wxCommandEvent& event)
+{
+    LogIt("Event: Make Blur...");
+    codeview->TestBlur();
+}
+
+
 
 bool IDZ80::SaveAs()
 {
@@ -863,8 +883,8 @@ bool IDZ80::SaveAs()
                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (dialog.ShowModal() == wxID_OK)
     {
-        fname=dialog.GetPath();
-        if (m_project->Save(fname, true))
+        fname = dialog.GetPath();
+        if (m_project->Save(fname))
             ret = true;
     }
     return ret;
@@ -888,7 +908,7 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
 {
     if (m_project->HasName())
     {
-        if (!m_project->Save(true))
+        if (!m_project->Save())
             PanelLog->AppendText("Project NOT saved !\n");
         else
             PanelLog->AppendText("Project saved !\n");

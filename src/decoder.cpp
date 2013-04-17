@@ -190,7 +190,7 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 							str = Labels->sys_vars->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("VAR%d", var_label_counter++);
-							Labels->var_labels->AddLabel(argument, str);
+							Labels->var_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_ABS_ADDR:
@@ -199,7 +199,7 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 							str = Labels->sys_calls->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("LABEL%d", program_label_counter++);
-							Labels->prog_labels->AddLabel(argument, str);
+							Labels->prog_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_IO_ADDR:
@@ -207,7 +207,7 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 							str = Labels->sys_io->Find(argument);
 							if (str.IsEmpty())
 								str.Printf("PORT%d", io_label_counter++);
-							Labels->io_labels->AddLabel(argument, str);
+							Labels->io_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 	}
@@ -765,7 +765,7 @@ bool Decoder::OutBoundaryAddress(uint _addr)
 
 void Decoder::FullDisassemble(LabelManager *parent)
 {
-    uint i, f;
+    uint i, f, item;
     int percent;
     DAsmElement *de;
 
@@ -775,13 +775,15 @@ void Decoder::FullDisassemble(LabelManager *parent)
     io_label_counter = 0;
     program_label_counter = 0;
 
+    UpdateBoundary();
+
 
     f = Process->Program->GetBufferSize();
     for (i = 0; i < f; i++)
     {
         de = new DAsmElement(Process->Program);
-        Decode(de, i);
-        SetupArgumentLabels(de, f);
+        item = Decode(de, i);
+        SetupArgumentLabels(de, item);
         Registers.LoadRegister(de);
         if (MSXWeirdRST(de, f))
             i += 3;

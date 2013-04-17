@@ -13,6 +13,8 @@
 #include <wx/dcbuffer.h>
 #include <wx/utils.h>
 #include <wx/region.h>
+#include <wx/textdlg.h>
+#include <wx/dcclient.h>
 #include "codeview.h"
 #include "d_asm_element.h"
 
@@ -45,6 +47,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
     m_styleData.arg = 0;
     m_styleData.item = 0;
 
+
     m_iteminfo.type = siUnknown;
     m_iteminfo.dasmitem = 0;
     m_iteminfo.lineitem = 0;
@@ -71,6 +74,7 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
     // Debug Area
     SetTextLog(logparent);
     ModuleName = "CodeView";
+
 }
 
 
@@ -111,10 +115,11 @@ void CodeView::SetupEvents()
     Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
     Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::OnScrollPageUp, this);
 
+
     Bind(wxEVT_PAINT, &CodeView::OnPaint, this);
 
-    //Bind(wxEVT_SET_FOCUS, &CodeView::OnGetFocus, this);
-    //Bind(wxEVT_KILL_FOCUS, &CodeView::OnKillFocus, this);
+    Bind(wxEVT_SET_FOCUS, &CodeView::OnGetFocus, this);
+    Bind(wxEVT_KILL_FOCUS, &CodeView::OnKillFocus, this);
     Bind(wxEVT_MOUSE_CAPTURE_LOST, &CodeView::OnMouseCaptureLost, this);
 
 
@@ -138,6 +143,7 @@ void CodeView::SetupEvents()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGotoAddress, this, idPOPUP_GOTO_ADDRESS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
@@ -169,10 +175,10 @@ void CodeView::OnDraw(wxDC &dc)
     wxRegionIterator
 				regIterator(GetUpdateRegion());
     wxRect		touchedRegion, fullRect;
-    wxBrush		bkcolor(*wxWHITE_BRUSH);
+
 
     dc.SetFont(*font);
-    dc.SetBackground(bkcolor);
+    dc.SetBackground(*wxWHITE_BRUSH);
 
     // cleans the destroyed region
     while (regIterator)
@@ -195,21 +201,49 @@ void CodeView::OnDraw(wxDC &dc)
     fullRect.height = totalLines * m_fontHeight;
     fullRect.width = GetClientSize().GetWidth();
 
-	if (!IsEnabled())
-		bkcolor = *wxGREY_BRUSH;
-
-    PaintBackground(dc, fullRect.y, fromLine, totalLines, bkcolor);
-
-    if (IsEnabled())
+	if (IsEmpty)
     {
-        if ((fromLine == CursorPosition) || ((CursorPosition >= fromLine) &&
-            (CursorPosition <(fromLine+totalLines))))
-            ShowCursor(dc);
-        Render(dc, fullRect.y, fromLine, totalLines);
+        PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxGREY_BRUSH);
+    }
+    else
+    {
+        if (IsEnabled())
+        {
+            PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
+            if ((fromLine == CursorPosition) || ((CursorPosition >= fromLine) &&
+                (CursorPosition < (fromLine + totalLines))))
+                ShowCursor(dc);
+            Render(dc, fullRect.y, fromLine, totalLines);
+        }
+        else
+        {
+            RenderBackGroundBlur(dc, fullRect);
+        }
     }
 }
 
 
+
+void CodeView::RenderBackGroundBlur(wxDC &dc, wxRect region)
+{
+    wxBitmap window;
+
+    LogIt("Rendering blur...");
+    //dc.DestroyClippingRegion();
+    LogIt(wxString::Format("Region(%d, %d, %d, %d)", region.x, region.y, region.width, region.height));
+    window = DisassembleWindowBitmap.GetSubBitmap(region);
+    window = window.ConvertToDisabled(128);
+    //*window = ;
+    dc.DrawBitmap(window, region.GetPosition());
+}
+
+
+void CodeView::TestBlur()
+{
+    wxClientDC dc(this);
+
+    RenderBackGroundBlur(dc, GetClientRect());
+}
 
 
 void CodeView::PaintBackground(wxDC &dc, const int start_y, const int fromline, const int toline, const wxBrush backcolour)
@@ -686,6 +720,8 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
 				*labelMenu = 0;
 
     de = m_iteminfo.dasmitem;
+
+    popup->Append(idPOPUP_GOTO_ADDRESS, "Goto address...");
 
     switch(m_iteminfo.type)
     {

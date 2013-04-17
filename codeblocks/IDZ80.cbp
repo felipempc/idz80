@@ -28,6 +28,7 @@
 					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_aui_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_xml_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
@@ -50,6 +51,7 @@
 					<Add library="$(WXW)\lib\gcc_dll\wxbase294u_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_aui_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase294u_xml_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
@@ -121,8 +123,8 @@
 		<Unit filename="../src/mndb.h" />
 		<Unit filename="../src/mndb_tools.cpp" />
 		<Unit filename="../src/mndb_tools.h" />
-		<Unit filename="../src/projectmanager.cpp" />
-		<Unit filename="../src/projectmanager.h" />
+		<Unit filename="../src/projectmanager_xml.cpp" />
+		<Unit filename="../src/projectmanager_xml.h" />
 		<Unit filename="../src/rawdata.cpp" />
 		<Unit filename="../src/rawdata.h" />
 		<Unit filename="../src/segmentmgr.cpp" />

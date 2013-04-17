@@ -36,22 +36,23 @@ FileSettingsDialog::FileSettingsDialog(RawData *program)
 	main_panel = new wxPanel(this);
 	yesno_panel = new wxPanel(main_panel);
 	bookCtrl = new wxNotebook(main_panel, wxID_ANY, wxPoint(0,0), wxSize(300, 200), wxNB_TOP);
+
     SetupProgramSettings(bookCtrl);
     SetupDAsmSettings(bookCtrl);
-    bookCtrl->AddPage(new wxPanel(bookCtrl), "Teste");
 
     wxBoxSizer *yesno_sizer = new wxBoxSizer(wxHORIZONTAL);
     wxButton *yes_button = new wxButton(yesno_panel, wxID_OK, "OK");
-    yesno_sizer->Add(yes_button, wxSizerFlags(1).Left());
+    yesno_sizer->Add(yes_button, wxSizerFlags(0).Border(wxALL, 10));
     yesno_sizer->AddStretchSpacer(1);
     wxButton *no_button = new wxButton(yesno_panel, wxID_CANCEL, "Cancel");
-    yesno_sizer->Add(no_button, wxSizerFlags(1).Right());
+    yesno_sizer->Add(no_button, wxSizerFlags(0).Border(wxALL, 10));
     yesno_panel->SetSizer(yesno_sizer);
+    yesno_panel->SetOwnBackgroundColour(*wxBLACK);
 
     wxBoxSizer *d_sizer = new wxBoxSizer(wxVERTICAL);
-    d_sizer->Add(bookCtrl, wxSizerFlags(1).Left());
-    d_sizer->Add(yesno_panel, wxSizerFlags(1).Bottom().Center());
-    SetSizerAndFit(d_sizer);
+    d_sizer->Add(bookCtrl, wxSizerFlags(0));
+    d_sizer->Add(yesno_panel, wxSizerFlags(1).Expand());
+    main_panel->SetSizerAndFit(d_sizer);
 
 
 	Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
@@ -130,25 +131,25 @@ void FileSettingsDialog::CreateAddressBox(wxStaticBoxSizer *boxsizer)
     panel_address_start = new wxPanel(boxsizer->GetStaticBox());
     address_start_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_start, ID_TXT_START, "Start", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_START");
-    address_start_sizer->Add(text, wxALIGN_LEFT);
+    address_start_sizer->Add(text, wxSizerFlags(0).Left());
     Txt_StartAddress = new wxTextCtrl(panel_address_start, ID_TXTCTRL_START, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "START_ADDRESS");
-    address_start_sizer->Add(Txt_StartAddress, wxALIGN_LEFT);
+    address_start_sizer->Add(Txt_StartAddress, wxSizerFlags(0).Left());
     panel_address_start->SetSizer(address_start_sizer);
 
     panel_address_exec = new wxPanel(boxsizer->GetStaticBox());
     address_exec_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_exec, ID_TXT_EXECUTION, "Execution", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_EXECUTION");
-    address_exec_sizer->Add(text, wxALIGN_LEFT);
+    address_exec_sizer->Add(text, wxSizerFlags(0).Left());
     Txt_ExecAddress = new wxTextCtrl(panel_address_exec, ID_TXTCTRL_EXECUTION, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "EXECUTION_ADDRESS");
-    address_exec_sizer->Add(Txt_ExecAddress, wxALIGN_LEFT);
+    address_exec_sizer->Add(Txt_ExecAddress, wxSizerFlags(0).Left());
     panel_address_exec->SetSizer(address_exec_sizer);
 
     panel_address_end = new wxPanel(boxsizer->GetStaticBox());
     address_end_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_end, ID_TXT_END, "End", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_END");
-    address_end_sizer->Add(text, wxALIGN_LEFT);
+    address_end_sizer->Add(text, wxSizerFlags(0).Left());
     Txt_EndAddress = new wxTextCtrl(panel_address_end, ID_TXTCTRL_END, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "END_ADDRESS");
-    address_end_sizer->Add(Txt_EndAddress, wxALIGN_LEFT);
+    address_end_sizer->Add(Txt_EndAddress, wxSizerFlags(0).Left());
     panel_address_end->SetSizer(address_end_sizer);
 
     boxsizer->Add(panel_address_start, wxSizerFlags(1).Left().Border(wxALL, 5));

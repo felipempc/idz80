@@ -178,7 +178,6 @@ void CodeView::OnGetFocus(wxFocusEvent& event)
         IsFocused = true;
         LogIt("Entrei...");
     }
-
 }
 
 void CodeView::OnKillFocus(wxFocusEvent& event)
@@ -187,9 +186,10 @@ void CodeView::OnKillFocus(wxFocusEvent& event)
     {
         IsFocused = false;
         LogIt("Saí...");
+        wxClientDC dc(this);
+        DisassembleWindowBitmap = dc.GetAsBitmap();
     }
 }
-
 
 
 
@@ -221,6 +221,27 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     address = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
     CenterAddress(address);
 
+}
+
+
+
+void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
+{
+    long address = 0;
+    wxTextEntryDialog enter_address(0, "Enter Address", "Address to go");
+
+    if (enter_address.ShowModal() == wxID_OK)
+    {
+        if (enter_address.GetValue().ToLong(&address) ||
+            enter_address.GetValue().ToLong(&address, 16))
+        {
+            #ifdef IDZ80DEBUG
+            LogIt(wxString::Format("Going to %X", address));
+            #endif
+
+            CenterAddress(address);
+        }
+    }
 }
 
 

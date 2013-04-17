@@ -17,7 +17,7 @@
 #include "processdata.h"
 #include "codeview.h"
 #include "labelslist.h"
-#include "projectmanager.h"
+#include "projectmanager_xml.h"
 #include "codegenerator.h"
 #include "logwindow.h"
 
@@ -64,6 +64,7 @@ class IDZ80: public wxFrame, LogBase
 		static const long idMenuMnemLoad;
 		static const long idMenuMnemInfo;
 		static const long idMenuSettingsColors;
+		static const long idMenuSettingsBlur;
 		static const long idMenuHelpContents;
 		static const long IdMenuHelpAbout;
 		static const long ID_STATUSBAR1;
@@ -78,7 +79,7 @@ class IDZ80: public wxFrame, LogBase
         wxConfig        *config;
         wxString        m_currentDir,
                         m_lastDir;
-        ProjectManager  *m_project;
+        ProjectManagerXML  *m_project;
         wxArrayString	m_commandline;
         bool            MaximizeMainWindow;
 
@@ -127,6 +128,7 @@ class IDZ80: public wxFrame, LogBase
 		void OnMenuToolAutoLabel(wxCommandEvent& event);
 
 		void OnMenuSettingsColor(wxCommandEvent& event);
+		void OnMenuSettingsBlur(wxCommandEvent& event);
 
 		void OnFirstIdle(wxIdleEvent &event);
 };
