@@ -461,7 +461,7 @@ void CodeView::CenterAddress(uint address)
     firstlineshown = GetFirstLine();
     lastlineshown = firstlineshown + m_linesShown - 1;
 
-    m_CodeViewLine->getDataLineAddress(address, i);
+    m_CodeViewLine->getLineOfAddress(address, i);
 
     if (i >= 0)
     {
@@ -635,7 +635,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 /* Returns the first and the last line of instruction / data
  * Returns program labels
  */
-bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels)
+bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels, wxArrayInt *vlabels)
 {
     bool	foundindex;
     int		i, last_i;
@@ -669,6 +669,11 @@ bool CodeView::FilterInstructions(wxArrayInt &range, wxArrayInt *plabels)
 			plabels->Add(cvi->LabelProgAddr);
 			LogIt(wxString::Format("Label to delete: %.4x\n", cvi->LabelProgAddr));
 		}
+		if (vlabels && (cvi->LabelVarAddr >= 0))
+        {
+            vlabels->Add(cvi->LabelVarAddr);
+            LogIt(wxString::Format("VAR Label to SAVE: %.4x\n", cvi->LabelVarAddr));
+        }
     }
     if (foundindex)
         range.Add(last_i);
@@ -742,7 +747,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
         case	siInstruction:
                                 if ((m_iteminfo.type != siLineLabelProg) &&
                                     (m_iteminfo.type != siLineLabelVar))
-                                    popup->Append(idPOPUP_MAKEDATA,_T("Make data"));
+                                    popup->Append(idPOPUP_MAKEDATA, "Make data");
                                 break;
         case	siData:
                                 popup->Append(idPOPUP_DISASM, "Disassemble");

@@ -23,6 +23,7 @@
 #include <wx/font.h>
 #include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/msgdlg.h>
 
 #include "dialog_file_settings.h"
 
@@ -171,6 +172,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 	SetStatusBar(StatusBar1);
 
 	Bind(wxEVT_IDLE, &IDZ80::OnFirstIdle, this);
+
 }
 
 
@@ -268,7 +270,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     if (MaximizeMainWindow)
         Maximize();
-
 
 }
 
@@ -478,6 +479,12 @@ void IDZ80::OpenProgramFile(wxString filename)
 
     if ((!filename.IsEmpty()) && process->Program->Open(filename))
     {
+        if (process->Program->isBasicCartridge())
+        {
+            wxMessageBox("This ROM file has a program written in BASIC. IDZ80 don't support it.", "File type unsupported !");
+            process->Program->Close();
+            return;
+        }
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText("Opened file:\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
@@ -508,10 +515,6 @@ void IDZ80::OpenProgramFile(wxString filename)
                 process->LoadSystemLabels("X:/idz80/Labels.txt");
             }
 
-            /*FIXME: If user change the addresses, it won't appear here, because
-             * they are not converted from textcntrl objects to integer
-             * variables of FileTypeDialog.
-             */
             process->Program->StartAddress = config.GetStartAddress();
             process->Program->ExecAddress = config.GetExecAddress();
             process->Program->EndAddress = config.GetEndAddress();

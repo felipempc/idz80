@@ -77,7 +77,7 @@ class FileTypeDialog: public wxDialog
 				EndAddress;
         RawData *m_program;
 
-		void SyncAddress();
+		void UpdateFormAddress();
         void OnRadioBoxSelect(wxCommandEvent &event);
         void OnChkBoxCartridge(wxCommandEvent &event);
 

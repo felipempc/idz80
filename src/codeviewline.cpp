@@ -331,9 +331,53 @@ uint CodeViewLine::GetCount()
     return (m_CodeLine.GetCount());
 }
 
-
-bool CodeViewLine::getDataLineAddress(uint addr, int &index)
+/*
+ * If found, store the line which holds this address in "index"
+ * Return true if a line pointing to a label with this address already exists.
+ */
+bool CodeViewLine::getLineOfAddress(int line_index, int line_count, uint addr, int &index)
 {
+    int item_count = 0;
+    bool    found_item = false,
+            line_label_exists = false;
+    uint    line_address = 0;
+    CodeViewItem	*cvi;
+    DAsmElement		*de;
+
+    index = -1;
+    while ((item_count < line_count) && !found_item)
+    {
+        cvi = getData(line_index);
+        if (cvi)
+		{
+			if ((cvi->LabelProgAddr == addr) || (cvi->LabelVarAddr == addr))
+				line_label_exists = true;
+
+            if (cvi->Dasmitem >= 0)
+            {
+                de = m_dasm->GetData(cvi->Dasmitem);
+                line_address = m_dasm->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
+                if (line_address == addr)
+                {
+                    found_item = true;
+                    index = line_index;
+                }
+			}
+		}
+        item_count++;
+        line_index++;
+    }
+
+    return line_label_exists;
+}
+
+bool CodeViewLine::getLineOfAddress(uint addr, int &index)
+{
+    return getLineOfAddress(0, GetCount(), addr, index);
+}
+
+
+/*
     int		i;
     uint	a;
     bool	found,
@@ -369,6 +413,8 @@ bool CodeViewLine::getDataLineAddress(uint addr, int &index)
     }
 	return labelexists;
 }
+*/
+
 
 void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
 {
@@ -390,7 +436,7 @@ void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
 
 void CodeViewLine::linkData(int indexdasm, int indexline, int countdasm)
 {
-	wxString        str = _("");
+	wxString        str;
 	DAsmElement     *de;
 	int		        address, labadress;
 	CodeViewItem    *cvi;

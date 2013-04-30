@@ -777,6 +777,7 @@ void Decoder::FullDisassemble(LabelManager *parent)
 
     UpdateBoundary();
 
+    SetCartridgeLabels();
 
     f = Process->Program->GetBufferSize();
     for (i = 0; i < f; i++)

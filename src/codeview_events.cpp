@@ -259,13 +259,12 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
     int 			i, newLineCount, lineIndex, lineLast, lineCount,
-					j, oldLineCount;
-    wxArrayInt		cvlines, proglabels;
+					oldLineCount, varindex;
+    wxArrayInt		cvlines, proglabels, varlabels;
 
 	//TODO: Create a function to remove unused labels
-	//FIXME: It's removing line with var labels
 
-    if (!FilterInstructions(cvlines, &proglabels))
+    if (!FilterInstructions(cvlines, &proglabels, &varlabels))
 		return;
 
     if (cvlines.GetCount() > 0)
@@ -287,14 +286,8 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 
         Process->MakeData(dasmed_items);
 
-		j = 0;
         for (i = 0; i < lineCount; i++)
-		{
-			if (m_CodeViewLine->getData(lineIndex + j)->LabelVarAddr >= 0)
-				j++;
-			else
-				m_CodeViewLine->Del(lineIndex + j);
-		}
+				m_CodeViewLine->Del(lineIndex);
 
         m_CodeViewLine->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
 
@@ -302,8 +295,15 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 
         m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
+        for (i = 0; i < varlabels.GetCount(); i++)
+        {
+            m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
+            LogIt(wxString::Format("Found var address %X, line %d\n", varlabels.Item(i), varindex));
+            m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+        }
+
         CursorLastPosition = lineIndex;
-        CursorPosition = lineIndex + lineCount + newLineCount -1;
+        CursorPosition = lineIndex + lineCount + newLineCount - 1;
         UpdateSelectedRect();
 		Refresh();
     }
@@ -314,11 +314,11 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    int				i, newLineCount, j, oldLineCount;
+    int				i, newLineCount, oldLineCount, varindex;
     int				lineIndex, lineLast, lineCount;
-    wxArrayInt		cvlines;
+    wxArrayInt		cvlines, varlabels;
 
-	if (!FilterInstructions(cvlines, 0))
+	if (!FilterInstructions(cvlines, 0, &varlabels))
 		return;
 
 	if (cvlines.GetCount() > 0)
@@ -333,14 +333,8 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
-		j = 0;
 		for (i = 0; i < lineCount; i++)
-		{
-			if (m_CodeViewLine->getData(lineIndex + j)->LabelProgAddr >= 0)
-				j++;
-			else
-				m_CodeViewLine->Del(lineIndex + j);
-		}
+				m_CodeViewLine->Del(lineIndex);
 
 		Process->DisassembleItems(dasmed_items);
 
@@ -350,8 +344,15 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 
 		m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
+        for (i = 0; i < varlabels.GetCount(); i++)
+        {
+            m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
+            LogIt(wxString::Format("Found var address %X, line %d\n", varlabels.Item(i), varindex));
+            m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+        }
+
 		CursorLastPosition = lineIndex;
-		CursorPosition = lineIndex + lineCount + newLineCount -1;
+		CursorPosition = lineIndex + lineCount + newLineCount - 1;
 		UpdateSelectedRect();
 		Refresh();
 	}

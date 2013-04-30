@@ -103,7 +103,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
-        li.SetId(0);
+        li.SetId(addr);
         p = InsertItem(li);
         SetItem(p, 1, name);
         itemfound = p;

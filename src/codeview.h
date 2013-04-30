@@ -180,7 +180,7 @@ private:
 	void FillSelectedItemInfo(const wxPoint &pt);
 
     //Pop up Menu
-    bool FilterInstructions(wxArrayInt &range, wxArrayInt *plabels);
+    bool FilterInstructions(wxArrayInt &range, wxArrayInt *plabels, wxArrayInt *vlabels);
     ElementType GetTypeMultiselection(bool &hcomment);
     void CreatePopupMenuMultiSelection(wxMenu *popup);
     void CreatePopupMenuSingleSelection(wxMenu *popup);

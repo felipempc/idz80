@@ -84,6 +84,7 @@ class RawData : public LogBase
         bool isROM();
         bool isBIN();
         bool isCOM();
+        bool isBasicCartridge();
         const CartHeader *GetCartridgeHeader();
         const BinHeader *GetBinHeader();
         bool CheckCartridge();
@@ -108,7 +109,7 @@ class RawData : public LogBase
         wxFileName      rawdata_filename;
         FileType        m_filetype;
         uint            m_header_offset;
-        bool			m_iscartridge;
+        bool			m_iscartridge, m_isbasic;
 
         bool ValidateBIN();
         bool ValidateCartridge();

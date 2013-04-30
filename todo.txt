@@ -1,8 +1,6 @@
-TODO
+# TODO idz80
 
-- if it's transform to data then back to instructions, the addresses are replicated down code when
-  a label is in the middle;
-- if a second disassemble command is issued, the existing labels won't show;
-- left/right click mouse selection;
-- search popup menu (search in arguments)
-
+- Ao converter codigo para dados, solicitar a varlabels a lista de variaveis na faixa em
+  que será feita a mudança.
+- No popup botao direito, permitir inserir novo label quando clicado sobre argumento
+- Atualizar labels.txt

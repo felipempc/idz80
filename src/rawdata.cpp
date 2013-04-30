@@ -35,6 +35,7 @@ RawData::RawData(LogWindow *logparent)
     m_cartridge = 0;
     m_binheader = 0;
     m_iscartridge = false;
+    m_isbasic = false;
     ModuleName = "RawData";
     SetTextLog(logparent);
 }
@@ -141,6 +142,7 @@ void RawData::Clear()
     rawdata_filename.Clear();
 
     SetFileType(UNKNOWN);
+    m_isbasic = false;
 }
 
 
@@ -383,6 +385,7 @@ bool RawData::ValidateCartridge()
 		if (m_cartridge->text != 0)  //We don't want basic programs
 		{
             ret = false;
+            m_isbasic = true;
 		}
 
 		if (!ret)
@@ -449,6 +452,10 @@ bool RawData::isCOM()
 }
 
 
+bool RawData::isBasicCartridge()
+{
+    return m_isbasic;
+}
 
 bool RawData::CheckCartridge()
 {

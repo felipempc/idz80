@@ -67,7 +67,8 @@ class CodeViewLine
 
         uint GetCount();
         void setData(CodeViewItem *cvi);
-        bool getDataLineAddress(uint addr, int &index);
+        bool getLineOfAddress(uint addr, int &index);
+        bool getLineOfAddress(int line_index, int line_count, uint addr, int &index);
         CodeViewItem *getData(uint index);
 
 

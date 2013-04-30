@@ -3803,7 +3803,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1352939718 source:x:\idz80\src\processdata.cpp
+1367355715 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
@@ -3825,7 +3825,7 @@
 	"d_asm_element.h"
 	<vector>
 
-1365832040 x:\idz80\src\rawdata.h
+1366662609 x:\idz80\src\rawdata.h
 	<wx/file.h>
 	<wx/string.h>
 	<wx/buffer.h>
@@ -3852,7 +3852,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1354567286 x:\idz80\src\codeviewline.h
+1367355599 x:\idz80\src\codeviewline.h
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 	"d_asm_element.h"
@@ -3901,7 +3901,7 @@
 	"ProcessData.h"
 	"codeview.h"
 
-1359761646 x:\idz80\src\codeview.h
+1367347483 x:\idz80\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -3929,7 +3929,7 @@
 	<wx/dialog.h>
 	"ProcessData.h"
 
-1365832018 source:x:\idz80\src\rawdata.cpp
+1366662760 source:x:\idz80\src\rawdata.cpp
 	"rawdata.h"
 
 1352416540 source:x:\idz80\src\codegenerator.cpp
@@ -3942,7 +3942,7 @@
 1351285956 source:x:\idz80\src\z80register.cpp
 	"z80register.h"
 
-1359763214 source:x:\idz80\src\codeview.cpp
+1367355668 source:x:\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -3968,7 +3968,7 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1352934786 source:x:\idz80\src\codeviewline.cpp
+1367355656 source:x:\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
 1355166776 source:x:\idz80\src\d_asm_element.cpp
@@ -3979,14 +3979,14 @@
 1354322712 source:x:\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 
-1365914258 source:x:\idz80\src\decoder.cpp
+1367342909 source:x:\idz80\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
 1351285955 source:x:\idz80\src\idz80debugbase.cpp
 	"idz80debugbase.h"
 
-1365744848 source:x:\idz80\src\idz80.cpp
+1366663470 source:x:\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -3998,6 +3998,7 @@
 	<wx/font.h>
 	<wx/intl.h>
 	<wx/string.h>
+	<wx/msgdlg.h>
 	"dialog_file_settings.h"
 
 1365662816 x:\idz80\src\idz80.h
@@ -4020,7 +4021,7 @@
 
 1351285956 x:\idz80\src\version.h
 
-1352146340 x:\idz80\src\filetypedialog.h
+1366240637 x:\idz80\src\filetypedialog.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/radiobox.h>
@@ -4042,13 +4043,13 @@
 1352324466 x:\idz80\src\idz80app.h
 	<wx/app.h>
 
-1352146340 source:x:\idz80\src\filetypedialog.cpp
+1366241623 source:x:\idz80\src\filetypedialog.cpp
 	"FileTypeDialog.h"
 	<wx/intl.h>
 	<wx/button.h>
 	<wx/string.h>
 
-1365918102 source:x:\idz80\src\labelslist.cpp
+1367342805 source:x:\idz80\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
@@ -4115,7 +4116,7 @@
 	"wx/string.h"
 	"wx/filefn.h"
 
-1359761890 source:x:\idz80\src\codeview_events.cpp
+1367355682 source:x:\idz80\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -4202,13 +4203,14 @@
 	"wx/list.h"
 	"wx/versioninfo.h"
 
-1364421765 source:x:\idz80\src\dialog_file_settings.cpp
+1366660337 source:x:\idz80\src\dialog_file_settings.cpp
 	"dialog_file_settings.h"
 	<wx/intl.h>
 	<wx/button.h>
 	<wx/string.h>
+	<wx/msgdlg.h>
 
-1356764136 x:\idz80\src\dialog_file_settings.h
+1366710173 x:\idz80\src\dialog_file_settings.h
 	<wx/notebook.h>
 	<wx/sizer.h>
 	<wx/stattext.h>
@@ -4224,7 +4226,7 @@
 	"ProcessData.h"
 	"codeview.h"
 
-1366229762 source:x:\idz80\src\projectmanager_xml.cpp
+1366230466 source:x:\idz80\src\projectmanager_xml.cpp
 	<wx/dynarray.h>
 	<wx/stopwatch.h>
 	<wx/filefn.h>

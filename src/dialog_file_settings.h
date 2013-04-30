@@ -71,12 +71,14 @@ class FileSettingsDialog: public wxDialog
 				EndAddress;
         RawData *m_program;
 
-		void SyncAddress();
+		void UpdateFormAddress();
         void OnRadioBoxSelect(wxCommandEvent &event);
         void OnSizeEvent(wxSizeEvent &event);
+        void OnAddressFieldsKeypress(wxCommandEvent &event);
 
         void SetupProgramSettings(wxNotebook *book);
         void CreateAddressBox(wxStaticBoxSizer *boxsizer);
+        void CheckAddressSanity();
 
         void SetupDAsmSettings(wxNotebook *book);
 };

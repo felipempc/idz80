@@ -136,7 +136,7 @@ void FileTypeDialog::SetData(RawData& program)
 
     m_program = &program;
 
-    SyncAddress();
+    UpdateFormAddress();
 
     t = program.GetFileType();
     switch (t)
@@ -176,7 +176,7 @@ uint FileTypeDialog::GetEndAddress()
     return EndAddress;
 }
 
-void FileTypeDialog::SyncAddress()
+void FileTypeDialog::UpdateFormAddress()
 {
     wxString str;
     StartAddress = m_program->StartAddress;
@@ -211,7 +211,7 @@ void FileTypeDialog::OnRadioBoxSelect(wxCommandEvent &event)
             cb_cartridge->Enable(m_program->isCartridge());
 		}
 
-    SyncAddress();
+    UpdateFormAddress();
 }
 
 
@@ -225,7 +225,7 @@ void FileTypeDialog::OnChkBoxCartridge(wxCommandEvent &event)
 	}
 	else
 		m_program->ForceNoCartridge();
-	SyncAddress();
+	UpdateFormAddress();
 }
 
 
