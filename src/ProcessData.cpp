@@ -302,7 +302,7 @@ void ProcessData::processLabel()
     while (i < prog_labels->GetItemCount())
     {
         lbl = (LabelItem *)prog_labels->GetItemData(i);
-        if ((lbl != 0) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
+        if ((lbl) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {
@@ -320,7 +320,7 @@ void ProcessData::processLabel()
     while (i <  var_labels->GetItemCount())
     {
         lbl = (LabelItem *)var_labels->GetItemData(i);
-        if ((lbl != 0) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
+        if ((lbl) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {

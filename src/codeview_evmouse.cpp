@@ -33,16 +33,16 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
     SetFocus();
     if (!MultiSelection)
-        CursorLastPosition = CursorPosition;
+        m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
 
-	lastposition = CursorPosition;
+	lastposition = m_iteminfo.cursorPosition;
 	pt = event.GetPosition();
     CalcCursorPosition(pt);
-	if (CursorPosition < GetCount())
+	if (m_iteminfo.cursorPosition < GetCount())
 	{
 		ClearCursor();
 
-		if (CursorPosition > GetLastLine())
+		if (m_iteminfo.cursorPosition > GetLastLine())
 		{
 			Scroll(-1, GetFirstLine() + 1);
 			RefreshRect(CalcCursorRfshRect());
@@ -55,7 +55,7 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 		RefreshRect(CalcCursorRfshRect());
 	}
 	else
-		CursorPosition = lastposition;
+		m_iteminfo.cursorPosition = lastposition;
 
 }
 
@@ -84,41 +84,40 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
     SetFocus();
 
     if (!MultiSelection)
-        CursorLastPosition = CursorPosition;
+        m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
 
-	lastposition = CursorPosition;
+	lastposition = m_iteminfo.cursorPosition;
 	pt = event.GetPosition();
     CalcCursorPosition(pt);
-	if (CursorPosition < GetCount())
+	if (m_iteminfo.cursorPosition < GetCount())
 	{
 		ClearCursor();
 
-		if (MultiSelection && ((CursorPosition < SelectedItemIndex) ||
-			(CursorPosition > SelectedLastItem)))
+		if (MultiSelection && ((m_iteminfo.cursorPosition < m_iteminfo.firstLine) ||
+			(m_iteminfo.cursorPosition > m_iteminfo.lastLine)))
 		{
 			RefreshRect(CalcSelectedRect());
-			SelectedCount = 1;
+			m_iteminfo.selectedLineCount = 1;
 			MultiSelection = false;
-			SelectedItemIndex = CursorPosition;
-			CursorLastPosition = CursorPosition;
-			SelectedLastItem = SelectedItemIndex;
+			m_iteminfo.firstLine = m_iteminfo.cursorPosition;
+			m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
+			m_iteminfo.lastLine = m_iteminfo.cursorPosition;
 		}
 		else
 			if (!MultiSelection)
 			{
-				SelectedCount = 1;
-				SelectedItemIndex = CursorPosition;
-				CursorLastPosition = CursorPosition;
-				SelectedLastItem = SelectedItemIndex;
+				m_iteminfo.selectedLineCount = 1;
+				m_iteminfo.firstLine = m_iteminfo.cursorPosition;
+				m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
+				m_iteminfo.lastLine = m_iteminfo.firstLine;
 			}
 
-		//SetFocusIgnoringChildren();
 		FillSelectedItemInfo(pt);
 
 		RefreshRect(CalcCursorRfshRect());
 	}
 	else
-		CursorPosition = lastposition;
+		m_iteminfo.cursorPosition = lastposition;
 
 }
 
@@ -131,7 +130,7 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
     {
         PopUp = new wxMenu();
 
-        if (SelectedCount > 1)
+        if (m_iteminfo.selectedLineCount > 1)
         {
             CreatePopupMenuMultiSelection(PopUp);
         }
@@ -155,7 +154,7 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
 	if (event.Dragging())
 	{
 	    if (!Selecting)
-            CursorLastPosition = CursorPosition;
+            m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
 
         if (!HasCapture())
             CaptureMouse();
@@ -163,7 +162,7 @@ void CodeView::OnMouseMove(wxMouseEvent& event)
 	    CalcCursorPosition(event.GetPosition());
         ClearCursor();
 
-		if (IncompleteArea.Contains(event.GetPosition()) && (CursorPosition < GetLastItem()))
+		if (IncompleteArea.Contains(event.GetPosition()) && (m_iteminfo.cursorPosition < GetLastItem()))
 		{
 			Scroll(-1, GetFirstLine() + 1);
 			RefreshRect(CalcCursorRfshRect());

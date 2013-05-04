@@ -57,6 +57,8 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         wxString GetLabel(uint idx);
         wxString GetAddress(uint idx);
         LabelItem *GetLabelItem(const int index);
+
+        void GetLabelsBetweenRangeAddress(uint first_address, uint last_address, wxArrayInt *address_list);
         int GetCount();
         bool IsEmpty();
         void Clear();
@@ -71,6 +73,7 @@ class LabelListCtrl : public wxListCtrl, public LogBase
     private:
         static const int NO_DASM_ITEM = -1;
         int m_item_selected;
+        int local_id;
 
 
         void OnMouseRightDown(wxListEvent& event);

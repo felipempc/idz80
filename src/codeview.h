@@ -67,7 +67,19 @@ struct SelectedItemInfo
 	DAsmElement* 	dasmitem;
 	CodeViewItem* 	lineitem;
 	bool			hasComment;
-	uint			argSelected;
+
+	uint			argSelected,
+                    selectedLineCount;
+
+	int             firstLine,
+                    lastLine,
+                    firstInstruction,
+                    lastInstruction,
+                    firstAddress,
+                    lastAddress,
+                    cursorPosition,
+                    cursorLastPosition;
+
 };
 
 
@@ -116,11 +128,13 @@ private:
                 m_fontWidth;
 	styledata	m_styleData;		// Holds info to change style handlers (BIN/DEC/HEX)
 
-    int         SelectedCount,      // Number of Items Selected
+    //int
+    /*            SelectedCount,      // Number of Items Selected
                 SelectedItemIndex,  // First Disassembled Item Selected
                 SelectedLastItem,   // Last Disassembled Item Selected
                 CursorPosition,     // Index of Disassembled item that cursor is over
                 CursorLastPosition;
+    */
     wxRect      *LastCursorRect,    // The rectangle of last cursor
                 IncompleteArea;
 
@@ -178,9 +192,12 @@ private:
     //selection
     void DoSelection();
 	void FillSelectedItemInfo(const wxPoint &pt);
+	void TreatSingleSelection();
+	void TreatMultiSelection();
+	void IdentifyArgumentSelected(const wxPoint &mouse_cursor);
 
     //Pop up Menu
-    bool FilterInstructions(wxArrayInt &range, wxArrayInt *plabels, wxArrayInt *vlabels);
+    bool FilterInstructions(wxArrayInt &range);
     ElementType GetTypeMultiselection(bool &hcomment);
     void CreatePopupMenuMultiSelection(wxMenu *popup);
     void CreatePopupMenuSingleSelection(wxMenu *popup);

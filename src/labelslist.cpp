@@ -29,6 +29,7 @@ LabelListCtrl::LabelListCtrl(wxWindow* parent, LogWindow *logparent)
     InsertColumn(1, "Label");
     SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
     SetColumnWidth(1, 100);
+    local_id = -1;
 
     Bind(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, &LabelListCtrl::OnMouseRightDown, this);
     Bind(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, &LabelListCtrl::OnMouseDblLeft, this);
@@ -54,18 +55,19 @@ void LabelListCtrl::Clear()
     for (i = 0; i < GetItemCount(); i++)
     {
         lbl = (LabelItem *)GetItemData(i);
-        if (lbl != 0)
+        if (lbl)
         {
-            if (lbl->LabelUsers != 0)
+            if (lbl->LabelUsers)
             {
                 lbl->LabelUsers->Clear();
                 delete lbl->LabelUsers;
             }
+            lbl->LabelUsers = 0;
             lbl->Address = 0;
-
             delete lbl;
         }
     }
+    local_id = -1;
     DeleteAllItems();
 }
 
@@ -79,7 +81,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
     wxString buf;
     wxListItem li;
     LabelItem *lbl;
-    long itemfound,p;
+    long itemfound, p;
 
     lbl = 0;
     p = -1;
@@ -103,9 +105,10 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, int dasmitem)
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
-        li.SetId(addr);
+        li.SetId(addr); //++local_id);
         p = InsertItem(li);
         SetItem(p, 1, name);
+        LogIt(wxString::Format("[%X] Label Inserted %d", li.m_itemId, p));
         itemfound = p;
     }
     else
@@ -148,7 +151,7 @@ int LabelListCtrl::AddLabel(uint addr, const wxString name, wxArrayInt &labeluse
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
-        li.SetId(addr);
+        li.SetId(++local_id);
         p = InsertItem(li);
         SetItem(p, 1, name);
         itemfound = p;
@@ -213,7 +216,7 @@ bool LabelListCtrl::DelLabel(uint addr)
 
 
 
-
+//TODO: MODIFY or Remove....
 int LabelListCtrl::GetLabel(uint addr, wxString& str)
 {
     int i;
@@ -231,7 +234,6 @@ int LabelListCtrl::GetLabel(uint addr, wxString& str)
     }
     return i;
 }
-
 
 
 wxString LabelListCtrl::GetLabel(uint idx)
@@ -254,6 +256,7 @@ wxString LabelListCtrl::GetLabel(uint idx)
     }
     return str_ret;
 }
+
 
 
 wxString LabelListCtrl::GetAddress(uint idx)
@@ -313,7 +316,7 @@ void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
             str << wxString::Format(" %x", selected_label->LabelUsers->Item(i));
         }
         str.Trim(false);
-        LogIt("Label users->" + str + "\n");
+        LogIt(wxString::Format("[%X] <%s> Label users->%s", selected_label->Address, selected_label->LabelStr, str));
     }
     else
         LogIt("No users for this label.\n");
@@ -402,7 +405,7 @@ int LabelListCtrl::GetCount()
     return GetItemCount();
 }
 
-void LabelListCtrl::EditLabel(uint listitem,wxString strlabel)
+void LabelListCtrl::EditLabel(uint listitem, wxString strlabel)
 {
     wxListItem item;
 
@@ -419,8 +422,25 @@ void LabelListCtrl::EditLabel(uint listitem,wxString strlabel)
 LabelItem *LabelListCtrl::GetLabelItem(const int index)
 {
     LabelItem *lbl;
-    lbl=(LabelItem *)GetItemData(index);
+    lbl = (LabelItem *)GetItemData(index);
     return lbl;
+}
+
+
+void LabelListCtrl::GetLabelsBetweenRangeAddress(uint first_address, uint last_address, wxArrayInt *address_list)
+{
+    LabelItem   *lbl;
+    long    loopcount;
+
+    if (address_list)
+    {
+        for(loopcount = 0; loopcount < GetCount(); loopcount++)
+        {
+            lbl = GetLabelItem(loopcount);
+            if (lbl && (lbl->Address >= first_address) && (lbl->Address <= last_address))
+                address_list->Add(lbl->Address);
+        }
+    }
 }
 
 
