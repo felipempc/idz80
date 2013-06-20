@@ -45,12 +45,13 @@ typedef struct st_label LabelItem;
 class LabelListCtrl : public wxListCtrl, public LogBase
 {
     public:
-        LabelListCtrl(wxWindow* parent, LogWindow *logparent);
+        LabelListCtrl(wxWindow* parent, const wxString default_name, LogWindow *logparent);
         ~LabelListCtrl();
 
-        int AddLabel(uint addr, const wxString name, int dasmitem = NO_DASM_ITEM);
-        int AddLabel(uint addr, const wxString name, wxArrayInt &labelusers);
+        int AddLabel(uint addr, wxString name, int dasmitem = NO_DASM_ITEM);
+        int AddLabel(uint addr, wxString name, wxArrayInt &labelusers);
         bool DelLabel(uint addr);
+        void DelLabelUser(uint addr, uint dasmitem);
         void EditLabel(uint listitem,wxString strlabel);
 		bool EditLabelDialog(uint addr);
         int GetLabel(uint addr, wxString& str);
@@ -74,8 +75,10 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         static const int NO_DASM_ITEM = -1;
         int m_item_selected;
         int local_id;
+        wxString default_label_name;
 
-
+        LabelItem *FindByAddress(uint addr, uint &label_index);
+        wxString CreateDefaultName(const uint addr);
         void OnMouseRightDown(wxListEvent& event);
         void OnMouseDblLeft(wxListEvent& event);
         void OnMenuPopUpAdd(wxCommandEvent& event);
@@ -87,5 +90,4 @@ class LabelListCtrl : public wxListCtrl, public LogBase
 
 int wxCALLBACK CompareAddress(long item1, long item2, long data);
 int wxCALLBACK CompareLabelStr(long item1, long item2, long data);
-
 #endif // LABELSLIST_H

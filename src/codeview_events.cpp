@@ -100,6 +100,14 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                             else
                                 RefreshRect(CalcCursorRfshRect());
 
+                            if (m_iteminfo.selectedLineCount == 1)
+                                TreatSingleSelection();
+                            else
+                                if (m_iteminfo.selectedLineCount > 1)
+                                    TreatMultiSelection();
+
+                            if (Selecting)
+                                LogIt(wxString::Format("Selection = (%d, %d)", m_iteminfo.firstLine, m_iteminfo.lastLine));
                         }
                         break;
         case WXK_UP:
@@ -118,6 +126,14 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                             else
                                 RefreshRect(CalcCursorRfshRect());
 
+                            if (m_iteminfo.selectedLineCount == 1)
+                                TreatSingleSelection();
+                            else
+                                if (m_iteminfo.selectedLineCount > 1)
+                                    TreatMultiSelection();
+
+                            if (Selecting)
+                                LogIt(wxString::Format("Selection = (%d, %d)", m_iteminfo.firstLine, m_iteminfo.lastLine));
                         }
                         break;
         case WXK_NUMPAD_PAGEDOWN:
@@ -134,15 +150,9 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                         MultiSelection = true;
                         break;
         case C_KEY:
-						#ifdef IDZ80DEBUG
-                        LogIt("Event Disasm !\n");
-                        #endif
                         AddPendingEvent(evtDisassemble);
                         break;
         case D_KEY:
-						#ifdef IDZ80DEBUG
-                        LogIt("Event makeData !\n");
-                        #endif
                         AddPendingEvent(evtMakeData);
                         break;
 
@@ -277,6 +287,9 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 		}
 		*/
 
+        if (m_iteminfo.firstLine > 0)
+            cvi = m_CodeViewLine->getData(m_iteminfo.firstLine - 1);
+
         lineIndex = m_iteminfo.firstLine;
         lineLast = m_iteminfo.lastLine;
         lineCount = lineLast - lineIndex + 1;
@@ -292,7 +305,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
         for (i = 0; i < lineCount; i++)
 				m_CodeViewLine->Del(lineIndex);
 
-/* TODO:REWRITE THIS
+//* TODO:REWRITE THIS
         m_CodeViewLine->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
 
         newLineCount = dasmed_items.Count - oldLineCount;
@@ -302,10 +315,13 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
         for (i = 0; i < varlabels.GetCount(); i++)
         {
             m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
-            LogIt(wxString::Format("Found var address %X, line %d\n", varlabels.Item(i), varindex));
-            m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
+            {
+                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
+                m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+            }
         }
-*/
+//*/
         m_iteminfo.cursorLastPosition = lineIndex;
         m_iteminfo.cursorPosition = lineIndex + lineCount + newLineCount - 1;
         UpdateSelectedRect();
@@ -337,6 +353,8 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
+        Process->var_labels->GetLabelsBetweenRangeAddress(m_iteminfo.firstAddress, m_iteminfo.lastAddress, &varlabels);
+
 		for (i = 0; i < lineCount; i++)
 				m_CodeViewLine->Del(lineIndex);
 
@@ -348,11 +366,17 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 
 		m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
+        if (lineIndex > 0)
+            cvi = m_CodeViewLine->getData(lineIndex - 1);
+
         for (i = 0; i < varlabels.GetCount(); i++)
         {
             m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
-            LogIt(wxString::Format("Found var address %X, line %d\n", varlabels.Item(i), varindex));
-            m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
+            {
+                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
+                m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
+            }
         }
 
 		m_iteminfo.cursorLastPosition = lineIndex;

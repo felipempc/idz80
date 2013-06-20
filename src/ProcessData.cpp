@@ -33,10 +33,10 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     CodeViewLines = new CodeViewLine(Disassembled);
     m_disassembler = new Decoder(this, logparent);
 
-    var_labels = new LabelListCtrl(parent, logparent);
-    prog_labels = new LabelListCtrl(parent, logparent);
-    io_labels = new LabelListCtrl(parent, logparent);
-    constant_labels = new LabelListCtrl(parent, logparent);
+    var_labels = new LabelListCtrl(parent, "VAR", logparent);
+    prog_labels = new LabelListCtrl(parent, "", logparent);
+    io_labels = new LabelListCtrl(parent, "PORT", logparent);
+    constant_labels = new LabelListCtrl(parent, "", logparent);
 
     sys_calls =  0;
     sys_vars = 0;
@@ -171,6 +171,7 @@ void ProcessData::MakeData(RangeItems &r)
         de = Disassembled->GetData(i);
         offset = de->GetOffset();
         length = de->GetLength();
+        DeleteLabelUsers(de, i);
         Disassembled->DelDasm(i);
         for (j = 0; j < length; j++)
         {
@@ -336,4 +337,19 @@ void ProcessData::processLabel()
 }
 
 
+
+void ProcessData::DeleteLabelUsers(DAsmElement *de, const uint dasmitem)
+{
+    if (de->GetNumArgs() > 0)
+        switch(de->GetArgumentType(0))
+        {
+            case ARG_VARIABLE:
+                var_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+            case ARG_IO_ADDR:
+                io_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+            case ARG_REL_ADDR:
+            case ARG_ABS_ADDR:
+                prog_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+        }
+}
 

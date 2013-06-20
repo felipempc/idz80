@@ -62,6 +62,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         wxGauge     *m_gauge;
         Decoder     *m_disassembler;
         LogWindow   *WindowLog;
+
+        void DeleteLabelUsers(DAsmElement *de, const uint dasmitem);
 };
 
 

@@ -188,8 +188,8 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 		case ARG_VARIABLE:
                             argument = de->getArgument(0, 0);
 							str = Labels->sys_vars->Find(argument);
-							if (str.IsEmpty())
-								str.Printf("VAR%d", var_label_counter++);
+							//if (str.IsEmpty())
+							//	str.Printf("VAR%d", var_label_counter++);
 							Labels->var_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
@@ -197,16 +197,16 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 		case ARG_REL_ADDR:
                             argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(index));
 							str = Labels->sys_calls->Find(argument);
-							if (str.IsEmpty())
-								str.Printf("LABEL%d", program_label_counter++);
+							//if (str.IsEmpty())
+							//	str.Printf("LABEL%d", program_label_counter++);
 							Labels->prog_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_IO_ADDR:
                             argument = de->getArgument(0, 0);
 							str = Labels->sys_io->Find(argument);
-							if (str.IsEmpty())
-								str.Printf("PORT%d", io_label_counter++);
+							//if (str.IsEmpty())
+							//	str.Printf("PORT%d", io_label_counter++);
 							Labels->io_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
@@ -604,10 +604,11 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
     Labels = parent;
     Labels->ClearUserLabels();
     SubRoutine->Clear();
+/*
     var_label_counter = 0;
     io_label_counter = 0;
     program_label_counter = 0;
-
+*/
     UpdateBoundary();
 
     AddressList->Clear();
@@ -771,10 +772,11 @@ void Decoder::FullDisassemble(LabelManager *parent)
 
     Labels = parent;
     Labels->ClearUserLabels();
+/*
     var_label_counter = 0;
     io_label_counter = 0;
     program_label_counter = 0;
-
+*/
     UpdateBoundary();
 
     if (Process->Program->isCartridge())

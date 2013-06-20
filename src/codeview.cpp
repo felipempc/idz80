@@ -823,7 +823,7 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
         TreatMultiSelection();
 
 
-    LogIt(wxString::Format("First: line = %d, address = %X\nLast: line = %d, address = %X", m_iteminfo.firstLine, m_iteminfo.firstAddress, m_iteminfo.lastLine, m_iteminfo.lastAddress));
+    LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", m_iteminfo.firstLine, m_iteminfo.firstAddress, m_iteminfo.lastLine, m_iteminfo.lastAddress));
 }
 
 

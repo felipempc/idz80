@@ -26,7 +26,7 @@ CodeViewLine::~CodeViewLine()
 CodeViewItem *CodeViewLine::getData(uint index)
 {
     if (index >= m_CodeLine.GetCount())
-		return (CodeViewItem *)0;	//index = m_CodeLine.GetCount() - 1;
+		return (CodeViewItem *)0;
     return (CodeViewItem *)m_CodeLine[index];
 }
 
@@ -376,44 +376,6 @@ bool CodeViewLine::getLineOfAddress(uint addr, int &index)
     return getLineOfAddress(0, GetCount(), addr, index);
 }
 
-
-/*
-    int		i;
-    uint	a;
-    bool	found,
-			labelexists = false;
-    CodeViewItem	*cvi;
-    DAsmElement		*de;
-
-    i = 0;
-    a = 0;
-    found = false;
-    index = -1;
-    while ((i < m_CodeLine.GetCount()) && (!found))
-    {
-        cvi = getData(i);
-        if (cvi != 0)
-		{
-			if ((cvi->LabelProgAddr == addr) || (cvi->LabelVarAddr == addr))
-				labelexists = true;
-
-            if (cvi->Dasmitem >= 0)
-            {
-                de = m_dasm->GetData(cvi->Dasmitem);
-                a = m_dasm->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
-                if (a == addr)
-                {
-                    found = true;
-                    index = i;
-                }
-			}
-		}
-        if (!found)
-            i++;
-    }
-	return labelexists;
-}
-*/
 
 
 void CodeViewLine::UpdateDasmIndex(const int index, const int delta)
