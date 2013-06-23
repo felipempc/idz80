@@ -1,6 +1,6 @@
 /****************************************************************
- * Name:      IDZ80
- * Purpose:   Defines Application Frame
+ * Name:      MNDB_TOOLS.H
+ * Purpose:   Helper tools for mnemonic database (MNDB)
  * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
  * Created:   2009-11-09
  * Copyright: Felipe Mainieri ()
@@ -17,7 +17,7 @@
 #define _IDZ80_MNDBTOOLS_H
 
 #include <wx/string.h>
-#include "mndb.h"
+#include <wx/arrstr.h>
 
 
 void TrimComment(wxString& str);

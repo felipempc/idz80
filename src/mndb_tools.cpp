@@ -13,8 +13,6 @@
  * Tools for mndb
  */
 
-
-#include <wx/dynarray.h>
 #include "mndb_tools.h"
 
 
@@ -23,6 +21,8 @@ void TrimComment(wxString& str)
     str = str.BeforeFirst('#');
     str = str.Trim();
 }
+
+
 
 int GetSection(wxString& s)
 {
@@ -40,6 +40,7 @@ int GetSection(wxString& s)
     }
     return ((int) r);
 }
+
 
 
 void ParseString(wxString& s, wxArrayString& sl)

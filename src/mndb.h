@@ -1,9 +1,9 @@
 /****************************************************************
- * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Name:      MNDB (Mnemonics DataBase)
+ * Purpose:   Stores Z80 mnemonics.
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
  **************************************************************/
 
