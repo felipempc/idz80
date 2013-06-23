@@ -118,13 +118,13 @@ int CodeViewLine::Add(const wxString &comment)
 
 void CodeViewLine::DelItem(CodeViewItem *cvi)
 {
-    if (cvi != 0)
+    if (cvi)
     {
-        if (cvi->Comment != 0)
+        if (cvi->Comment)
             delete cvi->Comment;
-        if (cvi->RectArg1 != 0)
+        if (cvi->RectArg1)
             delete cvi->RectArg1;
-        if (cvi->RectArg2 != 0)
+        if (cvi->RectArg2)
             delete cvi->RectArg2;
         delete cvi;
     }
@@ -135,7 +135,7 @@ void CodeViewLine::DelItem(CodeViewItem *cvi)
 
 void CodeViewLine::DelComment(CodeViewItem *cvi)
 {
-    if (cvi->Comment != 0)
+    if (cvi->Comment)
     {
         delete cvi->Comment;
         cvi->Comment = 0;

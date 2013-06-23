@@ -288,6 +288,12 @@ wxString LabelListCtrl::GetLabel(uint idx)
 }
 
 
+int LabelListCtrl::GetLabelIndex(uint addr)
+{
+    return (FindItem(-1, wxString::Format("%X", addr)));
+}
+
+
 
 wxString LabelListCtrl::GetAddress(uint idx)
 {
@@ -319,7 +325,7 @@ LabelItem *LabelListCtrl::FindByAddress(uint addr, uint &label_index)
 
     lbl = 0;
 
-    label_item = FindItem(-1, wxString::Format("%X", addr));
+    label_item = GetLabelIndex(addr);   //FindItem(-1, wxString::Format("%X", addr));
     label_index = label_item;
 
     if (label_item != wxNOT_FOUND)
@@ -500,19 +506,21 @@ void LabelListCtrl::GetLabelsBetweenRangeAddress(uint first_address, uint last_a
 
 void LabelListCtrl::SortAddress(bool crescent)
 {
-    if (crescent)
-        SortItems(CompareAddress, 0);
-    else
-        SortItems(CompareAddress, 1);
+    if (!IsEmpty())
+        if (crescent)
+            SortItems(CompareAddress, 0);
+        else
+            SortItems(CompareAddress, 1);
 }
 
 
 void LabelListCtrl::SortLabelStr(bool crescent)
 {
-    if (crescent)
-        SortItems(CompareLabelStr, 0);
-    else
-        SortItems(CompareLabelStr, 1);
+    if (!IsEmpty())
+        if (crescent)
+            SortItems(CompareLabelStr, 0);
+        else
+            SortItems(CompareLabelStr, 1);
 }
 
 

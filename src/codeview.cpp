@@ -49,21 +49,23 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
     m_styleData.item = 0;
     LastCursorRect = 0;
 
-    m_iteminfo.type = siUnknown;
-    m_iteminfo.dasmitem = 0;
-    m_iteminfo.lineitem = 0;
-    m_iteminfo.hasComment = false;
-    m_iteminfo.argSelected = 0;
-    m_iteminfo.firstAddress = -1;
-    m_iteminfo.firstInstruction = -1;
-    m_iteminfo.firstLine = -1;
-    m_iteminfo.lastAddress = -1;
-    m_iteminfo.lastInstruction = -1;
-    m_iteminfo.lastLine = -1;
-    m_iteminfo.selectedLineCount = 0;
-    m_iteminfo.cursorLastPosition = -1;
-    m_iteminfo.cursorPosition = -1;
-
+/*
+    line_info.type = siUnknown;
+    line_info.dasmitem = 0;
+    line_info.lineitem = 0;
+    line_info.hasComment = false;
+    line_info.argSelected = 0;
+    line_info.firstAddress = -1;
+    line_info.firstInstruction = -1;
+    line_info.firstLine = -1;
+    line_info.lastAddress = -1;
+    line_info.lastInstruction = -1;
+    line_info.lastLine = -1;
+    line_info.selectedLineCount = 0;
+    line_info.cursorLastPosition = -1;
+    line_info.cursorPosition = -1;
+*/
+    ResetSelectedItemInfo();
 
     m_CodeViewLine = Process->CodeViewLines;
     LastCursorRect = new wxRect();
@@ -222,8 +224,8 @@ void CodeView::OnDraw(wxDC &dc)
         if (IsEnabled())
         {
             PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
-            if ((fromLine == m_iteminfo.cursorPosition) || ((m_iteminfo.cursorPosition >= fromLine) &&
-                (m_iteminfo.cursorPosition < (fromLine + totalLines))))
+            if ((fromLine == line_info.cursorPosition) || ((line_info.cursorPosition >= fromLine) &&
+                (line_info.cursorPosition < (fromLine + totalLines))))
                 ShowCursor(dc);
             Render(dc, fullRect.y, fromLine, totalLines);
         }
@@ -269,8 +271,8 @@ void CodeView::PaintBackground(wxDC &dc, const int start_y, const int fromline, 
     for (i = 0; i < toline; i++)
     {
         if (MultiSelection &&
-           ((fromline + i) >= m_iteminfo.firstLine) &&
-           ((fromline + i) <= m_iteminfo.lastLine))
+           ((fromline + i) >= line_info.firstLine) &&
+           ((fromline + i) <= line_info.lastLine))
             dc.SetBrush(wxBrush(SelectedItemColor));
         else
             dc.SetBrush(backcolour);
@@ -324,10 +326,10 @@ void CodeView::Clear()
 
 void CodeView::ClearSelection()
 {
-    m_iteminfo.firstLine = -1;
-    m_iteminfo.selectedLineCount = 0;
-    m_iteminfo.lastLine = -1;
-    m_iteminfo.cursorPosition = -1;
+    line_info.firstLine = -1;
+    line_info.selectedLineCount = 0;
+    line_info.lastLine = -1;
+    line_info.cursorPosition = -1;
     /*
     SelectedCount = -1;
     SelectedItemIndex = -1;
@@ -368,12 +370,12 @@ void CodeView::CalcCursorPosition(wxPoint point)
     cursor = int(point.y / m_fontHeight);
 
     if (cursor <= GetLastLine())
-        m_iteminfo.cursorPosition = cursor;
+        line_info.cursorPosition = cursor;
 }
 
 wxRect CodeView::CalcCursorRfshRect()
 {
-    wxRect cursor(0, m_iteminfo.cursorPosition * m_fontHeight, GetClientSize().x, m_fontHeight);
+    wxRect cursor(0, line_info.cursorPosition * m_fontHeight, GetClientSize().x, m_fontHeight);
     CalcScrolledPosition(cursor.x, cursor.y, 0, &cursor.y);
     return (cursor);
 }
@@ -393,12 +395,12 @@ void CodeView::DoSelection()
         if (MultiSelection)
             RefreshRect(CalcSelectedRect());
 
-        m_iteminfo.selectedLineCount = 1;
+        line_info.selectedLineCount = 1;
         //SelectedCount = 1;
         MultiSelection = false;
-        m_iteminfo.firstLine = m_iteminfo.cursorPosition;
-        m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
-        m_iteminfo.lastLine = m_iteminfo.cursorPosition;
+        line_info.firstLine = line_info.cursorPosition;
+        line_info.cursorLastPosition = line_info.cursorPosition;
+        line_info.lastLine = line_info.cursorPosition;
         /*
         SelectedItemIndex = CursorPosition;
         CursorLastPosition = CursorPosition;
@@ -412,20 +414,20 @@ void CodeView::UpdateSelectedRect()
 {
     int index;
 
-    if (m_iteminfo.cursorPosition >= m_iteminfo.cursorLastPosition)
+    if (line_info.cursorPosition >= line_info.cursorLastPosition)
     {
-        index = m_iteminfo.cursorLastPosition;
-        m_iteminfo.selectedLineCount = m_iteminfo.cursorPosition - m_iteminfo.cursorLastPosition + 1;
+        index = line_info.cursorLastPosition;
+        line_info.selectedLineCount = line_info.cursorPosition - line_info.cursorLastPosition + 1;
     }
     else
     {
-        index = m_iteminfo.cursorLastPosition;
-        m_iteminfo.selectedLineCount = m_iteminfo.cursorLastPosition - m_iteminfo.cursorPosition + 1;
+        index = line_info.cursorLastPosition;
+        line_info.selectedLineCount = line_info.cursorLastPosition - line_info.cursorPosition + 1;
     }
 
-    m_iteminfo.firstLine = index;
-    m_iteminfo.lastLine = index + m_iteminfo.selectedLineCount - 1;
-    if (m_iteminfo.selectedLineCount > 1)
+    line_info.firstLine = index;
+    line_info.lastLine = index + line_info.selectedLineCount - 1;
+    if (line_info.selectedLineCount > 1)
         MultiSelection = true;
     else
         MultiSelection = false;
@@ -440,15 +442,15 @@ wxRect CodeView::CalcSelectedRect()
 {
     wxRect rect;
     int y, count;
-    if (m_iteminfo.firstLine < GetFirstLine())
+    if (line_info.firstLine < GetFirstLine())
     {
         y = GetFirstLine();
-        count = GetFirstLine() - m_iteminfo.firstLine;
+        count = GetFirstLine() - line_info.firstLine;
     }
     else
     {
-        y = m_iteminfo.firstLine;
-        count = m_iteminfo.selectedLineCount;
+        y = line_info.firstLine;
+        count = line_info.selectedLineCount;
     }
     if ((y + count) >= (GetFirstLine() + m_linesShown))
         count = GetLastLine();
@@ -495,13 +497,13 @@ void CodeView::CenterAddress(uint address)
         position = m_linesShown / 2;
         if ((i >= firstlineshown) && (i <= lastlineshown))
         {
-            m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
-            m_iteminfo.cursorPosition = i;
+            line_info.cursorLastPosition = line_info.cursorPosition;
+            line_info.cursorPosition = i;
         }
         else
         {
-            m_iteminfo.cursorLastPosition = i;
-            m_iteminfo.cursorPosition = i;
+            line_info.cursorLastPosition = i;
+            line_info.cursorPosition = i;
             needscroll = true;
         }
 
@@ -560,7 +562,7 @@ void CodeView::UpdateLastCursorRect()
         GetClientSize(&width, 0);
 
         LastCursorRect->x = 2;
-        LastCursorRect->y = m_iteminfo.cursorPosition * m_fontHeight;
+        LastCursorRect->y = line_info.cursorPosition * m_fontHeight;
         LastCursorRect->width = width - 4;
         LastCursorRect->height = m_fontHeight;
         CalcScrolledPosition(0, LastCursorRect->y, 0, &LastCursorRect->y);
@@ -596,7 +598,7 @@ void CodeView::ShowCursor(wxDC &dc)
 
 void CodeView::ClearCursor()
 {
-    if ((m_iteminfo.cursorLastPosition >= 0) && (m_iteminfo.cursorLastPosition <= GetLastLine()))
+    if ((line_info.cursorLastPosition >= 0) && (line_info.cursorLastPosition <= GetLastLine()))
         RefreshRect(*LastCursorRect);
 }
 
@@ -617,7 +619,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
     ElementType lastitem = et_None;
 
 
-    for (i = m_iteminfo.firstLine; i < m_iteminfo.lastLine; i++)
+    for (i = line_info.firstLine; i < line_info.lastLine; i++)
     {
         cvi = m_CodeViewLine->getData(i);
         if (cvi->Dasmitem >= 0)
@@ -656,50 +658,6 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
     return (et_None);
 }
 
-
-
-
-/* Returns the first and the last line of instruction / data
- * Returns program labels
- */
-bool CodeView::FilterInstructions(wxArrayInt &range)
-{
-    bool	foundindex;
-    int		i, last_i;
-    CodeViewItem
-			*cvi;
-    DAsmElement
-			*de;
-
-
-    foundindex = false;
-    last_i = 0;
-    for (i = m_iteminfo.firstLine; i <= m_iteminfo.lastLine; i++)
-    {
-        cvi = m_CodeViewLine->getData(i);
-        if (cvi->Dasmitem >= 0)
-        {
-            de = Process->Disassembled->GetData(cvi->Dasmitem);
-            if (de->isInstruction() ||
-                de->isData())
-            {
-                if (!foundindex)
-                {
-                    range.Add(i);
-                    foundindex = true;
-                }
-                last_i = i;
-            }
-        }
-    }
-    if (foundindex)
-        range.Add(last_i);
-
-	if (range.GetCount() > 0)
-		return true;
-	else
-		return false;
-}
 
 
 
@@ -742,11 +700,11 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
 
     popup->Append(idPOPUP_GOTO_ADDRESS, "Goto address...");
 
-    switch(m_iteminfo.type)
+    switch(line_info.type)
     {
         case 	siInstructionLabel:
-                                if ((m_iteminfo.dasmitem) &&
-                                    (m_iteminfo.dasmitem->MnemonicObject->isCall() || m_iteminfo.dasmitem->MnemonicObject->isJump()))
+                                if ((line_info.dasmitem) &&
+                                    (line_info.dasmitem->MnemonicObject->isCall() || line_info.dasmitem->MnemonicObject->isJump()))
                                 {
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();
@@ -759,8 +717,8 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
                                 labelMenu->Append(idPOPUP_DELLABEL, "Delete");
 
         case	siInstruction:
-                                if ((m_iteminfo.type != siLineLabelProg) &&
-                                    (m_iteminfo.type != siLineLabelVar))
+                                if ((line_info.type != siLineLabelProg) &&
+                                    (line_info.type != siLineLabelVar))
                                     popup->Append(idPOPUP_MAKEDATA, "Make data");
                                 break;
         case	siData:
@@ -773,7 +731,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
         popup->Append(idPOPUP_LBL, "Label", labelMenu);
 
     // Clicked over an argument
-    if (m_iteminfo.argSelected > 0)
+    if (line_info.argSelected > 0)
     {
         argStyleSubMenu = new wxMenu();
 
@@ -785,7 +743,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
 
     popup->AppendSeparator();
 
-    if ((m_iteminfo.type == siComments) || (m_iteminfo.hasComment))
+    if ((line_info.type == siComments) || (line_info.hasComment))
     {
         popup->Append(idPOPUP_EDITCOMMENT, "Edit comment");
         popup->Append(idPOPUP_DELCOMMENT, "Del comment");
@@ -808,22 +766,43 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 
 	CalcUnscrolledPosition(pt.x, pt.y, &mousept.x, &mousept.y);
 
-	m_iteminfo.type = siUnknown;
+	line_info.type = siUnknown;
 
-    m_iteminfo.firstInstruction = -1;
-    m_iteminfo.firstAddress = -1;
-    m_iteminfo.lastInstruction = -1;
-    m_iteminfo.lastAddress = -1;
+    line_info.firstInstruction = -1;
+    line_info.firstAddress = -1;
+    line_info.lastInstruction = -1;
+    line_info.lastAddress = -1;
+
+    if (line_info.selectedLineCount == 1)
+        TreatSingleSelection();
+    if (line_info.selectedLineCount > 1)
+        TreatMultiSelection();
 
     IdentifyArgumentSelected(mousept);
 
-    if (m_iteminfo.selectedLineCount == 1)
-        TreatSingleSelection();
-    if (m_iteminfo.selectedLineCount > 1)
-        TreatMultiSelection();
+    LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", line_info.firstLine, line_info.firstAddress, line_info.lastLine, line_info.lastAddress));
+}
 
 
-    LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", m_iteminfo.firstLine, m_iteminfo.firstAddress, m_iteminfo.lastLine, m_iteminfo.lastAddress));
+
+
+
+void CodeView::ResetSelectedItemInfo()
+{
+    line_info.type = siUnknown;
+    line_info.dasmitem = 0;
+    line_info.lineitem = 0;
+    line_info.hasComment = false;
+    line_info.argSelected = 0;
+    line_info.firstAddress = -1;
+    line_info.firstInstruction = -1;
+    line_info.firstLine = -1;
+    line_info.lastAddress = -1;
+    line_info.lastInstruction = -1;
+    line_info.lastLine = -1;
+    line_info.selectedLineCount = 0;
+    line_info.cursorLastPosition = -1;
+    line_info.cursorPosition = -1;
 }
 
 
@@ -831,15 +810,17 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 // If clicked over an instruction argument, discover which was
 void CodeView::IdentifyArgumentSelected(const wxPoint &mouse_cursor)
 {
-    if (m_iteminfo.lineitem)
+    if (line_info.lineitem)
     {
-        if (m_iteminfo.lineitem->RectArg1 && (m_iteminfo.lineitem->RectArg1->Contains(mouse_cursor)))
-            m_iteminfo.argSelected = 1;
-        else
-            m_iteminfo.argSelected = 0;
+        if (line_info.lineitem->RectArg1)
+            if (line_info.lineitem->RectArg1->Contains(mouse_cursor))
+                line_info.argSelected = 1;
+            else
+                line_info.argSelected = 0;
 
-        if (m_iteminfo.lineitem->RectArg2 && (m_iteminfo.lineitem->RectArg2->Contains(mouse_cursor)))
-            m_iteminfo.argSelected = 2;
+        if (line_info.lineitem->RectArg2)
+            if (line_info.lineitem->RectArg2->Contains(mouse_cursor))
+                line_info.argSelected = 2;
     }
 }
 
@@ -849,47 +830,47 @@ void CodeView::IdentifyArgumentSelected(const wxPoint &mouse_cursor)
 
 void CodeView::TreatSingleSelection()
 {
-	bool            testcomment = false;
+	bool    testcomment = false;
 
-	m_iteminfo.lineitem = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
-	if (m_iteminfo.lineitem)
+	line_info.lineitem = m_CodeViewLine->getData(line_info.cursorPosition);
+	if (line_info.lineitem)
 	{
 		// Does the line have comment ?
-		if (m_iteminfo.lineitem->Comment)
-			m_iteminfo.hasComment = true;
+		if (line_info.lineitem->Comment)
+			line_info.hasComment = true;
 		else
-			m_iteminfo.hasComment = false;
+			line_info.hasComment = false;
 
 		// If line is a program label or a var label
-		if (m_iteminfo.lineitem->LabelProgAddr >= 0)
-			m_iteminfo.type = siLineLabelProg;
+		if (line_info.lineitem->LabelProgAddr >= 0)
+			line_info.type = siLineLabelProg;
 
-		if (m_iteminfo.lineitem->LabelVarAddr >= 0)
-			m_iteminfo.type = siLineLabelVar;
+		if (line_info.lineitem->LabelVarAddr >= 0)
+			line_info.type = siLineLabelVar;
 
 		// check if line has instruction
-        m_iteminfo.dasmitem = Process->Disassembled->GetData(m_iteminfo.lineitem->Dasmitem);
-        if (m_iteminfo.dasmitem)
+        line_info.dasmitem = Process->Disassembled->GetData(line_info.lineitem->Dasmitem);
+        if (line_info.dasmitem)
         {
-            if (m_iteminfo.dasmitem->HasArgumentLabel())
-                m_iteminfo.type = siInstructionLabel;
+            if (line_info.dasmitem->HasArgumentLabel())
+                line_info.type = siInstructionLabel;
             else
-                m_iteminfo.type = siInstruction;
+                line_info.type = siInstruction;
 
-            if (m_iteminfo.dasmitem->isData())
-                m_iteminfo.type = siData;
-            m_iteminfo.firstInstruction = m_iteminfo.lineitem->Dasmitem;
-            m_iteminfo.lastInstruction = m_iteminfo.firstInstruction;
-            m_iteminfo.firstAddress = Process->Disassembled->GetBaseAddress(m_iteminfo.firstInstruction) + m_iteminfo.dasmitem->GetOffset();
-            m_iteminfo.lastAddress = m_iteminfo.firstAddress;
+            if (line_info.dasmitem->isData())
+                line_info.type = siData;
+            line_info.firstInstruction = line_info.lineitem->Dasmitem;
+            line_info.lastInstruction = line_info.firstInstruction;
+            line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();
+            line_info.lastAddress = line_info.firstAddress;
         }
 
 
 		// Test if line has only comments
-		testcomment = ((m_iteminfo.lineitem->Org + m_iteminfo.lineitem->LabelProgAddr + m_iteminfo.lineitem->LabelVarAddr +
-						m_iteminfo.lineitem->Dasmitem) == -4);
+		testcomment = ((line_info.lineitem->Org + line_info.lineitem->LabelProgAddr + line_info.lineitem->LabelVarAddr +
+						line_info.lineitem->Dasmitem) == -4);
 		if (testcomment)
-			m_iteminfo.type = siComments;
+			line_info.type = siComments;
 	}
 }
 
@@ -905,15 +886,15 @@ void CodeView::TreatMultiSelection()
             last_found;
 
 
-    for (first_instruction = m_iteminfo.firstLine; first_instruction <= m_iteminfo.lastLine; first_instruction++)
+    for (first_instruction = line_info.firstLine; first_instruction <= line_info.lastLine; first_instruction++)
     {
-        m_iteminfo.lineitem = m_CodeViewLine->getData(first_instruction);
-        first_found = (m_iteminfo.lineitem && (m_iteminfo.lineitem->Dasmitem >= 0));
+        line_info.lineitem = m_CodeViewLine->getData(first_instruction);
+        first_found = (line_info.lineitem && (line_info.lineitem->Dasmitem >= 0));
         if (first_found)
             break;
     }
 
-    for (last_instruction = m_iteminfo.lastLine; last_instruction > first_instruction; last_instruction--)
+    for (last_instruction = line_info.lastLine; last_instruction > first_instruction; last_instruction--)
     {
         last_line = m_CodeViewLine->getData(last_instruction);
         last_found = (last_line && (last_line->Dasmitem >= 0));
@@ -923,15 +904,15 @@ void CodeView::TreatMultiSelection()
 
     if (first_found && last_found)
     {
-        m_iteminfo.firstInstruction = m_iteminfo.lineitem->Dasmitem;
-        m_iteminfo.lastInstruction = last_line->Dasmitem;
-        m_iteminfo.dasmitem = Process->Disassembled->GetData(m_iteminfo.firstInstruction);
-        last_disassembled = Process->Disassembled->GetData(m_iteminfo.lastInstruction);
-        m_iteminfo.firstAddress = Process->Disassembled->GetBaseAddress(m_iteminfo.firstInstruction) + m_iteminfo.dasmitem->GetOffset();
-        m_iteminfo.lastAddress = Process->Disassembled->GetBaseAddress(m_iteminfo.lastInstruction) + last_disassembled->GetOffset();
+        line_info.firstInstruction = line_info.lineitem->Dasmitem;
+        line_info.lastInstruction = last_line->Dasmitem;
+        line_info.dasmitem = Process->Disassembled->GetData(line_info.firstInstruction);
+        last_disassembled = Process->Disassembled->GetData(line_info.lastInstruction);
+        line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();
+        line_info.lastAddress = Process->Disassembled->GetBaseAddress(line_info.lastInstruction) + last_disassembled->GetOffset();
     }
 
-    m_iteminfo.hasComment = false;
+    line_info.hasComment = false;
 
 }
 

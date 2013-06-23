@@ -35,12 +35,12 @@ void CodeView::OnScrollPageDown(wxScrollWinEvent& event)
 
     if (GetFirstLine() < (m_CodeViewLine->GetCount() - m_linesShown))
     {
-        page = m_iteminfo.cursorPosition;
+        page = line_info.cursorPosition;
         Scroll(-1, GetFirstLine() + m_linesShown);
         UpdateLastCursorRect();
-        m_iteminfo.cursorLastPosition = GetLastLine();
-        m_iteminfo.cursorPosition = m_iteminfo.cursorLastPosition;
-        page = m_iteminfo.cursorPosition - page;
+        line_info.cursorLastPosition = GetLastLine();
+        line_info.cursorPosition = line_info.cursorLastPosition;
+        page = line_info.cursorPosition - page;
         if (page < m_linesShown)
             RefreshRect(*LastCursorRect);
     }
@@ -53,12 +53,12 @@ void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
 
     if (GetFirstLine() > 0)
     {
-        page = m_iteminfo.cursorPosition;
+        page = line_info.cursorPosition;
         Scroll(-1,GetFirstLine() - m_linesShown);
         UpdateLastCursorRect();
-        m_iteminfo.cursorLastPosition = GetFirstLine();
-        m_iteminfo.cursorPosition = m_iteminfo.cursorLastPosition;
-        page -= m_iteminfo.cursorPosition;
+        line_info.cursorLastPosition = GetFirstLine();
+        line_info.cursorPosition = line_info.cursorLastPosition;
+        page -= line_info.cursorPosition;
         if (page < m_linesShown)
             RefreshRect(*LastCursorRect);
     }
@@ -85,55 +85,55 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
     switch (key)
     {
         case WXK_DOWN:
-                        if (m_iteminfo.cursorPosition < (m_CodeViewLine->GetCount() - 1))
+                        if (line_info.cursorPosition < (m_CodeViewLine->GetCount() - 1))
                         {
                             if (!MultiSelection)
-                                m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
+                                line_info.cursorLastPosition = line_info.cursorPosition;
 
-                            m_iteminfo.cursorPosition++;
+                            line_info.cursorPosition++;
 
                             ClearCursor();
                             DoSelection();
 
-                            if (m_iteminfo.cursorPosition > GetLastLine())
+                            if (line_info.cursorPosition > GetLastLine())
                                 AddPendingEvent(evtLineDown);
                             else
                                 RefreshRect(CalcCursorRfshRect());
 
-                            if (m_iteminfo.selectedLineCount == 1)
+                            if (line_info.selectedLineCount == 1)
                                 TreatSingleSelection();
                             else
-                                if (m_iteminfo.selectedLineCount > 1)
+                                if (line_info.selectedLineCount > 1)
                                     TreatMultiSelection();
 
                             if (Selecting)
-                                LogIt(wxString::Format("Selection = (%d, %d)", m_iteminfo.firstLine, m_iteminfo.lastLine));
+                                LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
                         }
                         break;
         case WXK_UP:
-                        if (m_iteminfo.cursorPosition > 0)
+                        if (line_info.cursorPosition > 0)
                         {
                             if (!MultiSelection)
-                                m_iteminfo.cursorLastPosition = m_iteminfo.cursorPosition;
+                                line_info.cursorLastPosition = line_info.cursorPosition;
 
-                            m_iteminfo.cursorPosition--;
+                            line_info.cursorPosition--;
 
                             ClearCursor();
                             DoSelection();
 
-                            if (m_iteminfo.cursorPosition < GetFirstLine())
+                            if (line_info.cursorPosition < GetFirstLine())
                                 AddPendingEvent(evtLineUp);
                             else
                                 RefreshRect(CalcCursorRfshRect());
 
-                            if (m_iteminfo.selectedLineCount == 1)
+                            if (line_info.selectedLineCount == 1)
                                 TreatSingleSelection();
                             else
-                                if (m_iteminfo.selectedLineCount > 1)
+                                if (line_info.selectedLineCount > 1)
                                     TreatMultiSelection();
 
                             if (Selecting)
-                                LogIt(wxString::Format("Selection = (%d, %d)", m_iteminfo.firstLine, m_iteminfo.lastLine));
+                                LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
                         }
                         break;
         case WXK_NUMPAD_PAGEDOWN:
@@ -226,7 +226,7 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     DAsmElement		*de;
     uint 			address;
 
-    cvi = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
+    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     address = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
     CenterAddress(address);
@@ -266,124 +266,17 @@ void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
  */
 void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 {
-    RangeItems		dasmed_items;
-    CodeViewItem	*cvi;
-    DAsmElement     *de;
-    int 			i, newLineCount, lineIndex, lineLast, lineCount,
-					oldLineCount, varindex;
-    uint            first_address, last_address;
-    wxArrayInt		cvlines, proglabels, varlabels;
-
-	//TODO: Create a function to remove unused labels
-
-
-    if ((m_iteminfo.firstInstruction <= m_iteminfo.lastInstruction) &&
-        (m_iteminfo.lastInstruction < Process->Disassembled->GetCount()))
-    {
-        /*
-		for(i = 0; i < proglabels.GetCount(); i++)
-		{
-			Process->prog_labels->DelLabel(proglabels[i]);
-		}
-		*/
-
-        if (m_iteminfo.firstLine > 0)
-            cvi = m_CodeViewLine->getData(m_iteminfo.firstLine - 1);
-
-        lineIndex = m_iteminfo.firstLine;
-        lineLast = m_iteminfo.lastLine;
-        lineCount = lineLast - lineIndex + 1;
-
-        dasmed_items.Index = m_iteminfo.firstInstruction;
-        dasmed_items.Count = m_iteminfo.lastInstruction - m_iteminfo.firstInstruction + 1;
-        oldLineCount = dasmed_items.Count;
-
-        Process->var_labels->GetLabelsBetweenRangeAddress(m_iteminfo.firstAddress, m_iteminfo.lastAddress, &varlabels);
-
-        Process->MakeData(dasmed_items);
-
-        for (i = 0; i < lineCount; i++)
-				m_CodeViewLine->Del(lineIndex);
-
-//* TODO:REWRITE THIS
-        m_CodeViewLine->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
-
-        newLineCount = dasmed_items.Count - oldLineCount;
-
-        m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
-
-        for (i = 0; i < varlabels.GetCount(); i++)
-        {
-            m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
-            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
-            {
-                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
-                m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
-            }
-        }
-//*/
-        m_iteminfo.cursorLastPosition = lineIndex;
-        m_iteminfo.cursorPosition = lineIndex + lineCount + newLineCount - 1;
+        Process->TransformToData(line_info);
         UpdateSelectedRect();
 		Refresh();
-    }
 }
 
 
 void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 {
-    RangeItems		dasmed_items;
-    CodeViewItem	*cvi;
-    int				i, newLineCount, oldLineCount, varindex;
-    int				lineIndex, lineLast, lineCount;
-    wxArrayInt		cvlines, varlabels;
-
-	if (!FilterInstructions(cvlines))
-		return;
-
-	if (cvlines.GetCount() > 0)
-	{
-        lineIndex = cvlines[0];
-        lineLast = cvlines[1];
-        lineCount = lineLast - lineIndex + 1;
-
-		cvi = m_CodeViewLine->getData(lineIndex);
-		dasmed_items.Index = cvi->Dasmitem;
-		cvi = m_CodeViewLine->getData(lineLast);
-		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
-		oldLineCount = dasmed_items.Count;
-
-        Process->var_labels->GetLabelsBetweenRangeAddress(m_iteminfo.firstAddress, m_iteminfo.lastAddress, &varlabels);
-
-		for (i = 0; i < lineCount; i++)
-				m_CodeViewLine->Del(lineIndex);
-
-		Process->DisassembleItems(dasmed_items);
-
-		m_CodeViewLine->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
-
-		newLineCount = dasmed_items.Count - oldLineCount;
-
-		m_CodeViewLine->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
-
-        if (lineIndex > 0)
-            cvi = m_CodeViewLine->getData(lineIndex - 1);
-
-        for (i = 0; i < varlabels.GetCount(); i++)
-        {
-            m_CodeViewLine->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
-            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
-            {
-                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
-                m_CodeViewLine->InsertVarLabel(varlabels[i], "", varindex);
-            }
-        }
-
-		m_iteminfo.cursorLastPosition = lineIndex;
-        m_iteminfo.cursorPosition = lineIndex + lineCount + newLineCount - 1;
+        Process->DisassembleData(line_info);
 		UpdateSelectedRect();
 		Refresh();
-	}
 }
 
 
@@ -393,7 +286,7 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
     CodeViewItem *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
+    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
 
     if (cvi != 0)
     {
@@ -405,7 +298,7 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
                 comment=comment.Trim(false);
                 if (comment.Left(1) != ";")
                     comment.Prepend("; ");
-                m_CodeViewLine->AppendComment(comment, m_iteminfo.cursorPosition);
+                m_CodeViewLine->AppendComment(comment, line_info.cursorPosition);
                 Refresh();
             }
         }
@@ -417,7 +310,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
     CodeViewItem *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
+    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
 	if ((cvi != 0) && (cvi->Comment != 0))
 		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->CommentStr);
 	if (!comment.IsEmpty())
@@ -425,7 +318,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 		comment = comment.Trim(false);
 		if (comment.Left(1) != ";")
 			comment.Prepend("; ");
-		m_CodeViewLine->Edit(comment, m_iteminfo.cursorPosition);
+		m_CodeViewLine->Edit(comment, line_info.cursorPosition);
 		Refresh();
 	}
 }
@@ -433,7 +326,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
-    cvi = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
+    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     if (cvi != 0)
     {
         if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr == -1) && (cvi->LabelVarAddr == -1) && (cvi->Org == -1))
@@ -464,11 +357,11 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
     DAsmElement *de;
-    cvi = m_CodeViewLine->getData(m_iteminfo.cursorPosition);
+    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi != 0)
 	{
-	    de = m_iteminfo.dasmitem;
+	    de = line_info.dasmitem;
 
 		if (cvi->LabelProgAddr >= 0)
 			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
@@ -487,9 +380,9 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 {
-    if ((m_iteminfo.type == siLineLabelProg) || (m_iteminfo.type == siLineLabelVar))
+    if ((line_info.type == siLineLabelProg) || (line_info.type == siLineLabelVar))
         LogIt("Address Label deleted !!");
-    if (m_iteminfo.type == siInstructionLabel)
+    if (line_info.type == siInstructionLabel)
         LogIt("Instruction Label deleted !!");
 }
 
@@ -498,11 +391,11 @@ void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
-	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytebin);
+	if (line_info.argSelected == 1)
+		line_info.dasmitem->SetStyleArgument(0, ast_bytebin);
 
-	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytebin);
+	if (line_info.argSelected == 2)
+		line_info.dasmitem->SetStyleArgument(1, ast_bytebin);
 
 	RefreshRect(CalcCursorRfshRect());
 }
@@ -510,11 +403,11 @@ void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
 
 void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
-	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytedec);
+	if (line_info.argSelected == 1)
+		line_info.dasmitem->SetStyleArgument(0, ast_bytedec);
 
-	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytedec);
+	if (line_info.argSelected == 2)
+		line_info.dasmitem->SetStyleArgument(1, ast_bytedec);
 
 	RefreshRect(CalcCursorRfshRect());
 }
@@ -522,11 +415,11 @@ void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
-	if (m_iteminfo.argSelected == 1)
-		m_iteminfo.dasmitem->SetStyleArgument(0, ast_bytehex);
+	if (line_info.argSelected == 1)
+		line_info.dasmitem->SetStyleArgument(0, ast_bytehex);
 
-	if (m_iteminfo.argSelected == 2)
-		m_iteminfo.dasmitem->SetStyleArgument(1, ast_bytehex);
+	if (line_info.argSelected == 2)
+		line_info.dasmitem->SetStyleArgument(1, ast_bytehex);
 
 		RefreshRect(CalcCursorRfshRect());
 }

@@ -55,15 +55,17 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         void EditLabel(uint listitem,wxString strlabel);
 		bool EditLabelDialog(uint addr);
         int GetLabel(uint addr, wxString& str);
+        int GetLabelIndex(uint addr);
         wxString GetLabel(uint idx);
         wxString GetAddress(uint idx);
         LabelItem *GetLabelItem(const int index);
+        wxArrayInt *GetLabelUsers(const int index);
 
         void GetLabelsBetweenRangeAddress(uint first_address, uint last_address, wxArrayInt *address_list);
         int GetCount();
         bool IsEmpty();
         void Clear();
-        wxArrayInt *GetLabelUsers(const int index);
+
 
         void SortAddress(bool crescent = true);
         // TODO: improve sorting Strings

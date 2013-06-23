@@ -26,6 +26,7 @@
 #include "decoder.h"
 #include "logwindow.h"
 #include "labelmanager.h"
+#include "codeview_definitions.h"
 
 #include <wx/gauge.h>
 #include <wx/dynarray.h>
@@ -46,6 +47,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
     public:
         void DisassembleFirst(bool simulateexecution = false);
         void DisassembleItems(RangeItems &r);
+        void TransformToData(SelectedItemInfo &selected);
+        void DisassembleData(SelectedItemInfo &selected);
         void MakeData(RangeItems &r);
         void AutoLabel();
         void InitData();
@@ -63,7 +66,11 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         Decoder     *m_disassembler;
         LogWindow   *WindowLog;
 
-        void DeleteLabelUsers(DAsmElement *de, const uint dasmitem);
+        void RemoveFromLabelUserList(DAsmElement *de, const uint dasmitem);
+        void RemoveLineAndVarLabels(const int index);
+        void RemoveLineAndProgLabels(const int index);
+        void RemoveLabelUsers(wxArrayInt *users);
+        bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
 };
 
 

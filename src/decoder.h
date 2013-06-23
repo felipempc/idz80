@@ -62,10 +62,10 @@ class Decoder: public LogBase
                             m_prg_counter,
                             m_last_prg_counter,
                             m_nextaddress,
-                            m_actualaddress;
-//                            io_label_counter,
-//                            var_label_counter,
-//                            program_label_counter;
+                            m_actualaddress,
+                            io_label_counter,
+                            var_label_counter,
+                            program_label_counter;
 
 
         uint Fetch(const uint startpoint, uint maxitems);

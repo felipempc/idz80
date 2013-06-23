@@ -2903,7 +2903,7 @@
 1341842582 k:\wxw\wx294\include\wx\cocoa\mdi.h
 	"wx/frame.h"
 
-1367632452 x:\src\codeview.h
+1371887398 x:\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -2912,6 +2912,7 @@
 	"dasmdata.h"
 	"ProcessData.h"
 	"codeviewline.h"
+	"codeview_definitions.h"
 
 1352422606 x:\src\dasmdata.h
 	"logbase.h"
@@ -2970,7 +2971,7 @@
 	<wx/dynarray.h>
 	"idz80base.h"
 
-1371715311 x:\src\labelslist.h
+1371799574 x:\src\labelslist.h
 	<wx/Panel.h>
 	<wx/String.h>
 	<wx/ListCtrl.h>
@@ -2980,7 +2981,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1371712749 x:\src\processdata.h
+1371884366 x:\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
 	"d_asm_element.h"
@@ -2989,6 +2990,7 @@
 	"decoder.h"
 	"logwindow.h"
 	"labelmanager.h"
+	"codeview_definitions.h"
 	<wx/gauge.h>
 	<wx/dynarray.h>
 
@@ -3006,7 +3008,7 @@
 	"idz80base.h"
 	"logbase.h"
 
-1371715747 x:\src\decoder.h
+1365840576 x:\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
@@ -3022,10 +3024,10 @@
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 
-1371534068 source:x:\src\codeviewline.cpp
+1371780980 source:x:\src\codeviewline.cpp
 	"codeviewline.h"
 
-1371715580 source:x:\src\labelslist.cpp
+1371887836 source:x:\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
@@ -3374,7 +3376,7 @@
 1352123222 source:x:\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1371715141 source:x:\src\processdata.cpp
+1371887735 source:x:\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
@@ -3387,7 +3389,7 @@
 1352416540 source:x:\src\codegenerator.cpp
 	"codegenerator.h"
 
-1371532372 source:x:\src\codeview.cpp
+1371887220 source:x:\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -3397,11 +3399,11 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1371715201 source:x:\src\decoder.cpp
+1371715780 source:x:\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
-1367633660 source:x:\src\codeview_evmouse.cpp
+1371886423 source:x:\src\codeview_evmouse.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/mousestate.h>
@@ -4148,7 +4150,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1371538396 source:x:\src\codeview_events.cpp
+1371886423 source:x:\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -4235,4 +4237,6 @@
 	"projectmanager_xml.h"
 	"mnemonicitem.h"
 	"mndb_tools.h"
+
+1371796236 x:\src\codeview_definitions.h
 
