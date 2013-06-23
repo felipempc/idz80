@@ -1,12 +1,10 @@
 /****************************************************************
- * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Name:      CodeView
+ * Purpose:   User interface for the disassembled code
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- *
- * This module shows/controls disassembled data
  **************************************************************/
 
 #include <wx/wx.h>
@@ -33,38 +31,17 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
 {
     Process = processparent;
     m_linesShown = 0;
-/*
-    CursorPosition = -1;
-    CursorLastPosition = -1;
-    SelectedItemIndex = -1;
-    SelectedLastItem = -1;
-    SelectedCount = -1;
-*/
+
     MultiSelection = false;
     Selecting = false;
     m_fontHeight = 1;
     IsFocused = false;
     IsEmpty = true;
+
     m_styleData.arg = 0;
     m_styleData.item = 0;
     LastCursorRect = 0;
 
-/*
-    line_info.type = siUnknown;
-    line_info.dasmitem = 0;
-    line_info.lineitem = 0;
-    line_info.hasComment = false;
-    line_info.argSelected = 0;
-    line_info.firstAddress = -1;
-    line_info.firstInstruction = -1;
-    line_info.firstLine = -1;
-    line_info.lastAddress = -1;
-    line_info.lastInstruction = -1;
-    line_info.lastLine = -1;
-    line_info.selectedLineCount = 0;
-    line_info.cursorLastPosition = -1;
-    line_info.cursorPosition = -1;
-*/
     ResetSelectedItemInfo();
 
     m_CodeViewLine = Process->CodeViewLines;
@@ -73,7 +50,6 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
     IncompleteArea.y = 0;
     IncompleteArea.width = 0;
     IncompleteArea.height = 0;
-
 
     SetupFont();
 
@@ -297,10 +273,6 @@ void CodeView::OnPaint(wxPaintEvent& event)
 
 
 
-
-
-
-
 CodeView::~CodeView()
 {
     delete LastCursorRect;
@@ -326,16 +298,7 @@ void CodeView::Clear()
 
 void CodeView::ClearSelection()
 {
-    line_info.firstLine = -1;
-    line_info.selectedLineCount = 0;
-    line_info.lastLine = -1;
-    line_info.cursorPosition = -1;
-    /*
-    SelectedCount = -1;
-    SelectedItemIndex = -1;
-    SelectedLastItem = -1;
-    CursorPosition = -1;
-    */
+    ResetSelectedItemInfo();
     MultiSelection = false;
     Selecting = false;
 }
@@ -396,16 +359,11 @@ void CodeView::DoSelection()
             RefreshRect(CalcSelectedRect());
 
         line_info.selectedLineCount = 1;
-        //SelectedCount = 1;
+
         MultiSelection = false;
         line_info.firstLine = line_info.cursorPosition;
         line_info.cursorLastPosition = line_info.cursorPosition;
         line_info.lastLine = line_info.cursorPosition;
-        /*
-        SelectedItemIndex = CursorPosition;
-        CursorLastPosition = CursorPosition;
-        SelectedLastItem = SelectedItemIndex;
-        */
     }
 }
 
@@ -441,7 +399,9 @@ void CodeView::UpdateSelectedRect()
 wxRect CodeView::CalcSelectedRect()
 {
     wxRect rect;
-    int y, count;
+    int count;
+    uint y;
+
     if (line_info.firstLine < GetFirstLine())
     {
         y = GetFirstLine();
@@ -607,8 +567,6 @@ void CodeView::ClearCursor()
 
 
 
-
-
 ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
 {
@@ -724,7 +682,9 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
         case	siData:
                                 popup->Append(idPOPUP_DISASM, "Disassemble");
 
-
+        case    siUnknown:
+        case    siComments:
+                                break;
     }
 
     if (labelMenu)
@@ -759,10 +719,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
 
 void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 {
-	bool            testcomment = false;
 	wxPoint         mousept;
-	DAsmElement     *last_disassembled;
-	CodeViewItem    *last_line;
 
 	CalcUnscrolledPosition(pt.x, pt.y, &mousept.x, &mousept.y);
 
@@ -813,10 +770,12 @@ void CodeView::IdentifyArgumentSelected(const wxPoint &mouse_cursor)
     if (line_info.lineitem)
     {
         if (line_info.lineitem->RectArg1)
+        {
             if (line_info.lineitem->RectArg1->Contains(mouse_cursor))
                 line_info.argSelected = 1;
             else
                 line_info.argSelected = 0;
+        }
 
         if (line_info.lineitem->RectArg2)
             if (line_info.lineitem->RectArg2->Contains(mouse_cursor))

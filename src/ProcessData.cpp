@@ -346,7 +346,14 @@ void ProcessData::RemoveFromLabelUserList(DAsmElement *de, const uint dasmitem)
 
 
 
-
+/*
+ * Take selected lines of code and convert to lines
+ * of data.
+ * Delete program labels;
+ * Keeps var labels;
+ * Keeps comments;
+ * keeps org directives;
+ */
 void ProcessData::TransformToData(SelectedItemInfo &selected)
 {
     RangeItems		dasmed_items;

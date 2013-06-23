@@ -1,9 +1,9 @@
 /****************************************************************
  * Name:      projectmanager_xml
  * Purpose:   save the work in progress
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   06/04/2013
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
  **************************************************************/
 
@@ -60,22 +60,22 @@ const wxString ProjectManagerXML::ATTRIBUTE_LINEVARLABEL_STR = "LINE_VARLABEL";
 const wxString ProjectManagerXML::ATTRIBUTE_COMMENT_STR = "COMMENT";
 
 
-ProjectManagerXML::ProjectManagerXML(ProcessData *process_data, CodeView *codeview_data)
+ProjectManagerXML::ProjectManagerXML(ProcessData *process_data)
 {
     saved = false;
     named = false;
     project_filename.Clear();
     process = process_data;
-    codeview = codeview_data;
-
+    CodeViewLines = process->CodeViewLines;
     log = 0;
 }
 
+/*
 ProjectManagerXML::~ProjectManagerXML()
 {
     //dtor
 }
-
+*/
 
 
 bool ProjectManagerXML::IsSaved()
@@ -193,8 +193,8 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
     wxXmlNode *section, *items;
     wxString str;
     LabelItem *label;
-    int i, j;
-    uint    total_lines;
+    int     i;
+    uint    j, total_lines;
 
     if (!current_label->IsEmpty())
     {
@@ -205,12 +205,12 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
         for (i = (total_lines - 1); i > -1; i--)
         {
             label = current_label->GetLabelItem(i);
-            if (label != 0)
+            if (label)
             {
                 items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LABEL_STR, i));
                 items->AddAttribute(label->LabelStr, wxString::Format("%X", label->Address));
 
-                if (label->LabelUsers != 0)
+                if (label->LabelUsers)
                 {
                     str.Clear();
                     for (j = 0; j < label->LabelUsers->GetCount(); j++)
@@ -228,9 +228,9 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
  */
 void ProjectManagerXML::writeDasmData(wxXmlDocument &doc)
 {
-    wxXmlNode *section, *items, *subitem;
-    int		i, j, c;
-    uint	arg_aux, total_lines;
+    wxXmlNode *section, *items;
+    int		i, c;
+    uint	j, arg_aux, total_lines;
     wxString	aux_str;
     DAsmElement *de;
 
@@ -285,15 +285,15 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
     uint    total_lines;
 
 
-    if (codeview->m_CodeViewLine->GetCount() > 0)
+    if (CodeViewLines->GetCount() > 0)
     {
         section = new wxXmlNode(doc.GetRoot(), wxXML_ELEMENT_NODE, SECTION_CODEVIEWLINE_STR);
-        total_lines = codeview->m_CodeViewLine->GetCount();
+        total_lines = CodeViewLines->GetCount();
         section->AddAttribute(ATTRIBUTE_TOTALLINES_STR, wxString::Format("%d", total_lines));
 
         for (i = (total_lines - 1); i > -1; i--)
         {
-            cvi = codeview->m_CodeViewLine->getData(i);
+            cvi = CodeViewLines->getData(i);
             item = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LINE_STR, i));
             if (cvi->Org >= 0)
                 item->AddAttribute(ATTRIBUTE_ORG_STR, wxString::Format("%d", cvi->Org));
@@ -575,7 +575,7 @@ void ProjectManagerXML::readDasmData(wxXmlDocument &doc)
 bool ProjectManagerXML::fillDasmData(wxXmlNode *datanode)
 {
     wxString	str;
-    int			i, j;
+    uint		i;
     long		conv;
     wxArrayString   arr_str;
     uint		len,
@@ -743,21 +743,18 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     long		conv;
     bool    commentary_line;
 
-    int health = 0,
-        line;
+    int health = 0;
 
 
     str_comment = datanode->GetAttribute(ATTRIBUTE_COMMENT_STR);
     commentary_line = !str_comment.IsEmpty();
-
-    line = datanode->GetLineNumber();
 
 
     str = datanode->GetAttribute(ATTRIBUTE_ORG_STR);
 
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        codeview->m_CodeViewLine->AddOrg(static_cast<int>(conv), str_comment);
+        CodeViewLines->AddOrg(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -765,7 +762,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_DASMITEM_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        codeview->m_CodeViewLine->AddDasm(static_cast<int>(conv), str_comment);
+        CodeViewLines->AddDasm(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -773,7 +770,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        codeview->m_CodeViewLine->AddProgLabel(static_cast<int>(conv), str_comment);
+        CodeViewLines->AddProgLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -781,21 +778,21 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEVARLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        codeview->m_CodeViewLine->AddVarLabel(static_cast<int>(conv), str_comment);
+        CodeViewLines->AddVarLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
 
     if (commentary_line)
     {
-        codeview->m_CodeViewLine->Add(str_comment);
+        CodeViewLines->Add(str_comment);
         health++;
     }
 
     // Empty line
     if (health == 0)
     {
-        codeview->m_CodeViewLine->Add("");
+        CodeViewLines->Add("");
 
         #ifdef IDZ80DEBUG
         LogIt(wxString::Format("Empty line: %d\n", datanode->GetLineNumber()));
@@ -811,12 +808,12 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 void ProjectManagerXML::linkLabels(wxArrayInt *label_users)
 {
     DAsmElement *de;
-    int i, item;
+    uint i, item;
 
     if (label_users > 0)
         for(i = 0; i < label_users->GetCount(); i++)
         {
-            item = label_users->Item(i);
+            item = static_cast<uint>(label_users->Item(i));
             de = process->Disassembled->GetData(item);
             if (de != 0)
                 de->SetArgLabel();

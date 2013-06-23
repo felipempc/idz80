@@ -247,7 +247,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     process = new ProcessData(this, Log);
     codeview = new CodeView(this, process, Log);
-    m_project = new ProjectManagerXML(process, codeview);
+    m_project = new ProjectManagerXML(process/*, codeview*/);
 
     SetupAUIPanes();
     ReadStoredConfiguration();

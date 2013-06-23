@@ -1,9 +1,9 @@
 /****************************************************************
  * Name:      projectmanager_xml
  * Purpose:   save the work in progress
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   06/04/2013
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
  **************************************************************/
 
@@ -15,13 +15,15 @@
 #include <wx/xml/xml.h>
 
 #include "ProcessData.h"
-#include "codeview.h"
+
 
 class ProjectManagerXML
 {
     public:
-        ProjectManagerXML(ProcessData *process_data, CodeView *codeview_data);
+        ProjectManagerXML(ProcessData *process_data);
+/*
         virtual ~ProjectManagerXML();
+*/
         bool IsSaved();
         bool HasName();
         void New();
@@ -82,7 +84,7 @@ class ProjectManagerXML
         bool    saved, named;
         wxString    project_filename;
         ProcessData *process;
-        CodeView    *codeview;
+        CodeViewLine    *CodeViewLines;
 
         wxTextCtrl  *log;
 

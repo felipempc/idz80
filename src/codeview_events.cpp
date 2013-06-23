@@ -1,11 +1,10 @@
 /****************************************************************
  * Name:      Codeview - Event handlers
- * Purpose:   Renders the view
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   User interface for the Disassembled code
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   30-12-2011
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- *
  **************************************************************/
 
 
@@ -259,10 +258,6 @@ void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
 /*
  * Take selected lines of code and convert to lines
  * of data.
- * Delete program labels;
- * Keeps var labels;
- * Keeps comments;
- * keeps org directives;
  */
 void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 {

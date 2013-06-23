@@ -1,12 +1,10 @@
 /****************************************************************
- * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Name:      CodeView
+ * Purpose:   User interface for the Disassembled code
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- *
- * This module shows/controls disassembled data
  **************************************************************/
 
 
@@ -48,7 +46,7 @@ public:
 	void TestBlur();
 
 
-    CodeViewLine    *m_CodeViewLine;
+
 
 
 private:
@@ -59,6 +57,7 @@ private:
 	static const int COL_MNEM = 230;
 
     ProcessData     *Process;
+    CodeViewLine    *m_CodeViewLine;
 
     SelectedItemInfo line_info;	// Holds info about the selected item
 
@@ -68,13 +67,6 @@ private:
                 m_fontWidth;
 	styledata	m_styleData;		// Holds info to change style handlers (BIN/DEC/HEX)
 
-    //int
-    /*            SelectedCount,      // Number of Items Selected
-                SelectedItemIndex,  // First Disassembled Item Selected
-                SelectedLastItem,   // Last Disassembled Item Selected
-                CursorPosition,     // Index of Disassembled item that cursor is over
-                CursorLastPosition;
-    */
     wxRect      *LastCursorRect,    // The rectangle of last cursor
                 IncompleteArea;
 

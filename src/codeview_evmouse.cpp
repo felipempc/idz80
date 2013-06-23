@@ -1,15 +1,11 @@
 /****************************************************************
  * Name:      Codeview - Mouse Event handlers
- * Purpose:   Renders the view
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   User interface for the Disassembled code
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   30-12-2011
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- *
- * This module is part of the codeview class that renders
- * the view
  **************************************************************/
-
 
 
 
