@@ -1,15 +1,12 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- * This module holds one mnemonic item
+ * This module store one mnemonic item
  **************************************************************/
-
-
-
 
 
 #ifndef MNEMONICITEM_H
@@ -93,51 +90,51 @@ class MnemonicItem
 {
     public:
         MnemonicItem();
-        bool hasArgument();
-        enum ArgumentTypes getArgType(uint argno);
-        uint getArgNo();
-        enum BranchType getBranchType();
-        void addOpCode(byte opcode);
-        void addArgument(enum ArgumentTypes argument);
-        void setMnemonicStr(wxString str);
-        void setOpCodeArgPos(uint argpos);
-        void setBranchType(enum BranchType brunchtype);
-        void setInstructionType(enum InstructionTypes itype);
-        bool setInstructionType(uint itype);
-        void setInstructionDetail(enum InstructionDetails iinfo);
-        bool setInstructionDetail(uint iinfo);
+        bool HasArgument();
+        enum ArgumentTypes GetArgumentType(uint argno);
+        uint GetArgumentCount();
+        enum BranchType GetBranchType();
+        void AddOpCode(byte opcode);
+        void AddArgument(enum ArgumentTypes argument);
+        void SetMnemonicStr(wxString str);
+        void SetOpCodeArgumentPos(uint argpos);
+        void SetBranchType(enum BranchType brunchtype);
+        void SetInstructionType(enum InstructionTypes itype);
+        bool SetInstructionType(uint itype);
+        void SetInstructionDetail(enum InstructionDetails iinfo);
+        bool SetInstructionDetail(uint iinfo);
         enum InstructionTypes GetInstructionType();
         enum InstructionDetails GetInstructionDetail();
         void Clear();
 
-        uint getBytesNo();
-        uint getOpCode(uint opcode);
-        ByteCode *getOpCode();
-        uint getArgSize();
-        uint getArgPos();
+        uint GetOpCodeSize();
+        uint GetOpCode(uint opcode);
+        ByteCode *GetOpCode();
+        uint GetArgumentSize();
+        uint GetArgumentPosition();
 
-        bool isUnconditionalJump();
-        bool isConditionalJump();
-        bool isJump();
-        bool isCall();
-        bool isReturn();
-        bool isConditionalReturn();
+        bool IsUnconditionalJump();
+        bool IsConditionalJump();
+        bool IsJump();
+        bool IsCall();
+        bool IsReturn();
+        bool IsConditionalReturn();
 
-        wxArrayString MnemonicString;
+        wxArrayString mnemonic_strings_;
 
     protected:
     private:
 
-        ByteCode        Opcode;
-        byte            OpcodeSize;
-        byte            ArgumentCount;
-        byte            ArgumentSize;
-        byte            ArgumentOpcodePostion;
+        ByteCode        opcode_;
+        byte            opcode_size_;
+        byte            argument_count_;
+        byte            argument_size_;
+        byte            argument_opcode_postion_;
 
-        enum BranchType         m_branchType;
-        enum ArgumentTypes      ArgumentTypeList[MAX_NUM_ARG];
-        enum InstructionTypes   InstructionType;
-        enum InstructionDetails InstructionDetail;
+        enum BranchType         branch_type_;
+        enum ArgumentTypes      argument_type_list_[MAX_NUM_ARG];
+        enum InstructionTypes   instruction_type_;
+        enum InstructionDetails instruction_detail_;
 };
 
 

@@ -1,10 +1,11 @@
 /****************************************************************
- * Name:      MNDB (Mnemonics DataBase)
- * Purpose:   Stores Z80 mnemonics.
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
  * Copyright: Felipe MPC ()
  * License:   GPL
+ * This module is a database of mnemonic items
  **************************************************************/
 
 

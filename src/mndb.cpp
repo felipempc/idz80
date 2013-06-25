@@ -1,10 +1,11 @@
 /****************************************************************
- * Name:      MNDB (Mnemonics DataBase)
- * Purpose:   Stores Z80 mnemonics.
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe MPC
+ * Copyright: Felipe MPC ()
  * License:   GPL
+ * This module is a database of mnemonic items
  **************************************************************/
 
 
@@ -94,48 +95,48 @@ bool MnemonicDataBase::SetupArgument(MnemonicItem *mnemonic, wxString &strline)
     {
         argtype = strline[1];
         switch (argtype) {
-                case 'o':  mnemonic->addArgument(ARG_OFFSET);
-                           mnemonic->addOpCode(ARG_OFFSET);
+                case 'o':  mnemonic->AddArgument(ARG_OFFSET);
+                           mnemonic->AddOpCode(ARG_OFFSET);
                            break;
-                case 'n':  mnemonic->addArgument(ARG_LITERAL);
-                           mnemonic->addOpCode(ARG_LITERAL);
+                case 'n':  mnemonic->AddArgument(ARG_LITERAL);
+                           mnemonic->AddOpCode(ARG_LITERAL);
                            break;
-                case 'v':  mnemonic->addArgument(ARG_VARIABLE);
-                           mnemonic->addOpCode(ARG_VARIABLE);
+                case 'v':  mnemonic->AddArgument(ARG_VARIABLE);
+                           mnemonic->AddOpCode(ARG_VARIABLE);
                            break;
-                case 'c':  mnemonic->addArgument(ARG_ABS_ADDR);
-                           mnemonic->addOpCode(ARG_ABS_ADDR);
-                           mnemonic->setBranchType(BR_CALL);
+                case 'c':  mnemonic->AddArgument(ARG_ABS_ADDR);
+                           mnemonic->AddOpCode(ARG_ABS_ADDR);
+                           mnemonic->SetBranchType(BR_CALL);
 
                            break;
-                case 's':  mnemonic->setBranchType(BR_JUMP);
-                           mnemonic->addArgument(ARG_ABS_ADDR);
-                           mnemonic->addOpCode(ARG_ABS_ADDR);
+                case 's':  mnemonic->SetBranchType(BR_JUMP);
+                           mnemonic->AddArgument(ARG_ABS_ADDR);
+                           mnemonic->AddOpCode(ARG_ABS_ADDR);
                            break;
-                case 'j':  mnemonic->addArgument(ARG_REL_ADDR);
-                           mnemonic->addOpCode(ARG_REL_ADDR);
-                           mnemonic->setBranchType(BR_JUMP);
+                case 'j':  mnemonic->AddArgument(ARG_REL_ADDR);
+                           mnemonic->AddOpCode(ARG_REL_ADDR);
+                           mnemonic->SetBranchType(BR_JUMP);
                            break;
-                case 'g':  mnemonic->addArgument(ARG_ABS_ADDR);
-                           mnemonic->addOpCode(ARG_ABS_ADDR);
-                           mnemonic->setBranchType(BR_CALL_CND);
+                case 'g':  mnemonic->AddArgument(ARG_ABS_ADDR);
+                           mnemonic->AddOpCode(ARG_ABS_ADDR);
+                           mnemonic->SetBranchType(BR_CALL_CND);
                            break;
-                case 'x':  mnemonic->addArgument(ARG_ABS_ADDR);
-                           mnemonic->addOpCode(ARG_ABS_ADDR);
-                           mnemonic->setBranchType(BR_JUMP_CND);
+                case 'x':  mnemonic->AddArgument(ARG_ABS_ADDR);
+                           mnemonic->AddOpCode(ARG_ABS_ADDR);
+                           mnemonic->SetBranchType(BR_JUMP_CND);
                            break;
-                case 'k':  mnemonic->addArgument(ARG_REL_ADDR);
-                           mnemonic->addOpCode(ARG_REL_ADDR);
-                           mnemonic->setBranchType(BR_JUMP_CND);
+                case 'k':  mnemonic->AddArgument(ARG_REL_ADDR);
+                           mnemonic->AddOpCode(ARG_REL_ADDR);
+                           mnemonic->SetBranchType(BR_JUMP_CND);
                            break;
-                case 'p':  mnemonic->addArgument(ARG_IO_ADDR);
-                           mnemonic->addOpCode(ARG_IO_ADDR);
+                case 'p':  mnemonic->AddArgument(ARG_IO_ADDR);
+                           mnemonic->AddOpCode(ARG_IO_ADDR);
                            break;
 
                 default:
-                            mnemonic->addArgument(ARG_NONE);
-                            mnemonic->addOpCode(ARG_NONE);
-                            mnemonic->setBranchType(BR_NONE);
+                            mnemonic->AddArgument(ARG_NONE);
+                            mnemonic->AddOpCode(ARG_NONE);
+                            mnemonic->SetBranchType(BR_NONE);
                             break;
         } // switch
     } // endif
@@ -157,13 +158,13 @@ void MnemonicDataBase::SetupBranch(MnemonicItem *mnemonic)
         switch (mnemonic->GetInstructionDetail())
         {
             case II_NONE:
-                        mnemonic->setBranchType(BR_RETURN);
+                        mnemonic->SetBranchType(BR_RETURN);
                         break;
             case II_CONDITIONAL:
-                        mnemonic->setBranchType(BR_RETURN_CND);
+                        mnemonic->SetBranchType(BR_RETURN_CND);
                         break;
             default:
-                        mnemonic->setBranchType(BR_NONE);
+                        mnemonic->SetBranchType(BR_NONE);
                         break;
         }
 }
@@ -198,12 +199,12 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
 
             if (SetupArgument(mnemonic, temp_str))
             {
-                mnemonic->setOpCodeArgPos(i);
+                mnemonic->SetOpCodeArgumentPos(i);
                 continue;                   // we've found an argument, so go to the next item...
             }
 
             if (temp_str.ToLong(&templong, 16))
-                mnemonic->addOpCode((byte) templong);
+                mnemonic->AddOpCode((byte) templong);
             else
             {
                 #ifdef IDZ80DEBUG
@@ -238,7 +239,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
         if (mnemonic != 0)
         {
             num_arguments = (int)templong;
-            if (mnemonic->getArgNo() != num_arguments)
+            if (mnemonic->GetArgumentCount() != num_arguments)
             {
                 delete mnemonic;
                 mnemonic = 0;
@@ -256,7 +257,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
         {
             temp_str = arraystr[i++];
             if (temp_str.ToLong(&templong, 16))
-                mnemonic->setInstructionType(templong);
+                mnemonic->SetInstructionType(templong);
             else
             {
                 delete mnemonic;
@@ -274,7 +275,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
         {
             temp_str = arraystr[i++];
             if (temp_str.ToLong(&templong, 16))
-                mnemonic->setInstructionDetail(templong);
+                mnemonic->SetInstructionDetail(templong);
             else
             {
                 delete mnemonic;
@@ -293,7 +294,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
         if (mnemonic != 0)
         {
             temp_str = arraystr[i];
-            mnemonic->setMnemonicStr(temp_str);
+            mnemonic->SetMnemonicStr(temp_str);
             SetupBranch(mnemonic);
             m_MnemonicList->Add(mnemonic);
             ret = true;
@@ -392,10 +393,10 @@ void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoff
                so we must shift right the index to take the code
                The test below detects this condition
              */
-            if ((!(mnemonic->getArgPos() == scanoffset)) || (mnemonic->getArgPos() == 0))
+            if ((!(mnemonic->GetArgumentPosition() == scanoffset)) || (mnemonic->GetArgumentPosition() == 0))
             {
                 arg_detected = false;
-                opcodetest = mnemonic->getOpCode(scanoffset);
+                opcodetest = mnemonic->GetOpCode(scanoffset);
                 if (opcode == opcodetest)
                 {
                     if (scanoffset == 0)
@@ -425,7 +426,7 @@ MnemonicItem *MnemonicDataBase::FindItem(const ByteCode& code)
     for (i = 0; i < total; i++)
     {
         ret = GetData(i);
-        if (memcmp(ret->getOpCode(), &code, MAX_OPCODE_SIZE) != 0)
+        if (memcmp(ret->GetOpCode(), &code, MAX_OPCODE_SIZE) != 0)
             ret = 0;
         else
             break;

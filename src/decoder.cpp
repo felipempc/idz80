@@ -113,7 +113,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     {
         ret = foundItems.Last();
         mnemonic = Process->Mnemonics->GetData(ret);
-        if (mnemonic->getBytesNo() > maxitems)
+        if (mnemonic->GetOpCodeSize() > maxitems)
             ret = OPCODE_NOT_FOUND;
     }
     else
@@ -350,7 +350,7 @@ bool Decoder::ReturnSubroutine(DAsmElement *de, ProgramAddress &dest_address)
 {
     bool ret = false;
 
-    if (de->MnemonicObject->isConditionalReturn())
+    if (de->MnemonicObject->IsConditionalReturn())
         SubRoutine->SetConditionalReturn();
     else
     {
@@ -379,7 +379,7 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
 
     address = de->getArgument(0, Process->Disassembled->GetBaseAddress(0));
 
-    if (de->MnemonicObject->isConditionalJump())
+    if (de->MnemonicObject->IsConditionalJump())
     {
         if (!OutBoundaryAddress(address))
         {

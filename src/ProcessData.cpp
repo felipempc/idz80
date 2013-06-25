@@ -393,7 +393,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 
         for (i = 0; i < varlabels.GetCount(); i++)
         {
-            CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
+            CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varlabels.Item(i), varindex);
             if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
             {
                 LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
@@ -402,7 +402,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
         }
 //*/
         selected.cursorLastPosition = lineIndex;
-        selected.cursorPosition = lineIndex + lineCount + newLineCount - 1;
+        selected.cursorPosition = lineIndex + line_count + newLineCount - 1;
     }
 }
 

@@ -1,18 +1,14 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
+ * This module store one disassembled item
  **************************************************************/
 
 
-
-/*
- * Holds one disassembled element
- *
- */
 
  #include "d_asm_element.h"
  #include "mndb_tools.h"
@@ -57,8 +53,8 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
 
     if ((ElType == et_Instruction) && (MnemonicObject != 0))
     {
-        if ((MnemonicObject->getArgSize() == 1) && (MnemonicObject->getArgNo() == 1))
-            if (MnemonicObject->getArgType(0) == ARG_REL_ADDR)
+        if ((MnemonicObject->GetArgumentSize() == 1) && (MnemonicObject->GetArgumentCount() == 1))
+            if (MnemonicObject->GetArgumentType(0) == ARG_REL_ADDR)
             {
                 rel = (signed char)Args[0];
                 ret = convertRelAbs(rel, _baseaddress);
@@ -68,7 +64,7 @@ uint DAsmElement::getArgument(uint arg, uint _baseaddress)
                 ret = (int)Args[0] & 0xFF;
             }
         else
-        if ((MnemonicObject->getArgSize() == 1) && (MnemonicObject->getArgNo() == 2))
+        if ((MnemonicObject->GetArgumentSize() == 1) && (MnemonicObject->GetArgumentCount() == 2))
             ret = (int)Args[arg] & 0xFF;
         else
         {
@@ -159,8 +155,8 @@ void DAsmElement::CopyOpcode()
 
 	for (i = 0; i < MAX_OPCODE_SIZE; i++)
 	{
-		if (i < MnemonicObject->getBytesNo())
-			Code[i] = MnemonicObject->getOpCode(i);
+		if (i < MnemonicObject->GetOpCodeSize())
+			Code[i] = MnemonicObject->GetOpCode(i);
 		else
 			Code[i] = 0;
 	}
@@ -175,9 +171,9 @@ bool DAsmElement::CopyArguments()
 
 	if ((MnemonicObject > 0) && (Offset >= 0))
 	{
-		totargs = MnemonicObject->getArgNo() * MnemonicObject->getArgSize();
+		totargs = MnemonicObject->GetArgumentCount() * MnemonicObject->GetArgumentSize();
 		for (i = 0; i < totargs; i++)
-			Args[i] = FileData->GetData(Offset + i + MnemonicObject->getArgPos());
+			Args[i] = FileData->GetData(Offset + i + MnemonicObject->GetArgumentPosition());
 		ret = true;
 	}
 	return ret;
@@ -203,7 +199,7 @@ void DAsmElement::CopyOpCode(ByteCode &bytecode)
 uint DAsmElement::convertRelAbs(int reladdr, uint _baseaddress)
 {
     unsigned int i;
-    i = (unsigned int)(_baseaddress + MnemonicObject->getBytesNo() + Offset + reladdr);
+    i = (unsigned int)(_baseaddress + MnemonicObject->GetOpCodeSize() + Offset + reladdr);
     return i;
 }
 
@@ -222,7 +218,7 @@ void DAsmElement::SetLength(uint _length)
 void DAsmElement::SetLength()
 {
 	if (MnemonicObject > 0)
-		Length = MnemonicObject->getBytesNo();
+		Length = MnemonicObject->GetOpCodeSize();
 	else
 		Length = 0;
 }
@@ -300,27 +296,27 @@ ElementType DAsmElement::GetType()
 ArgumentTypes DAsmElement::GetArgumentType(uint arg_num)
 {
 	if (MnemonicObject > 0)
-		return MnemonicObject->getArgType(arg_num);
+		return MnemonicObject->GetArgumentType(arg_num);
 	return ARG_NONE;
 }
 
 int DAsmElement::GetNumArgs()
 {
 	if (MnemonicObject > 0)
-		return MnemonicObject->getArgNo();
+		return MnemonicObject->GetArgumentCount();
 	return -1;
 }
 
 
 int DAsmElement::GetArgSize()
 {
-	return MnemonicObject->getArgSize();
+	return MnemonicObject->GetArgumentSize();
 }
 
 BranchType DAsmElement::GetBranchType()
 {
 	if (MnemonicObject > 0)
-		return MnemonicObject->getBranchType();
+		return MnemonicObject->GetBranchType();
 	return BR_NONE;
 }
 
@@ -330,15 +326,15 @@ wxString &DAsmElement::GetMnemonicStr(uint index)
 	static wxString ret;
 	ret = "Error !";
 
-	if ((MnemonicObject != 0) && (index < MnemonicObject->MnemonicString.GetCount()))
-		return MnemonicObject->MnemonicString[index];
+	if ((MnemonicObject != 0) && (index < MnemonicObject->mnemonic_strings_.GetCount()))
+		return MnemonicObject->mnemonic_strings_[index];
 	return ret;
 }
 
 
 uint DAsmElement::GetMnemonicStrNum()
 {
-	return MnemonicObject->MnemonicString.GetCount();
+	return MnemonicObject->mnemonic_strings_.GetCount();
 }
 
 

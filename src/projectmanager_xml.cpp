@@ -632,7 +632,7 @@ bool ProjectManagerXML::fillDasmData(wxXmlNode *datanode)
         {
             de->SetMnemonic(mi);
             health += 8;
-            hasArguments = mi->hasArgument();
+            hasArguments = mi->HasArgument();
         }
     }
 

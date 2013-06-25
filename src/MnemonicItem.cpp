@@ -1,11 +1,11 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
- * This module holds one mnemonic item
+ * This module store one mnemonic item
  **************************************************************/
 
 #include "MnemonicItem.h"
@@ -15,15 +15,15 @@
 void MnemonicItem::Clear()
 {
     int i;
-    OpcodeSize = 0;
-    ArgumentCount = 0;
-    ArgumentSize = 0;
-    ArgumentOpcodePostion = 0;
-    m_branchType = BR_NONE;
-    memset(Opcode, 0, sizeof(ByteCode));
-    MnemonicString.Clear();
+    opcode_size_ = 0;
+    argument_count_ = 0;
+    argument_size_ = 0;
+    argument_opcode_postion_ = 0;
+    branch_type_ = BR_NONE;
+    memset(opcode_, 0, sizeof(ByteCode));
+    mnemonic_strings_.Clear();
     for (i = 0; i < MAX_NUM_ARG; i++)
-        ArgumentTypeList[i] = ARG_NONE;
+        argument_type_list_[i] = ARG_NONE;
 }
 
 
@@ -32,91 +32,91 @@ MnemonicItem::MnemonicItem()
     Clear();
 }
 
-void MnemonicItem::addArgument(enum ArgumentTypes argument)
+void MnemonicItem::AddArgument(enum ArgumentTypes argument)
 {
-    if (ArgumentCount < MAX_NUM_ARG)
+    if (argument_count_ < MAX_NUM_ARG)
     {
-        ArgumentTypeList[ArgumentCount] = argument;
-        if (ArgumentCount > 0)
+        argument_type_list_[argument_count_] = argument;
+        if (argument_count_ > 0)
         {
-            if (ArgumentTypeList[ArgumentCount - 1] == argument)
-                ArgumentSize++;
+            if (argument_type_list_[argument_count_ - 1] == argument)
+                argument_size_++;
             else
-                ArgumentCount++;
+                argument_count_++;
         }
         else
         {
-            ArgumentCount = 1;
-            ArgumentSize = 1;
+            argument_count_ = 1;
+            argument_size_ = 1;
         }
     }
 }
 
 
-void MnemonicItem::addOpCode(byte opcode)
+void MnemonicItem::AddOpCode(byte opcode)
 {
-    Opcode[OpcodeSize++] = opcode;
+    opcode_[opcode_size_++] = opcode;
 }
 
-uint MnemonicItem::getArgNo()
+uint MnemonicItem::GetArgumentCount()
 {
-    return static_cast<uint>(ArgumentCount) & 0xFF;
+    return static_cast<uint>(argument_count_) & 0xFF;
 }
 
 
-ArgumentTypes MnemonicItem::getArgType(unsigned int argno)
+ArgumentTypes MnemonicItem::GetArgumentType(unsigned int argno)
 {
     enum ArgumentTypes arg = ARG_NONE;
-    if (argno < ArgumentCount)
-        arg = ArgumentTypeList[argno];
+    if (argno < argument_count_)
+        arg = argument_type_list_[argno];
     return arg;
 }
 
-BranchType MnemonicItem::getBranchType()
+BranchType MnemonicItem::GetBranchType()
 {
-    return m_branchType;
+    return branch_type_;
 }
 
 
 
-bool MnemonicItem::isUnconditionalJump()
+bool MnemonicItem::IsUnconditionalJump()
 {
-	return ((InstructionType == IT_JUMP) && (InstructionDetail == II_NONE));
+	return ((instruction_type_ == IT_JUMP) && (instruction_detail_ == II_NONE));
 }
 
-bool MnemonicItem::isConditionalJump()
+bool MnemonicItem::IsConditionalJump()
 {
-	return ((InstructionType == IT_JUMP) && (InstructionDetail == II_CONDITIONAL));
+	return ((instruction_type_ == IT_JUMP) && (instruction_detail_ == II_CONDITIONAL));
 }
 
-bool MnemonicItem::isJump()
+bool MnemonicItem::IsJump()
 {
-	return (InstructionType == IT_JUMP);
+	return (instruction_type_ == IT_JUMP);
 }
 
-bool MnemonicItem::isCall()
+bool MnemonicItem::IsCall()
 {
-	return (InstructionType == IT_CALL);
+	return (instruction_type_ == IT_CALL);
 }
 
-bool MnemonicItem::isReturn()
+bool MnemonicItem::IsReturn()
 {
-	return (InstructionType == IT_RET);
+	return (instruction_type_ == IT_RET);
 }
 
-bool MnemonicItem::isConditionalReturn()
+bool MnemonicItem::IsConditionalReturn()
 {
-    return ((InstructionType == IT_RET) && (InstructionDetail == II_CONDITIONAL));
-}
-
-
-bool MnemonicItem::hasArgument()
-{
-    return (ArgumentCount > 0);
+    return ((instruction_type_ == IT_RET) && (instruction_detail_ == II_CONDITIONAL));
 }
 
 
-void MnemonicItem::setMnemonicStr(wxString str)
+bool MnemonicItem::HasArgument()
+{
+    return (argument_count_ > 0);
+}
+
+
+void MnemonicItem::SetMnemonicStr(wxString str)
 {
     int i1,i2;
     wxString strtemp;
@@ -124,104 +124,104 @@ void MnemonicItem::setMnemonicStr(wxString str)
     i2 = str.Find(ARG_POSITION_CHAR, true);
     if ((i1 == i2) && (!(i1 == wxNOT_FOUND)))
     {
-        MnemonicString.Add(str.Left(i1));
+        mnemonic_strings_.Add(str.Left(i1));
         strtemp = str.Right(str.Len() - i1 - 1);
-        MnemonicString.Add(strtemp);
+        mnemonic_strings_.Add(strtemp);
     }
     else
         if ((i1 != wxNOT_FOUND) || (i2 != wxNOT_FOUND))
         {
-            MnemonicString.Add(str.Left(i1));
+            mnemonic_strings_.Add(str.Left(i1));
             strtemp = str.Mid(i1 + 1,(i2 - i1 - 1));
             if (!strtemp.IsEmpty())
-                MnemonicString.Add(strtemp);
+                mnemonic_strings_.Add(strtemp);
         }
         else
-            MnemonicString.Add(str);
+            mnemonic_strings_.Add(str);
 }
 
 
-void MnemonicItem::setOpCodeArgPos(uint argpos)
+void MnemonicItem::SetOpCodeArgumentPos(uint argpos)
 {
-    if (ArgumentOpcodePostion == 0)        // we want the first argument position
-        ArgumentOpcodePostion = static_cast<byte>(argpos);
+    if (argument_opcode_postion_ == 0)        // we want the first argument position
+        argument_opcode_postion_ = static_cast<byte>(argpos);
 }
 
-unsigned int MnemonicItem::getBytesNo()
-{
-    uint ret;
-    ret = static_cast<uint>(OpcodeSize);
-    ret = ret & 0xFF;
-    return ret;
-}
-
-
-ByteCode *MnemonicItem::getOpCode()
-{
-    return &Opcode;
-}
-
-
-uint MnemonicItem::getOpCode(uint opcode)
+unsigned int MnemonicItem::GetOpCodeSize()
 {
     uint ret;
-    ret = static_cast<uint>(Opcode[opcode]);
+    ret = static_cast<uint>(opcode_size_);
     ret = ret & 0xFF;
     return ret;
 }
 
-uint MnemonicItem::getArgSize()
+
+ByteCode *MnemonicItem::GetOpCode()
+{
+    return &opcode_;
+}
+
+
+uint MnemonicItem::GetOpCode(uint opcode)
+{
+    uint ret;
+    ret = static_cast<uint>(opcode_[opcode]);
+    ret = ret & 0xFF;
+    return ret;
+}
+
+uint MnemonicItem::GetArgumentSize()
 {
     unsigned int ret;
-    ret = static_cast<uint>(ArgumentSize);
+    ret = static_cast<uint>(argument_size_);
     ret = ret & 0xFF;
     return ret;
 }
 
-uint MnemonicItem::getArgPos()
+uint MnemonicItem::GetArgumentPosition()
 {
     unsigned int ret;
-    ret = static_cast<uint>(ArgumentOpcodePostion);
+    ret = static_cast<uint>(argument_opcode_postion_);
     ret = ret & 0xFF;
     return ret;
 }
 
 
-void MnemonicItem::setBranchType(enum BranchType branchtype)
+void MnemonicItem::SetBranchType(enum BranchType branchtype)
 {
-    m_branchType = branchtype;
+    branch_type_ = branchtype;
 }
 
 
 
-void MnemonicItem::setInstructionType(enum InstructionTypes itype)
+void MnemonicItem::SetInstructionType(enum InstructionTypes itype)
 {
-    InstructionType = itype;
+    instruction_type_ = itype;
 }
 
 
-bool MnemonicItem::setInstructionType(uint itype)
+bool MnemonicItem::SetInstructionType(uint itype)
 {
     bool ret = true;
     switch (itype)
     {
         case 0:
-                setInstructionType(IT_NONE);
+                SetInstructionType(IT_NONE);
                 break;
         case 1:
-                setInstructionType(IT_RST);
+                SetInstructionType(IT_RST);
                 break;
         case 2:
-                setInstructionType(IT_CALL);
+                SetInstructionType(IT_CALL);
                 break;
         case 3:
-                setInstructionType(IT_RET);
+                SetInstructionType(IT_RET);
                 break;
         case 4:
-                setInstructionType(IT_JUMP);
+                SetInstructionType(IT_JUMP);
                 break;
         case 5:
-                setInstructionType(IT_LOAD);
+                SetInstructionType(IT_LOAD);
                 break;
         default:
                 ret = false;
@@ -231,85 +231,85 @@ bool MnemonicItem::setInstructionType(uint itype)
 
 
 
-void MnemonicItem::setInstructionDetail(enum InstructionDetails iinfo)
+void MnemonicItem::SetInstructionDetail(enum InstructionDetails iinfo)
 {
-    InstructionDetail = iinfo;
+    instruction_detail_ = iinfo;
 }
 
 
-bool MnemonicItem::setInstructionDetail(uint iinfo)
+bool MnemonicItem::SetInstructionDetail(uint iinfo)
 {
     bool ret = true;
     switch (iinfo)
     {
         case 0:
-                setInstructionDetail(II_NONE);
+                SetInstructionDetail(II_NONE);
                 break;
         case 1:
-                setInstructionDetail(II_RST_00);
+                SetInstructionDetail(II_RST_00);
                 break;
         case 2:
-                setInstructionDetail(II_RST_08);
+                SetInstructionDetail(II_RST_08);
                 break;
         case 3:
-                setInstructionDetail(II_RST_10);
+                SetInstructionDetail(II_RST_10);
                 break;
         case 4:
-                setInstructionDetail(II_RST_18);
+                SetInstructionDetail(II_RST_18);
                 break;
         case 5:
-                setInstructionDetail(II_RST_20);
+                SetInstructionDetail(II_RST_20);
                 break;
         case 6:
-                setInstructionDetail(II_RST_28);
+                SetInstructionDetail(II_RST_28);
                 break;
         case 7:
-                setInstructionDetail(II_RST_30);
+                SetInstructionDetail(II_RST_30);
                 break;
         case 8:
-                setInstructionDetail(II_RST_38);
+                SetInstructionDetail(II_RST_38);
                 break;
         case 9:
-                setInstructionDetail(II_CONDITIONAL);
+                SetInstructionDetail(II_CONDITIONAL);
                 break;
         case 10:
-                setInstructionDetail(II_LD_A_N);
+                SetInstructionDetail(II_LD_A_N);
                 break;
         case 11:
-                setInstructionDetail(II_LD_B_N);
+                SetInstructionDetail(II_LD_B_N);
                 break;
         case 12:
-                setInstructionDetail(II_LD_C_N);
+                SetInstructionDetail(II_LD_C_N);
                 break;
         case 13:
-                setInstructionDetail(II_LD_D_N);
+                SetInstructionDetail(II_LD_D_N);
                 break;
         case 14:
-                setInstructionDetail(II_LD_E_N);
+                SetInstructionDetail(II_LD_E_N);
                 break;
         case 15:
-                setInstructionDetail(II_LD_H_N);
+                SetInstructionDetail(II_LD_H_N);
                 break;
         case 16:
-                setInstructionDetail(II_LD_L_N);
+                SetInstructionDetail(II_LD_L_N);
                 break;
         case 17:
-                setInstructionDetail(II_LD_HL_N);
+                SetInstructionDetail(II_LD_HL_N);
                 break;
         case 18:
-                setInstructionDetail(II_LD_DE_N);
+                SetInstructionDetail(II_LD_DE_N);
                 break;
         case 19:
-                setInstructionDetail(II_LD_BC_N);
+                SetInstructionDetail(II_LD_BC_N);
                 break;
         case 20:
-                setInstructionDetail(II_LD_SP_N);
+                SetInstructionDetail(II_LD_SP_N);
                 break;
         case 21:
-                setInstructionDetail(II_LD_IX_N);
+                SetInstructionDetail(II_LD_IX_N);
                 break;
         case 22:
-                setInstructionDetail(II_LD_IY_N);
+                SetInstructionDetail(II_LD_IY_N);
                 break;
         default:
                 ret = false;
@@ -322,13 +322,13 @@ bool MnemonicItem::setInstructionDetail(uint iinfo)
 
 enum InstructionTypes MnemonicItem::GetInstructionType()
 {
-    return InstructionType;
+    return instruction_type_;
 }
 
 
 enum InstructionDetails MnemonicItem::GetInstructionDetail()
 {
-    return InstructionDetail;
+    return instruction_detail_;
 }
 
 
