@@ -358,21 +358,20 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    DAsmElement     *de;
-    int 			i, newLineCount, lineIndex, lineLast, lineCount,
+    int 			newLineCount, lineIndex, lineLast,
 					oldLineCount, varindex;
-    uint            first_address, last_address;
+    uint            i, line_count;
     wxArrayInt		cvlines, proglabels, varlabels;
 
     if ((selected.firstInstruction <= selected.lastInstruction) &&
-        (selected.lastInstruction < Disassembled->GetCount()))
+        (selected.lastInstruction < static_cast<int>(Disassembled->GetCount())))
     {
         if (selected.firstLine > 0)
             cvi = CodeViewLines->getData(selected.firstLine - 1);
 
         lineIndex = selected.firstLine;
         lineLast = selected.lastLine;
-        lineCount = lineLast - lineIndex + 1;
+        line_count = lineLast - lineIndex + 1;
 
         dasmed_items.Index = selected.firstInstruction;
         dasmed_items.Count = selected.lastInstruction - selected.firstInstruction + 1;
@@ -382,7 +381,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 
         MakeData(dasmed_items);
 
-        for (i = 0; i < lineCount; i++)
+        for (i = 0; i < line_count; i++)
             RemoveLineAndProgLabels(lineIndex);
 
 //* TODO:REWRITE THIS
@@ -414,9 +413,10 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    int				i, newLineCount, oldLineCount, varindex;
+    int				newLineCount, oldLineCount, varindex;
     int				lineIndex, lineLast, lineCount;
     wxArrayInt		cvlines, varlabels;
+    uint            i;
 
 	if (!FilterInstructions(cvlines, selected))
 		return;

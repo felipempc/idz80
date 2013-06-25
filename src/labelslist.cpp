@@ -458,9 +458,9 @@ bool LabelListCtrl::IsEmpty()
     return (GetItemCount() < 1);
 }
 
-int LabelListCtrl::GetCount()
+uint LabelListCtrl::GetCount()
 {
-    return GetItemCount();
+    return static_cast<uint>(GetItemCount());
 }
 
 void LabelListCtrl::EditLabel(uint listitem, wxString strlabel)

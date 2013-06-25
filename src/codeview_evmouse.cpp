@@ -194,7 +194,7 @@ void CodeView::OnMouseWheel(wxMouseEvent& event)
     else
     {
         position = GetFirstLine() + motion_step;
-        if (position > (m_CodeViewLine->GetCount() - m_linesShown))
+        if (position > static_cast<int>(m_CodeViewLine->GetCount() - m_linesShown))
             position = m_CodeViewLine->GetCount() - m_linesShown;
         Scroll(-1,position);
     }

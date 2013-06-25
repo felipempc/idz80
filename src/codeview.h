@@ -182,6 +182,7 @@ private:
 
     void OnPopUpMenuRenLabel(wxCommandEvent& event);
     void OnPopUpMenuDelLabel(wxCommandEvent& event);
+    void OnPopUpMenuCreateLabel(wxCommandEvent& event);
 
     // Pop Up Comment event handlers
     void OnPopUpAddComment(wxCommandEvent& event);

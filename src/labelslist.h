@@ -62,7 +62,7 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         wxArrayInt *GetLabelUsers(const int index);
 
         void GetLabelsBetweenRangeAddress(uint first_address, uint last_address, wxArrayInt *address_list);
-        int GetCount();
+        uint GetCount();
         bool IsEmpty();
         void Clear();
 

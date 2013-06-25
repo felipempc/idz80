@@ -68,7 +68,7 @@ class RawData : public LogBase
         bool Open(wxString filename);
         void Close();
         void Clear();
-        byte GetData(uint offset);
+        byte GetData(FileOffset offset);
         uint GetBufferSize();
         bool IsLoaded();
         wxString GetFileName();

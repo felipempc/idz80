@@ -18,7 +18,7 @@
 
 
 
-const int Decoder::OPCODE_NOT_FOUND;
+const uint Decoder::OPCODE_NOT_FOUND;
 
 Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
 {
@@ -86,7 +86,7 @@ void Decoder::UpdateBoundary()
  * Search for an opcode pattern (from Program)
  * in mndb.
  */
-uint Decoder::Fetch(const uint prg_index, uint maxitems)
+uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
 {
     uint 		offset,
                 nitems,
@@ -132,13 +132,13 @@ uint Decoder::Fetch(const uint prg_index, uint maxitems)
  *            position - of item to be inserted in the list
  * Return = index of the item inserted in the list
  */
-uint Decoder::Decode(DAsmElement *de, uint prg_index, uint dasm_position)
+uint Decoder::Decode(DAsmElement *de, FileOffset prg_index, DisassembledItem dasm_position)
 {
-    int     mnc_item,
+    uint     mnc_item,
             ret = -1;
     uint    scan_limit;
     DAsmElement     *next_de;
-    ArgStyle		style;
+
 
 
     // ensure it won't overwrite existing dasmitems
@@ -176,7 +176,7 @@ uint Decoder::Decode(DAsmElement *de, uint prg_index, uint dasm_position)
 /*
  *  Fill label list
  */
-void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
+void Decoder::SetupArgumentLabels(DAsmElement *de, DisassembledItem index)
 {
     enum ArgumentTypes	argtype;
     uint            argument;
@@ -188,8 +188,6 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 		case ARG_VARIABLE:
                             argument = de->getArgument(0, 0);
 							str = Labels->sys_vars->Find(argument);
-							//if (str.IsEmpty())
-							//	str.Printf("VAR%d", var_label_counter++);
 							Labels->var_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
@@ -197,16 +195,12 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 		case ARG_REL_ADDR:
                             argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(index));
 							str = Labels->sys_calls->Find(argument);
-							//if (str.IsEmpty())
-							//	str.Printf("LABEL%d", program_label_counter++);
 							Labels->prog_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_IO_ADDR:
                             argument = de->getArgument(0, 0);
 							str = Labels->sys_io->Find(argument);
-							//if (str.IsEmpty())
-							//	str.Printf("PORT%d", io_label_counter++);
 							Labels->io_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
@@ -216,12 +210,12 @@ void Decoder::SetupArgumentLabels(DAsmElement *de, uint index)
 
 
 
-bool Decoder::GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, uint &nextaddr)
+bool Decoder::GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr)
 {
     bool    ret = false;
     int     i = 0,
-            f,
-            address;
+            f;
+    ProgramAddress  address;
 
     f = jmplist->GetCount();
     #ifdef IDZ80_DECODER
@@ -250,6 +244,7 @@ bool Decoder::GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, u
         else
             i++;
     }
+    return ret;
 }
 
 
@@ -276,7 +271,7 @@ void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
 
 
 
-bool Decoder::MSXWeirdRST(DAsmElement *de, uint dasm_position)
+bool Decoder::MSXWeirdRST(DAsmElement *de, DisassembledItem dasm_position)
 {
     uint offset;
     uint temp;
@@ -351,7 +346,7 @@ bool Decoder::CallSubroutine(DAsmElement *de)
 
 
 
-bool Decoder::ReturnSubroutine(DAsmElement *de, uint &dest_address)
+bool Decoder::ReturnSubroutine(DAsmElement *de, ProgramAddress &dest_address)
 {
     bool ret = false;
 
@@ -529,9 +524,9 @@ bool Decoder::ProcessBranch(DAsmElement *de, bool &processing_status)
 void Decoder::FillData()
 {
 	int			i,
-				j,
+//				j,
 				delta,
-				final,
+//				final,
 				count, index;
 	DAsmElement *de_1,
 				*de_2;
@@ -541,8 +536,8 @@ void Decoder::FillData()
 
 	processing = (Process->Disassembled->GetCount() > 1);
 	i = 0;
-	j = 0;
-	final = (Process->Disassembled->GetCount() - 2);
+//	j = 0;
+//	final = (Process->Disassembled->GetCount() - 2);
 
 	while (processing)
 	{
@@ -590,8 +585,8 @@ bool Decoder::FirstDisassemble(LabelManager *parent)
             processing = true,
             update_item = false;
 
-    int     dsm_item,
-            i;
+    int     dsm_item;
+//            i;
 
     uint    program_size,
             counter = 0,
@@ -756,7 +751,7 @@ void Decoder::SetCartridgeLabels()
 
 
 
-bool Decoder::OutBoundaryAddress(uint _addr)
+bool Decoder::OutBoundaryAddress(ProgramAddress _addr)
 {
     return ((_addr > m_endaddress) || (_addr < m_startaddress));
 }
@@ -767,7 +762,7 @@ bool Decoder::OutBoundaryAddress(uint _addr)
 void Decoder::FullDisassemble(LabelManager *parent)
 {
     uint i, f, item;
-    int percent;
+ //   int percent;
     DAsmElement *de;
 
     Labels = parent;
@@ -844,7 +839,7 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
 
 void Decoder::debugShowList(const wxString &listname, SortedIntArray *_list)
 {
-    int i;
+    uint i;
     wxString str;
     if ((_list != 0) && (_list->GetCount() > 0))
     {
@@ -865,7 +860,7 @@ void Decoder::debugShowList(const wxString &listname, SortedIntArray *_list)
 
 void Decoder::debugShowJmpList(const wxString &listname, SortedIntArray *_list)
 {
-    int i;
+    uint i;
     wxString str;
     if ((_list != 0) && (_list->GetCount() > 0))
     {

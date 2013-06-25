@@ -87,9 +87,8 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 
 wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 {
-    int		nargs,
-			strparts;
-    uint	argument;
+    int		nargs;
+    uint	argument, strparts;
 
     wxString    str_1, str_2, str_ret,
                 str_number_format;

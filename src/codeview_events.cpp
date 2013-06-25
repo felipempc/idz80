@@ -32,7 +32,7 @@ void CodeView::OnScrollPageDown(wxScrollWinEvent& event)
 {
     int page;
 
-    if (GetFirstLine() < (m_CodeViewLine->GetCount() - m_linesShown))
+    if (GetFirstLine() < static_cast<int>(m_CodeViewLine->GetCount() - m_linesShown))
     {
         page = line_info.cursorPosition;
         Scroll(-1, GetFirstLine() + m_linesShown);
@@ -40,7 +40,7 @@ void CodeView::OnScrollPageDown(wxScrollWinEvent& event)
         line_info.cursorLastPosition = GetLastLine();
         line_info.cursorPosition = line_info.cursorLastPosition;
         page = line_info.cursorPosition - page;
-        if (page < m_linesShown)
+        if (page < static_cast<int>(m_linesShown))
             RefreshRect(*LastCursorRect);
     }
 }
@@ -58,7 +58,7 @@ void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
         line_info.cursorLastPosition = GetFirstLine();
         line_info.cursorPosition = line_info.cursorLastPosition;
         page -= line_info.cursorPosition;
-        if (page < m_linesShown)
+        if (page < static_cast<int>(m_linesShown))
             RefreshRect(*LastCursorRect);
     }
 }
@@ -84,7 +84,7 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
     switch (key)
     {
         case WXK_DOWN:
-                        if (line_info.cursorPosition < (m_CodeViewLine->GetCount() - 1))
+                        if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->GetCount() - 1))
                         {
                             if (!MultiSelection)
                                 line_info.cursorLastPosition = line_info.cursorPosition;
@@ -379,6 +379,12 @@ void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
         LogIt("Address Label deleted !!");
     if (line_info.type == siInstructionLabel)
         LogIt("Instruction Label deleted !!");
+}
+
+void CodeView::OnPopUpMenuCreateLabel(wxCommandEvent& event)
+{
+    if (line_info.type == siData)
+        LogIt(wxString::Format("Label created for address %.4X.", line_info.firstAddress));
 }
 
 

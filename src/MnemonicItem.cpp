@@ -60,7 +60,7 @@ void MnemonicItem::addOpCode(byte opcode)
 
 uint MnemonicItem::getArgNo()
 {
-    return (uint)ArgumentCount;
+    return static_cast<uint>(ArgumentCount) & 0xFF;
 }
 
 
@@ -141,16 +141,16 @@ void MnemonicItem::setMnemonicStr(wxString str)
 }
 
 
-void MnemonicItem::setOpCodeArgPos(unsigned int argpos)
+void MnemonicItem::setOpCodeArgPos(uint argpos)
 {
     if (ArgumentOpcodePostion == 0)        // we want the first argument position
-        ArgumentOpcodePostion = (unsigned char)argpos;
+        ArgumentOpcodePostion = static_cast<byte>(argpos);
 }
 
 unsigned int MnemonicItem::getBytesNo()
 {
     uint ret;
-    ret = (uint) OpcodeSize;
+    ret = static_cast<uint>(OpcodeSize);
     ret = ret & 0xFF;
     return ret;
 }
@@ -162,26 +162,26 @@ ByteCode *MnemonicItem::getOpCode()
 }
 
 
-unsigned int MnemonicItem::getOpCode(unsigned int opcode)
+uint MnemonicItem::getOpCode(uint opcode)
 {
-    unsigned int ret;
-    ret = (unsigned int) Opcode[opcode];
+    uint ret;
+    ret = static_cast<uint>(Opcode[opcode]);
     ret = ret & 0xFF;
     return ret;
 }
 
-unsigned int MnemonicItem::getArgSize()
+uint MnemonicItem::getArgSize()
 {
     unsigned int ret;
-    ret = (unsigned int) ArgumentSize;
+    ret = static_cast<uint>(ArgumentSize);
     ret = ret & 0xFF;
     return ret;
 }
 
-unsigned int MnemonicItem::getArgPos()
+uint MnemonicItem::getArgPos()
 {
     unsigned int ret;
-    ret = (unsigned int) ArgumentOpcodePostion;
+    ret = static_cast<uint>(ArgumentOpcodePostion);
     ret = ret & 0xFF;
     return ret;
 }

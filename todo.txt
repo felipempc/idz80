@@ -1,6 +1,7 @@
-# TODO idz80
+﻿# TODO idz80
 
 - Ao converter codigo para dados, solicitar a varlabels a lista de variaveis na faixa em
   que será feita a mudança.
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt
+- Modificar base numerica dos DB e DW

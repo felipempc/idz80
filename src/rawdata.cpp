@@ -57,7 +57,6 @@ bool RawData::Open(wxString filename)
 {
     wxFile 	f;
     void 	*tempbuffer;
-    byte 	*binptr;
     uint 	bytesread = 0,
 			buffer_size = 0;
     wxString ext;
@@ -154,7 +153,7 @@ bool RawData::IsLoaded()
 }
 
 
-byte RawData::GetData(uint offset)
+byte RawData::GetData(FileOffset offset)
 {
     byte *buffertemp;
     uint sz;

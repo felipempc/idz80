@@ -370,6 +370,7 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
     }
 
     if (!str.IsEmpty())
+    {
         if (!str.ToLong(&conv, 16))
         {
             wxMessageBox("Only hexadecimal numbers allowed !", "Error ...");
@@ -380,5 +381,6 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
             *modified_address_field = static_cast<uint>(conv);
             CheckAddressSanity();
         }
+    }
 
 }

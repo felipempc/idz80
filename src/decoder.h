@@ -41,7 +41,7 @@ class Decoder: public LogBase
         void OptimizeCodeSegment();
 
     private:
-        static const int OPCODE_NOT_FOUND = -1;
+        static const uint OPCODE_NOT_FOUND = 0xFFFFFFFF;
 
         ProcessBase         *Process;
         SubRoutineCtrl      *SubRoutine;
@@ -68,24 +68,24 @@ class Decoder: public LogBase
                             program_label_counter;
 
 
-        uint Fetch(const uint startpoint, uint maxitems);
-        uint Decode(DAsmElement *de, uint prg_index, uint dasm_position = 0xFFFFFFFF);
-        void SetupArgumentLabels(DAsmElement *de, uint index);
+        uint Fetch(const FileOffset startpoint, uint maxitems);
+        uint Decode(DAsmElement *de, FileOffset prg_index, DisassembledItem dasm_position = 0xFFFFFFFF);
+        void SetupArgumentLabels(DAsmElement *de, DisassembledItem index);
 
         void ProcessCallSubrotine();
         void ProcessReturnSubrotine();
 
-        bool GetNextNearJump(SortedIntArray *jmplist, uint _start, uint _end, uint &nextaddr);
-        bool GetNextFarJump(SortedIntArray *jmplist, uint &nextaddr);
-        bool OutBoundaryAddress(uint _addr);
+        bool GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr);
+        bool GetNextFarJump(SortedIntArray *jmplist, ProgramAddress &nextaddr);
+        bool OutBoundaryAddress(ProgramAddress _addr);
         void UpdateBoundary();
         bool CallSubroutine(DAsmElement *de);
-        bool ReturnSubroutine(DAsmElement *de, uint &dest_address);
+        bool ReturnSubroutine(DAsmElement *de, ProgramAddress &dest_address);
         bool ProcessBranch(DAsmElement *de, bool &processing_status);
         void FillData();
 
         void MSXCheckFunctionRegisters(DAsmElement *de);
-        bool MSXWeirdRST(DAsmElement *de, uint dasm_position);
+        bool MSXWeirdRST(DAsmElement *de, DisassembledItem dasm_position);
 
         void SetCartridgeLabels();
 

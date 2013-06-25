@@ -2903,7 +2903,7 @@
 1341842582 k:\wxw\wx294\include\wx\cocoa\mdi.h
 	"wx/frame.h"
 
-1371967691 x:\src\codeview.h
+1372035822 x:\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -2914,13 +2914,14 @@
 	"codeviewline.h"
 	"codeview_definitions.h"
 
-1352422606 x:\src\dasmdata.h
+1372050232 x:\src\dasmdata.h
 	"logbase.h"
 	"rawdata.h"
 	"d_asm_element.h"
 	<vector>
+	"idz80base.h"
 
-1366662610 x:\src\rawdata.h
+1372054849 x:\src\rawdata.h
 	<wx/file.h>
 	<wx/string.h>
 	<wx/buffer.h>
@@ -2930,7 +2931,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1351285956 x:\src\idz80base.h
+1372039630 x:\src\idz80base.h
 	<wx/dynarray.h>
 
 1355166256 x:\src\d_asm_element.h
@@ -2940,7 +2941,7 @@
 	"labelslist.h"
 	"logbase.h"
 
-1371965028 x:\src\mndb.h
+1371965030 x:\src\mndb.h
 	<wx/string.h>
 	<wx/dynarray.h>
 	<wx/textctrl.h>
@@ -2965,13 +2966,13 @@
 	"wx/strconv.h"
 	"wx/fontenc.h"
 
-1352139576 x:\src\mnemonicitem.h
+1372055650 x:\src\mnemonicitem.h
 	<wx/string.h>
 	<wx/arrstr.h>
 	<wx/dynarray.h>
 	"idz80base.h"
 
-1371799574 x:\src\labelslist.h
+1372033570 x:\src\labelslist.h
 	<wx/Panel.h>
 	<wx/String.h>
 	<wx/ListCtrl.h>
@@ -2994,7 +2995,7 @@
 	<wx/gauge.h>
 	<wx/dynarray.h>
 
-1367355600 x:\src\codeviewline.h
+1372049295 x:\src\codeviewline.h
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 	"d_asm_element.h"
@@ -3008,7 +3009,7 @@
 	"idz80base.h"
 	"logbase.h"
 
-1365840576 x:\src\decoder.h
+1372053520 x:\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
@@ -3024,10 +3025,10 @@
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 
-1371780980 source:x:\src\codeviewline.cpp
+1372049480 source:x:\src\codeviewline.cpp
 	"codeviewline.h"
 
-1371887838 source:x:\src\labelslist.cpp
+1372033594 source:x:\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
@@ -3046,7 +3047,7 @@
 	"mndb_tools.h"
 	"IDZ80Base.h"
 
-1371964455 x:\src\mndb_tools.h
+1371964456 x:\src\mndb_tools.h
 	<wx/string.h>
 	<wx/arrstr.h>
 
@@ -3061,14 +3062,14 @@
 	<wx/button.h>
 	<wx/dialog.h>
 
-1371965014 source:x:\src\mndb.cpp
+1371965016 source:x:\src\mndb.cpp
 	"mndb.h"
 	"mndb_tools.h"
 	<wx/arrimpl.cpp>
 
 1341842582 k:\wxw\wx294\include\wx\arrimpl.cpp
 
-1354322712 source:x:\src\dasmdata.cpp
+1372050718 source:x:\src\dasmdata.cpp
 	"dasmdata.h"
 
 1351285956 source:x:\src\editlabeldlg.cpp
@@ -3077,7 +3078,7 @@
 	"EditLabelDlg.h"
 	<wx/msgdlg.h>
 
-1371964583 source:x:\src\mndb_tools.cpp
+1371964584 source:x:\src\mndb_tools.cpp
 	"mndb_tools.h"
 
 1366241624 source:x:\src\filetypedialog.cpp
@@ -3107,7 +3108,7 @@
 	"ProcessData.h"
 	"codeview.h"
 
-1371966028 source:x:\src\idz80.cpp
+1372053203 source:x:\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -3375,7 +3376,7 @@
 1352123222 source:x:\src\mnemonicitem.cpp
 	"MnemonicItem.h"
 
-1371967896 source:x:\src\processdata.cpp
+1372054494 source:x:\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
@@ -3385,10 +3386,10 @@
 	<wx/string.h>
 	"rawdata.h"
 
-1352416540 source:x:\src\codegenerator.cpp
+1372033744 source:x:\src\codegenerator.cpp
 	"codegenerator.h"
 
-1371968379 source:x:\src\codeview.cpp
+1372035706 source:x:\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -3398,11 +3399,11 @@
 	"codeview.h"
 	"d_asm_element.h"
 
-1371715780 source:x:\src\decoder.cpp
+1372054631 source:x:\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
-1371967790 source:x:\src\codeview_evmouse.cpp
+1372034270 source:x:\src\codeview_evmouse.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/mousestate.h>
@@ -4149,7 +4150,7 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1371968412 source:x:\src\codeview_events.cpp
+1372036084 source:x:\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -4186,7 +4187,7 @@
 1354321992 source:x:\src\subroutine.cpp
 	"subroutine.h"
 
-1371967098 source:x:\src\projectmanager_xml.cpp
+1371967100 source:x:\src\projectmanager_xml.cpp
 	<wx/dynarray.h>
 	<wx/stopwatch.h>
 	<wx/filefn.h>
@@ -4194,7 +4195,7 @@
 	"mnemonicitem.h"
 	"mndb_tools.h"
 
-1371966423 x:\src\projectmanager_xml.h
+1371966424 x:\src\projectmanager_xml.h
 	<wx/xml/xml.h>
 	"ProcessData.h"
 
@@ -4236,5 +4237,5 @@
 	"mnemonicitem.h"
 	"mndb_tools.h"
 
-1371796236 x:\src\codeview_definitions.h
+1372035580 x:\src\codeview_definitions.h
 

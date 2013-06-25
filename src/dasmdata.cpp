@@ -96,7 +96,7 @@ uint DAsmData::GetUsedMem()
 }
 
 
-void DAsmData::DelDasm(uint position)
+void DAsmData::DelDasm(DisassembledItem position)
 {
 	DasmArray::iterator it;
 	DAsmElement *de;
@@ -112,11 +112,8 @@ void DAsmData::DelDasm(uint position)
 }
 
 
-void DAsmData::DelDasm(uint index, uint count)
+void DAsmData::DelDasm(DisassembledItem index, uint count)
 {
-    DAsmElement *de;
-    int i;
-
     DasmArray::iterator	it_begin,
 						it_end;
 
@@ -129,7 +126,7 @@ void DAsmData::DelDasm(uint index, uint count)
 }
 
 
-int DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
+int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledItem beforeitem)
 {
     uint    numitems = GetCount();
     int     ret = -1;
@@ -152,7 +149,7 @@ int DAsmData::InsertDasm(DAsmElement *dasmelement, uint beforeitem)
 
 
 // index = index of dasmdata
-uint DAsmData::GetBaseAddress(uint index)
+uint DAsmData::GetBaseAddress(DisassembledItem index)
 {
 	uint	i,
 			j,
@@ -170,7 +167,7 @@ uint DAsmData::GetBaseAddress(uint index)
 }
 
 
-void DAsmData::AddOrgAddress(uint index, uint address)
+void DAsmData::AddOrgAddress(DisassembledItem index, ProgramAddress address)
 {
 	uint	i,
 			j,
@@ -205,7 +202,7 @@ void DAsmData::AddOrgAddress(uint index, uint address)
 }
 
 
-void DAsmData::DelOrgAddress(uint address)
+void DAsmData::DelOrgAddress(ProgramAddress address)
 {
 	uint	i,
 			j,
@@ -228,15 +225,16 @@ void DAsmData::DelOrgAddress(uint address)
 /*
  * Find a item which address >= given address
  * if there is no item, return -1
- * if not found return last item plus 1
+ * if not found, return last item plus 1
+ * TODO: What a hell is it? it will never return -1. Try to think...
  */
-int DAsmData::FindAddress(uint address)
+int DAsmData::FindAddress(ProgramAddress address)
 {
     DAsmElement *de;
     int     i,
             f,
-            findaddress,
             ret = -1;
+    ProgramAddress  findaddress;
 
     f = GetCount();
     for(i = 0; i < f; i++)

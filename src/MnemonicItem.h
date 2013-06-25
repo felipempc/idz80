@@ -94,13 +94,13 @@ class MnemonicItem
     public:
         MnemonicItem();
         bool hasArgument();
-        enum ArgumentTypes getArgType(unsigned int argno);
+        enum ArgumentTypes getArgType(uint argno);
         uint getArgNo();
         enum BranchType getBranchType();
-        void addOpCode(unsigned char opcode);
+        void addOpCode(byte opcode);
         void addArgument(enum ArgumentTypes argument);
         void setMnemonicStr(wxString str);
-        void setOpCodeArgPos(unsigned int argpos);
+        void setOpCodeArgPos(uint argpos);
         void setBranchType(enum BranchType brunchtype);
         void setInstructionType(enum InstructionTypes itype);
         bool setInstructionType(uint itype);
@@ -111,7 +111,7 @@ class MnemonicItem
         void Clear();
 
         uint getBytesNo();
-        uint getOpCode(unsigned int opcode);
+        uint getOpCode(uint opcode);
         ByteCode *getOpCode();
         uint getArgSize();
         uint getArgPos();

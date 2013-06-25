@@ -145,6 +145,7 @@ void CodeView::SetupEvents()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
 }
 
 
@@ -680,6 +681,9 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
                                     popup->Append(idPOPUP_MAKEDATA, "Make data");
                                 break;
         case	siData:
+                                labelMenu = new wxMenu();
+                                labelMenu->Append(idPOPUP_CREATELABEL, "Create");
+
                                 popup->Append(idPOPUP_DISASM, "Disassemble");
 
         case    siUnknown:

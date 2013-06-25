@@ -270,7 +270,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     if (MaximizeMainWindow)
         Maximize();
-
 }
 
 

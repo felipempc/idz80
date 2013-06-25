@@ -22,7 +22,7 @@
 #include "rawdata.h"
 #include "d_asm_element.h"
 #include <vector>
-
+#include "idz80base.h"
 
 struct RangeItems
 {
@@ -38,17 +38,17 @@ class DAsmData : public LogBase
     public:
         void Clear();
         int  AddDasm(DAsmElement *dasmelement);
-        void DelDasm(uint position);
-        void DelDasm(uint index, uint count);
-        int  InsertDasm(DAsmElement *dasmelement,uint beforeitem);
-        DAsmElement *GetData(uint index);
+        void DelDasm(DisassembledItem position);
+        void DelDasm(DisassembledItem index, uint count);
+        int  InsertDasm(DAsmElement *dasmelement, DisassembledItem beforeitem);
+        DAsmElement *GetData(DisassembledItem index);
         uint GetCount();
         bool IsLoaded();
         uint GetUsedMem();
-        uint GetBaseAddress(uint index);
-        void AddOrgAddress(uint index, uint address);
-        void DelOrgAddress(uint address);
-        int FindAddress(uint address);
+        uint GetBaseAddress(DisassembledItem index);
+        void AddOrgAddress(DisassembledItem index, ProgramAddress address);
+        void DelOrgAddress(ProgramAddress address);
+        int FindAddress(ProgramAddress address);
 
 
         DAsmData(LogWindow *logparent);

@@ -22,6 +22,11 @@
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
+typedef unsigned int ProgramAddress;
+typedef unsigned int LineNumber;
+typedef unsigned int FileOffset;
+typedef unsigned int DisassembledItem;
+//typedef unsigned int DataIndex;
 
 WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
 

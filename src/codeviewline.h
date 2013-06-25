@@ -17,13 +17,13 @@
 #include "d_asm_element.h"
 #include "dasmdata.h"
 
-struct CommentItem //stComment
+struct CommentItem
 {
     wxString CommentStr;
 };
-//typedef struct stComment CommentItem;
 
-struct CodeViewItem//stCodeViewLine
+
+struct CodeViewItem
 {
     CommentItem *Comment;
     short int LabelProgAddr;
@@ -32,7 +32,7 @@ struct CodeViewItem//stCodeViewLine
     int Org;
     wxRect *RectArg1, *RectArg2;
 };
-//typedef struct stCodeViewLine CodeViewItem;
+
 
 class CodeViewLine
 {
@@ -41,35 +41,35 @@ class CodeViewLine
         virtual ~CodeViewLine();
 
         void Clear();
-        int AddDasm(const int dasmitem, const wxString &comment);
-        int AddProgLabel(const int labeladdr, const wxString &comment);
-        int AddVarLabel(const int labeladdr, const wxString &comment);
-        int AddOrg(const int org, const wxString &comment);
+        int AddDasm(const DisassembledItem dasmitem, const wxString &comment);
+        int AddProgLabel(const ProgramAddress labeladdr, const wxString &comment);
+        int AddVarLabel(const ProgramAddress labeladdr, const wxString &comment);
+        int AddOrg(const ProgramAddress org, const wxString &comment);
         int Add(const wxString &comment);
-        void Del(const int idx);
+        void Del(const LineNumber idx);
         void DelItem(CodeViewItem *cvi);
         void DelComment(CodeViewItem *cvi);
-        void EditDasm(const int asmitem, const wxString &comment,int pos);
-        void EditProgLabel(const int labeladdr, const wxString &comment,int pos);
-        void EditVarLabel(const int labeladdr, const wxString &comment,int pos);
-        void EditOrg(const int org, const wxString &comment, int pos);
-        void Edit(const wxString &comment, const int pos);
-        int InsertDasm(const int dasmitem, const wxString &comment,int pos);
-        int InsertProgLabel(const int labeladdr, const wxString &comment,int pos);
-        int InsertVarLabel(const int labeladdr, const wxString &comment,int pos);
-        int InsertOrg(const int org, const wxString &comment, int pos);
-        int Insert(const wxString &comment, const int pos);       //create a new line with comment
-        int AppendComment(const wxString &comment, const int pos); // append a comment to an existing line
-        void linkData(int indexdasm, int indexline, int countdasm);
-        void UpdateDasmIndex(const int index, const int delta);
+        void EditDasm(const DisassembledItem asmitem, const wxString &comment, LineNumber pos);
+        void EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
+        void EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
+        void EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
+        void Edit(const wxString &comment, const LineNumber pos);
+        int InsertDasm(const DisassembledItem dasmitem, const wxString &comment, LineNumber pos);
+        int InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
+        int InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
+        int InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
+        int Insert(const wxString &comment, const LineNumber pos);       //create a new line with comment
+        int AppendComment(const wxString &comment, const LineNumber pos); // append a comment to an existing line
+        void linkData(DisassembledItem indexdasm, LineNumber indexline, uint countdasm);
+        void UpdateDasmIndex(LineNumber index, const int delta);
 
         bool IsEmpty();
 
         uint GetCount();
         void setData(CodeViewItem *cvi);
-        bool getLineOfAddress(uint addr, int &index);
-        bool getLineOfAddress(int line_index, int line_count, uint addr, int &index);
-        CodeViewItem *getData(uint index);
+        bool getLineOfAddress(ProgramAddress addr, int &index);
+        bool getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr, int &index);
+        CodeViewItem *getData(LineNumber index);
 
 
     protected:
@@ -80,9 +80,9 @@ class CodeViewLine
 
         int AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr, const int org,const wxString &comment);
         int InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
-						  const int org, const wxString &comment, int pos);
+						  const int org, const wxString &comment, LineNumber pos);
         void EditItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
-					  const int org, const wxString &comment, int pos);
+					  const int org, const wxString &comment, LineNumber pos);
 };
 
 #endif // CODEVIEWLINE_H
