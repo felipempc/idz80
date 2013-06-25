@@ -32,8 +32,8 @@ class MnemonicDataBase: public LogBase
         ~MnemonicDataBase();
         bool Open(wxString& filename);
         void Clear();
-        void FindItems(wxArrayInt& arrayint, byte opcode, uint scanoffset);
-        MnemonicItem *FindItem(const ByteCode& code);
+        void Find(wxArrayInt& mnemonics_found_list, byte opcode, uint scanoffset);
+        MnemonicItem *FindByOpCode(const ByteCode& code);
         MnemonicItem *GetData(uint index);
         uint GetCount();
         uint GetAllocated();
@@ -41,11 +41,11 @@ class MnemonicDataBase: public LogBase
 
     private:
         static const int MIN_ARRAY_ITEMS = 3;
-        uint            m_totalAllocated;
-        MnemonicArray   *m_MnemonicList;
+        uint            memory_allocated_;
+        MnemonicArray   *mnemonic_list_;
 
-        bool doReadData(wxTextFile& tf);
-        bool addData(wxArrayString& arraystr, int currentSection, int line);
+        bool ReadFileAndStore(wxTextFile& tf);
+        bool ProcessAndStore(wxArrayString& mnemonic_line_items, int currentSection, int line);
         bool SetupArgument(MnemonicItem *mnemonic, wxString &strline);
         void SetupBranch(MnemonicItem *mnemonic);
 

@@ -83,7 +83,7 @@ int CodeViewLine::AddNewItem(const int dasmitem, const int labelprogaddr, const 
 }
 
 
-int CodeViewLine::AddDasm(const DisassembledItem dasmitem, const wxString &comment)
+int CodeViewLine::AddDasm(const DisassembledIndex dasmitem, const wxString &comment)
 {
     return (AddNewItem(dasmitem, -1, -1, -1, comment));
 }
@@ -184,7 +184,7 @@ void CodeViewLine::EditItem(const int dasmitem, const int labelprogaddr, const i
         cvi->LabelVarAddr = labelvaraddr;
 }
 
-void CodeViewLine::EditDasm(const DisassembledItem dasmitem, const wxString &comment, LineNumber pos)
+void CodeViewLine::EditDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
 {
     if (pos < m_CodeLine.GetCount())
         EditItem(dasmitem, -1, -1, -1, comment, pos);
@@ -244,7 +244,7 @@ int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, con
 
 
 
-int CodeViewLine::InsertDasm(const DisassembledItem dasmitem, const wxString &comment, LineNumber pos)
+int CodeViewLine::InsertDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
 {
     if (pos < m_CodeLine.GetCount())
         return (InsertNewItem(dasmitem, -1, -1, -1, comment, pos));
@@ -393,7 +393,7 @@ void CodeViewLine::UpdateDasmIndex(LineNumber index, const int delta)
 
 
 
-void CodeViewLine::linkData(DisassembledItem indexdasm, LineNumber indexline, uint countdasm)
+void CodeViewLine::linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm)
 {
 	wxString        str;
 	DAsmElement     *de;

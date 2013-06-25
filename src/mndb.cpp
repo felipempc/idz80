@@ -37,8 +37,8 @@ const int MnemonicDataBase::MIN_ARRAY_ITEMS;
 
 MnemonicDataBase::MnemonicDataBase(LogWindow *logparent)
 {
-    m_totalAllocated = 0;
-    m_MnemonicList = new MnemonicArray();
+    memory_allocated_ = 0;
+    mnemonic_list_ = new MnemonicArray();
     SetTextLog(logparent);
     ModuleName = "MNDB";
 }
@@ -46,7 +46,7 @@ MnemonicDataBase::MnemonicDataBase(LogWindow *logparent)
 MnemonicDataBase::~MnemonicDataBase()
 {
     Clear();
-    delete m_MnemonicList;
+    delete mnemonic_list_;
 }
 
 
@@ -54,8 +54,8 @@ MnemonicDataBase::~MnemonicDataBase()
 
 void MnemonicDataBase::Clear()
 {
-    m_totalAllocated = 0;
-    m_MnemonicList->Clear();
+    memory_allocated_ = 0;
+    mnemonic_list_->Clear();
 }
 
 
@@ -64,11 +64,11 @@ void MnemonicDataBase::Clear()
 
 MnemonicItem *MnemonicDataBase::GetData(uint index)
 {
-    int f = m_MnemonicList->GetCount();
+    int f = mnemonic_list_->GetCount();
 
     if (index >= f)
         index = f - 1;
-    return m_MnemonicList->Item(index);
+    return mnemonic_list_->Item(index);
 }
 
 
@@ -81,7 +81,7 @@ bool MnemonicDataBase::IsLoaded()
 
 uint MnemonicDataBase::GetCount()
 {
-    return m_MnemonicList->GetCount();
+    return mnemonic_list_->GetCount();
 }
 
 
@@ -173,7 +173,7 @@ void MnemonicDataBase::SetupBranch(MnemonicItem *mnemonic)
 
 
 
-bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int line)
+bool MnemonicDataBase::ProcessAndStore(wxArrayString& mnemonic_line_items, int currentSection, int line)
 {
     bool    ret = false;
     int     i,
@@ -188,14 +188,14 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
 
 
 
-    if ((arraystr.GetCount() >= MIN_ARRAY_ITEMS) && (currentSection > 0))
+    if ((mnemonic_line_items.GetCount() >= MIN_ARRAY_ITEMS) && (currentSection > 0))
     {
         mnemonic = new MnemonicItem();
         x = sizeof(MnemonicItem);
 
         for (i = 0; i < currentSection; i++)
         {
-            temp_str = arraystr[i];
+            temp_str = mnemonic_line_items[i];
 
             if (SetupArgument(mnemonic, temp_str))
             {
@@ -222,7 +222,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
          */
         if (mnemonic != 0)
         {
-            temp_str = arraystr[i++];
+            temp_str = mnemonic_line_items[i++];
             if (!temp_str.ToLong(&templong, 16))
             {
                 #ifdef IDZ80DEBUG
@@ -255,7 +255,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
          */
         if (mnemonic != 0)
         {
-            temp_str = arraystr[i++];
+            temp_str = mnemonic_line_items[i++];
             if (temp_str.ToLong(&templong, 16))
                 mnemonic->SetInstructionType(templong);
             else
@@ -273,7 +273,7 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
          */
         if (mnemonic != 0)
         {
-            temp_str = arraystr[i++];
+            temp_str = mnemonic_line_items[i++];
             if (temp_str.ToLong(&templong, 16))
                 mnemonic->SetInstructionDetail(templong);
             else
@@ -293,12 +293,12 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
          */
         if (mnemonic != 0)
         {
-            temp_str = arraystr[i];
+            temp_str = mnemonic_line_items[i];
             mnemonic->SetMnemonicStr(temp_str);
             SetupBranch(mnemonic);
-            m_MnemonicList->Add(mnemonic);
+            mnemonic_list_->Add(mnemonic);
             ret = true;
-            m_totalAllocated += x;
+            memory_allocated_ += x;
         }
     }
     return ret;
@@ -307,12 +307,12 @@ bool MnemonicDataBase::addData(wxArrayString& arraystr, int currentSection, int 
 
 
 
-bool MnemonicDataBase::doReadData(wxTextFile& tf)
+bool MnemonicDataBase::ReadFileAndStore(wxTextFile& tf)
 {
     wxString        str;
-    wxArrayString   arraystr;
+    wxArrayString   mnemonic_line;
 
-    m_totalAllocated = 0;
+    memory_allocated_ = 0;
 
     int currentSection = -1,
         currentline = 0;
@@ -331,11 +331,11 @@ bool MnemonicDataBase::doReadData(wxTextFile& tf)
         }
         if ((currentSection > 0) && (str.First('"') > 0))
         {
-            ParseString(str, arraystr);
-            addData(arraystr, currentSection, currentline);
+            ParseString(str, mnemonic_line);
+            ProcessAndStore(mnemonic_line, currentSection, currentline);
         }
     }
-    if (m_MnemonicList->IsEmpty())
+    if (mnemonic_list_->IsEmpty())
         return false;
     else
         return true;
@@ -353,40 +353,43 @@ bool MnemonicDataBase::Open(wxString& filename)
     {
         if (IsLoaded())
             Clear();
-        ret = doReadData(mnfile);
+        ret = ReadFileAndStore(mnfile);
     }
     return ret;
 }
 
-
-void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoffset)
+/*
+ * Search for mnemonics in mnemonic_list
+ *
+*/
+void MnemonicDataBase::Find(wxArrayInt& mnemonics_found_list, byte opcode, uint scanoffset)
 {
     uint			i, f, index;
     MnemonicItem	*mnemonic;
-    wxArrayInt		arrtemp;
+    wxArrayInt		temporary_found;
     bool			arg_detected;
     byte			opcodetest;
 
     if (scanoffset == 0)
     {
-        arrayint.Clear();
-        f = m_MnemonicList->GetCount();
+        mnemonics_found_list.Clear();
+        f = mnemonic_list_->GetCount();
     }
     else
-        f = arrayint.GetCount();
+        f = mnemonics_found_list.GetCount();
 
     arg_detected = true;
     if (f > 1)
     {
-        arrtemp.Clear();
+        temporary_found.Clear();
         for (i = 0; i < f; i++)
         {
 
             if (scanoffset == 0)
                 index = i;
             else
-                index = arrayint[i];
-            mnemonic = m_MnemonicList->Item(index);
+                index = mnemonics_found_list[i];
+            mnemonic = mnemonic_list_->Item(index);
 
             /* In four-byte instructions of Z80, there are opcodes that
                have its argument in the middle of it (DD CB's and FD CB's series)
@@ -400,23 +403,23 @@ void MnemonicDataBase::FindItems(wxArrayInt& arrayint, byte opcode, uint scanoff
                 if (opcode == opcodetest)
                 {
                     if (scanoffset == 0)
-                        arrayint.Add(i);
+                        mnemonics_found_list.Add(i);
                     else
-                        arrtemp.Add(index);
+                        temporary_found.Add(index);
                 }
             }
         }
         if ((scanoffset > 0) && (!arg_detected))
         {
-            arrayint.Clear();
-            arrayint = arrtemp;
+            mnemonics_found_list.Clear();
+            mnemonics_found_list = temporary_found;
         }
     }
 }
 
 
 
-MnemonicItem *MnemonicDataBase::FindItem(const ByteCode& code)
+MnemonicItem *MnemonicDataBase::FindByOpCode(const ByteCode& code)
 {
     uint i, total;
 
@@ -439,7 +442,7 @@ MnemonicItem *MnemonicDataBase::FindItem(const ByteCode& code)
 
 uint MnemonicDataBase::GetAllocated()
 {
-    return m_totalAllocated;
+    return memory_allocated_;
 }
 
 

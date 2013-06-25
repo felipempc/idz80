@@ -38,15 +38,15 @@ class DAsmData : public LogBase
     public:
         void Clear();
         int  AddDasm(DAsmElement *dasmelement);
-        void DelDasm(DisassembledItem position);
-        void DelDasm(DisassembledItem index, uint count);
-        int  InsertDasm(DAsmElement *dasmelement, DisassembledItem beforeitem);
-        DAsmElement *GetData(DisassembledItem index);
+        void DelDasm(DisassembledIndex position);
+        void DelDasm(DisassembledIndex index, uint count);
+        int  InsertDasm(DAsmElement *dasmelement, DisassembledIndex beforeitem);
+        DAsmElement *GetData(DisassembledIndex index);
         uint GetCount();
         bool IsLoaded();
         uint GetUsedMem();
-        uint GetBaseAddress(DisassembledItem index);
-        void AddOrgAddress(DisassembledItem index, ProgramAddress address);
+        uint GetBaseAddress(DisassembledIndex index);
+        void AddOrgAddress(DisassembledIndex index, ProgramAddress address);
         void DelOrgAddress(ProgramAddress address);
         int FindAddress(ProgramAddress address);
 

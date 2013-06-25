@@ -96,7 +96,7 @@ uint DAsmData::GetUsedMem()
 }
 
 
-void DAsmData::DelDasm(DisassembledItem position)
+void DAsmData::DelDasm(DisassembledIndex position)
 {
 	DasmArray::iterator it;
 	DAsmElement *de;
@@ -112,7 +112,7 @@ void DAsmData::DelDasm(DisassembledItem position)
 }
 
 
-void DAsmData::DelDasm(DisassembledItem index, uint count)
+void DAsmData::DelDasm(DisassembledIndex index, uint count)
 {
     DasmArray::iterator	it_begin,
 						it_end;
@@ -126,7 +126,7 @@ void DAsmData::DelDasm(DisassembledItem index, uint count)
 }
 
 
-int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledItem beforeitem)
+int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledIndex beforeitem)
 {
     uint    numitems = GetCount();
     int     ret = -1;
@@ -149,7 +149,7 @@ int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledItem beforeitem)
 
 
 // index = index of dasmdata
-uint DAsmData::GetBaseAddress(DisassembledItem index)
+uint DAsmData::GetBaseAddress(DisassembledIndex index)
 {
 	uint	i,
 			j,
@@ -167,7 +167,7 @@ uint DAsmData::GetBaseAddress(DisassembledItem index)
 }
 
 
-void DAsmData::AddOrgAddress(DisassembledItem index, ProgramAddress address)
+void DAsmData::AddOrgAddress(DisassembledIndex index, ProgramAddress address)
 {
 	uint	i,
 			j,

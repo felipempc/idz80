@@ -103,7 +103,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     while (offset < maxitems)
     {
         scan = Process->Program->GetData(prg_index + offset);
-        Process->Mnemonics->FindItems(foundItems, scan, offset);
+        Process->Mnemonics->Find(foundItems, scan, offset);
         offset++;
         if (foundItems.GetCount() < 2)
 			break;
@@ -132,7 +132,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
  *            position - of item to be inserted in the list
  * Return = index of the item inserted in the list
  */
-uint Decoder::Decode(DAsmElement *de, FileOffset prg_index, DisassembledItem dasm_position)
+uint Decoder::Decode(DAsmElement *de, FileOffset prg_index, DisassembledIndex dasm_position)
 {
     uint     mnc_item,
             ret = -1;
@@ -176,7 +176,7 @@ uint Decoder::Decode(DAsmElement *de, FileOffset prg_index, DisassembledItem das
 /*
  *  Fill label list
  */
-void Decoder::SetupArgumentLabels(DAsmElement *de, DisassembledItem index)
+void Decoder::SetupArgumentLabels(DAsmElement *de, DisassembledIndex index)
 {
     enum ArgumentTypes	argtype;
     uint            argument;
@@ -271,7 +271,7 @@ void Decoder::MSXCheckFunctionRegisters(DAsmElement *de)
 
 
 
-bool Decoder::MSXWeirdRST(DAsmElement *de, DisassembledItem dasm_position)
+bool Decoder::MSXWeirdRST(DAsmElement *de, DisassembledIndex dasm_position)
 {
     uint offset;
     uint temp;

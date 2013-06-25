@@ -627,7 +627,7 @@ bool ProjectManagerXML::fillDasmData(wxXmlNode *datanode)
                 bc[i] = static_cast<unsigned char>(conv);
         }
         de->CopyOpCode(bc);
-        mi = process->Mnemonics->FindItem(bc);
+        mi = process->Mnemonics->FindByOpCode(bc);
         if (mi != 0)
         {
             de->SetMnemonic(mi);

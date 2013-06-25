@@ -69,8 +69,8 @@ class Decoder: public LogBase
 
 
         uint Fetch(const FileOffset startpoint, uint maxitems);
-        uint Decode(DAsmElement *de, FileOffset prg_index, DisassembledItem dasm_position = 0xFFFFFFFF);
-        void SetupArgumentLabels(DAsmElement *de, DisassembledItem index);
+        uint Decode(DAsmElement *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
+        void SetupArgumentLabels(DAsmElement *de, DisassembledIndex index);
 
         void ProcessCallSubrotine();
         void ProcessReturnSubrotine();
@@ -85,7 +85,7 @@ class Decoder: public LogBase
         void FillData();
 
         void MSXCheckFunctionRegisters(DAsmElement *de);
-        bool MSXWeirdRST(DAsmElement *de, DisassembledItem dasm_position);
+        bool MSXWeirdRST(DAsmElement *de, DisassembledIndex dasm_position);
 
         void SetCartridgeLabels();
 

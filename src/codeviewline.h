@@ -41,7 +41,7 @@ class CodeViewLine
         virtual ~CodeViewLine();
 
         void Clear();
-        int AddDasm(const DisassembledItem dasmitem, const wxString &comment);
+        int AddDasm(const DisassembledIndex dasmitem, const wxString &comment);
         int AddProgLabel(const ProgramAddress labeladdr, const wxString &comment);
         int AddVarLabel(const ProgramAddress labeladdr, const wxString &comment);
         int AddOrg(const ProgramAddress org, const wxString &comment);
@@ -49,18 +49,18 @@ class CodeViewLine
         void Del(const LineNumber idx);
         void DelItem(CodeViewItem *cvi);
         void DelComment(CodeViewItem *cvi);
-        void EditDasm(const DisassembledItem asmitem, const wxString &comment, LineNumber pos);
+        void EditDasm(const DisassembledIndex asmitem, const wxString &comment, LineNumber pos);
         void EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         void EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         void EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
         void Edit(const wxString &comment, const LineNumber pos);
-        int InsertDasm(const DisassembledItem dasmitem, const wxString &comment, LineNumber pos);
+        int InsertDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos);
         int InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         int InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         int InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
         int Insert(const wxString &comment, const LineNumber pos);       //create a new line with comment
         int AppendComment(const wxString &comment, const LineNumber pos); // append a comment to an existing line
-        void linkData(DisassembledItem indexdasm, LineNumber indexline, uint countdasm);
+        void linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm);
         void UpdateDasmIndex(LineNumber index, const int delta);
 
         bool IsEmpty();
