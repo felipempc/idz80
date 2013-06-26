@@ -18,7 +18,7 @@
 
 #include "IDZ80Base.h"
 #include "processbase.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 #include "logbase.h"
 #include "z80registerlist.h"
 #include "labelmanager.h"
@@ -69,8 +69,8 @@ class Decoder: public LogBase
 
 
         uint Fetch(const FileOffset startpoint, uint maxitems);
-        uint Decode(DAsmElement *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
-        void SetupArgumentLabels(DAsmElement *de, DisassembledIndex index);
+        uint Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
+        void SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index);
 
         void ProcessCallSubrotine();
         void ProcessReturnSubrotine();
@@ -79,13 +79,13 @@ class Decoder: public LogBase
         bool GetNextFarJump(SortedIntArray *jmplist, ProgramAddress &nextaddr);
         bool OutBoundaryAddress(ProgramAddress _addr);
         void UpdateBoundary();
-        bool CallSubroutine(DAsmElement *de);
-        bool ReturnSubroutine(DAsmElement *de, ProgramAddress &dest_address);
-        bool ProcessBranch(DAsmElement *de, bool &processing_status);
+        bool CallSubroutine(DisassembledItem *de);
+        bool ReturnSubroutine(DisassembledItem *de, ProgramAddress &dest_address);
+        bool ProcessBranch(DisassembledItem *de, bool &processing_status);
         void FillData();
 
-        void MSXCheckFunctionRegisters(DAsmElement *de);
-        bool MSXWeirdRST(DAsmElement *de, DisassembledIndex dasm_position);
+        void MSXCheckFunctionRegisters(DisassembledItem *de);
+        bool MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position);
 
         void SetCartridgeLabels();
 

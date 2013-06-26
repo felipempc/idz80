@@ -13,7 +13,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/mousestate.h>
 #include "codeview.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 
 
 

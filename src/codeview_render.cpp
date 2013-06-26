@@ -16,7 +16,7 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "codeview.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 
 
 
@@ -25,7 +25,7 @@
 uint CodeView::RenderData(wxDC &dc, const int start_y, CodeViewItem *cvi)
 {
     uint i, x, argwidth, lenght;
-    DAsmElement *de;
+    DisassembledItem *de;
     wxString str;
 
     x = COL_MNEM;
@@ -92,13 +92,13 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
 			argument;
     wxString str;
     bool usedlabel;
-    DAsmElement *de;
+    DisassembledItem *de;
 
     argwidth1 = argwidth2 = argpos1 = argpos2 = 0;
     usedlabel = false;
     x = COL_MNEM;
     de = Process->Disassembled->GetData(cvi->Dasmitem);
-    nargs = de->GetNumArgs();
+    nargs = de->GetArgumentCount();
     strparts = 0;
     str = de->GetMnemonicStr(0);
     strparts++;
@@ -107,7 +107,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     x += dc.GetTextExtent(str).GetWidth();
     argpos1 = x;
 
-	argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+	argument = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
 
     if (de->HasArgumentLabel())
     {
@@ -191,7 +191,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
         argpos2 = x;
 
         dc.SetTextForeground(*wxRED);
-        str = FormatArg(de->getArgument(1, 0), de->GetStyleArgument(1));
+        str = FormatArg(de->GetArgument(1, 0), de->GetStyleArgument(1));
 
         dc.DrawText(str, x, start_y);
         argwidth2 = dc.GetTextExtent(str).GetWidth();
@@ -222,7 +222,7 @@ uint CodeView::RenderInstruction(wxDC &dc, const int start_y, CodeViewItem *cvi)
     }
 
     dc.SetTextForeground(FG_TextColor);
-    if (de->GetMnemonicStrNum() > strparts)
+    if (de->GetMnemonicStrCount() > strparts)
     {
         str = de->GetMnemonicStr(strparts);
         dc.DrawText(str, x, start_y);
@@ -268,7 +268,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     int				linepixel, i;
     uint			address;
     //bool			labelfailed;
-    DAsmElement		*de;
+    DisassembledItem		*de;
     bool			firstInstruction;
     wxCoord			width, heigh;
 
@@ -307,8 +307,8 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 						address = Process->Disassembled->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
 
 						dc.SetTextForeground(FG_TextColor);
-						dc.DrawText(de->getCodeStr(), COL_CODE, linepixel);
-						dc.DrawText(de->getAsciiStr(), COL_ASCII, linepixel);
+						dc.DrawText(de->GetCodeStr(), COL_CODE, linepixel);
+						dc.DrawText(de->GetAsciiStr(), COL_ASCII, linepixel);
 						switch (de->GetType())
 						{
 							case et_Data:

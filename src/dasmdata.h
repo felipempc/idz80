@@ -20,7 +20,7 @@
 
 #include "logbase.h"
 #include "rawdata.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 #include <vector>
 #include "idz80base.h"
 
@@ -31,17 +31,17 @@ struct RangeItems
 };
 
 
-typedef std::vector<DAsmElement *> DasmArray;
+typedef std::vector<DisassembledItem *> DasmArray;
 
 class DAsmData : public LogBase
 {
     public:
         void Clear();
-        int  AddDasm(DAsmElement *dasmelement);
+        int  AddDasm(DisassembledItem *dasmelement);
         void DelDasm(DisassembledIndex position);
         void DelDasm(DisassembledIndex index, uint count);
-        int  InsertDasm(DAsmElement *dasmelement, DisassembledIndex beforeitem);
-        DAsmElement *GetData(DisassembledIndex index);
+        int  InsertDasm(DisassembledItem *dasmelement, DisassembledIndex beforeitem);
+        DisassembledItem *GetData(DisassembledIndex index);
         uint GetCount();
         bool IsLoaded();
         uint GetUsedMem();

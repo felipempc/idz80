@@ -232,7 +232,7 @@ void ProjectManagerXML::writeDasmData(wxXmlDocument &doc)
     int		i, c;
     uint	j, arg_aux, total_lines;
     wxString	aux_str;
-    DAsmElement *de;
+    DisassembledItem *de;
 
     if (process->Disassembled->GetCount() != 0)
     {
@@ -251,21 +251,21 @@ void ProjectManagerXML::writeDasmData(wxXmlDocument &doc)
 
             aux_str.Clear();
             for(j = 0; j < de->GetLength(); j++)
-                aux_str << wxString::Format("%.2X ", de->GetCodeItem(j));
+                aux_str << wxString::Format("%.2X ", de->GetByteOpCode(j));
 
             aux_str.Trim();
             items->AddAttribute(ATTRIBUTE_OPCODE_STR, aux_str);
 
-			if (de->GetNumArgs() > 0)
+			if (de->GetArgumentCount() > 0)
 			{
-                items->AddAttribute(ATTRIBUTE_ARGUMENTNUM_STR, wxString::Format("%.2X", de->GetNumArgs()));
-                items->AddAttribute(ATTRIBUTE_ARGUMENTSIZE_STR, wxString::Format("%.2X", de->GetArgSize()));
+                items->AddAttribute(ATTRIBUTE_ARGUMENTNUM_STR, wxString::Format("%.2X", de->GetArgumentCount()));
+                items->AddAttribute(ATTRIBUTE_ARGUMENTSIZE_STR, wxString::Format("%.2X", de->GetArgumentSize()));
 
-				arg_aux = de->GetNumArgs() * de->GetArgSize();
+				arg_aux = de->GetArgumentCount() * de->GetArgumentSize();
 				aux_str.Clear();
 				for(j = 0; j < arg_aux; j++)
 				{
-					c = de->GetArgItem(j);
+					c = de->GetByteArgument(j);
 					c = c & 0xFF;
 					aux_str << wxString::Format("%.2X ", c);
 				}
@@ -584,12 +584,12 @@ bool ProjectManagerXML::fillDasmData(wxXmlNode *datanode)
 				arg_aux = 0;
     ByteCode		bc;
     OpCodeArguments	args;
-    DAsmElement		*de;
+    DisassembledItem		*de;
     MnemonicItem	*mi;
     bool    hasArguments = false;
     uint    health = 0;
 
-    de = new DAsmElement(process->Program);
+    de = new DisassembledItem(process->Program);
 
     str = datanode->GetAttribute(ATTRIBUTE_OPCODETYPE_STR);
     if (!str.IsEmpty() && str.ToLong(&conv, 16))
@@ -807,7 +807,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 
 void ProjectManagerXML::linkLabels(wxArrayInt *label_users)
 {
-    DAsmElement *de;
+    DisassembledItem *de;
     uint i, item;
 
     if (label_users > 0)

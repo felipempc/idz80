@@ -40,7 +40,7 @@ DAsmData::~DAsmData()
 
 void DAsmData::Clear()
 {
-    DAsmElement *de;
+    DisassembledItem *de;
     int size;
 
     size = m_DasmList.size();
@@ -56,7 +56,7 @@ void DAsmData::Clear()
 
 
 
-DAsmElement *DAsmData::GetData(uint index)
+DisassembledItem *DAsmData::GetData(uint index)
 {
     if (index >= m_DasmList.size())
         return 0;
@@ -76,7 +76,7 @@ bool DAsmData::IsLoaded()
 }
 
 
-int DAsmData::AddDasm(DAsmElement *dasmelement)
+int DAsmData::AddDasm(DisassembledItem *dasmelement)
 {
     int     ret = -1;
 
@@ -84,7 +84,7 @@ int DAsmData::AddDasm(DAsmElement *dasmelement)
     {
 		m_DasmList.push_back(dasmelement);
         ret = m_DasmList.size() - 1;
-        totalAllocated += sizeof(DAsmElement);
+        totalAllocated += sizeof(DisassembledItem);
     }
 
     return ret;
@@ -99,7 +99,7 @@ uint DAsmData::GetUsedMem()
 void DAsmData::DelDasm(DisassembledIndex position)
 {
 	DasmArray::iterator it;
-	DAsmElement *de;
+	DisassembledItem *de;
 
     if (position < GetCount())
 	{
@@ -107,7 +107,7 @@ void DAsmData::DelDasm(DisassembledIndex position)
 		LogIt(wxString::Format("Erase item %d, mnemonic = %s", position, de->GetMnemonicStr(0)));
 		it = m_DasmList.begin() + position;
 		m_DasmList.erase(it);
-		totalAllocated -= sizeof(DAsmElement);
+		totalAllocated -= sizeof(DisassembledItem);
 	}
 }
 
@@ -126,7 +126,7 @@ void DAsmData::DelDasm(DisassembledIndex index, uint count)
 }
 
 
-int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledIndex beforeitem)
+int DAsmData::InsertDasm(DisassembledItem *dasmelement, DisassembledIndex beforeitem)
 {
     uint    numitems = GetCount();
     int     ret = -1;
@@ -139,7 +139,7 @@ int DAsmData::InsertDasm(DAsmElement *dasmelement, DisassembledIndex beforeitem)
 		it = m_DasmList.begin() + beforeitem;
 		m_DasmList.insert(it, dasmelement);
         ret = beforeitem;
-        totalAllocated += sizeof(DAsmElement);
+        totalAllocated += sizeof(DisassembledItem);
     }
     return ret;
 }
@@ -230,7 +230,7 @@ void DAsmData::DelOrgAddress(ProgramAddress address)
  */
 int DAsmData::FindAddress(ProgramAddress address)
 {
-    DAsmElement *de;
+    DisassembledItem *de;
     int     i,
             f,
             ret = -1;

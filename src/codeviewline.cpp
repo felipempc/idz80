@@ -342,7 +342,7 @@ bool CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, Prog
             line_label_exists = false;
     uint    line_address = 0;
     CodeViewItem	*cvi;
-    DAsmElement		*de;
+    DisassembledItem		*de;
 
     index = -1;
     while ((item_count < line_count) && !found_item)
@@ -396,7 +396,7 @@ void CodeViewLine::UpdateDasmIndex(LineNumber index, const int delta)
 void CodeViewLine::linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm)
 {
 	wxString        str;
-	DAsmElement     *de;
+	DisassembledItem     *de;
 	ProgramAddress  address;
 	CodeViewItem    *cvi;
 

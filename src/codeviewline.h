@@ -14,7 +14,7 @@
 #include <wx/dynarray.h>
 
 #include "IDZ80Base.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 #include "dasmdata.h"
 
 struct CommentItem

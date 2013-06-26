@@ -3767,7 +3767,7 @@
 	<wx/dialog.h>
 	"IDZ80Base.h"
 
-1372188051 x:\idz80\src\idz80base.h
+1372197290 x:\idz80\src\idz80base.h
 	<wx/dynarray.h>
 
 1372188051 source:x:\idz80\src\mndb_tools.cpp
@@ -3805,14 +3805,14 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1372188220 source:x:\idz80\src\processdata.cpp
+1372199947 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
-1372188051 x:\idz80\src\processdata.h
+1372198081 x:\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 	"labelslist.h"
 	"systemlabels.h"
 	"decoder.h"
@@ -3822,10 +3822,10 @@
 	<wx/gauge.h>
 	<wx/dynarray.h>
 
-1372188051 x:\idz80\src\dasmdata.h
+1372198081 x:\idz80\src\dasmdata.h
 	"logbase.h"
 	"rawdata.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 	<vector>
 	"idz80base.h"
 
@@ -3856,10 +3856,10 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1372188051 x:\idz80\src\codeviewline.h
+1372198081 x:\idz80\src\codeviewline.h
 	<wx/dynarray.h>
 	"IDZ80Base.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 	"dasmdata.h"
 
 1372188051 x:\idz80\src\systemlabels.h
@@ -3870,22 +3870,22 @@
 	"idz80base.h"
 	"logbase.h"
 
-1372188051 x:\idz80\src\decoder.h
+1372198081 x:\idz80\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
 	"IDZ80Base.h"
 	"processbase.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 	"logbase.h"
 	"z80registerlist.h"
 	"labelmanager.h"
 	"subroutine.h"
 
-1372188051 x:\idz80\src\z80registerlist.h
+1372198081 x:\idz80\src\z80registerlist.h
 	"IDZ80Base.h"
 	"z80register.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 
 1372188051 x:\idz80\src\z80register.h
 	"IDZ80Base.h"
@@ -3937,7 +3937,7 @@
 1372188051 source:x:\idz80\src\rawdata.cpp
 	"rawdata.h"
 
-1372188051 source:x:\idz80\src\codegenerator.cpp
+1372199660 source:x:\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
 1372188051 x:\idz80\src\codegenerator.h
@@ -3947,7 +3947,7 @@
 1372188051 source:x:\idz80\src\z80register.cpp
 	"z80register.h"
 
-1372192366 source:x:\idz80\src\codeview.cpp
+1372200058 source:x:\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -3955,25 +3955,25 @@
 	<wx/textdlg.h>
 	<wx/dcclient.h>
 	"codeview.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 
-1372188051 source:x:\idz80\src\z80registerlist.cpp
+1372199197 source:x:\idz80\src\z80registerlist.cpp
 	"z80registerlist.h"
 
-1372188051 source:x:\idz80\src\codeview_evmouse.cpp
+1372198081 source:x:\idz80\src\codeview_evmouse.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/mousestate.h>
 	"codeview.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 
-1372188051 source:x:\idz80\src\codeview_render.cpp
+1372199660 source:x:\idz80\src\codeview_render.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
-	"d_asm_element.h"
+	"disassembled_item.h"
 
-1372188051 source:x:\idz80\src\codeviewline.cpp
+1372197505 source:x:\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
 1372192783 source:x:\idz80\src\d_asm_element.cpp
@@ -3981,10 +3981,10 @@
 	"mndb_tools.h"
 	"IDZ80Base.h"
 
-1372188051 source:x:\idz80\src\dasmdata.cpp
+1372197505 source:x:\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 
-1372193839 source:x:\idz80\src\decoder.cpp
+1372200058 source:x:\idz80\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
@@ -4073,7 +4073,7 @@
 	<wx/button.h>
 	<wx/dialog.h>
 
-1372188051 source:x:\idz80\src\mndb.cpp
+1372196574 source:x:\idz80\src\mndb.cpp
 	"mndb.h"
 	"mndb_tools.h"
 	<wx/arrimpl.cpp>
@@ -4121,7 +4121,7 @@
 	"wx/string.h"
 	"wx/filefn.h"
 
-1372188051 source:x:\idz80\src\codeview_events.cpp
+1372199947 source:x:\idz80\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -4230,7 +4230,7 @@
 	<wx/xml/xml.h>
 	"ProcessData.h"
 
-1372194790 source:x:\idz80\src\projectmanager_xml.cpp
+1372199777 source:x:\idz80\src\projectmanager_xml.cpp
 	<wx/dynarray.h>
 	<wx/stopwatch.h>
 	<wx/filefn.h>
@@ -4240,5 +4240,17 @@
 
 1372035580 x:\src\codeview_definitions.h
 
-1372188051 x:\idz80\src\codeview_definitions.h
+1372197505 x:\idz80\src\codeview_definitions.h
+
+1372202767 x:\idz80\src\disassembled_item.h
+	"mndb.h"
+	"MnemonicItem.h"
+	"rawdata.h"
+	"labelslist.h"
+	"logbase.h"
+
+1372201036 source:x:\idz80\src\disassembled_item.cpp
+	"disassembled_item.h"
+	"mndb_tools.h"
+	"IDZ80Base.h"
 

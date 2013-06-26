@@ -104,14 +104,14 @@
 		<Unit filename="../src/codeview_render.cpp" />
 		<Unit filename="../src/codeviewline.cpp" />
 		<Unit filename="../src/codeviewline.h" />
-		<Unit filename="../src/d_asm_element.cpp" />
-		<Unit filename="../src/d_asm_element.h" />
 		<Unit filename="../src/dasmdata.cpp" />
 		<Unit filename="../src/dasmdata.h" />
 		<Unit filename="../src/decoder.cpp" />
 		<Unit filename="../src/decoder.h" />
 		<Unit filename="../src/dialog_file_settings.cpp" />
 		<Unit filename="../src/dialog_file_settings.h" />
+		<Unit filename="../src/disassembled_item.cpp" />
+		<Unit filename="../src/disassembled_item.h" />
 		<Unit filename="../src/labelmanager.cpp" />
 		<Unit filename="../src/labelmanager.h" />
 		<Unit filename="../src/labelslist.cpp" />

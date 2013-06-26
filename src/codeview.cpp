@@ -14,7 +14,7 @@
 #include <wx/textdlg.h>
 #include <wx/dcclient.h>
 #include "codeview.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 
 
 
@@ -572,7 +572,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
 {
     CodeViewItem *cvi;
-    DAsmElement *de;
+    DisassembledItem *de;
     int i;
     bool homogeneous = false;
     ElementType lastitem = et_None;
@@ -587,7 +587,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 				hcomment = true;
 
             de = Process->Disassembled->GetData(cvi->Dasmitem);
-            if (de->isInstruction())
+            if (de->IsInstruction())
             {
                 if ((lastitem == et_None) || (lastitem == et_Instruction))
                 {
@@ -598,7 +598,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
                     homogeneous = false;
             }
             else
-                if (de->isData())
+                if (de->IsData())
                 {
                     if ((lastitem == et_None) || (lastitem == et_Data))
                     {
@@ -663,7 +663,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
     {
         case 	siInstructionLabel:
                                 if ((line_info.dasmitem) &&
-                                    (line_info.dasmitem->MnemonicObject->IsCall() || line_info.dasmitem->MnemonicObject->IsJump()))
+                                    (line_info.dasmitem->mnemonic_->IsCall() || line_info.dasmitem->mnemonic_->IsJump()))
                                 {
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();
@@ -820,7 +820,7 @@ void CodeView::TreatSingleSelection()
             else
                 line_info.type = siInstruction;
 
-            if (line_info.dasmitem->isData())
+            if (line_info.dasmitem->IsData())
                 line_info.type = siData;
             line_info.firstInstruction = line_info.lineitem->Dasmitem;
             line_info.lastInstruction = line_info.firstInstruction;
@@ -842,7 +842,7 @@ void CodeView::TreatSingleSelection()
 
 void CodeView::TreatMultiSelection()
 {
-    DAsmElement *last_disassembled;
+    DisassembledItem *last_disassembled;
     CodeViewItem *last_line;
     int first_instruction, last_instruction;
     bool    first_found,

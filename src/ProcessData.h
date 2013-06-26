@@ -20,7 +20,7 @@
 
 #include "IDZ80Base.h"
 #include "processbase.h"
-#include "d_asm_element.h"
+#include "disassembled_item.h"
 #include "labelslist.h"
 #include "systemlabels.h"
 #include "decoder.h"
@@ -66,7 +66,7 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         Decoder     *m_disassembler;
         LogWindow   *WindowLog;
 
-        void RemoveFromLabelUserList(DAsmElement *de, const uint dasmitem);
+        void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
         void RemoveLineAndVarLabels(const int index);
         void RemoveLineAndProgLabels(const int index);
         void RemoveLabelUsers(wxArrayInt *users);

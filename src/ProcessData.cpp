@@ -158,7 +158,7 @@ void ProcessData::DisassembleItems(RangeItems &r)
 void ProcessData::MakeData(RangeItems &r)
 {
     uint		i, j, k, f, offset, length;
-    DAsmElement	*de;
+    DisassembledItem	*de;
 
     f = r.Index + r.Count;
     if (f > Disassembled->GetCount())
@@ -175,7 +175,7 @@ void ProcessData::MakeData(RangeItems &r)
         Disassembled->DelDasm(i);
         for (j = 0; j < length; j++)
         {
-            de = new DAsmElement(Program);
+            de = new DisassembledItem(Program);
             de->SetLength(1);
             de->SetOffset(offset + j);
             de->SetMnemonic(0);
@@ -198,7 +198,7 @@ void ProcessData::MakeData(RangeItems &r)
 //TODO: REmove it
 void ProcessData::AutoLabel()
 {
-    DAsmElement *dasmtemp;
+    DisassembledItem *dasmtemp;
     uint    	i;
 
     long		addr;
@@ -212,7 +212,7 @@ void ProcessData::AutoLabel()
         while (i < Disassembled->GetCount())
         {
             dasmtemp = Disassembled->GetData(i);
-            if (dasmtemp->isInstruction())
+            if (dasmtemp->IsInstruction())
             {
                 argtype = dasmtemp->GetArgumentType(0);
                 switch (argtype)
@@ -221,13 +221,13 @@ void ProcessData::AutoLabel()
 										style = dasmtemp->GetStyle();
                                         style.hasArgumentLabel = 1;
                                         dasmtemp->SetStyle(style);
-                                        addr = dasmtemp->getArgument(0, 0);
+                                        addr = dasmtemp->GetArgument(0, 0);
                                         str = sys_vars->Find(addr);
                                         var_labels->AddLabel(addr, str, i);
                                         break;
                     case ARG_ABS_ADDR:
                     case ARG_REL_ADDR:
-                                        addr = dasmtemp->getArgument(0, Disassembled->GetBaseAddress(i));
+                                        addr = dasmtemp->GetArgument(0, Disassembled->GetBaseAddress(i));
                                         str = sys_calls->Find(addr);
                                         prog_labels->AddLabel(addr, str, i);
 										style = dasmtemp->GetStyle();
@@ -235,7 +235,7 @@ void ProcessData::AutoLabel()
                                         dasmtemp->SetStyle(style);
                                         break;
                     case ARG_IO_ADDR:
-                                        addr = dasmtemp->getArgument(0, 0);
+                                        addr = dasmtemp->GetArgument(0, 0);
 										style = dasmtemp->GetStyle();
                                         style.hasArgumentLabel = 1;
                                         dasmtemp->SetStyle(style);
@@ -328,18 +328,18 @@ void ProcessData::processLabel()
 
 
 
-void ProcessData::RemoveFromLabelUserList(DAsmElement *de, const uint dasmitem)
+void ProcessData::RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem)
 {
-    if (de->GetNumArgs() > 0)
+    if (de->GetArgumentCount() > 0)
         switch(de->GetArgumentType(0))
         {
             case ARG_VARIABLE:
-                var_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+                var_labels->DelLabelUser(de->GetArgument(0, Program->ExecAddress), dasmitem);
             case ARG_IO_ADDR:
-                io_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+                io_labels->DelLabelUser(de->GetArgument(0, Program->ExecAddress), dasmitem);
             case ARG_REL_ADDR:
             case ARG_ABS_ADDR:
-                prog_labels->DelLabelUser(de->getArgument(0, Program->ExecAddress), dasmitem);
+                prog_labels->DelLabelUser(de->GetArgument(0, Program->ExecAddress), dasmitem);
         }
 }
 
@@ -475,7 +475,7 @@ bool ProcessData::FilterInstructions(wxArrayInt &range, SelectedItemInfo &select
     int		i, last_i;
     CodeViewItem
 			*cvi;
-    DAsmElement
+    DisassembledItem
 			*de;
 
 
@@ -487,8 +487,8 @@ bool ProcessData::FilterInstructions(wxArrayInt &range, SelectedItemInfo &select
         if (cvi->Dasmitem >= 0)
         {
             de = Disassembled->GetData(cvi->Dasmitem);
-            if (de->isInstruction() ||
-                de->isData())
+            if (de->IsInstruction() ||
+                de->IsData())
             {
                 if (!foundindex)
                 {
@@ -544,7 +544,7 @@ void ProcessData::RemoveLineAndVarLabels(const int index)
 void ProcessData::RemoveLabelUsers(wxArrayInt *users)
 {
     int i;
-    DAsmElement *de;
+    DisassembledItem *de;
     ArgStyle    style;
 
     if (users)

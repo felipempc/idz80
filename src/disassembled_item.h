@@ -1,17 +1,13 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
+ * This module stores one disassembled item.
  **************************************************************/
 
-
-/*
- * Hold one disassembled element
- *
- */
 
 #ifndef _IDZ80_DASMELEMENT_H
 #define _IDZ80_DASMELEMENT_H
@@ -53,28 +49,28 @@ struct ArgStyle
 };
 
 
-class DAsmElement: public LogBase
+class DisassembledItem: public LogBase
 {
     public:
 
         void Clear();
-        wxString getCodeStr();
-        wxString getAsciiStr();
-        uint getArgument(uint arg, uint _baseaddress);
+        wxString GetCodeStr();
+        wxString GetAsciiStr();
+        word GetArgument(uint argument_index, uint baseaddress);
         byte GetData(uint offset);
         ArgStyle GetStyle();
-        StyleType GetStyleArgument(uint arg_idx) ;
+        StyleType GetStyleArgument(uint argument_index) ;
         uint GetOffset();
         uint GetLength();
         ElementType GetType();
-        ArgumentTypes GetArgumentType(uint arg_num);
+        ArgumentTypes GetArgumentType(uint argument_index);
         BranchType GetBranchType();
-        int GetNumArgs();
-        int GetArgSize();
+        int GetArgumentCount();
+        int GetArgumentSize();
         wxString &GetMnemonicStr(uint index);
-        uint GetMnemonicStrNum();
-        byte GetCodeItem(uint index);
-        byte GetArgItem(uint index);
+        uint GetMnemonicStrCount();
+        byte GetByteOpCode(uint index);
+        byte GetByteArgument(uint argument_index);
         InstructionTypes GetInstructionType();
         InstructionDetails GetInstructionDetail();
         bool HasArgumentLabel();
@@ -85,35 +81,35 @@ class DAsmElement: public LogBase
         void SetLength();
         void SetType(ElementType _etype);
         void SetStyle(ArgStyle &_style);
-        void SetStyleArgument(uint arg_idx, StyleType ast);
+        void SetStyleArgument(uint argument_index, StyleType ast);
         void SetMnemonic(MnemonicItem *mnemonic);
         bool CopyArguments();
         void CopyArguments(OpCodeArguments &arg, uint size);
         void CopyOpCode(ByteCode &bytecode);
 
 
-        bool isData();
-        bool isInstruction();
-        bool isArgumentProgramAddress();
-        bool isArgumentVariableAddress();
+        bool IsData();
+        bool IsInstruction();
+        bool IsArgumentProgramAddress();
+        bool IsArgumentVariableAddress();
 
-        MnemonicItem        *MnemonicObject;
+        MnemonicItem        *mnemonic_;
 
-        DAsmElement(RawData* rawdata);
-        ~DAsmElement();
+        DisassembledItem(RawData* rawdata);
+        ~DisassembledItem();
 
     private:
-        RawData				*FileData;
+        RawData				*data_file_;
 
-        ByteCode            Code;
-        OpCodeArguments     Args;
-        unsigned int        Offset,         // File address (0..EOF)
-                            Length;         // How many BYTEs
-        ElementType         ElType;
-        ArgStyle			Style;
+        ByteCode            opcode_;
+        OpCodeArguments     opcode_arguments_;
+        unsigned int        offset_in_file_,
+                            opcode_size_;
+        ElementType         item_type_;
+        ArgStyle			arguments_style_;
 
 		void CopyOpcode();
-        uint convertRelAbs(int reladdr, uint _baseaddress);
+        ProgramAddress ConvertRelativeToAbsoluteAddress(int reladdr, ProgramAddress baseaddress);
         void SetStyleDefault();
 
 };

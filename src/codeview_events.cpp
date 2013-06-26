@@ -222,12 +222,12 @@ void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
 void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
 {
     CodeViewItem	*cvi;
-    DAsmElement		*de;
+    DisassembledItem		*de;
     uint 			address;
 
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     de = Process->Disassembled->GetData(cvi->Dasmitem);
-    address = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+    address = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
     CenterAddress(address);
 
 }
@@ -351,7 +351,7 @@ void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
 void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
-    DAsmElement *de;
+    DisassembledItem *de;
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi != 0)
@@ -361,13 +361,13 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 		if (cvi->LabelProgAddr >= 0)
 			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
         else
-            if ((de != 0) && (de->isArgumentProgramAddress()))
-                Process->prog_labels->EditLabelDialog(de->getArgument(0, 0));
+            if ((de != 0) && (de->IsArgumentProgramAddress()))
+                Process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
 		if (cvi->LabelVarAddr >= 0)
 			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
         else
-            if ((de != 0) && (de->isArgumentVariableAddress()))
-                Process->var_labels->EditLabelDialog(de->getArgument(0, 0));
+            if ((de != 0) && (de->IsArgumentVariableAddress()))
+                Process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
 
         Refresh();
 	}

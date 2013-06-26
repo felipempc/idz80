@@ -50,7 +50,7 @@ enum LineType
 struct SelectedItemInfo
 {
 	LineType		type;
-	DAsmElement* 	dasmitem;
+	DisassembledItem* 	dasmitem;
 	CodeViewItem* 	lineitem;
 	bool			hasComment;
 

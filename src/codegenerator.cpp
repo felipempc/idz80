@@ -36,7 +36,7 @@ bool codeGenerator::isNumber(wxChar firstchar)
 wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 {
     uint i;
-    DAsmElement *de;
+    DisassembledItem *de;
     wxString str, str_number_format;
 
     if (m_cflags == cfM80)
@@ -93,11 +93,11 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     wxString    str_1, str_2, str_ret,
                 str_number_format;
     bool usedlabel;
-    DAsmElement *de;
+    DisassembledItem *de;
 
     usedlabel = false;
     de = Process->Disassembled->GetData(cvi->Dasmitem);
-    nargs = de->GetNumArgs();
+    nargs = de->GetArgumentCount();
 
     str_ret = de->GetMnemonicStr(0);
     strparts = 1;
@@ -105,7 +105,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     str_1.Clear();
     str_2.Clear();
 
-    argument = de->getArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+    argument = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)
         str_number_format = "%XH";
@@ -150,7 +150,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
         str_1 << de->GetMnemonicStr(1);
         strparts++;
-        str_2.Printf(str_number_format, de->getArgument(1, 0));
+        str_2.Printf(str_number_format, de->GetArgument(1, 0));
         if (m_cflags == cfM80)
             if (!isNumber(str_2[0]))
                 str_2.Prepend("0");
@@ -159,7 +159,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     str_ret << str_1 << str_2;
 
-    if (de->GetMnemonicStrNum() > strparts)
+    if (de->GetMnemonicStrCount() > strparts)
     {
         str_ret << de->GetMnemonicStr(strparts);
     }
@@ -180,7 +180,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
     int     count,i;
     bool    first_instruction,
             file_ok;
-    DAsmElement	*de;
+    DisassembledItem	*de;
 
     textCode.Clear();
     m_cflags = cflags;
