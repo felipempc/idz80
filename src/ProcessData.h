@@ -24,6 +24,7 @@
 #include "labelslist.h"
 #include "systemlabels.h"
 #include "decoder.h"
+#include "decoder_smart.h"
 #include "logwindow.h"
 #include "labelmanager.h"
 #include "codeview_definitions.h"
@@ -62,9 +63,10 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         ~ProcessData();
 
     private:
-        wxGauge     *m_gauge;
-        Decoder     *m_disassembler;
-        LogWindow   *WindowLog;
+        wxGauge     *gauge_;
+        Decoder     *disassembler_;
+        SmartDecoder    *smart_disassembler_;
+        LogWindow   *window_log_;
 
         void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
         void RemoveLineAndVarLabels(const int index);

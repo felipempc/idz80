@@ -108,6 +108,8 @@
 		<Unit filename="../src/dasmdata.h" />
 		<Unit filename="../src/decoder.cpp" />
 		<Unit filename="../src/decoder.h" />
+		<Unit filename="../src/decoder_smart.cpp" />
+		<Unit filename="../src/decoder_smart.h" />
 		<Unit filename="../src/dialog_file_settings.cpp" />
 		<Unit filename="../src/dialog_file_settings.h" />
 		<Unit filename="../src/disassembled_item.cpp" />

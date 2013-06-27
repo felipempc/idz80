@@ -1,0 +1,63 @@
+/****************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   2012-05-15
+ * Copyright: Felipe MPC ()
+ * License:   GPL
+ * This module disassemble in smart mode.
+ **************************************************************/
+
+
+
+
+
+#ifndef _DECODER_SMART_H_
+#define _DECODER_SMART_H_
+
+#include "decoder.h"
+
+
+class SmartDecoder: public Decoder
+{
+public:
+    SmartDecoder(ProcessBase *parent, LogWindow *logparent);
+    ~SmartDecoder();
+    bool FullDisassemble(LabelManager *parent);
+    void Clear();
+
+
+
+protected:
+
+private:
+    void ProcessCallSubrotine();
+    void ProcessReturnSubrotine();
+    bool GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr);
+    bool GetNextFarJump(SortedIntArray *jmplist, ProgramAddress &nextaddr);
+    bool TestIfOutBoundaries(ProgramAddress addr);
+    void UpdateBoundaries();
+    bool CallSubroutine(DisassembledItem *de);
+    bool ReturnSubroutine(DisassembledItem *de, ProgramAddress &dest_address);
+    bool ProcessBranch(DisassembledItem *de, bool &processing_status);
+    void FillData();
+
+    void DebugShowList(const wxString &listname, SortedIntArray *_list);
+    void DebugShowJmpList(const wxString &listname, SortedIntArray *_list);
+
+    SortedIntArray      *address_list_,
+                        *address_list_processed_;
+
+    SubRoutineCtrl      *sub_routine_;
+
+    uint    start_address_,
+            end_address_,
+            exec_address_,
+            prg_counter_,
+            last_prg_counter_,
+            next_address_,
+            actual_address_;
+};
+
+
+#endif // _DECODER_SMART_H_

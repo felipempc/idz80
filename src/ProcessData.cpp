@@ -31,7 +31,8 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     Program = new RawData(logparent);
     Disassembled = new DAsmData(logparent);
     CodeViewLines = new CodeViewLine(Disassembled);
-    m_disassembler = new Decoder(this, logparent);
+    disassembler_ = 0;
+    smart_disassembler_ = 0;
 
     var_labels = new LabelListCtrl(parent, "VAR", logparent);
     prog_labels = new LabelListCtrl(parent, "", logparent);
@@ -43,15 +44,18 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     sys_io = 0;
     sys_const = 0;
 
-    m_gauge = NULL;
-    WindowLog = logparent;
+    gauge_ = NULL;
+    window_log_ = logparent;
     ModuleName = "PROCESS";
 }
 
 
 ProcessData::~ProcessData()
 {
-    delete m_disassembler;
+    if (disassembler_)
+        delete disassembler_;
+    if (smart_disassembler_)
+        delete smart_disassembler_;
     if (sys_const != 0)
         delete sys_const;
 	delete sys_calls;
@@ -83,13 +87,14 @@ void ProcessData::Clear()
     Program->Clear();
     Disassembled->Clear();
     CodeViewLines->Clear();
-    m_disassembler->Clear();
+    if (smart_disassembler_)
+        smart_disassembler_->Clear();
 }
 
 
 void ProcessData::SetGauge(wxGauge *g)
 {
-   m_gauge = g;
+   gauge_ = g;
 }
 
 
@@ -105,18 +110,18 @@ bool ProcessData::SetupSystemLabels()
     if (Program->IsLoaded())
     {
         ret = true;
-        sys_io = new SystemLabelList("IOMAP", WindowLog);
+        sys_io = new SystemLabelList("IOMAP", window_log_);
 
         if (Program->isCOM())
         {
-            sys_calls =  new SystemLabelList("MSXDOSCALLS", WindowLog);
-            sys_vars = new SystemLabelList("MSXDOS1VAR", WindowLog);
-            sys_const = new SystemLabelList("BDOSFUNCTIONS", WindowLog);
+            sys_calls =  new SystemLabelList("MSXDOSCALLS", window_log_);
+            sys_vars = new SystemLabelList("MSXDOS1VAR", window_log_);
+            sys_const = new SystemLabelList("BDOSFUNCTIONS", window_log_);
         }
         else
         {
-            sys_calls =  new SystemLabelList("BIOSCALLS", WindowLog);
-            sys_vars = new SystemLabelList("BIOSVARS", WindowLog);
+            sys_calls =  new SystemLabelList("BIOSCALLS", window_log_);
+            sys_vars = new SystemLabelList("BIOSVARS", window_log_);
         }
     }
 
@@ -132,15 +137,22 @@ void ProcessData::DisassembleFirst(bool simulateexecution)
 {
     Disassembled->Clear();
 
+
     if (simulateexecution)
     {
+        if (smart_disassembler_ == 0)
+            smart_disassembler_ = new SmartDecoder(this, window_log_);
+
         LogIt("Disassemble by simulating execution of code.");
-        m_disassembler->FirstDisassemble(this);
+        smart_disassembler_->FullDisassemble(this);
     }
     else
     {
+        if (disassembler_ == 0)
+            disassembler_ = new Decoder(this, window_log_);
+
         LogIt("Full disassembling.");
-        m_disassembler->FullDisassemble(this);
+        disassembler_->FullDisassemble(this);
     }
 }
 
@@ -150,7 +162,10 @@ void ProcessData::DisassembleFirst(bool simulateexecution)
 
 void ProcessData::DisassembleItems(RangeItems &r)
 {
-    m_disassembler->DisassembleItems(r);
+    if (disassembler_)
+        disassembler_->DisassembleItems(r);
+    if (smart_disassembler_)
+        smart_disassembler_->DisassembleItems(r);
 }
 
 

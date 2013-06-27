@@ -3805,17 +3805,18 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1372199947 source:x:\idz80\src\processdata.cpp
+1372291208 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
-1372198081 x:\idz80\src\processdata.h
+1372290268 x:\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
 	"disassembled_item.h"
 	"labelslist.h"
 	"systemlabels.h"
 	"decoder.h"
+	"decoder_smart.h"
 	"logwindow.h"
 	"labelmanager.h"
 	"codeview_definitions.h"
@@ -3870,7 +3871,7 @@
 	"idz80base.h"
 	"logbase.h"
 
-1372198081 x:\idz80\src\decoder.h
+1372289879 x:\idz80\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
@@ -3984,7 +3985,7 @@
 1372197505 source:x:\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 
-1372200058 source:x:\idz80\src\decoder.cpp
+1372289879 source:x:\idz80\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
@@ -4249,8 +4250,14 @@
 	"labelslist.h"
 	"logbase.h"
 
-1372201036 source:x:\idz80\src\disassembled_item.cpp
+1372203843 source:x:\idz80\src\disassembled_item.cpp
 	"disassembled_item.h"
 	"mndb_tools.h"
 	"IDZ80Base.h"
+
+1372289224 x:\idz80\src\decoder_smart.h
+	"decoder.h"
+
+1372290003 source:x:\idz80\src\decoder_smart.cpp
+	"decoder_smart.h"
 

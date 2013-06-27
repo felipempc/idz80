@@ -29,68 +29,34 @@ class Decoder: public LogBase
 {
     public:
         Decoder(ProcessBase *parent, LogWindow *logparent);
-        ~Decoder();
+//        ~Decoder();
 
-        bool FirstDisassemble(LabelManager *parent);
         void FullDisassemble(LabelManager *parent);
         void DisassembleItems(RangeItems &dasm_range);
 
-        void Clear();
+//        void Clear();
 
-        wxString GetCodeSegmentStr();
-        void OptimizeCodeSegment();
-
-    private:
+    protected:
         static const uint OPCODE_NOT_FOUND = 0xFFFFFFFF;
 
-        ProcessBase         *Process;
-        SubRoutineCtrl      *SubRoutine;
+        ProcessBase         *process_;
 
-        SortedIntArray      //*m_unconditionaljumplist,
-                            //*m_conditionaljumplist,
-                            *AddressList,
-                            *AddressListProcessed;
-
-        LabelManager        *Labels;
-
-        Z80RegisterList     Registers;
-
-
-        uint                m_startaddress,
-                            m_endaddress,
-                            m_execaddress,
-                            m_prg_counter,
-                            m_last_prg_counter,
-                            m_nextaddress,
-                            m_actualaddress,
-                            io_label_counter,
-                            var_label_counter,
-                            program_label_counter;
+        LabelManager        *labels_;
+        Z80RegisterList     registers_;
 
 
         uint Fetch(const FileOffset startpoint, uint maxitems);
         uint Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
         void SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index);
 
-        void ProcessCallSubrotine();
-        void ProcessReturnSubrotine();
-
-        bool GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr);
-        bool GetNextFarJump(SortedIntArray *jmplist, ProgramAddress &nextaddr);
-        bool OutBoundaryAddress(ProgramAddress _addr);
-        void UpdateBoundary();
-        bool CallSubroutine(DisassembledItem *de);
-        bool ReturnSubroutine(DisassembledItem *de, ProgramAddress &dest_address);
-        bool ProcessBranch(DisassembledItem *de, bool &processing_status);
-        void FillData();
-
         void MSXCheckFunctionRegisters(DisassembledItem *de);
         bool MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position);
 
         void SetCartridgeLabels();
 
-        void debugShowList(const wxString &listname, SortedIntArray *_list);
-        void debugShowJmpList(const wxString &listname, SortedIntArray *_list);
+
+    private:
+
 };
 
 
