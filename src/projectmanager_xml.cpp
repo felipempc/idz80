@@ -204,7 +204,7 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
 
         for (i = (total_lines - 1); i > -1; i--)
         {
-            label = current_label->GetLabelItem(i);
+            label = current_label->GetData(i);
             if (label)
             {
                 items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LABEL_STR, i));

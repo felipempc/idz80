@@ -350,7 +350,7 @@ bool CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, Prog
         cvi = getData(line_index);
         if (cvi)
 		{
-			if ((cvi->LabelProgAddr == addr) || (cvi->LabelVarAddr == addr))
+			if ((cvi->LabelProgAddr == static_cast<int>(addr)) || (cvi->LabelVarAddr == static_cast<int>(addr)))
 				line_label_exists = true;
 
             if (cvi->Dasmitem >= 0)

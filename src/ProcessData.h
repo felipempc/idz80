@@ -57,6 +57,11 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         bool SetupSystemLabels();
         void Clear();
 
+        void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
+        void RemoveLineAndVarLabels(const int index);
+        void RemoveLineAndProgLabels(const int index);
+
+
         void SetGauge(wxGauge *g);
 
         ProcessData(wxWindow *parent, LogWindow *logparent);
@@ -68,9 +73,6 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         SmartDecoder    *smart_disassembler_;
         LogWindow   *window_log_;
 
-        void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
-        void RemoveLineAndVarLabels(const int index);
-        void RemoveLineAndProgLabels(const int index);
         void RemoveLabelUsers(wxArrayInt *users);
         bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
 };

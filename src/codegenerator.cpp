@@ -1,9 +1,9 @@
 /****************************************************************
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
+ * Copyright: Felipe MPC ()
  * License:   GPL
  * This module creates the text file containing the disassembled
  * program

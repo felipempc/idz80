@@ -30,7 +30,7 @@ WX_DEFINE_OBJARRAY(MnemonicArray);
  *  MnemonicDataBase implementation
  */
 
-const int MnemonicDataBase::MIN_ARRAY_ITEMS;
+const uint MnemonicDataBase::MIN_ARRAY_ITEMS;
 
 
 
@@ -64,7 +64,7 @@ void MnemonicDataBase::Clear()
 
 MnemonicItem *MnemonicDataBase::GetData(uint index)
 {
-    int f = mnemonic_list_->GetCount();
+    uint f = mnemonic_list_->GetCount();
 
     if (index >= f)
         index = f - 1;

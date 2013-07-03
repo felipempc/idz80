@@ -170,6 +170,10 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
 							labels_->io_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
+        case ARG_NONE:
+        case ARG_LITERAL:
+        case ARG_OFFSET:
+                            break;
 	}
 }
 
@@ -204,7 +208,6 @@ void Decoder::MSXCheckFunctionRegisters(DisassembledItem *de)
 bool Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
 {
     uint offset;
-    uint temp;
     bool ret = false;
 
     offset = de->GetOffset();
@@ -217,15 +220,13 @@ bool Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
 
         case II_RST_30:
                     // ID of Slot
-                    //LogIt(wxString::Format("[0x%.4X] Rst 30h detected !", m_actualaddress));
                     de = new DisassembledItem(process_->Program);
                     de->SetLength(1);
                     de->SetOffset(++offset);
                     de->SetMnemonic(0);
                     de->SetType(et_Data);
                     process_->Disassembled->InsertDasm(de, dasm_position++);
-                    //LogIt(wxString::Format("[0x%.4X] Slot = %d.", m_actualaddress,
-                    //                       Process->Program->GetData(offset)));
+
                     // address to be called
                     de = new DisassembledItem(process_->Program);
                     de->SetLength(2);
@@ -234,9 +235,6 @@ bool Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
                     de->SetType(et_Data);
                     de->SetStyleArgument(0, ast_wordhex);
                     process_->Disassembled->InsertDasm(de, dasm_position);
-                    temp = process_->Program->GetData(offset) + process_->Program->GetData(offset + 1) * 0xFF;
-                    //LogIt(wxString::Format("[0x%.4X] Calling address = %.4X.", m_actualaddress,
-                    //                       temp));
                     ret = true;
                     break;
     }

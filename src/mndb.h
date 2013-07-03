@@ -40,7 +40,7 @@ class MnemonicDataBase: public LogBase
         bool IsLoaded();
 
     private:
-        static const int MIN_ARRAY_ITEMS = 3;
+        static const uint MIN_ARRAY_ITEMS = 3;
         uint            memory_allocated_;
         MnemonicArray   *mnemonic_list_;
 

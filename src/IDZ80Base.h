@@ -1,9 +1,8 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
  * License:   GPL
  **************************************************************/
 
@@ -26,6 +25,7 @@ typedef unsigned int ProgramAddress;
 typedef unsigned int LineNumber;
 typedef unsigned int FileOffset;
 typedef unsigned int DisassembledIndex;
+typedef unsigned int LabelIndex;
 //typedef unsigned int DataIndex;
 
 WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);

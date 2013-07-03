@@ -5,3 +5,4 @@
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt
 - Modificar base numerica dos DB e DW
+- Ao deletar um Label, codeview e os menus pop-up ficam estranho

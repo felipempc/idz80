@@ -441,6 +441,8 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
         lineIndex = cvlines[0];
         lineLast = cvlines[1];
         lineCount = lineLast - lineIndex + 1;
+        if (lineCount < 0)
+            return;
 
 		cvi = CodeViewLines->getData(lineIndex);
 		dasmed_items.Index = cvi->Dasmitem;
@@ -450,7 +452,7 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 
         var_labels->GetLabelsBetweenRangeAddress(selected.firstAddress, selected.lastAddress, &varlabels);
 
-		for (i = 0; i < lineCount; i++)
+		for (i = 0; i < static_cast<uint>(lineCount); i++)
             RemoveLineAndVarLabels(lineIndex);
 
 		DisassembleItems(dasmed_items);
@@ -558,7 +560,7 @@ void ProcessData::RemoveLineAndVarLabels(const int index)
 
 void ProcessData::RemoveLabelUsers(wxArrayInt *users)
 {
-    int i;
+    uint i;
     DisassembledItem *de;
     ArgStyle    style;
 

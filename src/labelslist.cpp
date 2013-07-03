@@ -1,9 +1,8 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
  * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
  * License:   GPL
  *
  * This module shows/controls list labels
@@ -15,7 +14,7 @@
 
 
 
-const int LabelListCtrl::NO_DASM_ITEM;
+const DisassembledIndex LabelListCtrl::NO_DASM_ITEM;
 
 /*
  *      Label List Control Contructor/Destructor
@@ -23,17 +22,19 @@ const int LabelListCtrl::NO_DASM_ITEM;
 LabelListCtrl::LabelListCtrl(wxWindow* parent, const wxString default_name, LogWindow *logparent)
                     : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL)
 {
-    m_item_selected = -1;
+    selected_item_ = -1;
+    label_index_ = -1;
+    main_window_ = parent;
 
     InsertColumn(0, "Address");
     InsertColumn(1, "Label");
     SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
     SetColumnWidth(1, 100);
-    local_id = -1;
+
     if (default_name.IsEmpty())
-        default_label_name = "LABEL";
+        default_label_name_ = "LABEL";
     else
-        default_label_name = default_name;
+        default_label_name_ = default_name;
 
     Bind(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, &LabelListCtrl::OnMouseRightDown, this);
     Bind(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, &LabelListCtrl::OnMouseDblLeft, this);
@@ -54,24 +55,10 @@ LabelListCtrl::~LabelListCtrl()
 
 void LabelListCtrl::Clear()
 {
-    int i;
-    LabelItem *lbl = 0;
+    LabelIndex i;
     for (i = 0; i < GetItemCount(); i++)
-    {
-        lbl = (LabelItem *)GetItemData(i);
-        if (lbl)
-        {
-            if (lbl->LabelUsers)
-            {
-                lbl->LabelUsers->Clear();
-                delete lbl->LabelUsers;
-            }
-            lbl->LabelUsers = 0;
-            lbl->Address = 0;
-            delete lbl;
-        }
-    }
-    local_id = -1;
+        DeleteLabelData(GetData(i));
+    label_index_ = -1;
     DeleteAllItems();
 }
 
@@ -80,15 +67,15 @@ void LabelListCtrl::Clear()
  *     Label List Control Implementation
  */
 
-int LabelListCtrl::AddLabel(uint addr, wxString name, int dasmitem)
+int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, DisassembledIndex dasmitem)
 {
     wxString buf;
     wxListItem li;
     LabelItem *lbl;
-    long itemfound, p;
+    long itemfound, index;
 
     lbl = 0;
-    p = -1;
+    index = -1;
     buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
     if (itemfound < 0)
@@ -111,15 +98,15 @@ int LabelListCtrl::AddLabel(uint addr, wxString name, int dasmitem)
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
-        li.SetId(addr); //++local_id);
-        p = InsertItem(li);
-        SetItem(p, 1, name);
-        LogIt(wxString::Format("[%X] Label Inserted %d", li.m_itemId, p));
-        itemfound = p;
+        li.SetId(++label_index_);
+        index = InsertItem(li);
+        SetItem(index, 1, name);
+        LogIt(wxString::Format("[%X] Label Inserted %d", li.m_itemId, index));
+        itemfound = index;
     }
     else
     {
-        lbl = (LabelItem *)GetItemData(itemfound);
+        lbl = GetData(itemfound);
         if (lbl && lbl->LabelUsers)
             if (lbl->LabelUsers->Index(dasmitem) == wxNOT_FOUND)
                 lbl->LabelUsers->Add(dasmitem);
@@ -129,15 +116,16 @@ int LabelListCtrl::AddLabel(uint addr, wxString name, int dasmitem)
 
 
 
-int LabelListCtrl::AddLabel(uint addr, wxString name, wxArrayInt &labelusers)
+int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, wxArrayInt &labelusers)
 {
     wxString	buf;
     wxListItem	li;
     LabelItem	*lbl;
-    long		itemfound, p;
+    long		itemfound, index;
+    uint        counter;
 
     lbl = 0;
-    p = -1;
+    index = -1;
     buf.Printf("%X", addr);
     itemfound = FindItem(0, buf);
     if (itemfound < 0)
@@ -153,34 +141,34 @@ int LabelListCtrl::AddLabel(uint addr, wxString name, wxArrayInt &labelusers)
 		else
 		{
 			lbl->LabelUsers = new wxArrayInt();
-			for(p = 0; p < labelusers.GetCount(); p++)
-                lbl->LabelUsers->Add(labelusers.Item(p));
+			for(counter = 0; counter < labelusers.GetCount(); counter++)
+                lbl->LabelUsers->Add(labelusers.Item(counter));
 		}
         li.SetText(buf);
         li.SetImage(-1);
         li.SetAlign(wxLIST_FORMAT_LEFT);
         li.SetData(lbl);
-        li.SetId(++local_id);
-        p = InsertItem(li);
-        SetItem(p, 1, name);
-        itemfound = p;
+        li.SetId(++label_index_);
+        index = InsertItem(li);
+        SetItem(index, 1, name);
+        itemfound = index;
     }
     else
     {	// Overwrite old list of users, if exists
-        lbl = (LabelItem *)GetItemData(itemfound);
-        if ((lbl != 0) && (!labelusers.IsEmpty()))
+        lbl = GetData(itemfound);
+        if ((lbl) && (!labelusers.IsEmpty()))
 		{
-            if (lbl->LabelUsers != 0)
+            if (lbl->LabelUsers)
 			{
                 lbl->LabelUsers->Clear();
-                for(p = 0; p < labelusers.GetCount(); p++)
-                    lbl->LabelUsers->Add(labelusers.Item(p));
+                for(counter = 0; counter < labelusers.GetCount(); counter++)
+                    lbl->LabelUsers->Add(labelusers.Item(counter));
 			}
 			else
 			{
 				lbl->LabelUsers = new wxArrayInt();
-				for(p = 0; p < labelusers.GetCount(); p++)
-                    lbl->LabelUsers->Add(labelusers.Item(p));
+				for(counter = 0; counter < labelusers.GetCount(); counter++)
+                    lbl->LabelUsers->Add(labelusers.Item(counter));
 			}
 		}
 
@@ -190,7 +178,7 @@ int LabelListCtrl::AddLabel(uint addr, wxString name, wxArrayInt &labelusers)
 
 
 
-bool LabelListCtrl::DelLabel(uint addr)
+bool LabelListCtrl::DelLabel(ProgramAddress addr)
 {
     uint		label;
     LabelItem	*lbl;
@@ -200,23 +188,19 @@ bool LabelListCtrl::DelLabel(uint addr)
 
     if (lbl)
     {
-        if (lbl->LabelUsers)
-        {
-            lbl->LabelUsers->Clear();
-            delete lbl->LabelUsers;
-        }
-        delete lbl;
+        DeleteLabelData(lbl);
         ret = true;
         DeleteItem(label);
         #ifdef IDZ80DEBUG
         LogIt(wxString::Format("Removed item = %d", label));
         #endif
+        label_index_--;
     }
     return ret;
 }
 
 
-void LabelListCtrl::DelLabelUser(uint addr, uint dasmitem)
+void LabelListCtrl::DelLabelUser(ProgramAddress addr, DisassembledIndex dasmitem)
 {
     int         i;
     uint        label;
@@ -236,6 +220,7 @@ void LabelListCtrl::DelLabelUser(uint addr, uint dasmitem)
             lbl->LabelUsers = 0;
             delete lbl;
             DeleteItem(label);
+            label_index_--;
             #ifdef IDZ80DEBUG
             LogIt(wxString::Format("Removed item by userlabel = %d", label));
             #endif
@@ -247,7 +232,7 @@ void LabelListCtrl::DelLabelUser(uint addr, uint dasmitem)
 
 
 //TODO: MODIFY or Remove....
-int LabelListCtrl::GetLabel(uint addr, wxString& str)
+int LabelListCtrl::GetLabel(ProgramAddress addr, wxString& str)
 {
     int i;
     wxListItem item;
@@ -266,29 +251,37 @@ int LabelListCtrl::GetLabel(uint addr, wxString& str)
 }
 
 
-wxString LabelListCtrl::GetLabel(uint idx)
+wxString LabelListCtrl::GetLabel(LabelIndex idx)
 {
     uint i;
     wxString str_ret;
-    wxListItem item;
+    //wxListItem item;
+    LabelItem *lbl;
 
     i = GetCount();
-    if (i != 0)
+    if (i && (idx < i))
     {
-        if (idx >= i)
-            idx = i - 1;
-
+        /*
         item.m_itemId = idx;
         item.m_col = 1;
         item.m_mask = wxLIST_MASK_TEXT;
         GetItem(item);
         str_ret = item.m_text;
+        */
+
+        lbl = GetData(idx);
+
+        if (lbl)
+            str_ret = lbl->LabelStr;
+
+        LogIt(wxString::Format("Index %d  <%s>", idx, str_ret));
+
     }
     return str_ret;
 }
 
 
-int LabelListCtrl::GetLabelIndex(uint addr)
+int LabelListCtrl::GetLabelIndex(ProgramAddress addr)
 {
     return (FindItem(-1, wxString::Format("%X", addr)));
 }
@@ -299,45 +292,50 @@ wxString LabelListCtrl::GetAddress(uint idx)
 {
     uint i;
     wxString str_ret;
-    wxListItem item;
+    //wxListItem item;
+    LabelItem *lbl;
 
     i = GetCount();
-    if (i != 0)
+    if (i && (idx < i))
     {
-        if (idx >= i)
-            idx = i - 1;
-
+        /*
         item.m_itemId = idx;
         item.m_col = 0;
         item.m_mask = wxLIST_MASK_TEXT;
         GetItem(item);
         str_ret = item.m_text;
+        */
+        lbl = GetData(idx);
+        if (lbl)
+            str_ret = wxString::Format("%.4X", lbl->Address);
     }
     return str_ret;
-
 }
 
 
-LabelItem *LabelListCtrl::FindByAddress(uint addr, uint &label_index)
+LabelItem *LabelListCtrl::FindByAddress(ProgramAddress addr, LabelIndex &label_index)
 {
-    int label_item;
+    int index;
     LabelItem *lbl;
 
     lbl = 0;
 
-    label_item = GetLabelIndex(addr);   //FindItem(-1, wxString::Format("%X", addr));
-    label_index = label_item;
+    index = GetLabelIndex(addr);
 
-    if (label_item != wxNOT_FOUND)
-        lbl = (LabelItem *)GetItemData(label_item);
+
+    if (index != wxNOT_FOUND)
+    {
+        lbl = GetData(index);
+        label_index = index;
+    }
 
     return lbl;
 }
 
 
-wxString LabelListCtrl::CreateDefaultName(const uint addr)
+wxString LabelListCtrl::CreateDefaultName(const ProgramAddress addr)
 {
-    return (wxString::Format("%s_%.4X", default_label_name, addr));
+    return (wxString::Format("%s_%.4X", default_label_name_, addr));
 }
 
 
@@ -345,9 +343,9 @@ void LabelListCtrl::OnMouseDblLeft(wxListEvent& event)
 {
     wxCommandEvent evt;
 
-    m_item_selected = event.GetIndex();
+    selected_item_ = event.GetIndex();
 
-    if (m_item_selected < 0)
+    if (selected_item_ < 0)
         OnMenuPopUpAdd(evt);
     else
         OnMenuPopUpEdit(evt);
@@ -359,15 +357,15 @@ void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
     wxMenu popup;
     #ifdef IDZ80DEBUG
     LabelItem *selected_label;
-    int i;
+    uint i;
     wxString str;
     #endif
 
-    m_item_selected = event.GetIndex();
+    selected_item_ = event.GetIndex();
 
     #ifdef IDZ80DEBUG
-    selected_label = GetLabelItem(m_item_selected);
-    if (selected_label->LabelUsers != 0)
+    selected_label = GetData(selected_item_);
+    if (selected_label->LabelUsers)
     {
         for(i = 0; i < selected_label->LabelUsers->GetCount(); i++)
         {
@@ -398,8 +396,8 @@ void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
     if (adlab.ShowModal() == wxID_OK)
     {
         i = AddLabel(adlab.GetAddress(), adlab.GetLabel());
-        lbl = (LabelItem *)GetItemData(i);
-        if (lbl != 0)
+        lbl = GetData(i);
+        if (lbl)
             lbl->LabelStr = adlab.GetLabel();
         SortAddress();
     }
@@ -407,8 +405,11 @@ void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
 
 void LabelListCtrl::OnMenuPopUpDel(wxCommandEvent& event)
 {
-    DeleteItem(m_item_selected);
-    m_item_selected = -1;
+    DeleteLabelData(GetData(selected_item_));
+    DeleteItem(selected_item_);
+    label_index_--;
+    selected_item_ = -1;
+    main_window_->Refresh();
 }
 
 
@@ -416,14 +417,13 @@ void LabelListCtrl::OnMenuPopUpEdit(wxCommandEvent& event)
 {
     LabelItem *lbl;
 
-    lbl = (LabelItem *)GetItemData(m_item_selected);
+    lbl = GetData(selected_item_);
 	EditLabelDialog(lbl->Address);
-
 }
 
 
 
-bool LabelListCtrl::EditLabelDialog(uint addr)
+bool LabelListCtrl::EditLabelDialog(ProgramAddress addr)
 {
     EditLabelDlg adlab(this,true);
     LabelItem *lbl;
@@ -437,12 +437,12 @@ bool LabelListCtrl::EditLabelDialog(uint addr)
 	if (idx >= 0)
 	{
 		adlab.SetLabel(str);
-		lbl = (LabelItem *)GetItemData(idx);
+		lbl = GetData(idx);
 
 		if (adlab.ShowModal() == wxID_OK)
 		{
 			EditLabel(idx, adlab.GetLabel());
-			if (lbl != 0)
+			if (lbl)
 			{
 				lbl->LabelStr = adlab.GetLabel();
 				ret = true;
@@ -477,24 +477,17 @@ void LabelListCtrl::EditLabel(uint listitem, wxString strlabel)
 }
 
 
-LabelItem *LabelListCtrl::GetLabelItem(const int index)
-{
-    LabelItem *lbl;
-    lbl = (LabelItem *)GetItemData(index);
-    return lbl;
-}
 
-
-void LabelListCtrl::GetLabelsBetweenRangeAddress(uint first_address, uint last_address, wxArrayInt *address_list)
+void LabelListCtrl::GetLabelsBetweenRangeAddress(ProgramAddress first_address, ProgramAddress last_address, wxArrayInt *address_list)
 {
     LabelItem   *lbl;
-    long    loopcount;
+    uint    loopcount;
 
     if (address_list)
     {
         for(loopcount = 0; loopcount < GetCount(); loopcount++)
         {
-            lbl = GetLabelItem(loopcount);
+            lbl = GetData(loopcount);
             if (lbl && (lbl->Address >= first_address) && (lbl->Address <= last_address))
                 address_list->Add(lbl->Address);
         }
@@ -507,20 +500,24 @@ void LabelListCtrl::GetLabelsBetweenRangeAddress(uint first_address, uint last_a
 void LabelListCtrl::SortAddress(bool crescent)
 {
     if (!IsEmpty())
+    {
         if (crescent)
             SortItems(CompareAddress, 0);
         else
             SortItems(CompareAddress, 1);
+    }
 }
 
 
 void LabelListCtrl::SortLabelStr(bool crescent)
 {
     if (!IsEmpty())
+    {
         if (crescent)
             SortItems(CompareLabelStr, 0);
         else
             SortItems(CompareLabelStr, 1);
+    }
 }
 
 
@@ -560,8 +557,8 @@ int wxCALLBACK CompareAddress(long item1, long item2, long data)
 {
     LabelItem *lbl_1, *lbl_2;
 
-    lbl_1 = (LabelItem *)item1;
-    lbl_2 = (LabelItem *)item2;
+    lbl_1 = reinterpret_cast<LabelItem *>(item1);
+    lbl_2 = reinterpret_cast<LabelItem *>(item2);
 
     if ((lbl_1 == 0) || lbl_2 == 0)
         return 0;
@@ -592,8 +589,8 @@ int wxCALLBACK CompareLabelStr(long item1, long item2, long data)
     LabelItem *lbl_1, *lbl_2;
     int ret = 0;
 
-    lbl_1 = (LabelItem *)item1;
-    lbl_2 = (LabelItem *)item2;
+    lbl_1 = reinterpret_cast<LabelItem *>(item1);
+    lbl_2 = reinterpret_cast<LabelItem *>(item2);
 
     if ((lbl_1 == 0) || lbl_2 == 0)
         return 0;
@@ -607,11 +604,33 @@ int wxCALLBACK CompareLabelStr(long item1, long item2, long data)
 }
 
 
-wxArrayInt *LabelListCtrl::GetLabelUsers(const int index)
+wxArrayInt *LabelListCtrl::GetLabelUsers(const LabelIndex index)
 {
-    return GetLabelItem(index)->LabelUsers;
+    return GetData(index)->LabelUsers;
 }
 
 
 
 
+LabelItem *LabelListCtrl::GetData(LabelIndex index)
+{
+    return reinterpret_cast<LabelItem *>(GetItemData(index));
+}
+
+
+
+
+void LabelListCtrl::DeleteLabelData(LabelItem *label)
+{
+    if (label)
+    {
+        if (label->LabelUsers)
+        {
+            label->LabelUsers->Clear();
+            delete label->LabelUsers;
+            label->LabelUsers = 0;
+        }
+        delete label;
+        label = 0;
+    }
+}

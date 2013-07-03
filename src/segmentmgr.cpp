@@ -32,7 +32,7 @@ SegmentMgr::~SegmentMgr()
 
 void SegmentMgr::Clear()
 {
-    int i;
+    uint i;
     SegmentItem *si;
 
     for (i = 0; i < m_segmentlist->GetCount(); i++)
@@ -140,7 +140,7 @@ uint SegmentMgr::GetCount()
 
 bool SegmentMgr::inSegment(uint address)
 {
-    int i;
+    uint i;
     SegmentItem *si;
     bool ret = false;
 
@@ -245,7 +245,7 @@ void SegmentMgr::SetSegmentIndex(int segidx)
     }
     else
     {
-        if ((segidx >= 0) || (segidx < GetCount()))
+        if ((segidx >= 0) || (segidx < static_cast<int>(GetCount())))
             m_SegmentPtr = GetItem(segidx);
         else
             m_SegmentPtr = 0;

@@ -247,7 +247,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     process = new ProcessData(this, Log);
     codeview = new CodeView(this, process, Log);
-    m_project = new ProjectManagerXML(process/*, codeview*/);
+    m_project = new ProjectManagerXML(process);
 
     SetupAUIPanes();
     ReadStoredConfiguration();
@@ -511,7 +511,7 @@ void IDZ80::OpenProgramFile(wxString filename)
 
             if (process->SetupSystemLabels())
             {
-                process->LoadSystemLabels("X:/idz80/Labels.txt");
+                process->LoadSystemLabels(m_currentDir + "/Labels.txt");
             }
 
             process->Program->StartAddress = config.GetStartAddress();
