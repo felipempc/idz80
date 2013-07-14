@@ -1,24 +1,15 @@
 ﻿/****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Process all data
  **************************************************************/
-
-
-
-
-/*
- * Process data (disassemble & etc)
- */
 
 #include "ProcessData.h"
 #include <stack>
-
-
-
 
 
 /*
@@ -30,7 +21,7 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     Mnemonics = new MnemonicDataBase(logparent);
     Program = new RawData(logparent);
     Disassembled = new DAsmData(logparent);
-    CodeViewLines = new CodeViewLine(Disassembled);
+    CodeViewLines = new CodeViewLine(Disassembled, this);
     disassembler_ = 0;
     smart_disassembler_ = 0;
 
@@ -296,49 +287,34 @@ void ProcessData::InitData()
         CodeViewLines->AddDasm(i++, "");
 }
 
-
-void ProcessData::processLabel()
+/*
+ * Insert Labels of LabelListCtrl in the sourcecode
+ */
+void ProcessData::ProcessLabel(LabelListCtrl *label)
 {
     LabelItem *lbl;
-    int i,a;
+    int a = -1;
+    LabelIndex counter = 0;
 
-	// Program label
-    i = 0;
-    a = -1;
-    while (i < prog_labels->GetItemCount())
+    while (counter < label->GetCount())
     {
-        lbl = (LabelItem *)prog_labels->GetItemData(i);
-        if ((lbl) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
+        lbl = label->GetData(counter);
+        if (lbl && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
         {
             if (a >= 0)
             {
-                CodeViewLines->InsertProgLabel(lbl->Address, "", a);
+                CodeViewLines->InsertProgLabel(lbl->Address, "aaa", a);
             }
-            else
-                CodeViewLines->EditProgLabel(lbl->Address, "", a);
         }
-        i++;
+        counter++;
     }
-
-	// Variables
-    i = 0;
-    a = -1;
-    while (i <  var_labels->GetItemCount())
-    {
-        lbl = (LabelItem *)var_labels->GetItemData(i);
-        if ((lbl) && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
-        {
-            if (a >= 0)
-            {
-                CodeViewLines->InsertVarLabel(lbl->Address, "", a);
-            }
-            else
-                CodeViewLines->EditVarLabel(lbl->Address, "", a);
-        }
-        i++;
-    }
+}
 
 
+void ProcessData::InsertLineLabelsInSourceCode()
+{
+    ProcessLabel(prog_labels);
+    ProcessLabel(var_labels);
 }
 
 
@@ -409,7 +385,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
         for (i = 0; i < varlabels.GetCount(); i++)
         {
             CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varlabels.Item(i), varindex);
-            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
+            if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
             {
                 LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
                 CodeViewLines->InsertVarLabel(varlabels[i], "", varindex);
@@ -469,7 +445,7 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
         for (i = 0; i < varlabels.GetCount(); i++)
         {
             CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
-            if ((cvi) && (cvi->LabelVarAddr != varlabels[i]))
+            if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
             {
                 LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
                 CodeViewLines->InsertVarLabel(varlabels[i], "", varindex);
@@ -533,8 +509,8 @@ void ProcessData::RemoveLineAndProgLabels(const int index)
     cvi = CodeViewLines->getData(index);
     if (cvi && (cvi->LabelProgAddr >= 0))
     {
-        RemoveLabelUsers(prog_labels->GetLabelUsers(prog_labels->GetLabelIndex(cvi->LabelProgAddr)));
-        prog_labels->DelLabel(cvi->LabelProgAddr);
+        RemoveLabelUsers(cvi->LabelProgAddr->LabelUsers);
+        prog_labels->DelLabel(cvi->LabelProgAddr->Address);
     }
     CodeViewLines->Del(index);
 
@@ -548,8 +524,8 @@ void ProcessData::RemoveLineAndVarLabels(const int index)
     cvi = CodeViewLines->getData(index);
     if (cvi && (cvi->LabelVarAddr >= 0))
     {
-        RemoveLabelUsers(var_labels->GetLabelUsers(var_labels->GetLabelIndex(cvi->LabelVarAddr)));
-        var_labels->DelLabel(cvi->LabelVarAddr);
+        RemoveLabelUsers(cvi->LabelVarAddr->LabelUsers);
+        var_labels->DelLabel(cvi->LabelVarAddr->Address);
     }
     CodeViewLines->Del(index);
 }
@@ -578,3 +554,6 @@ void ProcessData::RemoveLabelUsers(wxArrayInt *users)
         }
     }
 }
+
+
+

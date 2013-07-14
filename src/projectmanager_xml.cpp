@@ -307,8 +307,8 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
             if (cvi->LabelVarAddr >= 0)
                 item->AddAttribute(ATTRIBUTE_LINEVARLABEL_STR, wxString::Format("%d", cvi->LabelVarAddr));
 
-            if (cvi->Comment != 0)
-                item->AddAttribute(ATTRIBUTE_COMMENT_STR, cvi->Comment->CommentStr);
+            if (cvi->Comment)
+                item->AddAttribute(ATTRIBUTE_COMMENT_STR, cvi->Comment->utf8_str());
         }
     }
 }
@@ -881,6 +881,6 @@ void ProjectManagerXML::SetLog(wxTextCtrl *set_log)
 
 void ProjectManagerXML::LogIt(const wxString &str)
 {
-    if (log != 0)
+    if (log)
         log->AppendText(str);
 }

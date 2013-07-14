@@ -1,18 +1,17 @@
-/***************************************************************
- * Name:      IDZ80.cpp
- * Purpose:   Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Main module
  **************************************************************/
-
 
 
 #include "IDZ80.h"
 
 #include "version.h"
-#include "FileTypeDialog.h"
 #include "ShowFileInfo.h"
 #include "systemlabels.h"
 #include "wx/dir.h"
@@ -470,7 +469,6 @@ void IDZ80::OpenProgramFile(wxString filename)
 	static bool simulateexecution = false;
 	wxString    info,
 				caption;
-	//FileTypeDialog config(this);
 	FileSettingsDialog config(process->Program);
 
     if (filename.IsEmpty())
@@ -683,7 +681,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     process->SetGauge(GaugeLd);
     process->DisassembleFirst(*simulateexecution);
     process->InitData();
-    process->processLabel();
+    process->InsertLineLabelsInSourceCode();
     process->prog_labels->SortAddress(true);
     process->io_labels->SortAddress(true);
     process->var_labels->SortAddress(true);
@@ -695,6 +693,9 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     wxString stemp;
     stemp.Printf("Used memory (dasmed)= %d bytes\n", process->Disassembled->GetUsedMem());
     PanelLog->AppendText(stemp);
+
+    PanelLog->AppendText(wxString::Format("Program Label = %d items, Var Label = %d items, IO Labels = %d items.\n",
+                                          process->prog_labels->GetCount(), process->var_labels->GetCount(), process->io_labels->GetCount()));
     #endif
 
     delete GaugeLd;
@@ -851,7 +852,7 @@ void IDZ80::OnMenuViewConstLabels(wxCommandEvent& event)
 void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
 {
     process->AutoLabel();
-    process->processLabel();
+    process->InsertLineLabelsInSourceCode();
     codeview->ClearSelection();
     codeview->Refresh();
 }

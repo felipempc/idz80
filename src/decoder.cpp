@@ -1,16 +1,12 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Disassembler for Z80 MSX
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- ***
- * This module disassemble a program
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * This module disassembles a program
  **************************************************************/
-
-
-
 
 #include "decoder.h"
 #include <wx/string.h>

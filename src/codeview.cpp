@@ -1,10 +1,11 @@
 /****************************************************************
- * Name:      CodeView
- * Purpose:   User interface for the disassembled code
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe MPC ()
- * License:   GPL
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * User interface
  **************************************************************/
 
 #include <wx/wx.h>
@@ -583,7 +584,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
         cvi = m_CodeViewLine->getData(i);
         if (cvi->Dasmitem >= 0)
         {
-			if (cvi->Comment != 0)
+			if (cvi->Comment)
 				hcomment = true;
 
             de = Process->Disassembled->GetData(cvi->Dasmitem);
@@ -830,8 +831,7 @@ void CodeView::TreatSingleSelection()
 
 
 		// Test if line has only comments
-		testcomment = ((line_info.lineitem->Org + line_info.lineitem->LabelProgAddr + line_info.lineitem->LabelVarAddr +
-						line_info.lineitem->Dasmitem) == -4);
+		testcomment = ((line_info.lineitem->Org + line_info.lineitem->Dasmitem) == -2) && !line_info.lineitem->LabelProgAddr && !line_info.lineitem->LabelVarAddr;
 		if (testcomment)
 			line_info.type = siComments;
 	}

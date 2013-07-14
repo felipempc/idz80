@@ -283,14 +283,14 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
 
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
 
-    if (cvi != 0)
+    if (cvi)
     {
         if (cvi->Comment == 0)
         {
             comment = ::wxGetTextFromUser("Add Comment", "Add");
             if (!comment.IsEmpty())
             {
-                comment=comment.Trim(false);
+                comment = comment.Trim(false);
                 if (comment.Left(1) != ";")
                     comment.Prepend("; ");
                 m_CodeViewLine->AppendComment(comment, line_info.cursorPosition);
@@ -306,8 +306,8 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
     wxString comment;
 
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
-	if ((cvi != 0) && (cvi->Comment != 0))
-		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->CommentStr);
+	if ((cvi) && (cvi->Comment))
+		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->c_str());
 	if (!comment.IsEmpty())
 	{
 		comment = comment.Trim(false);
@@ -324,7 +324,7 @@ void CodeView::OnPopUpDelComment(wxCommandEvent& event)
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     if (cvi != 0)
     {
-        if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr == -1) && (cvi->LabelVarAddr == -1) && (cvi->Org == -1))
+        if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr) && (cvi->LabelVarAddr) && (cvi->Org == -1))
             m_CodeViewLine->DelItem(cvi);
         else
             m_CodeViewLine->DelComment(cvi);
@@ -359,12 +359,12 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 	    de = line_info.dasmitem;
 
 		if (cvi->LabelProgAddr >= 0)
-			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr);
+			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr->Address);
         else
             if ((de != 0) && (de->IsArgumentProgramAddress()))
                 Process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
 		if (cvi->LabelVarAddr >= 0)
-			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr);
+			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr->Address);
         else
             if ((de != 0) && (de->IsArgumentVariableAddress()))
                 Process->var_labels->EditLabelDialog(de->GetArgument(0, 0));

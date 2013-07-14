@@ -1,19 +1,12 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Process all data
  **************************************************************/
-
-
-
-/*
- * Process data (disassemble & etc)
- */
-
-
 
 #ifndef _IDZ80_PROCESSDATA_H
 #define _IDZ80_PROCESSDATA_H
@@ -53,7 +46,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         void MakeData(RangeItems &r);
         void AutoLabel();
         void InitData();
-        void processLabel();
+        void InsertLineLabelsInSourceCode();
+
         bool SetupSystemLabels();
         void Clear();
 
@@ -75,6 +69,7 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
 
         void RemoveLabelUsers(wxArrayInt *users);
         bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
+        void ProcessLabel(LabelListCtrl *label);
 };
 
 

@@ -56,7 +56,7 @@ LabelListCtrl::~LabelListCtrl()
 void LabelListCtrl::Clear()
 {
     LabelIndex i;
-    for (i = 0; i < GetItemCount(); i++)
+    for (i = 0; i < static_cast<LabelIndex>(GetItemCount()); i++)
         DeleteLabelData(GetData(i));
     label_index_ = -1;
     DeleteAllItems();
@@ -101,7 +101,6 @@ int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, DisassembledInde
         li.SetId(++label_index_);
         index = InsertItem(li);
         SetItem(index, 1, name);
-        LogIt(wxString::Format("[%X] Label Inserted %d", li.m_itemId, index));
         itemfound = index;
     }
     else
@@ -191,9 +190,6 @@ bool LabelListCtrl::DelLabel(ProgramAddress addr)
         DeleteLabelData(lbl);
         ret = true;
         DeleteItem(label);
-        #ifdef IDZ80DEBUG
-        LogIt(wxString::Format("Removed item = %d", label));
-        #endif
         label_index_--;
     }
     return ret;
@@ -331,6 +327,18 @@ LabelItem *LabelListCtrl::FindByAddress(ProgramAddress addr, LabelIndex &label_i
 
     return lbl;
 }
+
+
+
+LabelItem *LabelListCtrl::GetDatabyAddress(ProgramAddress addr)
+{
+    LabelIndex li;
+
+    if (addr < GetCount())
+        return FindByAddress(addr, li);
+    return static_cast<LabelItem *>(0);
+}
+
 
 
 wxString LabelListCtrl::CreateDefaultName(const ProgramAddress addr)

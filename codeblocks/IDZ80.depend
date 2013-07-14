@@ -3805,11 +3805,11 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1372447047 source:x:\idz80\src\processdata.cpp
+1373811521 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
-1372812534 x:\idz80\src\processdata.h
+1373811511 x:\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
 	"disassembled_item.h"
@@ -3823,7 +3823,7 @@
 	<wx/gauge.h>
 	<wx/dynarray.h>
 
-1372198081 x:\idz80\src\dasmdata.h
+1373812480 x:\idz80\src\dasmdata.h
 	"logbase.h"
 	"rawdata.h"
 	"disassembled_item.h"
@@ -3847,7 +3847,7 @@
 	"labelslist.h"
 	"logbase.h"
 
-1372804174 x:\idz80\src\labelslist.h
+1373310164 x:\idz80\src\labelslist.h
 	<wx/Panel.h>
 	<wx/String.h>
 	<wx/ListCtrl.h>
@@ -3856,12 +3856,14 @@
 	<wx/dynarray.h>
 	"IDZ80Base.h"
 	"logbase.h"
+	"labelitem.h"
 
-1372198081 x:\idz80\src\codeviewline.h
-	<wx/dynarray.h>
+1373812384 x:\idz80\src\codeviewline.h
 	"IDZ80Base.h"
 	"disassembled_item.h"
 	"dasmdata.h"
+	"sourcecodelist.h"
+	"labelmanager.h"
 
 1372188051 x:\idz80\src\systemlabels.h
 	<wx/dynarray.h>
@@ -3871,7 +3873,7 @@
 	"idz80base.h"
 	"logbase.h"
 
-1372289879 x:\idz80\src\decoder.h
+1373812601 x:\idz80\src\decoder.h
 	<wx/dynarray.h>
 	<wx/textctrl.h>
 	<stack>
@@ -3906,7 +3908,7 @@
 	"ProcessData.h"
 	"codeview.h"
 
-1372188051 x:\idz80\src\codeview.h
+1373811817 x:\idz80\src\codeview.h
 	<wx/wx.h>
 	<wx/scrolbar.h>
 	<wx/dynarray.h>
@@ -3938,17 +3940,17 @@
 1372188051 source:x:\idz80\src\rawdata.cpp
 	"rawdata.h"
 
-1372788902 source:x:\idz80\src\codegenerator.cpp
+1373811692 source:x:\idz80\src\codegenerator.cpp
 	"codegenerator.h"
 
-1372188051 x:\idz80\src\codegenerator.h
+1373811692 x:\idz80\src\codegenerator.h
 	<wx/textfile.h>
 	"processdata.h"
 
 1372188051 source:x:\idz80\src\z80register.cpp
 	"z80register.h"
 
-1372200058 source:x:\idz80\src\codeview.cpp
+1373811817 source:x:\idz80\src\codeview.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	<wx/utils.h>
@@ -3968,13 +3970,14 @@
 	"codeview.h"
 	"disassembled_item.h"
 
-1372199660 source:x:\idz80\src\codeview_render.cpp
+1373717066 source:x:\idz80\src\codeview_render.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
+	<string>
 	"codeview.h"
 	"disassembled_item.h"
 
-1372443810 source:x:\idz80\src\codeviewline.cpp
+1373811292 source:x:\idz80\src\codeviewline.cpp
 	"codeviewline.h"
 
 1372192783 source:x:\idz80\src\d_asm_element.cpp
@@ -3982,17 +3985,17 @@
 	"mndb_tools.h"
 	"IDZ80Base.h"
 
-1372197505 source:x:\idz80\src\dasmdata.cpp
+1373812555 source:x:\idz80\src\dasmdata.cpp
 	"dasmdata.h"
 
-1372444466 source:x:\idz80\src\decoder.cpp
+1373812683 source:x:\idz80\src\decoder.cpp
 	"decoder.h"
 	<wx/string.h>
 
 1351285955 source:x:\idz80\src\idz80debugbase.cpp
 	"idz80debugbase.h"
 
-1372803055 source:x:\idz80\src\idz80.cpp
+1372960256 source:x:\idz80\src\idz80.cpp
 	"IDZ80.h"
 	"version.h"
 	"FileTypeDialog.h"
@@ -4007,7 +4010,7 @@
 	<wx/msgdlg.h>
 	"dialog_file_settings.h"
 
-1372188609 x:\idz80\src\idz80.h
+1373811254 x:\idz80\src\idz80.h
 	<wx/menu.h>
 	<wx/textctrl.h>
 	<wx/aui/aui.h>
@@ -4055,7 +4058,7 @@
 	<wx/button.h>
 	<wx/string.h>
 
-1372813722 source:x:\idz80\src\labelslist.cpp
+1373808728 source:x:\idz80\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 	"EditLabelDlg.h"
@@ -4122,7 +4125,7 @@
 	"wx/string.h"
 	"wx/filefn.h"
 
-1372812588 source:x:\idz80\src\codeview_events.cpp
+1373594500 source:x:\idz80\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -4209,14 +4212,14 @@
 	"wx/list.h"
 	"wx/versioninfo.h"
 
-1372188051 source:x:\idz80\src\dialog_file_settings.cpp
+1373813020 source:x:\idz80\src\dialog_file_settings.cpp
 	"dialog_file_settings.h"
 	<wx/intl.h>
 	<wx/button.h>
 	<wx/string.h>
 	<wx/msgdlg.h>
 
-1372188051 x:\idz80\src\dialog_file_settings.h
+1373813020 x:\idz80\src\dialog_file_settings.h
 	<wx/notebook.h>
 	<wx/sizer.h>
 	<wx/stattext.h>
@@ -4231,7 +4234,7 @@
 	<wx/xml/xml.h>
 	"ProcessData.h"
 
-1372802767 source:x:\idz80\src\projectmanager_xml.cpp
+1373595787 source:x:\idz80\src\projectmanager_xml.cpp
 	<wx/dynarray.h>
 	<wx/stopwatch.h>
 	<wx/filefn.h>
@@ -4241,7 +4244,7 @@
 
 1372035580 x:\src\codeview_definitions.h
 
-1372197505 x:\idz80\src\codeview_definitions.h
+1373811911 x:\idz80\src\codeview_definitions.h
 
 1372202767 x:\idz80\src\disassembled_item.h
 	"mndb.h"
@@ -4255,9 +4258,24 @@
 	"mndb_tools.h"
 	"IDZ80Base.h"
 
-1372289224 x:\idz80\src\decoder_smart.h
+1373812777 x:\idz80\src\decoder_smart.h
 	"decoder.h"
 
-1372290003 source:x:\idz80\src\decoder_smart.cpp
+1373812832 source:x:\idz80\src\decoder_smart.cpp
 	"decoder_smart.h"
+
+1372963583 x:\idz80\src\labelitem.h
+	<wx/dynarray.h>
+	<wx/string.h>
+	"IDZ80Base.h"
+
+1373811384 x:\idz80\src\sourcecodelist.h
+	<vector>
+	<wx/string.h>
+	"IDZ80Base.h"
+	"labelitem.h"
+	<wx/gdicmn.h>
+
+1373811404 source:x:\idz80\src\sourcecodelist.cpp
+	"sourcecodelist.h"
 

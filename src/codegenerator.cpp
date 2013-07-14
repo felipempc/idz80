@@ -2,11 +2,11 @@
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe MPC ()
- * License:   GPL
- * This module creates the text file containing the disassembled
- * program
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * This module creates the text file containing the
+ * disassembled program
  **************************************************************/
 
 #include "codegenerator.h"
@@ -261,7 +261,8 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             /* -------------------------------------------------
              *  Render Labels
              * -------------------------------------------------*/
-            if ((cvi->LabelProgAddr != -1) || (cvi->LabelVarAddr != -1))   // Is it a label ?
+             /*
+            if ((cvi->LabelProgAddr) != -1) || (cvi->LabelVarAddr != -1))   // Is it a label ?
             {
                 first_instruction = true;
                 if (Process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
@@ -272,15 +273,26 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
                     else
                         Process->CodeViewLines->DelItem(cvi);
             }
+            */
+            if (cvi->LabelProgAddr)
+            {
+                first_instruction = true;
+                textCode << cvi->LabelProgAddr->LabelStr << ":";
+            }
+            if (cvi->LabelVarAddr)
+            {
+                first_instruction = true;
+                textCode << cvi->LabelVarAddr->LabelStr << ":";
+            }
         }
 
 
         /* -------------------------------------------------
          *  Render Comments
          * -------------------------------------------------*/
-        if (cvi->Comment != 0)   // has comments ?
+        if (cvi->Comment)   // has comments ?
         {
-            str = cvi->Comment->CommentStr;
+            str = cvi->Comment->c_str(); //->CommentStr;
             if (first_instruction)
                 textCode << "\t";
 

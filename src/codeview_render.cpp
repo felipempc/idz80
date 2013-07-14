@@ -15,6 +15,7 @@
 
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
+#include <string>
 #include "codeview.h"
 #include "disassembled_item.h"
 
@@ -284,7 +285,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     while (i < count)
     {
         cvi = m_CodeViewLine->getData(fromline + i);
-        if (cvi != 0)
+        if (cvi)
 		{
 			/* -------------------------------------------------
 			 *  Render Origin
@@ -332,35 +333,37 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 				 *  Render Labels
 				 * -------------------------------------------------*/
                 {
-                        if (cvi->LabelProgAddr != -1)   // Is it a label ?
+                        if (cvi->LabelProgAddr)   // Is it a label ?
                         {
-                            if (Process->prog_labels->GetLabel(cvi->LabelProgAddr, str) >= 0)
+                            if (!cvi->LabelProgAddr->LabelStr.IsEmpty())
                             {
-                                str << ":";
+                                str.Printf("%s:", cvi->LabelProgAddr->LabelStr);
                                 RenderProgramLabel(dc, linepixel, str);
-                                address = cvi->LabelProgAddr;
+                                address = cvi->LabelProgAddr->Address;
                                 firstInstruction = true;
                             }
                             else
                             {
                                 m_CodeViewLine->DelItem(cvi);
-                                //labelfailed = true;
+                                delete cvi;
+                                cvi = 0;
                             }
                         }
 
-                        if (cvi->LabelVarAddr != -1)   // Is it a label ?
+                        if (cvi->LabelVarAddr)   // Is it a label ?
                         {
-                            if (Process->var_labels->GetLabel(cvi->LabelVarAddr, str) >= 0)
+                            if (!cvi->LabelVarAddr->LabelStr.IsEmpty())
                             {
-                                str << ":";
+                                str.Printf("%s:", cvi->LabelVarAddr->LabelStr);
                                 RenderProgramLabel(dc, linepixel, str);
-                                address = cvi->LabelVarAddr;
+                                address = cvi->LabelVarAddr->Address;
                                 firstInstruction = true;
                             }
                             else
                             {
                                 m_CodeViewLine->DelItem(cvi);
-                                //labelfailed = true;
+                                delete cvi;
+                                cvi = 0;
                             }
                         }
                 }
@@ -379,20 +382,23 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 			/* -------------------------------------------------
 			 *  Render Comments
 			 * -------------------------------------------------*/
-			if (cvi->Comment != 0)   // has comments ?
+			if (cvi->Comment)   // has comments ?
 			{
-				dc.SetTextForeground(*wxGREEN);
-				str = cvi->Comment->CommentStr;
-				if (commentoffset == 0)
-				{
-					if (firstInstruction)
-						dc.DrawText(str, COL_LABEL, linepixel);
-					else
-						dc.DrawText(str, COL_ADDRESS, linepixel);
-				}
-				else
-					dc.DrawText(str, commentoffset, linepixel);
-				dc.SetTextForeground(FG_TextColor);
+			    if (!cvi->Comment->IsEmpty())
+                {
+                    dc.SetTextForeground(*wxGREEN);
+                    str = cvi->Comment->Clone();
+                    if (commentoffset == 0)
+                    {
+                        if (firstInstruction)
+                            dc.DrawText(str, COL_LABEL, linepixel);
+                        else
+                            dc.DrawText(str, COL_ADDRESS, linepixel);
+                    }
+                    else
+                        dc.DrawText(str, commentoffset, linepixel);
+                    dc.SetTextForeground(FG_TextColor);
+                }
 			}
 			i++;
 			linepixel += m_fontHeight;

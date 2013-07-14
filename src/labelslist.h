@@ -21,6 +21,7 @@
 
 #include "IDZ80Base.h"
 #include "logbase.h"
+#include "labelitem.h"
 
 enum
 {
@@ -29,7 +30,7 @@ enum
     idMENU_POPUP_DEL
 };
 
-
+/*
 struct st_label
 {
     uint Address;
@@ -38,7 +39,7 @@ struct st_label
 };
 
 typedef struct st_label LabelItem;
-
+*/
 
 
 class LabelListCtrl : public wxListCtrl, public LogBase
@@ -58,6 +59,7 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         wxString GetLabel(LabelIndex idx);
         wxString GetAddress(LabelIndex idx);
         LabelItem *GetData(LabelIndex index);
+        LabelItem *GetDatabyAddress(ProgramAddress addr);
         wxArrayInt *GetLabelUsers(const LabelIndex index);
 
         void GetLabelsBetweenRangeAddress(ProgramAddress first_address, ProgramAddress last_address, wxArrayInt *address_list);

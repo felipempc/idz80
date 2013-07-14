@@ -1,19 +1,12 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Z80 code disassembler
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
  * This module stores / manages disassembled code
  **************************************************************/
-
-
-
-/*
- * Holds the disassembled program
- */
-
 
 #ifndef _IDZ80_DASMDATA_H
 #define _IDZ80_DASMDATA_H

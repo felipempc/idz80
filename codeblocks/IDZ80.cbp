@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-D__WXDEBUG__" />
 					<Add option="-DIDZ80DEBUG" />
@@ -25,6 +26,7 @@
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
 				</ResourceCompiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_aui_gcc_custom.dll" />
 					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_core_gcc_custom.dll" />
@@ -79,8 +81,6 @@
 		</Linker>
 		<Unit filename="../src/EditLabelDlg.cpp" />
 		<Unit filename="../src/EditLabelDlg.h" />
-		<Unit filename="../src/FileTypeDialog.cpp" />
-		<Unit filename="../src/FileTypeDialog.h" />
 		<Unit filename="../src/IDZ80.cpp" />
 		<Unit filename="../src/IDZ80.h" />
 		<Unit filename="../src/IDZ80App.cpp" />
@@ -114,6 +114,7 @@
 		<Unit filename="../src/dialog_file_settings.h" />
 		<Unit filename="../src/disassembled_item.cpp" />
 		<Unit filename="../src/disassembled_item.h" />
+		<Unit filename="../src/labelitem.h" />
 		<Unit filename="../src/labelmanager.cpp" />
 		<Unit filename="../src/labelmanager.h" />
 		<Unit filename="../src/labelslist.cpp" />
@@ -130,8 +131,8 @@
 		<Unit filename="../src/projectmanager_xml.h" />
 		<Unit filename="../src/rawdata.cpp" />
 		<Unit filename="../src/rawdata.h" />
-		<Unit filename="../src/segmentmgr.cpp" />
-		<Unit filename="../src/segmentmgr.h" />
+		<Unit filename="../src/sourcecodelist.cpp" />
+		<Unit filename="../src/sourcecodelist.h" />
 		<Unit filename="../src/subroutine.cpp" />
 		<Unit filename="../src/subroutine.h" />
 		<Unit filename="../src/systemlabels.cpp" />

@@ -1,43 +1,26 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- * This module manages lines in CodeView
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ ****************************************************************
+ * This module stores source code lines
  **************************************************************/
 
 #ifndef CODEVIEWLINE_H
 #define CODEVIEWLINE_H
 
-#include <wx/dynarray.h>
-
 #include "IDZ80Base.h"
 #include "disassembled_item.h"
 #include "dasmdata.h"
-
-struct CommentItem
-{
-    wxString CommentStr;
-};
-
-
-struct CodeViewItem
-{
-    CommentItem *Comment;
-    short int LabelProgAddr;
-    short int LabelVarAddr;
-    int Dasmitem;
-    int Org;
-    wxRect *RectArg1, *RectArg2;
-};
-
+#include "sourcecodelist.h"
+#include "labelmanager.h"
 
 class CodeViewLine
 {
     public:
-        CodeViewLine(DAsmData *dasm);
+        CodeViewLine(DAsmData *dasm, LabelManager *labels);
         virtual ~CodeViewLine();
 
         void Clear();
@@ -74,9 +57,10 @@ class CodeViewLine
 
     protected:
     private:
-        wxArrayPtrVoid  m_CodeLine;
-        int             m_itemcount;
-        DAsmData        *m_dasm;
+        SourceCodeLines code_line_;
+        LabelManager    *labels_;
+        int             itemcount_;
+        DAsmData        *disassembled_;
 
         int AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr, const int org,const wxString &comment);
         int InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
