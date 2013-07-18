@@ -5,7 +5,7 @@
  * Created:   09-11-2009 (D-M-Y)
  * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
  **************************************************************
- * Defines structs enums and types for codeview object
+ * Defines structs, enums and types for codeview object
  **************************************************************/
 
 

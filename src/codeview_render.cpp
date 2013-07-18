@@ -1,24 +1,18 @@
-/****************************************************************
- * Name:      Codeview - Render
- * Purpose:   Renders the view
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   30-12-2011
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- *
- * This module is part of the codeview class that renders
- * the view
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   30-12-2011 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * User Interface - Rendering
  **************************************************************/
-
-
-
 
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include <string>
 #include "codeview.h"
 #include "disassembled_item.h"
-
 
 
 

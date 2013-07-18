@@ -1,11 +1,10 @@
 /****************************************************************
  * Name:      IDZ80
- * Purpose:   Z80 Disessembler
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- *
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
  * Base class to manage system and user labels
  **************************************************************/
 

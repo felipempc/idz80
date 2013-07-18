@@ -1,12 +1,12 @@
-/****************************************************************
- * Name:      projectmanager_xml
- * Purpose:   save the work in progress
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   06/04/2013
- * Copyright: Felipe MPC ()
- * License:   GPL
+ * Created:   06-04-2013 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Load / save a project in a XML file
  **************************************************************/
-
 
 #include <wx/dynarray.h>
 #include <wx/stopwatch.h>
@@ -69,13 +69,6 @@ ProjectManagerXML::ProjectManagerXML(ProcessData *process_data)
     CodeViewLines = process->CodeViewLines;
     log = 0;
 }
-
-/*
-ProjectManagerXML::~ProjectManagerXML()
-{
-    //dtor
-}
-*/
 
 
 bool ProjectManagerXML::IsSaved()

@@ -1,11 +1,13 @@
 /***************************************************************
- * Name:      IDZ80App.cpp
- * Purpose:   Code for Application Class
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * APP
  **************************************************************/
+
 
 #include "IDZ80App.h"
 #include <wx/arrstr.h>

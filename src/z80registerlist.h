@@ -1,11 +1,11 @@
-/****************************************************************
+/**************************************************************
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2012-10-18
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- * This module manages Z80 registers
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   18-10-2012 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Manages Z80 registers
  **************************************************************/
 
 #ifndef Z80REGISTERLIST_H

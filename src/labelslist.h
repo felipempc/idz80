@@ -2,10 +2,10 @@
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   2009-11-09
- * License:   GPL
- *
- * This module shows/controls list labels
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Shows and controls list labels
  **************************************************************/
 
 
@@ -30,16 +30,6 @@ enum
     idMENU_POPUP_DEL
 };
 
-/*
-struct st_label
-{
-    uint Address;
-    wxArrayInt *LabelUsers;
-    wxString LabelStr;
-};
-
-typedef struct st_label LabelItem;
-*/
 
 
 class LabelListCtrl : public wxListCtrl, public LogBase

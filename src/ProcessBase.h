@@ -1,11 +1,11 @@
-/****************************************************************
- * Name:      ProcessBase
- * Purpose:   Disassembler for Z80 MSX
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2012-11-08
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- ***
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   08-11-2012 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Base class for process data.
  **************************************************************/
 
 

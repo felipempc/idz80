@@ -1,11 +1,11 @@
-/****************************************************************
+/**************************************************************
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- * This module shows information about the program file
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Window that shows information about a loaded program
  **************************************************************/
 
 #include "ShowFileInfo.h"
@@ -31,9 +31,6 @@ const long ShowFileInfo::ID_STATICTEXT9 = wxNewId();
 const long ShowFileInfo::ID_PANEL1 = wxNewId();
 
 
-BEGIN_EVENT_TABLE(ShowFileInfo,wxDialog)
-END_EVENT_TABLE()
-
 ShowFileInfo::ShowFileInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
 	Create(parent, wxID_ANY, "File Information", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "wxID_ANY");
@@ -51,12 +48,6 @@ ShowFileInfo::ShowFileInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,con
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ShowFileInfo::OnB_OKClick, this, ID_BUTTON1);
 
-}
-
-ShowFileInfo::~ShowFileInfo()
-{
-	//(*Destroy(ShowFileInfo)
-	//*)
 }
 
 

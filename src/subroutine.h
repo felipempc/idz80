@@ -1,12 +1,11 @@
-/****************************************************************
+/**************************************************************
  * Name:      IDZ80
- * Purpose:   Disassembler for Z80 MSX
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- ***
- * This module controls subroutines
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   29-10-2012 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Controls subroutines
  **************************************************************/
 
 
@@ -41,7 +40,6 @@ class SubRoutineCtrl: public LogBase
         void Clear();
 
         int GetCounter();
-        //uint GetAddress();
 
         SubRoutineCtrl(LogWindow *logparent);
         ~SubRoutineCtrl();

@@ -1,11 +1,11 @@
-/****************************************************************
+/**************************************************************
  * Name:      IDZ80
- * Purpose:   Z80 code disassembler
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2012-10-29
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- * This module controls subroutines
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   29-10-2012 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Controls subroutines
  **************************************************************/
 
 #include "subroutine.h"
@@ -151,11 +151,3 @@ void SubRoutineCtrl::SetConditionalReturn()
     ReturnConditional = true;
 }
 
-
-/*
-uint SubRoutineCtrl::GetAddress()
-{
-    return ActualSubRoutine->Start;
-}
-
-*/

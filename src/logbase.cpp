@@ -1,12 +1,11 @@
-/****************************************************************
- * Name:      logbase
- * Purpose:   Disassembler for Z80 MSX
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2012-10-01
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- ***
- * Base for logging
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   01-10-2012 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Base class for logging
  **************************************************************/
 
 #include "logbase.h"

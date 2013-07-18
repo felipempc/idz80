@@ -2,11 +2,12 @@
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   2009-11-09
- * License:   GPL
- *
- * This module shows/controls list labels
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Shows and controls list labels
  **************************************************************/
+
 
 #include <wx/menu.h>
 #include "labelslist.h"
@@ -251,20 +252,11 @@ wxString LabelListCtrl::GetLabel(LabelIndex idx)
 {
     uint i;
     wxString str_ret;
-    //wxListItem item;
     LabelItem *lbl;
 
     i = GetCount();
     if (i && (idx < i))
     {
-        /*
-        item.m_itemId = idx;
-        item.m_col = 1;
-        item.m_mask = wxLIST_MASK_TEXT;
-        GetItem(item);
-        str_ret = item.m_text;
-        */
-
         lbl = GetData(idx);
 
         if (lbl)
@@ -288,19 +280,11 @@ wxString LabelListCtrl::GetAddress(uint idx)
 {
     uint i;
     wxString str_ret;
-    //wxListItem item;
     LabelItem *lbl;
 
     i = GetCount();
     if (i && (idx < i))
     {
-        /*
-        item.m_itemId = idx;
-        item.m_col = 0;
-        item.m_mask = wxLIST_MASK_TEXT;
-        GetItem(item);
-        str_ret = item.m_text;
-        */
         lbl = GetData(idx);
         if (lbl)
             str_ret = wxString::Format("%.4X", lbl->Address);

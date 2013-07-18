@@ -28,12 +28,10 @@ class Decoder: public LogBase
 {
     public:
         Decoder(ProcessBase *parent, LogWindow *logparent);
-//        ~Decoder();
 
         void FullDisassemble(LabelManager *parent);
         void DisassembleItems(RangeItems &dasm_range);
 
-//        void Clear();
 
     protected:
         static const uint OPCODE_NOT_FOUND = 0xFFFFFFFF;

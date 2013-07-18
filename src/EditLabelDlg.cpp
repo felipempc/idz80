@@ -1,43 +1,28 @@
-/****************************************************************
+/***************************************************************
  * Name:      IDZ80
- * Purpose:   Defines Application Frame
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- *
- * This module Edit Labels on list labels
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Dialog for edit labels on list labels
  **************************************************************/
-
-
-
-
-//(*InternalHeaders(EditLabelDlg)
-#include <wx/intl.h>
-#include <wx/string.h>
-//*)
 
 
 #include "EditLabelDlg.h"
 #include <wx/msgdlg.h>
 
 
-//(*IdInit(EditLabelDlg)
 const long EditLabelDlg::ID_STATICTEXT2 = wxNewId();
 const long EditLabelDlg::ID_STATICTEXT1 = wxNewId();
 const long EditLabelDlg::ID_TEXTCTRL1 = wxNewId();
 const long EditLabelDlg::ID_TEXTCTRL2 = wxNewId();
 const long EditLabelDlg::ID_PANEL1 = wxNewId();
-//*)
 
-BEGIN_EVENT_TABLE(EditLabelDlg,wxDialog)
-	//(*EventTable(EditLabelDlg)
-	//*)
-END_EVENT_TABLE()
 
 EditLabelDlg::EditLabelDlg(wxWindow* parent,bool editmode,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
-	//(*Initialize(EditLabelDlg)
+
 	wxBoxSizer* BoxSizer4;
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
@@ -72,19 +57,12 @@ EditLabelDlg::EditLabelDlg(wxWindow* parent,bool editmode,wxWindowID id,const wx
 	SetSizer(BoxSizer1);
 	BoxSizer1->SetSizeHints(this);
 
-	//Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&EditLabelDlg::OnAddressTextUpdate);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &EditLabelDlg::OnAddressTextUpdate, this, ID_TEXTCTRL1);
 
 	if (editmode)
         TC_Address->Enable(false);
 
-	base=10;
-}
-
-EditLabelDlg::~EditLabelDlg()
-{
-	//(*Destroy(EditLabelDlg)
-	//*)
+	base = 10;
 }
 
 
@@ -94,8 +72,6 @@ uint EditLabelDlg::GetAddress()
     long lg;
     str=TC_Address->GetValue();
     str.MakeUpper();
-//    if (str.Left(2) == _("0X"))
-//        str=str.Right(str.Len()-2);
     if (!(str.ToLong(&lg,base)))
         lg=0;
     return ((uint)lg);

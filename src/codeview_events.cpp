@@ -1,10 +1,11 @@
 /****************************************************************
- * Name:      Codeview - Event handlers
- * Purpose:   User interface for the Disassembled code
+* Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   30-12-2011
- * Copyright: Felipe MPC ()
- * License:   GPL
+ * Created:   30-12-2011 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * User interface - Event handlers
  **************************************************************/
 
 

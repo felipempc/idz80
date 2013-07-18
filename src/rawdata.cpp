@@ -1,19 +1,13 @@
-/****************************************************************
+/**************************************************************
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
- * Author:    Felipe Mainieri (felipe.mpc@gmail.com)
- * Created:   2009-11-09
- * Copyright: Felipe Mainieri ()
- * License:   GPL
- * This module stores and manages the program to be disassembled
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   09-11-2009 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Store a program to be disassembled
  **************************************************************/
 
-
-
-/*
- * Holds the program in memory
- *
- */
 
 #include "rawdata.h"
 
