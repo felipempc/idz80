@@ -27,10 +27,10 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_aui_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw294ud_core_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase294ud_xml_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase295ud_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw295ud_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw295ud_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase295ud_xml_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
@@ -50,15 +50,15 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase294u_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_aui_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw294u_core_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase294u_xml_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase295u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw295u_aui_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw295u_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase295u_xml_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WXW" value="K:\wxw\wx294" />
+				<Variable name="WXW" value="K:\wxw\wx295" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -70,11 +70,11 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="K:/wxw/wx294/include" />
-			<Add directory="K:/wxw/wx294/contrib/include" />
+			<Add directory="$(WXW)/include" />
+			<Add directory="$(WXW)/contrib/include" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="K:/wxw/wx294/include" />
+			<Add directory="$(WXW)/include" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />

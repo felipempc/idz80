@@ -72,8 +72,8 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
     int key;
     key = event.GetKeyCode();
 
-    wxCommandEvent evtMakeData(wxEVT_COMMAND_MENU_SELECTED, idPOPUP_MAKEDATA);
-    wxCommandEvent evtDisassemble(wxEVT_COMMAND_MENU_SELECTED, idPOPUP_DISASM);
+    wxCommandEvent evtMakeData(wxEVT_MENU, idPOPUP_MAKEDATA);
+    wxCommandEvent evtDisassemble(wxEVT_MENU, idPOPUP_DISASM);
     wxScrollWinEvent evtLineDown(wxEVT_SCROLLWIN_LINEDOWN);
     wxScrollWinEvent evtLineUp(wxEVT_SCROLLWIN_LINEUP);
     wxScrollWinEvent evtPageDown(wxEVT_SCROLLWIN_PAGEDOWN);

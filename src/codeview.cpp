@@ -130,23 +130,23 @@ void CodeView::SetupEvents()
     Bind(wxEVT_KEY_UP, &CodeView::OnKeyRelease, this);
 
     // Popup event connections
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpAddComment, this, idPOPUP_ADDCOMMENT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuGotoAddress, this, idPOPUP_GOTO_ADDRESS);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_String, this, idPOPUP_OD_STRING);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpAddComment, this, idPOPUP_ADDCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuGotoAddress, this, idPOPUP_GOTO_ADDRESS);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_String, this, idPOPUP_OD_STRING);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
 
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
 }
 
 

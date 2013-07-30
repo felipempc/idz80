@@ -39,9 +39,9 @@ LabelListCtrl::LabelListCtrl(wxWindow* parent, const wxString default_name, LogW
 
     Bind(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, &LabelListCtrl::OnMouseRightDown, this);
     Bind(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, &LabelListCtrl::OnMouseDblLeft, this);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpAdd, this, idMENU_POPUP_ADD);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpEdit, this, idMENU_POPUP_EDIT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &LabelListCtrl::OnMenuPopUpDel, this, idMENU_POPUP_DEL);
+    Bind(wxEVT_MENU, &LabelListCtrl::OnMenuPopUpAdd, this, idMENU_POPUP_ADD);
+    Bind(wxEVT_MENU, &LabelListCtrl::OnMenuPopUpEdit, this, idMENU_POPUP_EDIT);
+    Bind(wxEVT_MENU, &LabelListCtrl::OnMenuPopUpDel, this, idMENU_POPUP_DEL);
     Bind(wxEVT_COMMAND_LIST_COL_CLICK, &LabelListCtrl::OnColumnClick, this);
 
     SetTextLog(logparent);

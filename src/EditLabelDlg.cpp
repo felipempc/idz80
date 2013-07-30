@@ -57,7 +57,7 @@ EditLabelDlg::EditLabelDlg(wxWindow* parent,bool editmode,wxWindowID id,const wx
 	SetSizer(BoxSizer1);
 	BoxSizer1->SetSizeHints(this);
 
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &EditLabelDlg::OnAddressTextUpdate, this, ID_TEXTCTRL1);
+	Bind(wxEVT_TEXT, &EditLabelDlg::OnAddressTextUpdate, this, ID_TEXTCTRL1);
 
 	if (editmode)
         TC_Address->Enable(false);

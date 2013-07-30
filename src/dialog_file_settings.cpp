@@ -57,11 +57,11 @@ FileSettingsDialog::FileSettingsDialog(RawData *program)
     main_panel->SetSizer(d_sizer);
 
 
-	Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
+	Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
     Bind(wxEVT_SIZE, &FileSettingsDialog::OnSizeEvent, this);
-    Bind(wxEVT_COMMAND_TEXT_UPDATED, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_START);
-    Bind(wxEVT_COMMAND_TEXT_UPDATED, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_EXECUTION);
-    Bind(wxEVT_COMMAND_TEXT_UPDATED, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_END);
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_START);
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_EXECUTION);
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_END);
 
 
 	StartAddress = 0;
