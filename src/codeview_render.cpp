@@ -338,6 +338,10 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             }
                             else
                             {
+                                str = "ERROR_LABEL:";
+                                RenderProgramLabel(dc, linepixel, str);
+                                firstInstruction = true;
+
                                 m_CodeViewLine->DelItem(cvi);
                                 delete cvi;
                                 cvi = 0;
@@ -355,6 +359,10 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             }
                             else
                             {
+                                str = "ERROR_LABEL:";
+                                RenderProgramLabel(dc, linepixel, str);
+                                firstInstruction = true;
+
                                 m_CodeViewLine->DelItem(cvi);
                                 delete cvi;
                                 cvi = 0;
