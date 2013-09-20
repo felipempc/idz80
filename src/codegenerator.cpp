@@ -261,19 +261,6 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
             /* -------------------------------------------------
              *  Render Labels
              * -------------------------------------------------*/
-             /*
-            if ((cvi->LabelProgAddr) != -1) || (cvi->LabelVarAddr != -1))   // Is it a label ?
-            {
-                first_instruction = true;
-                if (Process->prog_labels->GetLabel(cvi->LabelProgAddr, str))
-                    textCode << str << ":";
-                else
-                    if (Process->var_labels->GetLabel(cvi->LabelVarAddr, str))
-                        textCode << str << ":";
-                    else
-                        Process->CodeViewLines->DelItem(cvi);
-            }
-            */
             if (cvi->LabelProgAddr)
             {
                 first_instruction = true;

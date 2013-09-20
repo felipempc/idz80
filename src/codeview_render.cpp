@@ -262,7 +262,6 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     uint			commentoffset;
     int				linepixel, i;
     uint			address;
-    //bool			labelfailed;
     DisassembledItem		*de;
     bool			firstInstruction;
     wxCoord			width, heigh;
@@ -270,9 +269,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     GetClientSize(&width, &heigh);
 
     linepixel = start_y;
-
     commentoffset = 0;
-    //labelfailed = false;
     firstInstruction = false;
     i = 0;
     address = 0;
@@ -320,7 +317,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 						firstInstruction = true;
 					}
 					else
-						dc.DrawText(_("------------------------ ERROR ----------------------------------------"), COL_CODE, linepixel);
+						dc.DrawText("------------------------ ERROR ----------------------------------------", COL_CODE, linepixel);
 				}
 				else
 				/* -------------------------------------------------
@@ -457,5 +454,7 @@ wxString IntToBin(uint conv)
 				str << "0";
 		bitmask = bitmask >> 1;
 	}
+	if (str.Len() == 0)
+        str = "0";
 	return str;
 }

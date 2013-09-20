@@ -507,7 +507,7 @@ void ProcessData::RemoveLineAndProgLabels(const int index)
     CodeViewItem *cvi;
 
     cvi = CodeViewLines->getData(index);
-    if (cvi && (cvi->LabelProgAddr >= 0))
+    if (cvi && cvi->LabelProgAddr)
     {
         RemoveLabelUsers(cvi->LabelProgAddr->LabelUsers);
         prog_labels->DelLabel(cvi->LabelProgAddr->Address);
@@ -522,7 +522,7 @@ void ProcessData::RemoveLineAndVarLabels(const int index)
     CodeViewItem *cvi;
 
     cvi = CodeViewLines->getData(index);
-    if (cvi && (cvi->LabelVarAddr >= 0))
+    if (cvi && cvi->LabelVarAddr)
     {
         RemoveLabelUsers(cvi->LabelVarAddr->LabelUsers);
         var_labels->DelLabel(cvi->LabelVarAddr->Address);

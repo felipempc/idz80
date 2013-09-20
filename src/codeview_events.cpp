@@ -355,19 +355,19 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
     DisassembledItem *de;
     cvi = m_CodeViewLine->getData(line_info.cursorPosition);
     //TODO: Implement label editing in instructions
-	if (cvi != 0)
+	if (cvi)
 	{
 	    de = line_info.dasmitem;
 
-		if (cvi->LabelProgAddr >= 0)
+		if (cvi->LabelProgAddr)
 			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr->Address);
         else
-            if ((de != 0) && (de->IsArgumentProgramAddress()))
+            if (de && (de->IsArgumentProgramAddress()))
                 Process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
-		if (cvi->LabelVarAddr >= 0)
+		if (cvi->LabelVarAddr)
 			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr->Address);
         else
-            if ((de != 0) && (de->IsArgumentVariableAddress()))
+            if (de && (de->IsArgumentVariableAddress()))
                 Process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
 
         Refresh();

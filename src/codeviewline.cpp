@@ -215,8 +215,8 @@ int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, con
     cvi->RectArg2 = 0;
 
     code_line_.Insert(cvi, pos);
-
     itemcount_++;
+
     return pos;
 }
 
@@ -236,15 +236,32 @@ int CodeViewLine::InsertDasm(const DisassembledIndex dasmitem, const wxString &c
 
 int CodeViewLine::InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
+    CodeViewItem *cvi;
+
     if (pos < code_line_.GetCount())
-        return (InsertNewItem(-1, labeladdr, -1, -1, comment, pos));
+    {
+        pos = InsertNewItem(-1, labeladdr, -1, -1, comment, pos);
+        cvi = getData(pos);
+        if (cvi && cvi->LabelProgAddr)
+            return (pos);
+
+        DelItem(cvi);
+    }
     return -1;
 }
 
 int CodeViewLine::InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
+    CodeViewItem *cvi;
+
     if (pos < code_line_.GetCount())
-        return (InsertNewItem(-1, -1, labeladdr, -1, comment, pos));
+    {
+        pos = InsertNewItem(-1, -1, labeladdr, -1, comment, pos);
+        cvi = getData(pos);
+        if (cvi && cvi->LabelVarAddr)
+            return (pos);
+        DelItem(cvi);
+    }
     return -1;
 }
 
@@ -386,7 +403,7 @@ void CodeViewLine::linkData(DisassembledIndex indexdasm, LineNumber indexline, u
 	    cvi = getData(indexline);
 	    if (cvi)
         {
-            if (cvi->LabelProgAddr >= 0)
+            if (cvi->LabelProgAddr)
             {
                 de = disassembled_->GetData(indexdasm);
                 address = disassembled_->GetBaseAddress(indexdasm) + de->GetOffset();

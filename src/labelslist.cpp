@@ -318,9 +318,7 @@ LabelItem *LabelListCtrl::GetDatabyAddress(ProgramAddress addr)
 {
     LabelIndex li;
 
-    if (addr < GetCount())
-        return FindByAddress(addr, li);
-    return static_cast<LabelItem *>(0);
+    return FindByAddress(addr, li);
 }
 
 
