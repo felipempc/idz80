@@ -1,8 +1,7 @@
 ﻿# TODO idz80
 
-- A posição de um comentario de um Label de programa fica variando entre COL_LABEL e COL_ADDRESS
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
-- Atualizar labels.txt
+- Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
 - Modificar base numerica dos DB e DW
-- Ao deletar um Label, codeview e os menus pop-up ficam estranhos
 - Ativar pesquisa de Labels conhecidos ao transformar data em code;
+- Problemas com seleção de linhas data/code

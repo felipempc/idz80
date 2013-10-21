@@ -195,6 +195,7 @@ F401 K7_CS2400
 F406 K7_LOW
 F408 K7_HIGH
 F40A K7_HEADER
+# continuar na seção 3.10 do MSX Top Secret
 [/BIOSVARS]
 
 
