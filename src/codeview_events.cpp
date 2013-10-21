@@ -377,13 +377,24 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 {
     if (line_info.type == siLineLabelProg)
+    {
         Process->RemoveLineAndProgLabels(line_info.firstLine);
+        Refresh();
+    }
 
     if (line_info.type == siLineLabelVar)
+    {
         Process->RemoveLineAndVarLabels(line_info.firstLine);
+        Refresh();
+    }
+
 
     if (line_info.type == siInstructionLabel)
+    {
         Process->RemoveFromLabelUserList(line_info.dasmitem, line_info.firstInstruction);
+        line_info.dasmitem->SetArgLabel(false);
+        RefreshRect(CalcCursorRfshRect());
+    }
 }
 
 void CodeView::OnPopUpMenuCreateLabel(wxCommandEvent& event)

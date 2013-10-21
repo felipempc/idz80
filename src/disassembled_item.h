@@ -93,6 +93,7 @@ class DisassembledItem: public LogBase
         bool IsArgumentProgramAddress();
         bool IsArgumentVariableAddress();
 
+
         MnemonicItem        *mnemonic_;
 
         DisassembledItem(RawData* rawdata);

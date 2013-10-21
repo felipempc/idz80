@@ -452,7 +452,7 @@ void CodeView::CenterAddress(uint address)
     firstlineshown = GetFirstLine();
     lastlineshown = firstlineshown + m_linesShown - 1;
 
-    m_CodeViewLine->getLineOfAddress(address, i);
+    i = m_CodeViewLine->getLineOfAddress(address);
 
     if (i >= 0)
     {

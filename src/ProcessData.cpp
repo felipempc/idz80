@@ -25,10 +25,10 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     disassembler_ = 0;
     smart_disassembler_ = 0;
 
-    var_labels = new LabelListCtrl(parent, "VAR", logparent);
-    prog_labels = new LabelListCtrl(parent, "", logparent);
-    io_labels = new LabelListCtrl(parent, "PORT", logparent);
-    constant_labels = new LabelListCtrl(parent, "", logparent);
+    var_labels = new LabelListCtrl(parent, VAR_LIST,"VAR", logparent);
+    prog_labels = new LabelListCtrl(parent, PRG_LIST,"", logparent);
+    io_labels = new LabelListCtrl(parent, IO_LIST,"PORT", logparent);
+    constant_labels = new LabelListCtrl(parent, CONST_LIST,"", logparent);
 
     sys_calls =  0;
     sys_vars = 0;
@@ -293,17 +293,24 @@ void ProcessData::InitData()
 void ProcessData::ProcessLabel(LabelListCtrl *label)
 {
     LabelItem *lbl;
-    int a = -1;
+    int line_index = -1;
     LabelIndex counter = 0;
+    CodeViewItem    *cvi;
 
     while (counter < label->GetCount())
     {
         lbl = label->GetData(counter);
-        if (lbl && (!CodeViewLines->getLineOfAddress(lbl->Address, a)))
+        if (lbl) //&& (!CodeViewLines->getLineOfAddress(lbl->Address, line_index)))
         {
-            if (a >= 0)
+            line_index = CodeViewLines->getLineOfAddress(lbl->Address);
+            cvi = CodeViewLines->getData(line_index - 1);
+            if (cvi && !(cvi->LabelProgAddr || cvi->LabelVarAddr) && (line_index >= 0))
             {
-                CodeViewLines->InsertProgLabel(lbl->Address, "aaa", a);
+                if (label->GetTypeList() == PRG_LIST)
+                    CodeViewLines->InsertProgLabel(lbl->Address, "aaa", line_index);
+                else
+                    if (label->GetTypeList() == VAR_LIST)
+                        CodeViewLines->InsertVarLabel(lbl->Address, "aaa", line_index);
             }
         }
         counter++;
@@ -384,7 +391,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 
         for (i = 0; i < varlabels.GetCount(); i++)
         {
-            CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varlabels.Item(i), varindex);
+            varindex = CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varlabels.Item(i));
             if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
             {
                 LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
@@ -444,7 +451,7 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 
         for (i = 0; i < varlabels.GetCount(); i++)
         {
-            CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i), varindex);
+            varindex = CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i));
             if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
             {
                 LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));

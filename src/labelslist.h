@@ -30,12 +30,20 @@ enum
     idMENU_POPUP_DEL
 };
 
+typedef enum eTypeLabelList
+{
+    VAR_LIST,
+    PRG_LIST,
+    IO_LIST,
+    CONST_LIST
+} TypeLabelList;
+
 
 
 class LabelListCtrl : public wxListCtrl, public LogBase
 {
     public:
-        LabelListCtrl(wxWindow* parent, const wxString default_name, LogWindow *logparent);
+        LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, LogWindow *logparent);
         ~LabelListCtrl();
 
         int AddLabel(ProgramAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);
@@ -51,6 +59,7 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         LabelItem *GetData(LabelIndex index);
         LabelItem *GetDatabyAddress(ProgramAddress addr);
         wxArrayInt *GetLabelUsers(const LabelIndex index);
+        TypeLabelList GetTypeList();
 
         void GetLabelsBetweenRangeAddress(ProgramAddress first_address, ProgramAddress last_address, wxArrayInt *address_list);
         uint GetCount();
@@ -70,6 +79,8 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         wxString default_label_name_;
         volatile int label_index_;
         wxWindow *main_window_;
+        TypeLabelList type_label_list_;
+
 
         LabelItem *FindByAddress(ProgramAddress addr, LabelIndex &label_index);
         wxString CreateDefaultName(const ProgramAddress addr);

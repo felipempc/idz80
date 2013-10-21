@@ -20,12 +20,13 @@ const DisassembledIndex LabelListCtrl::NO_DASM_ITEM;
 /*
  *      Label List Control Contructor/Destructor
  */
-LabelListCtrl::LabelListCtrl(wxWindow* parent, const wxString default_name, LogWindow *logparent)
+LabelListCtrl::LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, LogWindow *logparent)
                     : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL)
 {
     selected_item_ = -1;
     label_index_ = -1;
     main_window_ = parent;
+    type_label_list_ = label_type;
 
     InsertColumn(0, "Address");
     InsertColumn(1, "Label");
@@ -600,6 +601,10 @@ wxArrayInt *LabelListCtrl::GetLabelUsers(const LabelIndex index)
 }
 
 
+TypeLabelList LabelListCtrl::GetTypeList()
+{
+    return type_label_list_;
+}
 
 
 LabelItem *LabelListCtrl::GetData(LabelIndex index)

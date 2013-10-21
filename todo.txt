@@ -1,8 +1,8 @@
 ﻿# TODO idz80
 
-- Ao converter codigo para dados, solicitar a varlabels a lista de variaveis na faixa em
-  que será feita a mudança.
+- A posição de um comentario de um Label de programa fica variando entre COL_LABEL e COL_ADDRESS
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt
 - Modificar base numerica dos DB e DW
-- Ao deletar um Label, codeview e os menus pop-up ficam estranho
+- Ao deletar um Label, codeview e os menus pop-up ficam estranhos
+- Ativar pesquisa de Labels conhecidos ao transformar data em code;

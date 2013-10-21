@@ -329,49 +329,41 @@ uint CodeViewLine::GetCount()
 }
 
 /*
- * If found, store the line which holds this address in "index"
- * Return true if a line pointing to a label with this address already exists.
+ * Search for an instruction line which address is "addr". Returns the line number, if found.
  * TODO: Find a better solution.
  */
-bool CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr, int &index)
+int CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr)
 {
     uint    item_count = 0;
-    bool    found_item = false,
-            line_label_exists = false;
+    bool    found_item = false;
     uint    line_address = 0;
     CodeViewItem	*cvi;
-    DisassembledItem		*de;
+    DisassembledItem    *de;
+    int index = -1;
 
-    index = -1;
     while ((item_count < line_count) && !found_item)
     {
         cvi = getData(line_index);
-        if (cvi)
-		{
-			if ((cvi->LabelProgAddr) || (cvi->LabelVarAddr))
-				line_label_exists = true;
-
-            if (cvi->Dasmitem >= 0)
+        if (cvi && (cvi->Dasmitem >= 0))
+        {
+            de = disassembled_->GetData(cvi->Dasmitem);
+            line_address = disassembled_->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
+            if (line_address == addr)
             {
-                de = disassembled_->GetData(cvi->Dasmitem);
-                line_address = disassembled_->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
-                if (line_address == addr)
-                {
-                    found_item = true;
-                    index = line_index;
-                }
-			}
-		}
+                found_item = true;
+                index = line_index;
+            }
+        }
         item_count++;
         line_index++;
     }
 
-    return line_label_exists;
+    return index;
 }
 
-bool CodeViewLine::getLineOfAddress(ProgramAddress addr, int &index)
+int CodeViewLine::getLineOfAddress(ProgramAddress addr)
 {
-    return getLineOfAddress(0, GetCount(), addr, index);
+    return getLineOfAddress(0, GetCount(), addr);
 }
 
 

@@ -50,8 +50,8 @@ class CodeViewLine
 
         uint GetCount();
         void setData(CodeViewItem *cvi);
-        bool getLineOfAddress(ProgramAddress addr, int &index);
-        bool getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr, int &index);
+        int getLineOfAddress(ProgramAddress addr);
+        int getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr);
         CodeViewItem *getData(LineNumber index);
 
 
