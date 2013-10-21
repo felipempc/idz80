@@ -52,7 +52,10 @@ class CodeViewLine
         void setData(CodeViewItem *cvi);
         int getLineOfAddress(ProgramAddress addr);
         int getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr);
+        int getFirstInstructionLine();
         CodeViewItem *getData(LineNumber index);
+
+        void SetFirstInstructionLine(int fstiline);
 
 
     protected:
@@ -61,6 +64,7 @@ class CodeViewLine
         LabelManager    *labels_;
         int             itemcount_;
         DAsmData        *disassembled_;
+        int             first_intruction_line;
 
         int AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr, const int org,const wxString &comment);
         int InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,

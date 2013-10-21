@@ -260,22 +260,22 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     CodeViewItem	*cvi;
     wxString		str;
     uint			commentoffset;
-    int				linepixel, i;
+    int				linepixel, line_offset, rendering_line;
     uint			address;
     DisassembledItem		*de;
-    bool			firstInstruction;
     wxCoord			width, heigh;
 
     GetClientSize(&width, &heigh);
 
     linepixel = start_y;
-    commentoffset = 0;
-    firstInstruction = false;
-    i = 0;
+    line_offset = 0;
     address = 0;
-    while (i < count)
+
+    while (line_offset < count)
     {
-        cvi = m_CodeViewLine->getData(fromline + i);
+        commentoffset = 0;
+        rendering_line = fromline + line_offset;
+        cvi = m_CodeViewLine->getData(rendering_line);
         if (cvi)
 		{
 			/* -------------------------------------------------
@@ -294,7 +294,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 				if (cvi->Dasmitem >= 0)    // is It data/code ?
 				{
 					de = Process->Disassembled->GetData(cvi->Dasmitem);
-					if (de != 0)
+					if (de)
 					{
 						address = Process->Disassembled->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
 
@@ -304,17 +304,16 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 						switch (de->GetType())
 						{
 							case et_Data:
-												commentoffset = RenderData(dc, linepixel,cvi) + 14;
+												commentoffset = RenderData(dc, linepixel, cvi);
 												break;
 
 							case et_Instruction:
-												commentoffset = RenderInstruction(dc, linepixel,cvi) + 14;
+												commentoffset = RenderInstruction(dc, linepixel, cvi);
 												break;
 							default:
 												commentoffset = 0;
 												break;
 						}
-						firstInstruction = true;
 					}
 					else
 						dc.DrawText("------------------------ ERROR ----------------------------------------", COL_CODE, linepixel);
@@ -329,16 +328,13 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             if (!cvi->LabelProgAddr->LabelStr.IsEmpty())
                             {
                                 str.Printf("%s:", cvi->LabelProgAddr->LabelStr);
-                                RenderProgramLabel(dc, linepixel, str);
+                                commentoffset = RenderProgramLabel(dc, linepixel, str);
                                 address = cvi->LabelProgAddr->Address;
-                                firstInstruction = true;
                             }
                             else
                             {
                                 str = "ERROR_LABEL:";
-                                RenderProgramLabel(dc, linepixel, str);
-                                firstInstruction = true;
-
+                                commentoffset = RenderProgramLabel(dc, linepixel, str);
                                 m_CodeViewLine->DelItem(cvi);
                                 delete cvi;
                                 cvi = 0;
@@ -350,15 +346,13 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                             if (!cvi->LabelVarAddr->LabelStr.IsEmpty())
                             {
                                 str.Printf("%s:", cvi->LabelVarAddr->LabelStr);
-                                RenderProgramLabel(dc, linepixel, str);
+                                commentoffset = RenderProgramLabel(dc, linepixel, str);
                                 address = cvi->LabelVarAddr->Address;
-                                firstInstruction = true;
                             }
                             else
                             {
                                 str = "ERROR_LABEL:";
-                                RenderProgramLabel(dc, linepixel, str);
-                                firstInstruction = true;
+                                commentoffset = RenderProgramLabel(dc, linepixel, str);
 
                                 m_CodeViewLine->DelItem(cvi);
                                 delete cvi;
@@ -371,7 +365,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
 			/* -------------------------------------------------
 			 *  Render Address
 			 * -------------------------------------------------*/
-			if (firstInstruction)
+			if (rendering_line >= m_CodeViewLine->getFirstInstructionLine())
 			{
 				str.Printf("0x%.4X", address);
 				dc.DrawText(str, COL_ADDRESS, linepixel);
@@ -387,23 +381,17 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
                 {
                     dc.SetTextForeground(*wxGREEN);
                     str = cvi->Comment->Clone();
-                    if (commentoffset == 0)
-                    {
-                        if (firstInstruction)
-                            dc.DrawText(str, COL_LABEL, linepixel);
-                        else
-                            dc.DrawText(str, COL_ADDRESS, linepixel);
-                    }
-                    else
-                        dc.DrawText(str, commentoffset, linepixel);
+
+                    commentoffset += 20;
+                    dc.DrawText(str, commentoffset, linepixel);
                     dc.SetTextForeground(FG_TextColor);
                 }
 			}
-			i++;
+			line_offset++;
 			linepixel += m_fontHeight;
 		}
 		else
-			i = count;
+			line_offset = count;
     }
 }
 

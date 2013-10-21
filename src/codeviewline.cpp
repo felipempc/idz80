@@ -13,6 +13,7 @@
 CodeViewLine::CodeViewLine(DAsmData *dasm, LabelManager *labels)
 {
     itemcount_ = -1;
+    first_intruction_line = -1;
     disassembled_ = dasm;
     labels_ = labels;
 }
@@ -102,9 +103,13 @@ int CodeViewLine::Add(const wxString &comment)
     return (AddNewItem(-1, -1, -1, -1, comment));
 }
 
-
+// TODO: Very slow, fix it !
 void CodeViewLine::DelItem(CodeViewItem *cvi)
 {
+    uint pos = code_line_.Find(cvi);
+    if ((first_intruction_line >= 0) && (pos < first_intruction_line))
+        first_intruction_line--;
+
     code_line_.Remove(cvi);
 
     itemcount_--;
@@ -125,6 +130,8 @@ void CodeViewLine::Del(const LineNumber idx)
 {
     if (idx < code_line_.GetCount())
     {
+        if ((first_intruction_line >= 0) && (idx < first_intruction_line))
+            first_intruction_line--;
         DelItem(getData(idx));
     }
 }
@@ -206,6 +213,10 @@ int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, con
     {
         cvi->Comment = new wxString(comment);
     }
+
+    if ((first_intruction_line >= 0) && (pos < first_intruction_line))
+        first_intruction_line++;
+
 
     cvi->Dasmitem = dasmitem;
     cvi->LabelProgAddr = labels_->prog_labels->GetDatabyAddress(labelprogaddr);
@@ -364,6 +375,18 @@ int CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, Progr
 int CodeViewLine::getLineOfAddress(ProgramAddress addr)
 {
     return getLineOfAddress(0, GetCount(), addr);
+}
+
+
+int CodeViewLine::getFirstInstructionLine()
+{
+    return first_intruction_line;
+}
+
+void CodeViewLine::SetFirstInstructionLine(int fstiline)
+{
+    if (fstiline < GetCount())
+        first_intruction_line = fstiline;
 }
 
 

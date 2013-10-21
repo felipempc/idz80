@@ -48,9 +48,6 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
 
 		FillSelectedItemInfo(pt);
 
-		LogIt(wxString::Format("Label Prog = %p", line_info.lineitem->LabelProgAddr));
-		LogIt(wxString::Format("Label Var = %p", line_info.lineitem->LabelVarAddr));
-
 		RefreshRect(CalcCursorRfshRect());
 	}
 	else

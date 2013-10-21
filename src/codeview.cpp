@@ -742,7 +742,7 @@ void CodeView::FillSelectedItemInfo(const wxPoint &pt)
 
     IdentifyArgumentSelected(mousept);
 
-    LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", line_info.firstLine, line_info.firstAddress, line_info.lastLine, line_info.lastAddress));
+    //LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", line_info.firstLine, line_info.firstAddress, line_info.lastLine, line_info.lastAddress));
 }
 
 

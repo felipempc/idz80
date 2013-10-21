@@ -266,7 +266,7 @@ void ProcessData::AutoLabel()
 
 void ProcessData::InitData()
 {
-    uint i;
+    uint i, fstil;
     wxArrayString m_Comments;
     if (!CodeViewLines->IsEmpty())
          CodeViewLines->Clear();
@@ -283,8 +283,11 @@ void ProcessData::InitData()
 
     CodeViewLines->AddOrg(Disassembled->GetBaseAddress(0), "");
     i = 0;
+    fstil = CodeViewLines->GetCount();
     while (i < Disassembled->GetCount())
         CodeViewLines->AddDasm(i++, "");
+
+    CodeViewLines->SetFirstInstructionLine(fstil);
 }
 
 /*
@@ -300,7 +303,7 @@ void ProcessData::ProcessLabel(LabelListCtrl *label)
     while (counter < label->GetCount())
     {
         lbl = label->GetData(counter);
-        if (lbl) //&& (!CodeViewLines->getLineOfAddress(lbl->Address, line_index)))
+        if (lbl)
         {
             line_index = CodeViewLines->getLineOfAddress(lbl->Address);
             cvi = CodeViewLines->getData(line_index - 1);
