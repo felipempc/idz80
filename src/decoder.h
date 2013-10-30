@@ -47,7 +47,7 @@ class Decoder: public LogBase
         void SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index);
 
         void MSXCheckFunctionRegisters(DisassembledItem *de);
-        bool MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position);
+        uint MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position);
 
         void SetCartridgeLabels();
 

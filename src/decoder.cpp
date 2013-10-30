@@ -24,22 +24,6 @@ Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
 
 }
 
-/*
-Decoder::~Decoder()
-{
-
-}
-*/
-
-/*
-void Decoder::Clear()
-{
-    AddressList->Clear();
-    AddressListProcessed->Clear();
-    SubRoutine->Clear();
-}
-*/
-
 
 
 
@@ -201,12 +185,12 @@ void Decoder::MSXCheckFunctionRegisters(DisassembledItem *de)
 
 
 
-bool Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
+uint Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
 {
-    uint offset;
-    bool ret = false;
+    uint offset, new_program_counter;
 
     offset = de->GetOffset();
+    new_program_counter = 0;
 
     switch (de->GetInstructionDetail())
     {
@@ -231,10 +215,10 @@ bool Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
                     de->SetType(et_Data);
                     de->SetStyleArgument(0, ast_wordhex);
                     process_->Disassembled->InsertDasm(de, dasm_position);
-                    ret = true;
+                    new_program_counter = 3;    // 1 byte ID + 2 bytes Address
                     break;
     }
-    return ret;
+    return new_program_counter;
 }
 
 
@@ -279,7 +263,6 @@ void Decoder::FullDisassemble(LabelManager *parent)
 
     labels_ = parent;
     labels_->ClearUserLabels();
-    //UpdateBoundary();
 
     if (process_->Program->isCartridge())
         SetCartridgeLabels();
@@ -291,8 +274,7 @@ void Decoder::FullDisassemble(LabelManager *parent)
         item = Decode(de, i);
         SetupArgumentLabels(de, item);
         registers_.LoadRegister(de);
-        if (MSXWeirdRST(de, f))
-            i += 3;
+        i += MSXWeirdRST(de, f);
         i += (de->GetLength() - 1);
     }
 }
@@ -303,16 +285,16 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
 {
     uint 		i,
 				dasm_last,
-				x,
+				disassembled_count,
 				program_first,
 				program_last;
     DisassembledItem	*de;
 
 
     dasm_last = dasm_range.Index + dasm_range.Count - 1;
-    x = process_->Disassembled->GetCount();
+    disassembled_count = process_->Disassembled->GetCount();
 
-    if ((dasm_range.Index < x) || (dasm_last < x))
+    if ((dasm_range.Index < disassembled_count) || (dasm_last < disassembled_count))
     {
         de = process_->Disassembled->GetData(dasm_range.Index);
         program_first = de->GetOffset();
@@ -321,12 +303,13 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
 
         LogIt(wxString::Format("Deleting index = %d, count = %d.", dasm_range.Index, dasm_range.Count));
         process_->Disassembled->DelDasm(dasm_range.Index, dasm_range.Count);
-        x = dasm_range.Index;
+        disassembled_count = dasm_range.Index;
         dasm_range.Count = 0;
         for (i = program_first; i < program_last; i++)
         {
             de = new DisassembledItem(process_->Program);
-            Decode(de, i, x++);
+            Decode(de, i, disassembled_count++);
+            i += MSXWeirdRST(de, (dasm_last + 1));
             i += (de->GetLength() - 1);
             dasm_range.Count++;
         }

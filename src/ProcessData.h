@@ -52,8 +52,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         void Clear();
 
         void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
-        void RemoveLineAndVarLabels(const int index);
-        void RemoveLineAndProgLabels(const int index);
+        bool RemoveLineAndVarLabels(const int index);
+        bool RemoveLineAndProgLabels(const int index);
 
 
         void SetGauge(wxGauge *g);

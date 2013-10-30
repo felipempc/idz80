@@ -359,9 +359,9 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    int 			newLineCount, lineIndex, lineLast,
-					oldLineCount, varindex;
-    uint            i, line_count;
+    int 			newLineCount, lineIndex, oldLineCount, varindex,
+                    varitem;
+    uint            i, line_count, deleted_labels;
     wxArrayInt		cvlines, proglabels, varlabels;
 
     if ((selected.firstInstruction <= selected.lastInstruction) &&
@@ -370,9 +370,9 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
         if (selected.firstLine > 0)
             cvi = CodeViewLines->getData(selected.firstLine - 1);
 
+        deleted_labels = 0;
         lineIndex = selected.firstLine;
-        lineLast = selected.lastLine;
-        line_count = lineLast - lineIndex + 1;
+        line_count = selected.lastLine - lineIndex + 1;
 
         dasmed_items.Index = selected.firstInstruction;
         dasmed_items.Count = selected.lastInstruction - selected.firstInstruction + 1;
@@ -383,7 +383,8 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
         MakeData(dasmed_items);
 
         for (i = 0; i < line_count; i++)
-            RemoveLineAndProgLabels(lineIndex);
+            if (RemoveLineAndProgLabels(lineIndex))
+                deleted_labels++;
 
 //* TODO:REWRITE THIS
         CodeViewLines->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
@@ -392,18 +393,22 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
 
         CodeViewLines->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
-        for (i = 0; i < varlabels.GetCount(); i++)
+        if (cvi)
         {
-            varindex = CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varlabels.Item(i));
-            if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
+            for (i = 0; i < varlabels.GetCount(); i++)
             {
-                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
-                CodeViewLines->InsertVarLabel(varlabels[i], "", varindex);
+                varitem = varlabels[i];
+                varindex = CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varitem);
+                if (!(cvi->LabelVarAddr) || (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varitem)))
+                {
+                    LogIt(wxString::Format("Found var address 0x%X, line %d\n", varitem, varindex));
+                    CodeViewLines->InsertVarLabel(varitem, "", varindex);
+                }
             }
         }
 //*/
         selected.cursorLastPosition = lineIndex;
-        selected.cursorPosition = lineIndex + line_count + newLineCount - 1;
+        selected.cursorPosition = lineIndex + line_count - deleted_labels + newLineCount - 1;
     }
 }
 
@@ -414,13 +419,18 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 {
     RangeItems		dasmed_items;
     CodeViewItem	*cvi;
-    int				newLineCount, oldLineCount, varindex;
-    int				lineIndex, lineLast, lineCount;
-    wxArrayInt		cvlines, varlabels;
+    int				newLineCount, oldLineCount,
+                    progindex, progitem;
+
+    int				lineIndex, lineLast, lineCount,
+                    deleted_labels;
+    wxArrayInt		cvlines, proglabels;
     uint            i;
 
 	if (!FilterInstructions(cvlines, selected))
 		return;
+
+    deleted_labels = 0;
 
 	if (cvlines.GetCount() > 0)
 	{
@@ -436,10 +446,12 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
-        var_labels->GetLabelsBetweenRangeAddress(selected.firstAddress, selected.lastAddress, &varlabels);
+        prog_labels->GetLabelsBetweenRangeAddress(selected.firstAddress, selected.lastAddress, &proglabels);
 
 		for (i = 0; i < static_cast<uint>(lineCount); i++)
-            RemoveLineAndVarLabels(lineIndex);
+            if (RemoveLineAndVarLabels(lineIndex))
+                deleted_labels++;
+
 
 		DisassembleItems(dasmed_items);
 
@@ -452,18 +464,22 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
         if (lineIndex > 0)
             cvi = CodeViewLines->getData(lineIndex - 1);
 
-        for (i = 0; i < varlabels.GetCount(); i++)
+        if (cvi)
         {
-            varindex = CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), varlabels.Item(i));
-            if ((cvi) && (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varlabels[i])))
+            for (i = 0; i < proglabels.GetCount(); i++)
             {
-                LogIt(wxString::Format("Found var address 0x%X, line %d\n", varlabels.Item(i), varindex));
-                CodeViewLines->InsertVarLabel(varlabels[i], "", varindex);
+                progitem = proglabels[i];
+                progindex = CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), progitem);
+                if (!(cvi->LabelProgAddr) || (cvi->LabelProgAddr->Address != static_cast<ProgramAddress>(progitem)))
+                {
+                    LogIt(wxString::Format("Found program address 0x%X, line %d\n", progitem, progindex));
+                    CodeViewLines->InsertProgLabel(progitem, "", progindex);
+                }
             }
         }
 
 		selected.cursorLastPosition = lineIndex;
-        selected.cursorPosition = lineIndex + lineCount + newLineCount - 1;
+        selected.cursorPosition = lineIndex + lineCount - deleted_labels + newLineCount - 1;
 	}
 }
 
@@ -511,35 +527,39 @@ bool ProcessData::FilterInstructions(wxArrayInt &range, SelectedItemInfo &select
 		return false;
 }
 
-
-void ProcessData::RemoveLineAndProgLabels(const int index)
+// Return true if a prog label was found
+bool ProcessData::RemoveLineAndProgLabels(const int index)
 {
     CodeViewItem *cvi;
+    bool ret = false;
 
     cvi = CodeViewLines->getData(index);
     if (cvi && cvi->LabelProgAddr)
     {
         RemoveLabelUsers(cvi->LabelProgAddr->LabelUsers);
         prog_labels->DelLabel(cvi->LabelProgAddr->Address);
+        ret = true;
     }
     CodeViewLines->Del(index);
-
+    return ret;
 }
 
-
-void ProcessData::RemoveLineAndVarLabels(const int index)
+// Return true if a var label was found
+bool ProcessData::RemoveLineAndVarLabels(const int index)
 {
     CodeViewItem *cvi;
+    bool ret = false;
 
     cvi = CodeViewLines->getData(index);
     if (cvi && cvi->LabelVarAddr)
     {
         RemoveLabelUsers(cvi->LabelVarAddr->LabelUsers);
         var_labels->DelLabel(cvi->LabelVarAddr->Address);
+        ret = true;
     }
     CodeViewLines->Del(index);
+    return ret;
 }
-
 
 
 

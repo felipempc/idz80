@@ -381,7 +381,7 @@ void CodeView::UpdateSelectedRect()
     }
     else
     {
-        index = line_info.cursorLastPosition;
+        index = line_info.cursorPosition;
         line_info.selectedLineCount = line_info.cursorLastPosition - line_info.cursorPosition + 1;
     }
 
