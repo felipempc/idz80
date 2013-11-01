@@ -283,7 +283,7 @@ void Decoder::FullDisassemble(LabelManager *parent)
 
 void Decoder::DisassembleItems(RangeItems &dasm_range)
 {
-    uint 		i,
+    uint 		i, item,
 				dasm_last,
 				disassembled_count,
 				program_first,
@@ -308,8 +308,9 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
         for (i = program_first; i < program_last; i++)
         {
             de = new DisassembledItem(process_->Program);
-            Decode(de, i, disassembled_count++);
-            i += MSXWeirdRST(de, (dasm_last + 1));
+            item = Decode(de, i, disassembled_count++);
+            SetupArgumentLabels(de, item);
+            //i += MSXWeirdRST(de, (dasm_last + 1));
             i += (de->GetLength() - 1);
             dasm_range.Count++;
         }

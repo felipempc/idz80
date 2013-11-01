@@ -14,7 +14,7 @@
 codeGenerator::codeGenerator(ProcessData *parent)
 {
     Process = parent;
-    end_line = _T("\r\n");
+    end_line = "\r\n";
     end_line.Shrink();
     m_cflags = cfM80;
 }
@@ -27,9 +27,7 @@ codeGenerator::~codeGenerator()
 
 bool codeGenerator::isNumber(wxChar firstchar)
 {
-    bool ret;
-    ret = (firstchar >= '0') && (firstchar <= '9');
-    return ret;
+    return (firstchar >= '0') && (firstchar <= '9');
 }
 
 
@@ -46,14 +44,9 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     str.Printf("DB ");
-    for (i=0; i < de->GetLength(); i++)
+    for (i = 0; i < de->GetLength(); i++)
     {
         str << wxString::Format(str_number_format, de->GetData(de->GetOffset() + i));
-        if (m_cflags == cfM80)
-            //FIXME: Baiano BUG, with more than one item it will crash
-            if (!isNumber(str[0]))
-                str.Prepend("0");
-
         if (i < (de->GetLength() - 1))
             str << ",";
     }
@@ -64,14 +57,16 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 
 wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 {
-    wxString str_ret,str;
+    wxString str_ret, str;
     uint i;
 
     for (i = 0; i < Process->io_labels->GetCount(); i++)
     {
         str = Process->io_labels->GetAddress(i);
+        /*
         if (!isNumber(str[0]))
             str.Prepend("0");
+        */
 
         if (m_cflags == cfM80)
             str << "H";
@@ -136,24 +131,30 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     if ((nargs == 1) && (!usedlabel))
     {
         str_1.Printf(str_number_format, argument);
+        /*
         if (m_cflags == cfM80)
             if (!isNumber(str_1[0]))
                 str_1.Prepend("0");
+        */
     }
     else    // two arguments
     if ((nargs == 2) && (!usedlabel))
     {
         str_1.Printf(str_number_format, argument);
+        /*
         if (m_cflags == cfM80)
             if (!isNumber(str_1[0]))
                 str_1.Prepend("0");
+        */
 
         str_1 << de->GetMnemonicStr(1);
         strparts++;
         str_2.Printf(str_number_format, de->GetArgument(1, 0));
+        /*
         if (m_cflags == cfM80)
             if (!isNumber(str_2[0]))
                 str_2.Prepend("0");
+        */
 
     }
 
@@ -177,7 +178,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
     CodeViewItem *cvi;
     wxString str, str_number_format;
 
-    int     count,i;
+    int     count, i;
     bool    first_instruction,
             file_ok;
     DisassembledItem	*de;
@@ -207,7 +208,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
     file.MakeLower();
 
     textCode << ";" << end_line;
-    textCode << wxString::Format("; Filename: %s", file.c_str()) << end_line << _T(";") << end_line;
+    textCode << wxString::Format("; Filename: %s", file.c_str()) << end_line << ";" << end_line;
 
     while (i < count)
     {

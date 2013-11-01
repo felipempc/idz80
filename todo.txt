@@ -3,5 +3,5 @@
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
 - Modificar base numerica dos DB e DW
-- Ativar pesquisa de Labels conhecidos ao transformar data em code;
-- Problemas com seleção de linhas data/code
+- Ativar WirdRSTRoutines ao desassemblar pequenos trechos (não está funcionando corretamente)
+
