@@ -294,11 +294,11 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
             if (cvi->Dasmitem >= 0)
                 item->AddAttribute(ATTRIBUTE_DASMITEM_STR, wxString::Format("%d", cvi->Dasmitem));
 
-            if (cvi->LabelProgAddr >= 0)
-                item->AddAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR, wxString::Format("%d", cvi->LabelProgAddr));
+            if (cvi->LabelProgAddr > 0)
+                item->AddAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR, wxString::Format("%d", cvi->LabelProgAddr->Address));
 
-            if (cvi->LabelVarAddr >= 0)
-                item->AddAttribute(ATTRIBUTE_LINEVARLABEL_STR, wxString::Format("%d", cvi->LabelVarAddr));
+            if (cvi->LabelVarAddr > 0)
+                item->AddAttribute(ATTRIBUTE_LINEVARLABEL_STR, wxString::Format("%d", cvi->LabelVarAddr->Address));
 
             if (cvi->Comment)
                 item->AddAttribute(ATTRIBUTE_COMMENT_STR, cvi->Comment->utf8_str());
@@ -309,7 +309,7 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
 
 
 
-bool ProjectManagerXML::Open(const wxString &filename)
+bool ProjectManagerXML::Open(const wxString &filename, const wxString &syslabels_path)
 {
     bool ret;
     wxXmlDocument   xml_doc;
@@ -320,6 +320,10 @@ bool ProjectManagerXML::Open(const wxString &filename)
     {
         readHeader(xml_doc);
         readFileProperties(xml_doc);
+        if (process->SetupSystemLabels())
+        {
+            process->LoadSystemLabels(syslabels_path);
+        }
         readDasmData(xml_doc);
         readCodeLine(xml_doc);
         readLabel(xml_doc, process->io_labels, SECTION_IOLABEL_STR);

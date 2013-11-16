@@ -29,7 +29,7 @@ class ProjectManagerXML
         void New();
         bool Save(const wxString &filename);
         bool Save();
-        bool Open(const wxString &filename);
+        bool Open(const wxString &filename, const wxString &syslabels_path);
         void SetFilename(const wxString &filename);
         wxString GetFilename();
 

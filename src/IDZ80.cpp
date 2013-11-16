@@ -568,7 +568,7 @@ void IDZ80::OpenProjectFile()
 	wxString filename;
 
 	filename = DialogLoadProjectFile();
-	if ((!filename.IsEmpty()) && m_project->Open(filename))
+	if ((!filename.IsEmpty()) && m_project->Open(filename, m_currentDir + "/Labels.txt"))
     {
 		codeview->Enable(true);
 		codeview->Plot();
