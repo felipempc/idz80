@@ -162,8 +162,10 @@ void CodeViewLine::EditItem(const int dasmitem, const int labelprogaddr, const i
         cvi->Dasmitem = dasmitem;
     if (org >= 0)
         cvi->Org = org;
-    cvi->LabelProgAddr = labels_->prog_labels->GetDatabyAddress(labelprogaddr);
-    cvi->LabelVarAddr = labels_->var_labels->GetDatabyAddress(labelvaraddr);
+    if (labelprogaddr >= 0)
+        cvi->LabelProgAddr = labels_->prog_labels->GetDatabyAddress(labelprogaddr);
+    if (labelvaraddr >= 0)
+        cvi->LabelVarAddr = labels_->var_labels->GetDatabyAddress(labelvaraddr);
 }
 
 void CodeViewLine::EditDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
