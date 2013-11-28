@@ -12,7 +12,7 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "codeview.h"
-
+#include "dialog_search_argument.h"
 
 
 void CodeView::OnScrollLineDown(wxScrollWinEvent& event)
@@ -155,9 +155,12 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
         case D_KEY:
                         AddPendingEvent(evtMakeData);
                         break;
+        case WXK_F3:
+                        LogIt("F3 Key pressed !");
+                        break;
 
         default:
-                        //LogIt(wxString::Format("%d pressed !\n",key));
+                        LogIt(wxString::Format("%X pressed !",key));
                         event.Skip();
     }
 }
@@ -440,6 +443,31 @@ void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 
 		RefreshRect(CalcCursorRfshRect());
 }
+
+
+
+
+void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
+{
+    SearchArgumentDialog *search_dialog = new SearchArgumentDialog(this);
+    ProgramAddress address = 0;
+
+    if (search_dialog->ShowModal() == wxID_OK)
+    {
+        if (Process->SearchInstructionArgument(search_dialog->getValue(), address,
+                                           search_dialog->hasLiteralSearch(),
+                                           search_dialog->hasVariableSearch(),
+                                           search_dialog->hasJumpCallSearch()))
+        {
+            CenterAddress(address);
+        }
+    }
+
+
+
+    delete search_dialog;
+}
+
 
 
 

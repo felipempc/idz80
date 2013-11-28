@@ -14,6 +14,7 @@
 
 enum {
     idPOPUP_SEARCH = 100,
+    idPOPUP_SEARCH_ARGUMENT,
     idPOPUP_GOTO,
     idPOPUP_GOTO_ADDRESS,
     idPOPUP_MAKEDATA,

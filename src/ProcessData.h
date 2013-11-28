@@ -55,6 +55,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         bool RemoveLineAndVarLabels(const int index);
         bool RemoveLineAndProgLabels(const int index);
 
+        bool SearchInstructionArgument(word argument_value, ProgramAddress &address, bool literal, bool variables, bool jumpscalls);
+
 
         void SetGauge(wxGauge *g);
 
@@ -70,6 +72,10 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         void RemoveLabelUsers(wxArrayInt *users);
         bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
         void ProcessLabel(LabelListCtrl *label);
+
+        bool FindInArgumentVariables(DisassembledItem *de, word argument);
+        bool FindInArgumentLiteral(DisassembledItem *de, word argument);
+        bool FindInArgumentJumpsCalls(DisassembledItem *de, word argument);
 };
 
 

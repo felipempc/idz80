@@ -21,6 +21,7 @@
 					<Add option="-DIDZ80_DECODER" />
 					<Add directory="$(WXW)/include" />
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
+					<Add directory="src" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
@@ -44,6 +45,7 @@
 					<Add option="-O2" />
 					<Add directory="$(WXW)/include" />
 					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
+					<Add directory="src" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
@@ -112,6 +114,8 @@
 		<Unit filename="../src/decoder_smart.h" />
 		<Unit filename="../src/dialog_file_settings.cpp" />
 		<Unit filename="../src/dialog_file_settings.h" />
+		<Unit filename="../src/dialog_search_argument.cpp" />
+		<Unit filename="../src/dialog_search_argument.h" />
 		<Unit filename="../src/disassembled_item.cpp" />
 		<Unit filename="../src/disassembled_item.h" />
 		<Unit filename="../src/labelitem.h" />
@@ -142,6 +146,7 @@
 		<Unit filename="../src/z80register.h" />
 		<Unit filename="../src/z80registerlist.cpp" />
 		<Unit filename="../src/z80registerlist.h" />
+		<Unit filename="../todo.txt" />
 		<Extensions>
 			<code_completion />
 			<envvars />

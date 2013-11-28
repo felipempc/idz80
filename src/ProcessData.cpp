@@ -587,3 +587,69 @@ void ProcessData::RemoveLabelUsers(wxArrayInt *users)
 
 
 
+
+bool ProcessData::SearchInstructionArgument(word argument_value, ProgramAddress &address, bool literal, bool variables, bool jumpscalls)
+{
+    DisassembledItem *de;
+    uint    dasm_count = Disassembled->GetCount();
+    bool    found = false;
+
+    for (uint i = 0; i < dasm_count; i++)
+    {
+        de = Disassembled->GetData(i);
+        address = Disassembled->GetBaseAddress(0) + de->GetOffset();
+        if (literal && FindInArgumentLiteral(de, argument_value))
+        {
+            found = true;
+            break;
+        }
+
+        if (variables && FindInArgumentVariables(de, argument_value))
+        {
+            found = true;
+            break;
+        }
+
+        if (jumpscalls && FindInArgumentJumpsCalls(de, argument_value))
+        {
+            found = true;
+            break;
+        }
+    }
+    return found;
+}
+
+
+
+bool ProcessData::FindInArgumentVariables(DisassembledItem *de, word argument)
+{
+    if ((de->GetArgumentType(0) == ARG_VARIABLE) && (de->GetArgument(0, 0) == argument))
+        return true;
+
+    return false;
+ }
+
+bool ProcessData::FindInArgumentLiteral(DisassembledItem *de, word argument)
+{
+    uint argument_index = 0;
+
+    while (argument_index < de->GetArgumentCount())
+    {
+        if ((de->GetArgumentType(argument_index) == ARG_LITERAL) && (de->GetArgument(0, 0) == argument))
+            return true;
+
+        argument_index++;
+    }
+
+    return false;
+}
+
+
+bool ProcessData::FindInArgumentJumpsCalls(DisassembledItem *de, word argument)
+{
+    if ((de->GetArgumentType(0) == ARG_ABS_ADDR) && (de->GetArgument(0, 0) == argument))
+        return true;
+
+    return false;
+}
+

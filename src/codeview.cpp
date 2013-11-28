@@ -147,6 +147,8 @@ void CodeView::SetupEvents()
     Bind(wxEVT_MENU, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
     Bind(wxEVT_MENU, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
     Bind(wxEVT_MENU, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
+
+    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuSearchArgument, this, idPOPUP_SEARCH_ARGUMENT);
 }
 
 
@@ -706,6 +708,8 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
         popup->Append(idPOPUP_ARG_STYLE, "Style data", argStyleSubMenu);
     }
 
+    popup->AppendSeparator();
+    popup->Append(idPOPUP_SEARCH_ARGUMENT, "Search");
     popup->AppendSeparator();
 
     if ((line_info.type == siComments) || (line_info.hasComment))

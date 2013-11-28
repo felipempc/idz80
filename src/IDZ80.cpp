@@ -27,6 +27,7 @@
 #include "dialog_file_settings.h"
 
 
+
 const long IDZ80::ID_TEXTCTRL1 = wxNewId();
 const long IDZ80::idMenuFileOpenProject = wxNewId();
 const long IDZ80::idMenuFileOpenArchive = wxNewId();
