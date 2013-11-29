@@ -21,6 +21,7 @@
 
 #include "IDZ80Base.h"
 #include "dasmdata.h"
+#include "search_defs.h"
 
 class SearchArgumentDialog : public wxDialog
 {
@@ -28,20 +29,22 @@ class SearchArgumentDialog : public wxDialog
         SearchArgumentDialog(wxWindow *parent);
         ~SearchArgumentDialog();
 
-        bool hasLiteralSearch();
-        bool hasVariableSearch();
-        bool hasJumpCallSearch();
-
+        uint getSearchConfig();
         word getValue();
 
     protected:
    		static const long ID_SEARCH;
+   		static const long ID_CHKBOX_LITERAL;
+   		static const long ID_CHKBOX_VARIABLE;
+   		static const long ID_CHKBOX_JUMPCALL;
+   		static const long ID_CHKBOX_WRAPAROUND;
 
     private:
         wxTextCtrl  *searchline_;
         wxCheckBox  *check_literals_,
                     *check_variables_,
-                    *check_jumps_calls_;
+                    *check_jumps_calls_,
+                    *check_wrap_around_;
         wxButton    *search_button_,
                     *cancel_button_;
 
@@ -49,9 +52,11 @@ class SearchArgumentDialog : public wxDialog
         wxStaticText *converted_value_str_;
 
         uint        value_;
+        uint        search_config_;
 
         void OnTextUpdate(wxCommandEvent &event);
         void OnKeyEnterPressed(wxCommandEvent &event);
+        void OnCheckBoxClicked(wxCommandEvent &event);
 
         bool CheckHexadecimalValue(const wxString &hexstr, long &converted_num);
         void ValidateBaseNumber();

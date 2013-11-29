@@ -3804,11 +3804,11 @@
 	"IDZ80Base.h"
 	"logbase.h"
 
-1385594817 source:x:\idz80\src\processdata.cpp
+1385743169 source:x:\idz80\src\processdata.cpp
 	"ProcessData.h"
 	<stack>
 
-1385593669 x:\idz80\src\processdata.h
+1385676930 x:\idz80\src\processdata.h
 	"IDZ80Base.h"
 	"processbase.h"
 	"disassembled_item.h"
@@ -3819,6 +3819,7 @@
 	"logwindow.h"
 	"labelmanager.h"
 	"codeview_definitions.h"
+	"searchmanager.h"
 	<wx/gauge.h>
 	<wx/dynarray.h>
 
@@ -4123,7 +4124,7 @@
 	"wx/string.h"
 	"wx/filefn.h"
 
-1385596845 source:x:\idz80\src\codeview_events.cpp
+1385743532 source:x:\idz80\src\codeview_events.cpp
 	<wx/wx.h>
 	<wx/dcbuffer.h>
 	"codeview.h"
@@ -10582,12 +10583,12 @@
 
 1384179516 k:\wxw\wx300\include\wx\arrimpl.cpp
 
-1385599542 source:x:\idz80\src\dialog_search_argument.cpp
+1385676573 source:x:\idz80\src\dialog_search_argument.cpp
 	"dialog_search_argument.h"
 	<wx/sizer.h>
 	<wx/panel.h>
 
-1385597030 x:\idz80\src\dialog_search_argument.h
+1385671515 x:\idz80\src\dialog_search_argument.h
 	<wx/dialog.h>
 	<wx/textctrl.h>
 	<wx/checkbox.h>
@@ -10595,4 +10596,15 @@
 	<wx/button.h>
 	"IDZ80Base.h"
 	"dasmdata.h"
+	"search_defs.h"
+
+1385743107 x:\idz80\src\searchmanager.h
+	<wx/string.h>
+	"idz80base.h"
+	"search_defs.h"
+
+1385754609 source:x:\idz80\src\searchmanager.cpp
+	"searchmanager.h"
+
+1385672427 x:\idz80\src\search_defs.h
 

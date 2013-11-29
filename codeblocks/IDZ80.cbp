@@ -135,6 +135,9 @@
 		<Unit filename="../src/projectmanager_xml.h" />
 		<Unit filename="../src/rawdata.cpp" />
 		<Unit filename="../src/rawdata.h" />
+		<Unit filename="../src/search_defs.h" />
+		<Unit filename="../src/searchmanager.cpp" />
+		<Unit filename="../src/searchmanager.h" />
 		<Unit filename="../src/sourcecodelist.cpp" />
 		<Unit filename="../src/sourcecodelist.h" />
 		<Unit filename="../src/subroutine.cpp" />

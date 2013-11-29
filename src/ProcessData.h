@@ -21,6 +21,7 @@
 #include "logwindow.h"
 #include "labelmanager.h"
 #include "codeview_definitions.h"
+#include "searchmanager.h"
 
 #include <wx/gauge.h>
 #include <wx/dynarray.h>
@@ -55,7 +56,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         bool RemoveLineAndVarLabels(const int index);
         bool RemoveLineAndProgLabels(const int index);
 
-        bool SearchInstructionArgument(word argument_value, ProgramAddress &address, bool literal, bool variables, bool jumpscalls);
+        void SearchInstructionArgument(word argument_value, uint search_config);
+        bool SearchInstructionArgumentContinue(ProgramAddress &address);
 
 
         void SetGauge(wxGauge *g);
@@ -69,6 +71,8 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         SmartDecoder    *smart_disassembler_;
         LogWindow   *window_log_;
 
+        SearchManager   *search_status_;
+
         void RemoveLabelUsers(wxArrayInt *users);
         bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
         void ProcessLabel(LabelListCtrl *label);
@@ -76,6 +80,7 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         bool FindInArgumentVariables(DisassembledItem *de, word argument);
         bool FindInArgumentLiteral(DisassembledItem *de, word argument);
         bool FindInArgumentJumpsCalls(DisassembledItem *de, word argument);
+
 };
 
 

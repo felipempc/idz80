@@ -22,6 +22,7 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     Program = new RawData(logparent);
     Disassembled = new DAsmData(logparent);
     CodeViewLines = new CodeViewLine(Disassembled, this);
+    search_status_ = new SearchManager();
     disassembler_ = 0;
     smart_disassembler_ = 0;
 
@@ -60,6 +61,7 @@ ProcessData::~ProcessData()
     delete Mnemonics;
     delete Program;
     delete Disassembled;
+    delete search_status_;
 }
 
 
@@ -588,34 +590,54 @@ void ProcessData::RemoveLabelUsers(wxArrayInt *users)
 
 
 
-bool ProcessData::SearchInstructionArgument(word argument_value, ProgramAddress &address, bool literal, bool variables, bool jumpscalls)
+void ProcessData::SearchInstructionArgument(word argument_value, uint search_config)
+{
+    search_status_->Setup(0, Disassembled->GetCount() - 1, search_config, argument_value);
+}
+
+
+
+bool ProcessData::SearchInstructionArgumentContinue(ProgramAddress &address)
 {
     DisassembledItem *de;
-    uint    dasm_count = Disassembled->GetCount();
-    bool    found = false;
+    DisassembledIndex dasm_count;
+    bool    found = false,
+            ended = false;
 
-    for (uint i = 0; i < dasm_count; i++)
+
+    while (!found || !ended)
     {
-        de = Disassembled->GetData(i);
+        try
+        {
+            dasm_count = search_status_->Next();
+        }
+        catch (SearchException &e)
+        {
+            wxMessageBox(e.getErrorStr(), "Error ...");
+            break;
+        }
+
+        de = Disassembled->GetData(dasm_count);
         address = Disassembled->GetBaseAddress(0) + de->GetOffset();
-        if (literal && FindInArgumentLiteral(de, argument_value))
+        if (search_status_->SearchLiteral() && FindInArgumentLiteral(de, search_status_->Target()))
         {
             found = true;
             break;
         }
 
-        if (variables && FindInArgumentVariables(de, argument_value))
+        if (search_status_->SearchVariable() && FindInArgumentVariables(de, search_status_->Target()))
         {
             found = true;
             break;
         }
 
-        if (jumpscalls && FindInArgumentJumpsCalls(de, argument_value))
+        if (search_status_->SearchJumpsCalls() && FindInArgumentJumpsCalls(de, search_status_->Target()))
         {
             found = true;
             break;
         }
     }
+
     return found;
 }
 

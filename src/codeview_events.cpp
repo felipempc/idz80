@@ -70,6 +70,7 @@ void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
 void CodeView::OnKeyPress(wxKeyEvent& event)
 {
     int key;
+    ProgramAddress address;
     key = event.GetKeyCode();
 
     wxCommandEvent evtMakeData(wxEVT_MENU, idPOPUP_MAKEDATA);
@@ -156,6 +157,11 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
                         AddPendingEvent(evtMakeData);
                         break;
         case WXK_F3:
+                        if (Process->SearchInstructionArgumentContinue(address))
+                        {
+                            CenterAddress(address);
+                        }
+
                         LogIt("F3 Key pressed !");
                         break;
 
@@ -454,13 +460,13 @@ void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
 
     if (search_dialog->ShowModal() == wxID_OK)
     {
-        if (Process->SearchInstructionArgument(search_dialog->getValue(), address,
-                                           search_dialog->hasLiteralSearch(),
-                                           search_dialog->hasVariableSearch(),
-                                           search_dialog->hasJumpCallSearch()))
+        Process->SearchInstructionArgument(search_dialog->getValue(), search_dialog->getSearchConfig());
+
+        if (Process->SearchInstructionArgumentContinue(address))
         {
             CenterAddress(address);
         }
+
     }
 
 

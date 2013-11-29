@@ -18,6 +18,11 @@
 
 
 const long SearchArgumentDialog::ID_SEARCH = wxNewId();
+const long SearchArgumentDialog::ID_CHKBOX_LITERAL = wxNewId();
+const long SearchArgumentDialog::ID_CHKBOX_VARIABLE = wxNewId();
+const long SearchArgumentDialog::ID_CHKBOX_JUMPCALL = wxNewId();
+const long SearchArgumentDialog::ID_CHKBOX_WRAPAROUND = wxNewId();
+
 
 
 SearchArgumentDialog::SearchArgumentDialog(wxWindow *parent)
@@ -36,6 +41,7 @@ SearchArgumentDialog::SearchArgumentDialog(wxWindow *parent)
     debug_value_str_ = "Value to search:";
 
     value_ = 0;
+    search_config_ = SEARCH_JUMPS_CALLS | SEARCH_LITERALS | SEARCH_VARIABLES;
     check_jumps_calls_ = 0;
     check_literals_ = 0;
     check_variables_ = 0;
@@ -50,6 +56,7 @@ SearchArgumentDialog::SearchArgumentDialog(wxWindow *parent)
 
     Bind(wxEVT_TEXT, &SearchArgumentDialog::OnTextUpdate, this, ID_SEARCH);
     Bind(wxEVT_TEXT_ENTER, &SearchArgumentDialog::OnKeyEnterPressed, this, ID_SEARCH);
+    Bind(wxEVT_CHECKBOX, &SearchArgumentDialog::OnCheckBoxClicked, this);
 }
 
 
@@ -81,9 +88,11 @@ void SearchArgumentDialog::BuildDialog()
     wxBoxSizer *buttons_sizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *check_sizer = new wxBoxSizer(wxVERTICAL);
 
-    check_literals_ = new wxCheckBox(main_panel, wxID_ANY, "Literals");
-    check_variables_ = new wxCheckBox(main_panel, wxID_ANY, "Variables");
-    check_jumps_calls_ = new wxCheckBox(main_panel, wxID_ANY, "Jumps and Calls");
+    check_literals_ = new wxCheckBox(main_panel, ID_CHKBOX_LITERAL, "Literals");
+    check_variables_ = new wxCheckBox(main_panel, ID_CHKBOX_VARIABLE, "Variables");
+    check_jumps_calls_ = new wxCheckBox(main_panel, ID_CHKBOX_JUMPCALL, "Jumps and Calls");
+    check_wrap_around_ = new wxCheckBox(main_panel, ID_CHKBOX_WRAPAROUND, "Wrap around");
+    check_sizer->Add(check_wrap_around_);
     check_sizer->Add(check_literals_);
     check_sizer->Add(check_variables_);
     check_sizer->Add(check_jumps_calls_);
@@ -116,6 +125,39 @@ void SearchArgumentDialog::OnKeyEnterPressed(wxCommandEvent &event)
 {
     if (search_button_->IsEnabled())
         EndModal(wxID_OK);
+}
+
+
+void SearchArgumentDialog::OnCheckBoxClicked(wxCommandEvent &event)
+{
+    if (event.GetId() == ID_CHKBOX_JUMPCALL)
+    {
+        search_config_ = search_config_ & (~SEARCH_JUMPS_CALLS);
+        if (check_jumps_calls_->IsChecked())
+            search_config_ = search_config_ | SEARCH_JUMPS_CALLS;
+    }
+
+    if (event.GetId() == ID_CHKBOX_VARIABLE)
+    {
+        search_config_ = search_config_ & (~SEARCH_VARIABLES);
+        if (check_variables_->IsChecked())
+            search_config_ = search_config_ | SEARCH_VARIABLES;
+    }
+
+    if (event.GetId() == ID_CHKBOX_LITERAL)
+    {
+        search_config_ = search_config_ & (~SEARCH_LITERALS);
+        if (check_literals_->IsChecked())
+            search_config_ = search_config_ | SEARCH_LITERALS;
+    }
+
+    if (event.GetId() == ID_CHKBOX_WRAPAROUND)
+    {
+        search_config_ = search_config_ & (~SEARCH_WRAPARAOUND);
+        if (check_wrap_around_->IsChecked())
+            search_config_ = search_config_ | SEARCH_WRAPARAOUND;
+
+    }
 }
 
 
@@ -189,31 +231,9 @@ bool SearchArgumentDialog::CheckHexadecimalValue(const wxString &hexstr, long &c
 }
 
 
-
-bool SearchArgumentDialog::hasJumpCallSearch()
+uint SearchArgumentDialog::getSearchConfig()
 {
-    if (check_jumps_calls_)
-        return check_jumps_calls_->IsChecked();
-    else
-        return false;
-}
-
-
-bool SearchArgumentDialog::hasLiteralSearch()
-{
-    if (check_literals_)
-        return check_literals_->IsChecked();
-    else
-        return false;
-}
-
-
-bool SearchArgumentDialog::hasVariableSearch()
-{
-    if (check_variables_)
-        return check_variables_->IsChecked();
-    else
-        return false;
+    return search_config_;
 }
 
 

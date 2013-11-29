@@ -5,3 +5,4 @@
 - Modificar base numerica dos DB e DW
 - Ativar WirdRSTRoutines ao desassemblar pequenos trechos (não está funcionando corretamente)
 - Popup para procura em argumentos
+  - FIXME: Procura circular não para.
