@@ -11,7 +11,7 @@
 
 #include <wx/menu.h>
 #include "labelslist.h"
-#include "EditLabelDlg.h"
+#include "editlabel_dialog.h"
 
 
 

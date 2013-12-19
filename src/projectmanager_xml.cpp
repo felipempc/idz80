@@ -13,7 +13,7 @@
 #include <wx/filefn.h>
 
 #include "projectmanager_xml.h"
-#include "mnemonicitem.h"
+#include "mnemonic_item.h"
 #include "mndb_tools.h"
 
 

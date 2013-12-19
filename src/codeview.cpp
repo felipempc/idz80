@@ -14,6 +14,7 @@
 #include <wx/region.h>
 #include <wx/textdlg.h>
 #include <wx/dcclient.h>
+#include <wx/accel.h>
 #include "codeview.h"
 #include "disassembled_item.h"
 
@@ -58,13 +59,14 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
     SetVirtualSize(wxDefaultCoord, m_fontHeight);
 
     SetupColors();
-
     SetupEvents();
-
+    SetupAcceleratorKeys();
 
     // Debug Area
     SetTextLog(logparent);
     ModuleName = "CodeView";
+
+    DisableKeyboardScrolling(); //wxScrolledCanvas uses arrows,home,end,pageup and pagedown to scroll by default
 
 }
 
@@ -79,6 +81,23 @@ void CodeView::SetupFont()
     dc.SetFont(*font);
     m_fontHeight = dc.GetTextExtent("X").GetHeight();
     m_fontWidth = dc.GetTextExtent("X").GetWidth();
+}
+
+
+void CodeView::SetupAcceleratorKeys()
+{
+    wxAcceleratorEntry hot_keys[4];
+
+    hot_keys[0].Set(wxACCEL_NORMAL, (int) 'd', idPOPUP_MAKEDATA);
+    hot_keys[1].Set(wxACCEL_NORMAL, (int) 'c', idPOPUP_DISASM);
+    hot_keys[2].Set(wxACCEL_CTRL, (int) 'f', idPOPUP_SEARCH_ARGUMENT);
+    hot_keys[3].Set(wxACCEL_NORMAL, WXK_F3, idSEARCH_CONTINUE);
+    //hot_keys[4].Set(wxACCEL_NORMAL, WXK_PAGEDOWN, idKEY_PAGEDOWN);
+    //hot_keys[5].Set(wxACCEL_NORMAL, WXK_PAGEUP, idKEY_PAGEUP);
+
+    wxAcceleratorTable hot_keys_list(4, hot_keys);
+
+    SetAcceleratorTable(hot_keys_list);
 }
 
 
@@ -105,7 +124,8 @@ void CodeView::SetupEvents()
     Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::OnScrollLineUp, this);
     Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
     Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::OnScrollPageUp, this);
-
+    //Bind(wxEVT_MENU, &CodeView::OnHotKeyPageDown, this, idKEY_PAGEDOWN);
+    //Bind(wxEVT_MENU, &CodeView::OnHotKeyPageUp, this, idKEY_PAGEUP);
 
     Bind(wxEVT_PAINT, &CodeView::OnPaint, this);
 
@@ -149,6 +169,7 @@ void CodeView::SetupEvents()
     Bind(wxEVT_MENU, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
 
     Bind(wxEVT_MENU, &CodeView::OnPopUpMenuSearchArgument, this, idPOPUP_SEARCH_ARGUMENT);
+    Bind(wxEVT_MENU, &CodeView::OnSearchContinue, this, idSEARCH_CONTINUE);
 }
 
 
@@ -211,7 +232,8 @@ void CodeView::OnDraw(wxDC &dc)
         }
         else
         {
-            RenderBackGroundBlur(dc, fullRect);
+            PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
+            //RenderBackGroundBlur(dc, fullRect);
         }
     }
 }

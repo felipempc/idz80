@@ -12,20 +12,67 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include "codeview.h"
-#include "dialog_search_argument.h"
+#include "search_argument_dialog.h"
 
 
 void CodeView::OnScrollLineDown(wxScrollWinEvent& event)
 {
-    Scroll(-1, GetFirstLine() + 1);
-    RefreshRect(CalcCursorRfshRect());
+    if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->GetCount() - 1))
+    {
+        if (!MultiSelection)
+            line_info.cursorLastPosition = line_info.cursorPosition;
+
+        line_info.cursorPosition++;
+
+        ClearCursor();
+        DoSelection();
+
+        if (line_info.cursorPosition > GetLastLine())
+        {
+                Scroll(-1, GetFirstLine() + 1);
+        }
+            RefreshRect(CalcCursorRfshRect());
+
+        if (line_info.selectedLineCount == 1)
+            TreatSingleSelection();
+        else
+            if (line_info.selectedLineCount > 1)
+                TreatMultiSelection();
+
+        if (Selecting)
+            LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
+    }
 }
 
 
 
 void CodeView::OnScrollLineUp(wxScrollWinEvent& event)
 {
-    Scroll(-1, GetFirstLine() - 1);
+    if (line_info.cursorPosition > 0)
+    {
+        if (!MultiSelection)
+            line_info.cursorLastPosition = line_info.cursorPosition;
+
+        line_info.cursorPosition--;
+
+        ClearCursor();
+        DoSelection();
+
+        if (line_info.cursorPosition < GetFirstLine())
+        {
+            Scroll(-1, GetFirstLine() - 1);
+        }
+        RefreshRect(CalcCursorRfshRect());
+
+        if (line_info.selectedLineCount == 1)
+            TreatSingleSelection();
+        else
+            if (line_info.selectedLineCount > 1)
+                TreatMultiSelection();
+
+        if (Selecting)
+            LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
+    }
 }
 
 
@@ -65,108 +112,65 @@ void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
 }
 
 
+void CodeView::CursorPageDown()
+{
+    wxScrollWinEvent evtPageDown(wxEVT_SCROLLWIN_PAGEDOWN);
+    AddPendingEvent(evtPageDown);
+}
+
+
+
+
+void CodeView::CursorPageUp()
+{
+    wxScrollWinEvent evtPageUp(wxEVT_SCROLLWIN_PAGEUP);
+    AddPendingEvent(evtPageUp);
+}
+
+
+void CodeView::CursorDown()
+{
+    wxScrollWinEvent evtLineDown(wxEVT_SCROLLWIN_LINEDOWN);
+    AddPendingEvent(evtLineDown);
+}
+
+void CodeView::CursorUp()
+{
+    wxScrollWinEvent evtLineUp(wxEVT_SCROLLWIN_LINEUP);
+    AddPendingEvent(evtLineUp);
+}
+
 
 // Event handler for Page up/down and direction keys
 void CodeView::OnKeyPress(wxKeyEvent& event)
 {
     int key;
-    ProgramAddress address;
     key = event.GetKeyCode();
-
-    wxCommandEvent evtMakeData(wxEVT_MENU, idPOPUP_MAKEDATA);
-    wxCommandEvent evtDisassemble(wxEVT_MENU, idPOPUP_DISASM);
-    wxScrollWinEvent evtLineDown(wxEVT_SCROLLWIN_LINEDOWN);
-    wxScrollWinEvent evtLineUp(wxEVT_SCROLLWIN_LINEUP);
-    wxScrollWinEvent evtPageDown(wxEVT_SCROLLWIN_PAGEDOWN);
-    wxScrollWinEvent evtPageUp(wxEVT_SCROLLWIN_PAGEUP);
-
-#define C_KEY   67
-#define D_KEY   68
 
     switch (key)
     {
+
         case WXK_DOWN:
-                        if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->GetCount() - 1))
-                        {
-                            if (!MultiSelection)
-                                line_info.cursorLastPosition = line_info.cursorPosition;
-
-                            line_info.cursorPosition++;
-
-                            ClearCursor();
-                            DoSelection();
-
-                            if (line_info.cursorPosition > GetLastLine())
-                                AddPendingEvent(evtLineDown);
-                            else
-                                RefreshRect(CalcCursorRfshRect());
-
-                            if (line_info.selectedLineCount == 1)
-                                TreatSingleSelection();
-                            else
-                                if (line_info.selectedLineCount > 1)
-                                    TreatMultiSelection();
-
-                            if (Selecting)
-                                LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
-                        }
+                        CursorDown();
                         break;
         case WXK_UP:
-                        if (line_info.cursorPosition > 0)
-                        {
-                            if (!MultiSelection)
-                                line_info.cursorLastPosition = line_info.cursorPosition;
-
-                            line_info.cursorPosition--;
-
-                            ClearCursor();
-                            DoSelection();
-
-                            if (line_info.cursorPosition < GetFirstLine())
-                                AddPendingEvent(evtLineUp);
-                            else
-                                RefreshRect(CalcCursorRfshRect());
-
-                            if (line_info.selectedLineCount == 1)
-                                TreatSingleSelection();
-                            else
-                                if (line_info.selectedLineCount > 1)
-                                    TreatMultiSelection();
-
-                            if (Selecting)
-                                LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
-                        }
+                        CursorUp();
                         break;
         case WXK_NUMPAD_PAGEDOWN:
         case WXK_PAGEDOWN:
-                        AddPendingEvent(evtPageDown);
+                        CursorPageDown();
                         break;
         case WXK_NUMPAD_PAGEUP:
         case WXK_PAGEUP:
-                        AddPendingEvent(evtPageUp);
+                        CursorPageUp();
                         break;
         case WXK_SHIFT:
                         if (!Selecting)
 							Selecting = true;
                         MultiSelection = true;
                         break;
-        case C_KEY:
-                        AddPendingEvent(evtDisassemble);
-                        break;
-        case D_KEY:
-                        AddPendingEvent(evtMakeData);
-                        break;
-        case WXK_F3:
-                        if (Process->SearchInstructionArgumentContinue(address))
-                        {
-                            CenterAddress(address);
-                        }
-
-                        LogIt("F3 Key pressed !");
-                        break;
-
         default:
-                        LogIt(wxString::Format("%X pressed !",key));
+                        //LogIt(wxString::Format("OnKeyPress: <%X> Pressed !", key));
                         event.Skip();
     }
 }
@@ -183,10 +187,22 @@ void CodeView::OnKeyRelease(wxKeyEvent& event)
         case WXK_SHIFT:
                         Selecting = false;
                         break;
-        default:        event.Skip();
+        default:
+                        //LogIt(wxString::Format("OnKeyRelease: <%X> Released !", key));
+                        event.Skip();
     }
 }
 
+
+void CodeView::OnSearchContinue(wxCommandEvent& event)
+{
+    ProgramAddress address;
+
+    if (Process->SearchInstructionArgumentContinue(address))
+    {
+        CenterAddress(address);
+    }
+}
 
 
 

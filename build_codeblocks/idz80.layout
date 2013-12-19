@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\include\subroutine.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="558" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\process_data.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="469" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\systemlabels.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="635" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\projectmanager_xml.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="599" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\codeviewline.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="539" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\dasmdata.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="648" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\z80register.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="524" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\search_argument_dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="517" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\decoder.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="628" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\z80registerlist.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="526" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\disassembled_item.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="568" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\editlabel_dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="689" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\codeview_events.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="564" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\idz80_main_dialog.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1299" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="..\include\labelitem.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="560" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\labelslist.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="677" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\disassembled_item.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="544" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\editlabel_dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="495" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\file_settings_dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="496" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\codegenerator.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="599" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\mndb.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="642" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\ShowFileInfo.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="679" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\idz80_app.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="512" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\mnemonic_item.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="597" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\idz80_base.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="465" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\idz80_main_dialog.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4746" topLine="158" />
+		</Cursor>
+	</File>
+	<File name="..\include\process_data.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="859" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="..\include\projectmanager_xml.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="561" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\labelslist.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="536" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\rawdata.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="689" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\search_argument_dialog.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="697" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\searchmanager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="563" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\sourcecodelist.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="540" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\src\mnemonic_item.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="476" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\include\codeview.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="660" topLine="0" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>
