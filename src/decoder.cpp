@@ -90,7 +90,7 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
     // ensure it won't overwrite existing dasmitems
     next_de = process_->Disassembled->GetData(dasm_position);
     if (next_de == 0)
-        scan_limit = process_->Program->GetBufferSize();
+        scan_limit = process_->Program->GetSize();
     else
         scan_limit = next_de->GetOffset() - prg_index;
 
@@ -267,7 +267,7 @@ void Decoder::FullDisassemble(LabelManager *parent)
     if (process_->Program->isCartridge())
         SetCartridgeLabels();
 
-    f = process_->Program->GetBufferSize();
+    f = process_->Program->GetSize();
     for (i = 0; i < f; i++)
     {
         de = new DisassembledItem(process_->Program);

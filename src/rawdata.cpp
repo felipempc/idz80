@@ -14,25 +14,17 @@
 
 // RawData implementation
 
-const byte RawData::BIN_ID;
-const uint RawData::BIN_HEADER_SIZE;
-const uint RawData::CARTRIDGE_HEADER_SIZE;
-const word RawData::ID_CARTRIDGE_ROM;
-const word RawData::ID_CARTRIDGE_SUBROM;
-
-
 RawData::RawData(LogWindow *logparent)
 {
-    m_buffer.SetDataLen(0);
+    Clear();
     SetFileType(UNKNOWN);
-    m_header_offset = 0;
-    m_cartridge = 0;
-    m_binheader = 0;
-    m_iscartridge = false;
-    m_isbasic = false;
+
     ModuleName = "RawData";
     SetTextLog(logparent);
 }
+
+
+
 
 RawData::~RawData(void)
 {
@@ -41,70 +33,97 @@ RawData::~RawData(void)
 
 
 
-bool RawData::isCartridge()
+
+bool RawData::LoadToBuffer(const wxString filename)
 {
-	return m_iscartridge;
+    wxFile 	program_file;
+    void    *tempbuffer;
+    uint    buffer_size;
+    int     bytesread;
+    bool    success = false;
+
+    tempbuffer = 0;
+
+    if (program_file.Open(filename))
+    {
+        buffer_size = static_cast<uint>(program_file.Length());
+        tempbuffer = buffer_.GetWriteBuf(buffer_size * 2);
+        if (tempbuffer)
+        {
+            bytesread = program_file.Read(tempbuffer, buffer_size);
+            if (bytesread == wxInvalidOffset)
+            {
+                LogIt("Error reading the file.");
+                buffer_.Clear();
+                tempbuffer = 0;
+            }
+            else
+            {
+                buffer_.UngetWriteBuf(buffer_size);
+                filename_.Assign(filename);
+                success = true;
+            }
+        }
+        else
+        {
+            LogIt("Couldn't allocate buffer to load the file.");
+        }
+        program_file.Close();
+    }
+
+    return success;
 }
+
+
+
+
+void RawData::SetupFileType()
+{
+    wxString ext;
+
+    ext = filename_.GetExt();
+    ext = ext.Lower();
+    if (ext == "com")
+        SetFileType(COM);
+    else
+        if (ext == "rom")
+        {
+            SetFileType(ROM);
+        }
+        else
+            if (ext == "bin")
+            {
+                SetFileType(BIN);
+            }
+            else
+                SetFileType(UNKNOWN);
+}
+
+
 
 
 bool RawData::Open(wxString filename)
 {
-    wxFile 	f;
-    void 	*tempbuffer;
-    uint 	bytesread = 0,
-			buffer_size = 0;
-    wxString ext;
-    bool    ret;
+    bool    success = false;
 
-
-    ret = false;
-
-
-    if (f.Open(filename))
+    Clear();
+    if (LoadToBuffer(filename))
     {
-        if (IsLoaded())
-            Close();
-
-        m_header_offset = 0;
-
-        buffer_size = (uint)f.Length();
-        tempbuffer = m_buffer.GetWriteBuf(buffer_size);
-        if (tempbuffer != 0)
-            bytesread = (uint)f.Read(tempbuffer, buffer_size);
-        f.Close();
-
-        if (bytesread == buffer_size)
-        {
-            m_buffer.UngetWriteBuf(buffer_size);
-            rawdata_filename.Assign(filename);
-            ext = filename.AfterLast('.');
-            ext = ext.Lower();
-            if (ext == "com")
-                SetFileType(COM);
-            else
-                if (ext == "rom")
-                {
-                    SetFileType(ROM);
-				}
-                else
-                    if (!SetFileType(BIN))
-                        SetFileType(UNKNOWN);
-
-            ret = true;
-        }
-        else
-            m_buffer.SetDataLen(0);
+        SetupFileType();
+        success = true;
     }
 
     #ifdef IDZ80DEBUG
-    if (ret)
+    if (success)
         LogIt(wxString::Format("File opened is %s.\n",filename.c_str()));
     else
         LogIt("File not found !\n");
     #endif
 
-    return ret;
+    return success;
 }
+
+
 
 
 void RawData::Close()
@@ -117,25 +136,15 @@ void RawData::Close()
 
 void RawData::Clear()
 {
-    if (m_cartridge != 0)
-    {
-        delete m_cartridge;
-        m_cartridge = 0;
-    }
+    ClearBin();
+    ClearCartridgeInfo();
 
-    if (m_binheader != 0)
-    {
-        delete m_binheader;
-        m_binheader = 0;
-    }
-
-    memset(m_buffer.GetData(), '\0', m_buffer.GetDataLen());
-    m_buffer.SetBufSize(0);
-
-    rawdata_filename.Clear();
+    buffer_.Clear();
+    filename_.Clear();
 
     SetFileType(UNKNOWN);
-    m_isbasic = false;
+
+    header_offset_ = 0;
 }
 
 
@@ -143,8 +152,10 @@ void RawData::Clear()
 
 bool RawData::IsLoaded()
 {
-    return (m_buffer.GetDataLen() > 0);
+    return (buffer_.GetDataLen() > 0);
 }
+
+
 
 
 byte RawData::GetData(FileOffset offset)
@@ -152,55 +163,74 @@ byte RawData::GetData(FileOffset offset)
     byte *buffertemp;
     uint sz;
 
-    sz = (GetBufferSize() - 1);
+    sz = (GetSize() - 1);
 
     if (offset > sz)
         offset = sz;
-    buffertemp = (byte *)m_buffer.GetData();
+    buffertemp = static_cast<byte *>(buffer_.GetData());
     buffertemp += offset;
-    buffertemp += m_header_offset;
+    buffertemp += header_offset_;
     return (*buffertemp);
 }
 
-uint RawData::GetBufferSize()
+
+
+
+uint RawData::GetSize()
 {
     uint sz;
-    sz = (uint)m_buffer.GetDataLen();
-    sz -= m_header_offset;
+    sz = static_cast<uint>(buffer_.GetDataLen());
+    sz -= header_offset_;
     return sz;
 }
 
 
+
+
 wxString RawData::GetFileName()
 {
-    return rawdata_filename.GetFullName();
+    return filename_.GetFullName();
 }
+
+
+
 
 wxString RawData::GetFileNameAndPath()
 {
-    return rawdata_filename.GetFullPath();
+    return filename_.GetFullPath();
 }
+
+
+
 
 wxString RawData::GetFilePath()
 {
-    return rawdata_filename.GetPath();
+    return filename_.GetPath();
 }
+
+
+
 
 uint RawData::GetFileSize()
 {
-    return GetBufferSize();
+    return static_cast<uint>(buffer_.GetDataLen());
 }
+
+
 
 
 FileType RawData::GetFileType()
 {
-    return m_filetype;
+    return filetype_;
 }
+
+
+
 
 wxString RawData::GetFileTypeStr()
 {
     wxString str;
-    switch (m_filetype)
+    switch (filetype_)
     {
         case COM:   str = "COM";
                     break;
@@ -214,76 +244,66 @@ wxString RawData::GetFileTypeStr()
     return str;
 }
 
-bool RawData::SetFileType(FileType filetype)
-{
-    bool    ret = false;
 
+
+
+void RawData::SetFileType(FileType filetype)
+{
     switch (filetype)
     {
         case COM:
-                m_iscartridge = false;
-                m_header_offset = 0;
+                header_offset_ = 0;
                 StartAddress = 0x100;
-                EndAddress = 0x100 + GetBufferSize() - 1;
+                EndAddress = 0x100 + GetSize() - 1;
                 ExecAddress = 0x100;
-                m_filetype = filetype;
-                ret = true;
+                filetype_ = filetype;
                 break;
         case BIN:
-                m_iscartridge = false;
-                if (ValidateBIN())
+                if (FillAndValidateBIN(buffer_.GetData()))
                 {
-                    StartAddress = m_binheader->start_address;
-                    EndAddress = m_binheader->end_address;
-                    ExecAddress = m_binheader->execution_address;
-                    m_header_offset = BIN_HEADER_SIZE;
-                    m_filetype = filetype;
-                    ret = true;
+                    const BinHeader *binheader = GetBinHeader();
+                    StartAddress = binheader->start_address;
+                    EndAddress = binheader->end_address;
+                    ExecAddress = binheader->execution_address;
+                    header_offset_ = BIN_HEADER_SIZE;
+                    filetype_ = filetype;
                 }
                 else
                 {
-                    StartAddress = 0;
-                    EndAddress = GetBufferSize() - 1;
-                    ExecAddress = 0;
-                    m_header_offset = 0;
-                    m_filetype = UNKNOWN;
+					header_offset_ = 0;
+					StartAddress = 0;
+					EndAddress = GetSize() - 1;
+					ExecAddress = 0;
+                    filetype_ = UNKNOWN;
                 }
                 break;
         case ROM:
-                m_filetype = filetype;
-                ret = true;
-				if (ValidateCartridge())
+                filetype_ = filetype;
+				if (ValidateCartridge(buffer_.GetData()))
 				{
-					m_header_offset = CARTRIDGE_HEADER_SIZE;
-					StartAddress = 0x4000 + m_header_offset;
+					header_offset_ = CARTRIDGE_HEADER_SIZE;
+					StartAddress = CARTRIDGE_HEADER_ADDRESS + header_offset_;
 					ExecAddress = StartAddress;
-					EndAddress = 0x4000 + GetBufferSize() - 1;
-					m_iscartridge = true;
+					EndAddress = StartAddress + GetSize() - 1;
 				}
 				else
 				{
-					m_header_offset = 0;
+					header_offset_ = 0;
 					StartAddress = 0;
-					EndAddress = GetBufferSize() - 1;
+					EndAddress = GetSize() - 1;
 					ExecAddress = 0;
-					m_iscartridge = false;
 				}
 				break;
         default:
         case UNKNOWN:
-                    m_iscartridge = false;
-					m_header_offset = 0;
+					header_offset_ = 0;
 					StartAddress = 0;
-					EndAddress = GetBufferSize() - 1;
+					EndAddress = GetSize() - 1;
 					ExecAddress = 0;
-                    m_filetype = UNKNOWN;
-					ret = true;
+                    filetype_ = UNKNOWN;
 					break;
     }
-    return ret;
 }
-
-
 
 void RawData::SetStrFileType(const wxString &str_type)
 {
@@ -302,131 +322,6 @@ void RawData::SetStrFileType(const wxString &str_type)
 }
 
 
-bool RawData::ValidateBIN()
-{
-    bool	ret = false;
-    byte    header_id;
-
-    m_header_offset = 0;
-    header_id = GetData(0);
-
-    if (header_id == BIN_ID)
-    {
-        if (m_binheader == 0)
-            m_binheader = new BinHeader;
-        m_binheader->start_address = (GetData(1) + 0x100 * GetData(2)) & 0xFFFF;
-        m_binheader->end_address = (GetData(3) + 0x100 * GetData(4)) & 0xFFFF;
-        m_binheader->execution_address = (GetData(5) + 0x100 * GetData(6)) & 0xFFFF;
-        if ((m_binheader->end_address > m_binheader->start_address) &&
-            (m_binheader->end_address > m_binheader->execution_address) &&
-            (m_binheader->execution_address >= m_binheader->start_address))
-            ret = true;
-        else
-        {
-            delete m_binheader;
-            m_binheader = 0;
-            ret = false;
-        }
-    }
-    return ret;
-}
-
-
-bool RawData::ValidateCartridge()
-{
-	word    header_id, startaddr, endaddr;
-	bool	ret = false;
-
-    m_header_offset = 0;
-	header_id = (GetData(1) + 0x100 * GetData(0)) & 0xFFFF;
-
-
-	if ((header_id == ID_CARTRIDGE_ROM) || (header_id == ID_CARTRIDGE_SUBROM))
-	{
-	    if (m_cartridge == 0)
-            m_cartridge = new CartHeader;
-		m_cartridge->id = header_id;
-		m_cartridge->init = (GetData(2) + 0x100 * GetData(3)) & 0xFFFF;
-		m_cartridge->statement = (GetData(4) + 0x100 * GetData(5)) & 0xFFFF;
-		m_cartridge->device = (GetData(6) + 0x100 * GetData(7)) & 0xFFFF;
-		m_cartridge->text = (GetData(8) + 0x100 * GetData(9)) & 0xFFFF;
-
-		startaddr = 0x4000;
-		endaddr = startaddr + GetBufferSize() - 1;
-
-		if (m_cartridge->init != 0)
-		{
-            if ((m_cartridge->init > startaddr) && (m_cartridge->init < endaddr))
-                ret = true;
-            else
-                ret = false;
-		}
-		if (m_cartridge->statement != 0)
-		{
-            if ((m_cartridge->statement > startaddr) && (m_cartridge->statement < endaddr))
-                ret = true;
-            else
-                ret = false;
-		}
-		if (m_cartridge->device != 0)
-		{
-            if ((m_cartridge->device > startaddr) && (m_cartridge->device < endaddr))
-                ret = true;
-            else
-                ret = false;
-		}
-		if (m_cartridge->text != 0)  //We don't want basic programs
-		{
-            ret = false;
-            m_isbasic = true;
-		}
-
-		if (!ret)
-        {
-            delete m_cartridge;
-            m_cartridge = 0;
-        }
-        else
-            m_header_offset = CARTRIDGE_HEADER_SIZE;
-	}
-	else
-        if (m_cartridge != 0)
-        {
-            delete m_cartridge;
-            m_cartridge = 0;
-        }
-	return ret;
-}
-
-
-
-bool RawData::GetEntries(SortedIntArray &entrylist)
-{
-    bool    ret = false;
-
-    entrylist.Clear();
-
-    if ((m_iscartridge) && (m_cartridge != 0))
-    {
-        if (m_cartridge->init != 0)
-            entrylist.Add(m_cartridge->init);
-        if (m_cartridge->statement != 0)
-            entrylist.Add(m_cartridge->statement);
-        if (m_cartridge->device != 0)
-            entrylist.Add(m_cartridge->device);
-    }
-    else
-        entrylist.Add(ExecAddress);
-
-    //FIXME: It always will be true.
-    if (entrylist.GetCount() > 0)
-    {
-        ret = true;
-    }
-
-    return ret;
-}
-
 
 
 bool RawData::isROM()
@@ -434,10 +329,16 @@ bool RawData::isROM()
 	return (GetFileType() == ROM);
 }
 
+
+
+
 bool RawData::isBIN()
 {
 	return (GetFileType() == BIN);
 }
+
+
+
 
 bool RawData::isCOM()
 {
@@ -445,38 +346,15 @@ bool RawData::isCOM()
 }
 
 
-bool RawData::isBasicCartridge()
-{
-    return m_isbasic;
-}
 
-bool RawData::CheckCartridge()
-{
-    SetFileType(ROM);
-    return m_iscartridge;
-}
 
 void RawData::ForceNoCartridge()
 {
     StartAddress = 0;
-    EndAddress = GetBufferSize();
+    EndAddress = GetSize() - 1;
     ExecAddress = StartAddress;
-    m_header_offset = 0;
-    m_iscartridge = false;
-    if (m_cartridge != 0)
-    {
-        delete m_cartridge;
-        m_cartridge = 0;
-    }
+    header_offset_ = 0;
+    ClearCartridgeInfo();
 }
 
 
-const CartHeader *RawData::GetCartridgeHeader()
-{
-    return m_cartridge;
-}
-
-const BinHeader *RawData::GetBinHeader()
-{
-    return m_binheader;
-}

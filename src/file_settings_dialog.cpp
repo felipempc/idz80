@@ -316,7 +316,11 @@ void FileSettingsDialog::OnRadioBoxSelect(wxCommandEvent &event)
             break;
     case 1: //ROM Cartridge
             m_program->SetFileType(ROM);
-            m_program->CheckCartridge();
+            if (!m_program->isCartridge())
+            {
+                RadioFileTypeBox->SetSelection(0);
+                RadioFileTypeBox->Enable(1, false);
+            }
             break;
     case 2: //COM
             m_program->SetFileType(COM);

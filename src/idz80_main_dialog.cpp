@@ -12,7 +12,7 @@
 #include "idz80_main_dialog.h"
 
 #include "version.h"
-#include "ShowFileInfo.h"
+#include "fileinfo_dialog.h"
 #include "systemlabels.h"
 #include "wx/dir.h"
 
@@ -494,7 +494,7 @@ void IDZ80::OpenProgramFile(wxString filename)
 
     if ((!filename.IsEmpty()) && process->Program->Open(filename))
     {
-        if (process->Program->isBasicCartridge())
+        if (process->Program->HasBasic())
         {
             wxMessageBox("This ROM file has a program written in BASIC. IDZ80 don't support it.", "File type unsupported !");
             process->Program->Close();
@@ -508,7 +508,7 @@ void IDZ80::OpenProgramFile(wxString filename)
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText("File size: ");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
-		info.Printf("%d bytes\n",process->Program->GetBufferSize());
+		info.Printf("%d bytes\n",process->Program->GetSize());
 		PanelLog->AppendText(info);
 
 		config.SetData();

@@ -74,7 +74,7 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
         next_address_ = process_->Program->ExecAddress;
         labels_->prog_labels->AddLabel(next_address_, "START");
     }
-    program_size = process_->Program->GetBufferSize();
+    program_size = process_->Program->GetSize();
     dsm_item = program_size;
     while (processing)
     {
@@ -462,7 +462,7 @@ void SmartDecoder::FillData()
 
 	i = de_2->GetOffset() + de_2->GetLength();
 
-	for(count = i; count < process_->Program->GetBufferSize(); count++)
+	for(count = i; count < process_->Program->GetSize(); count++)
 	{
 		de_1 = new DisassembledItem(process_->Program);
 		de_1->SetLength(1);

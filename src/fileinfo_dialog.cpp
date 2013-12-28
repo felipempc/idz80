@@ -8,7 +8,7 @@
  * Window that shows information about a loaded program
  **************************************************************/
 
-#include "ShowFileInfo.h"
+#include "fileinfo_dialog.h"
 #include <wx/intl.h>
 #include <wx/string.h>
 #include "rawdata.h"

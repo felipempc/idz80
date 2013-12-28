@@ -18,6 +18,7 @@
 					<Add directory="$(WXW)/include" />
 					<Add directory="X:/idz80/include" />
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
@@ -42,6 +43,7 @@
 					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
 					<Add directory="$(WXW)/include" />
 					<Add directory="X:/idz80/include" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
@@ -77,7 +79,8 @@
 		<Linker>
 			<Add option="-mthreads" />
 		</Linker>
-		<Unit filename="../include/ShowFileInfo.h" />
+		<Unit filename="../include/binfile.h" />
+		<Unit filename="../include/cartridge_rom_file.h" />
 		<Unit filename="../include/codegenerator.h" />
 		<Unit filename="../include/codeview.h" />
 		<Unit filename="../include/codeview_definitions.h" />
@@ -88,6 +91,7 @@
 		<Unit filename="../include/disassembled_item.h" />
 		<Unit filename="../include/editlabel_dialog.h" />
 		<Unit filename="../include/file_settings_dialog.h" />
+		<Unit filename="../include/fileinfo_dialog.h" />
 		<Unit filename="../include/idz80_app.h" />
 		<Unit filename="../include/idz80_base.h" />
 		<Unit filename="../include/idz80_main_dialog.h" />
@@ -103,6 +107,7 @@
 		<Unit filename="../include/process_data.h" />
 		<Unit filename="../include/projectmanager_xml.h" />
 		<Unit filename="../include/rawdata.h" />
+		<Unit filename="../include/rawdatamanager.h" />
 		<Unit filename="../include/search_argument_dialog.h" />
 		<Unit filename="../include/search_defs.h" />
 		<Unit filename="../include/searchmanager.h" />
@@ -112,6 +117,8 @@
 		<Unit filename="../include/version.h" />
 		<Unit filename="../include/z80register.h" />
 		<Unit filename="../include/z80registerlist.h" />
+		<Unit filename="../src/binfile.cpp" />
+		<Unit filename="../src/cartridge_rom_file.cpp" />
 		<Unit filename="../src/codegenerator.cpp" />
 		<Unit filename="../src/codeview.cpp" />
 		<Unit filename="../src/codeview_events.cpp" />
@@ -138,6 +145,7 @@
 		<Unit filename="../src/process_data.cpp" />
 		<Unit filename="../src/projectmanager_xml.cpp" />
 		<Unit filename="../src/rawdata.cpp" />
+		<Unit filename="../src/rawdatamanager.cpp" />
 		<Unit filename="../src/search_argument_dialog.cpp" />
 		<Unit filename="../src/searchmanager.cpp" />
 		<Unit filename="../src/sourcecodelist.cpp" />
@@ -145,6 +153,7 @@
 		<Unit filename="../src/systemlabels.cpp" />
 		<Unit filename="../src/z80register.cpp" />
 		<Unit filename="../src/z80registerlist.cpp" />
+		<Unit filename="../todo.txt" />
 		<Extensions>
 			<code_completion />
 			<envvars />

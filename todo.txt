@@ -1,4 +1,6 @@
-﻿# TODO idz80
+﻿# TODO idz80 VERSÃO REESCRITA
+
+- Permitir abrir programas que contenham mais de um arquivo
 
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)

@@ -29,6 +29,7 @@ EditLabelDlg::EditLabelDlg(wxWindow* parent,bool editmode,wxWindowID id,const wx
 	wxFlexGridSizer* FlexGridSizer1;
 
 	Create(parent, id, _("Edit Label"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
+
 	SetClientSize(wxSize(408,298));
 	Move(wxDefaultPosition);
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);

@@ -24,7 +24,7 @@ void LogBase::SetTextLog(LogWindow *textlog)
 
 void LogBase::LogIt(const wxString &logstring)
 {
-    if (TextLog != 0)
+    if (TextLog)
     {
         wxString str = ModuleName + ": " + logstring;
         TextLog->Print(str);
