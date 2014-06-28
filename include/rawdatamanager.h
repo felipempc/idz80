@@ -28,7 +28,7 @@ class RawDataManager: public LogBase
         RawData *First();
         RawData *Last();
         RawData *Current();
-        RawData *Previus();
+        RawData *Previous();
         RawData *Next();
 
         RawData *Index(uint index);

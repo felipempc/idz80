@@ -21,7 +21,7 @@
 
 #include "dasmdata.h"
 #include "process_data.h"
-#include "codeviewline.h"
+#include "SourceCodeLines.h"
 #include "codeview_definitions.h"
 
 
@@ -58,7 +58,7 @@ private:
 	static const int COL_MNEM = 230;
 
     ProcessData     *Process;
-    CodeViewLine    *m_CodeViewLine;
+    SourceCodeLines    *m_CodeViewLine;
 
     SelectedItemInfo line_info;	// Holds info about the selected item
 

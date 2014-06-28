@@ -21,7 +21,7 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
     Mnemonics = new MnemonicDataBase(logparent);
     Program = new RawData(logparent);
     Disassembled = new DAsmData(logparent);
-    CodeViewLines = new CodeViewLine(Disassembled, this);
+    CodeViewLines = new SourceCodeLines(Disassembled, this);
     search_status_ = new SearchManager();
     disassembler_ = 0;
     smart_disassembler_ = 0;
@@ -281,7 +281,7 @@ void ProcessData::InitData()
 
     i = 0;
     while (i < m_Comments.GetCount())
-        CodeViewLines->Add(m_Comments[i++]);
+        CodeViewLines->AddComment(m_Comments[i++]);
 
     CodeViewLines->AddOrg(Disassembled->GetBaseAddress(0), "");
     i = 0;
@@ -308,7 +308,7 @@ void ProcessData::ProcessLabel(LabelListCtrl *label)
         if (lbl)
         {
             line_index = CodeViewLines->getLineOfAddress(lbl->Address);
-            cvi = CodeViewLines->getData(line_index - 1);
+            cvi = CodeViewLines->Line(line_index - 1);
             if (cvi && !(cvi->LabelProgAddr || cvi->LabelVarAddr) && (line_index >= 0))
             {
                 if (label->GetTypeList() == PRG_LIST)
@@ -370,7 +370,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
         (selected.lastInstruction < static_cast<int>(Disassembled->GetCount())))
     {
         if (selected.firstLine > 0)
-            cvi = CodeViewLines->getData(selected.firstLine - 1);
+            cvi = CodeViewLines->Line(selected.firstLine - 1);
 
         deleted_labels = 0;
         lineIndex = selected.firstLine;
@@ -442,9 +442,9 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
         if (lineCount < 0)
             return;
 
-		cvi = CodeViewLines->getData(lineIndex);
+		cvi = CodeViewLines->Line(lineIndex);
 		dasmed_items.Index = cvi->Dasmitem;
-		cvi = CodeViewLines->getData(lineLast);
+		cvi = CodeViewLines->Line(lineLast);
 		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
@@ -464,7 +464,7 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
 		CodeViewLines->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
         if (lineIndex > 0)
-            cvi = CodeViewLines->getData(lineIndex - 1);
+            cvi = CodeViewLines->Line(lineIndex - 1);
 
         if (cvi)
         {
@@ -504,7 +504,7 @@ bool ProcessData::FilterInstructions(wxArrayInt &range, SelectedItemInfo &select
     last_i = 0;
     for (i = selected.firstLine; i <= selected.lastLine; i++)
     {
-        cvi = CodeViewLines->getData(i);
+        cvi = CodeViewLines->Line(i);
         if (cvi->Dasmitem >= 0)
         {
             de = Disassembled->GetData(cvi->Dasmitem);
@@ -535,7 +535,7 @@ bool ProcessData::RemoveLineAndProgLabels(const int index)
     CodeViewItem *cvi;
     bool ret = false;
 
-    cvi = CodeViewLines->getData(index);
+    cvi = CodeViewLines->Line(index);
     if (cvi && cvi->LabelProgAddr)
     {
         RemoveLabelUsers(cvi->LabelProgAddr->LabelUsers);
@@ -552,7 +552,7 @@ bool ProcessData::RemoveLineAndVarLabels(const int index)
     CodeViewItem *cvi;
     bool ret = false;
 
-    cvi = CodeViewLines->getData(index);
+    cvi = CodeViewLines->Line(index);
     if (cvi && cvi->LabelVarAddr)
     {
         RemoveLabelUsers(cvi->LabelVarAddr->LabelUsers);

@@ -212,7 +212,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
     while (i < count)
     {
-        cvi = Process->CodeViewLines->getData(i);
+        cvi = Process->CodeViewLines->Line(i);
 
         /* -------------------------------------------------
          *  Render Origin

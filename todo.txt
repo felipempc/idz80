@@ -1,10 +1,14 @@
 ﻿# TODO idz80 VERSÃO REESCRITA
 
+> 19-04-14 - Implementar mnemonic_container
+           - Criar e implementar mnemonic_access
+
+--->Futuro
 - Permitir abrir programas que contenham mais de um arquivo
 
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
 - Modificar base numerica dos DB e DW
-- Ativar WirdRSTRoutines ao desassemblar pequenos trechos (não está funcionando corretamente)
+- Ativar WeirdRSTRoutines ao disassemblar pequenos trechos (não está funcionando corretamente)
 - Popup para procura em argumentos
   - FIXME: Procura circular não para.

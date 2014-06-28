@@ -677,15 +677,17 @@ void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
 
 void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 {
+    /*
     wxSize  psize,ldsize;
     wxPoint ldpos;
     int     w,h,x,y;
+    */
     SortedIntArray  entries(CompareSortedInt);
     bool *simulateexecution;
 
     simulateexecution = (bool *)event.GetClientData();
     codeview->Enable(false);
-
+/*
     psize = GetClientSize();
     w = psize.GetWidth() / 2;
     x = w - w / 2 - 5;
@@ -697,6 +699,8 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     wxGauge *GaugeLd = new wxGauge(this, wxID_ANY, 100, ldpos, ldsize, 0, wxDefaultValidator, "wxID_ANY");
 
     process->SetGauge(GaugeLd);
+*/
+
     process->DisassembleFirst(*simulateexecution);
     process->InitData();
     process->InsertLineLabelsInSourceCode();
@@ -716,7 +720,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
                                           process->prog_labels->GetCount(), process->var_labels->GetCount(), process->io_labels->GetCount()));
     #endif
 
-    delete GaugeLd;
+//    delete GaugeLd;
     codeview->Plot();
 
     wxMenuBar *mb;

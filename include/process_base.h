@@ -15,12 +15,12 @@
 #include "mndb.h"
 #include "dasmdata.h"
 #include "rawdata.h"
-#include "codeviewline.h"
+#include "SourceCodeLines.h"
 
 class ProcessBase
 {
     public:
-        CodeViewLine        *CodeViewLines;
+        SourceCodeLines     *CodeViewLines;
         DAsmData            *Disassembled;
         RawData             *Program;
         MnemonicDataBase    *Mnemonics;

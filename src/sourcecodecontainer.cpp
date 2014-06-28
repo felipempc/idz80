@@ -1,38 +1,45 @@
-/**************************************************************
+/***************************************************************
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   04-07-2013 (D-M-Y)
+ * Created:   17-01-2014 (D-M-Y)
  * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
  **************************************************************
- * This module simplifies interface of std::list
+ * Defines a container to store source code lines
  **************************************************************/
 
+#include "sourcecodecontainer.h"
 
 
- #include "sourcecodelist.h"
+const uint SourceCodeContainer::LINE_NOT_FOUND;
 
 
-SourceCodeLines::SourceCodeLines()
+SourceCodeContainer::SourceCodeContainer()
 {
     code_list_.clear();
     code_list_.reserve(10000);
 }
 
 
-SourceCodeLines::~SourceCodeLines()
+
+
+SourceCodeContainer::~SourceCodeContainer()
 {
     Clear();
 }
 
 
-void SourceCodeLines::Add(CodeViewItem *cvi)
+
+
+void SourceCodeContainer::Add(CodeViewItem *cvi)
 {
     code_list_.push_back(cvi);
 }
 
 
-void SourceCodeLines::Clear()
+
+
+void SourceCodeContainer::Clear()
 {
     CodeViewItem    *cvi;
     SourceCodeList::iterator    it;
@@ -55,22 +62,17 @@ void SourceCodeLines::Clear()
 }
 
 
-uint SourceCodeLines::GetCount()
+
+
+uint SourceCodeContainer::GetCount()
 {
     return code_list_.size();
 }
 
 
-CodeViewItem *SourceCodeLines::GetLine(LineNumber line)
-{
-    if (line >= GetCount())
-		return static_cast<CodeViewItem *>(0);
-    return code_list_[line];
-}
 
 
-
-void SourceCodeLines::Insert(CodeViewItem *cvi, LineNumber line)
+void SourceCodeContainer::Insert(CodeViewItem *cvi, LineNumber line)
 {
     SourceCodeList::iterator it;
 
@@ -89,33 +91,56 @@ void SourceCodeLines::Insert(CodeViewItem *cvi, LineNumber line)
 }
 
 
-void SourceCodeLines::Remove(CodeViewItem *cvi)
-{
-    int item = Find(cvi);
-    SourceCodeList::iterator it;
 
-    if (item >= 0)
+
+void SourceCodeContainer::RemoveLine(const LineNumber line)
+{
+    SourceCodeList::iterator it;
+    CodeViewItem *cvi;
+
+    cvi = code_list_[line];
+    if (cvi)
     {
-        it = code_list_.begin() + item;
-        code_list_.erase(it);
-        if (cvi)
-        {
-            if (cvi->Comment)
-                delete cvi->Comment;
-            if (cvi->RectArg1)
-                delete cvi->RectArg1;
-            if (cvi->RectArg2)
-                delete cvi->RectArg2;
-            delete cvi;
-        }
+        if (cvi->Comment)
+            delete cvi->Comment;
+        if (cvi->RectArg1)
+            delete cvi->RectArg1;
+        if (cvi->RectArg2)
+            delete cvi->RectArg2;
+        delete cvi;
     }
+
+    it = code_list_.begin() + (line - 1);
+    code_list_.erase(it);
 }
 
 
 
-int SourceCodeLines::Find(CodeViewItem *cvi)
+
+void SourceCodeContainer::Remove(CodeViewItem *cvi)
 {
-   uint counter = 0;
+    LineNumber item;
+    SourceCodeList::iterator it;
+
+    try
+    {
+        item = Find(cvi);
+    }
+    catch (uint e)
+    {
+        if (e == LINE_NOT_FOUND)
+            return;
+    }
+
+    RemoveLine(item);
+}
+
+
+
+
+LineNumber SourceCodeContainer::Find(CodeViewItem *cvi)
+{
+   LineNumber index = 0;
    CodeViewItem *found_cvi = 0;
 
 
@@ -124,12 +149,14 @@ int SourceCodeLines::Find(CodeViewItem *cvi)
         found_cvi = *it;
         if (found_cvi == cvi)
         {
-            return counter;
+            return index;
         }
-        counter++;
+        index++;
     }
 
-    return (-1);
+    throw LINE_NOT_FOUND;
+    return 0;
 }
+
 
 

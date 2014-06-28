@@ -102,14 +102,18 @@ class DisassembledItem: public LogBase
     private:
         RawData				*data_file_;
 
+        //Todo: remove it
         ByteCode            opcode_;
+
         OpCodeArguments     opcode_arguments_;
         unsigned int        offset_in_file_,
                             opcode_size_;
         ElementType         item_type_;
         ArgStyle			arguments_style_;
 
+		//Todo: Remove it;
 		void CopyOpcode();
+
         ProgramAddress ConvertRelativeToAbsoluteAddress(int reladdr, ProgramAddress baseaddress);
         void SetStyleDefault();
 

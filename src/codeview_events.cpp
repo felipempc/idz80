@@ -251,7 +251,7 @@ void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
     DisassembledItem		*de;
     uint 			address;
 
-    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
+    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     address = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
     CenterAddress(address);
@@ -307,7 +307,7 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
     CodeViewItem *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
+    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
 
     if (cvi)
     {
@@ -331,7 +331,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
     CodeViewItem *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
+    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
 	if ((cvi) && (cvi->Comment))
 		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->c_str());
 	if (!comment.IsEmpty())
@@ -339,7 +339,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 		comment = comment.Trim(false);
 		if (comment.Left(1) != ";")
 			comment.Prepend("; ");
-		m_CodeViewLine->Edit(comment, line_info.cursorPosition);
+		m_CodeViewLine->EditComment(comment, line_info.cursorPosition);
 		Refresh();
 	}
 }
@@ -347,7 +347,7 @@ void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
-    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
+    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
     if (cvi != 0)
     {
         if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr) && (cvi->LabelVarAddr) && (cvi->Org == -1))
@@ -378,7 +378,7 @@ void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 {
     CodeViewItem *cvi;
     DisassembledItem *de;
-    cvi = m_CodeViewLine->getData(line_info.cursorPosition);
+    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi)
 	{

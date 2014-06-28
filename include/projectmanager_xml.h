@@ -84,7 +84,7 @@ class ProjectManagerXML
         bool    saved, named;
         wxString    project_filename;
         ProcessData *process;
-        CodeViewLine    *CodeViewLines;
+        SourceCodeLines    *CodeViewLines;
 
         wxTextCtrl  *log;
 

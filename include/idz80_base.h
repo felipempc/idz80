@@ -20,11 +20,15 @@
 
 #define MAX_OPCODE_SIZE     4   // Bytes
 
+/* **** in idz80_basic_types.h
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
+*/
+
+
 typedef unsigned int ProgramAddress;
-typedef unsigned int LineNumber;
+//typedef unsigned int LineNumber;
 typedef unsigned int FileOffset;
 typedef unsigned int DisassembledIndex;
 typedef unsigned int LabelIndex;

@@ -286,7 +286,7 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
 
         for (i = (total_lines - 1); i > -1; i--)
         {
-            cvi = CodeViewLines->getData(i);
+            cvi = CodeViewLines->Line(i);
             item = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LINE_STR, i));
             if (cvi->Org >= 0)
                 item->AddAttribute(ATTRIBUTE_ORG_STR, wxString::Format("%d", cvi->Org));
@@ -782,14 +782,14 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 
     if (commentary_line)
     {
-        CodeViewLines->Add(str_comment);
+        CodeViewLines->AddComment(str_comment);
         health++;
     }
 
     // Empty line
     if (health == 0)
     {
-        CodeViewLines->Add("");
+        CodeViewLines->AddComment("");
 
         #ifdef IDZ80DEBUG
         LogIt(wxString::Format("Empty line: %d\n", datanode->GetLineNumber()));

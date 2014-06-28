@@ -11,3 +11,5 @@ obj/*
 info.txt
 Thumbs.db
 *.out
+trash/*
+

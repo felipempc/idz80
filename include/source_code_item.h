@@ -2,19 +2,19 @@
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   04-07-2013 (D-M-Y)
+ * Created:   15-01-2014 (D-M-Y)
  * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
  **************************************************************
- * This module simplifies interface of std::list
+ * Code line representation
  **************************************************************/
 
 
-#include <vector>
-#include <wx/string.h>
-#include "idz80_base.h"
-#include "labelitem.h"
-#include <wx/gdicmn.h>
+#ifndef _SOURCE_CODE_ITEM_H_
+#define _SOURCE_CODE_ITEM_H_
 
+#include <wx/gdicmn.h>
+#include <wx/string.h>
+#include "labelitem.h"
 
 struct CodeViewItem
 {
@@ -26,28 +26,4 @@ struct CodeViewItem
     wxRect *RectArg1, *RectArg2;
 };
 
-typedef std::vector<CodeViewItem *> SourceCodeList;
-
-
-
-
-class SourceCodeLines
-{
-    public:
-    SourceCodeLines();
-    ~SourceCodeLines();
-    void Add(CodeViewItem *cvi);
-    void Clear();
-    int Find(CodeViewItem *cvi);
-    uint GetCount();
-    CodeViewItem *GetLine(LineNumber line);
-    void Insert(CodeViewItem *cvi, LineNumber line);
-    void Remove(CodeViewItem *cvi);
-
-    protected:
-
-
-    private:
-    SourceCodeList  code_list_;
-
-};
+#endif // _SOURCE_CODE_ITEM_H_

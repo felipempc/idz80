@@ -275,7 +275,7 @@ void CodeView::Render(wxDC &dc, const int start_y, const int fromline, const int
     {
         commentoffset = 0;
         rendering_line = fromline + line_offset;
-        cvi = m_CodeViewLine->getData(rendering_line);
+        cvi = m_CodeViewLine->Line(rendering_line);
         if (cvi)
 		{
 			/* -------------------------------------------------

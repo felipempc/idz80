@@ -1,0 +1,2407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MNEMONIC_LIST VERSION="0.1">
+  <GROUPS>
+    <STACK>
+      <ITEM STRING="PUSH IY">
+        <OPCODE OPCODE="FD E5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="POP IY">
+        <OPCODE OPCODE="FD E1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="PUSH IX">
+        <OPCODE OPCODE="DD E5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="POP IX">
+        <OPCODE OPCODE="DD E1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="PUSH AF">
+        <OPCODE OPCODE="F5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="POP AF">
+        <OPCODE OPCODE="F1" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="PUSH HL">
+        <OPCODE OPCODE="E5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="POP HL">
+        <OPCODE OPCODE="E1" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="PUSH DE">
+        <OPCODE OPCODE="D5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="POP DE">
+        <OPCODE OPCODE="D1" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="PUSH BC">
+        <OPCODE OPCODE="C5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="POP BC">
+        <OPCODE OPCODE="C1" SIZE="1"/>
+      </ITEM>
+    </STACK>
+    <OUTPUT>
+      <ITEM STRING="OTDR">
+        <OPCODE OPCODE="ED BB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUTIR">
+        <OPCODE OPCODE="ED B3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUTD">
+        <OPCODE OPCODE="ED AB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUTI">
+        <OPCODE OPCODE="ED A3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),A">
+        <OPCODE OPCODE="ED 79" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),L">
+        <OPCODE OPCODE="ED 69" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),H">
+        <OPCODE OPCODE="ED 61" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),E">
+        <OPCODE OPCODE="ED 59" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),D">
+        <OPCODE OPCODE="ED 51" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),C">
+        <OPCODE OPCODE="ED 49" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT (C),B">
+        <OPCODE OPCODE="ED 41" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="OUT ($),A">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="A" DESTINATION_TYPE="IO_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="D3 00" SIZE="2"/>
+      </ITEM>
+    </OUTPUT>
+    <INPUT>
+      <ITEM STRING="INDR">
+        <OPCODE OPCODE="ED BA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INIR">
+        <OPCODE OPCODE="ED B2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IND">
+        <OPCODE OPCODE="ED AA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INI">
+        <OPCODE OPCODE="ED A2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN A,(C)">
+        <OPCODE OPCODE="ED 78" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN L,(C)">
+        <OPCODE OPCODE="ED 68" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN H,(C)">
+        <OPCODE OPCODE="ED 60" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN E,(C)">
+        <OPCODE OPCODE="ED 58" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN D,(C)">
+        <OPCODE OPCODE="ED 50" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN C,(C)">
+        <OPCODE OPCODE="ED 48" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN B,(C)">
+        <OPCODE OPCODE="ED 40" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IN A,($)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="IO_ADDRESS" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="DB 00" SIZE="2"/>
+      </ITEM>
+    </INPUT>
+    <BITTEST>
+      <ITEM STRING="BIT 7,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 7E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 76" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 6E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 66" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 5E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 56" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 4E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 46" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 7E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 76" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 6E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 66" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 5E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 56" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 4E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 46" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,A">
+        <OPCODE OPCODE="CB 7F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,(HL)">
+        <OPCODE OPCODE="CB 7E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,L">
+        <OPCODE OPCODE="CB 7D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,H">
+        <OPCODE OPCODE="CB 7C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,E">
+        <OPCODE OPCODE="CB 7B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,D">
+        <OPCODE OPCODE="CB 7A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,C">
+        <OPCODE OPCODE="CB 79" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 7,B">
+        <OPCODE OPCODE="CB 78" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,A">
+        <OPCODE OPCODE="CB 77" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,(HL)">
+        <OPCODE OPCODE="CB 76" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,L">
+        <OPCODE OPCODE="CB 75" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,H">
+        <OPCODE OPCODE="CB 74" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,E">
+        <OPCODE OPCODE="CB 73" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,D">
+        <OPCODE OPCODE="CB 72" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,C">
+        <OPCODE OPCODE="CB 71" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 6,B">
+        <OPCODE OPCODE="CB 70" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,A">
+        <OPCODE OPCODE="CB 6F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,(HL)">
+        <OPCODE OPCODE="CB 6E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,L">
+        <OPCODE OPCODE="CB 6D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,H">
+        <OPCODE OPCODE="CB 6C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,E">
+        <OPCODE OPCODE="CB 6B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,D">
+        <OPCODE OPCODE="CB 6A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,C">
+        <OPCODE OPCODE="CB 69" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 5,B">
+        <OPCODE OPCODE="CB 68" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,A">
+        <OPCODE OPCODE="CB 67" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,(HL)">
+        <OPCODE OPCODE="CB 66" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,L">
+        <OPCODE OPCODE="CB 65" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,H">
+        <OPCODE OPCODE="CB 64" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,E">
+        <OPCODE OPCODE="CB 63" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,D">
+        <OPCODE OPCODE="CB 62" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,C">
+        <OPCODE OPCODE="CB 61" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 4,B">
+        <OPCODE OPCODE="CB 60" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,A">
+        <OPCODE OPCODE="CB 5F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,(HL)">
+        <OPCODE OPCODE="CB 5E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,L">
+        <OPCODE OPCODE="CB 5D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,H">
+        <OPCODE OPCODE="CB 5C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,E">
+        <OPCODE OPCODE="CB 5B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,D">
+        <OPCODE OPCODE="CB 5A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,C">
+        <OPCODE OPCODE="CB 59" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 3,B">
+        <OPCODE OPCODE="CB 58" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,A">
+        <OPCODE OPCODE="CB 57" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,(HL)">
+        <OPCODE OPCODE="CB 56" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,L">
+        <OPCODE OPCODE="CB 55" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,H">
+        <OPCODE OPCODE="CB 54" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,E">
+        <OPCODE OPCODE="CB 53" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,D">
+        <OPCODE OPCODE="CB 52" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,C">
+        <OPCODE OPCODE="CB 51" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 2,B">
+        <OPCODE OPCODE="CB 50" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,A">
+        <OPCODE OPCODE="CB 4F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,(HL)">
+        <OPCODE OPCODE="CB 4E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,L">
+        <OPCODE OPCODE="CB 4D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,H">
+        <OPCODE OPCODE="CB 4C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,E">
+        <OPCODE OPCODE="CB 4B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,D">
+        <OPCODE OPCODE="CB 4A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,C">
+        <OPCODE OPCODE="CB 49" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 1,B">
+        <OPCODE OPCODE="CB 48" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,A">
+        <OPCODE OPCODE="CB 47" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,(HL)">
+        <OPCODE OPCODE="CB 46" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,L">
+        <OPCODE OPCODE="CB 45" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,H">
+        <OPCODE OPCODE="CB 44" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,E">
+        <OPCODE OPCODE="CB 43" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,D">
+        <OPCODE OPCODE="CB 42" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,C">
+        <OPCODE OPCODE="CB 41" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="BIT 0,B">
+        <OPCODE OPCODE="CB 40" SIZE="2"/>
+      </ITEM>
+    </BITTEST>
+    <BITSET>
+      <ITEM STRING="SET 7,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 FE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 6,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 F6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 5,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 EE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 4,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 E6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 3,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 DE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 2,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 D6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 1,(IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 CE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 0,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 C6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 7,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 FE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 6,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 F6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 5,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 EE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 4,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 E6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 3,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 DE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 2,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 D6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 1,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 CE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 0,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 C6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SET 7,A">
+        <OPCODE OPCODE="CB FF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,(HL)">
+        <OPCODE OPCODE="CB FE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,L">
+        <OPCODE OPCODE="CB FD" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,H">
+        <OPCODE OPCODE="CB FC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,E">
+        <OPCODE OPCODE="CB FB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,D">
+        <OPCODE OPCODE="CB FA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,C">
+        <OPCODE OPCODE="CB F9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 7,B">
+        <OPCODE OPCODE="CB F8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,A">
+        <OPCODE OPCODE="CB F7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,(HL)">
+        <OPCODE OPCODE="CB F6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,L">
+        <OPCODE OPCODE="CB F5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,H">
+        <OPCODE OPCODE="CB F4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,E">
+        <OPCODE OPCODE="CB F3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,D">
+        <OPCODE OPCODE="CB F2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,C">
+        <OPCODE OPCODE="CB F1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 6,B">
+        <OPCODE OPCODE="CB F0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,A">
+        <OPCODE OPCODE="CB EF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,(HL)">
+        <OPCODE OPCODE="CB EE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,L">
+        <OPCODE OPCODE="CB ED" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,H">
+        <OPCODE OPCODE="CB EC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,E">
+        <OPCODE OPCODE="CB EB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,D">
+        <OPCODE OPCODE="CB EA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,C">
+        <OPCODE OPCODE="CB E9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 5,B">
+        <OPCODE OPCODE="CB E8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,A">
+        <OPCODE OPCODE="CB E7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,(HL)">
+        <OPCODE OPCODE="CB E6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,L">
+        <OPCODE OPCODE="CB E5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,H">
+        <OPCODE OPCODE="CB E4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,E">
+        <OPCODE OPCODE="CB E3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,D">
+        <OPCODE OPCODE="CB E2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,C">
+        <OPCODE OPCODE="CB E1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 4,B">
+        <OPCODE OPCODE="CB E0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,A">
+        <OPCODE OPCODE="CB DF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,(HL)">
+        <OPCODE OPCODE="CB DE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,L">
+        <OPCODE OPCODE="CB DD" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,H">
+        <OPCODE OPCODE="CB DC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,E">
+        <OPCODE OPCODE="CB DB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,D">
+        <OPCODE OPCODE="CB DA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,C">
+        <OPCODE OPCODE="CB D9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 3,B">
+        <OPCODE OPCODE="CB D8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,A">
+        <OPCODE OPCODE="CB D7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,(HL)">
+        <OPCODE OPCODE="CB D6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,L">
+        <OPCODE OPCODE="CB D5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,H">
+        <OPCODE OPCODE="CB D4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,E">
+        <OPCODE OPCODE="CB D3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,D">
+        <OPCODE OPCODE="CB D2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,C">
+        <OPCODE OPCODE="CB D1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 2,B">
+        <OPCODE OPCODE="CB D0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,A">
+        <OPCODE OPCODE="CB CF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,(HL)">
+        <OPCODE OPCODE="CB CE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,L">
+        <OPCODE OPCODE="CB CD" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,H">
+        <OPCODE OPCODE="CB CC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,E">
+        <OPCODE OPCODE="CB CB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,D">
+        <OPCODE OPCODE="CB CA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,C">
+        <OPCODE OPCODE="CB C9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 1,B">
+        <OPCODE OPCODE="CB C8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,A">
+        <OPCODE OPCODE="CB C7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,(HL)">
+        <OPCODE OPCODE="CB C6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,L">
+        <OPCODE OPCODE="CB C5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,H">
+        <OPCODE OPCODE="CB C4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,E">
+        <OPCODE OPCODE="CB C3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,D">
+        <OPCODE OPCODE="CB C2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,C">
+        <OPCODE OPCODE="CB C1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SET 0,B">
+        <OPCODE OPCODE="CB C0" SIZE="2"/>
+      </ITEM>
+    </BITSET>
+    <BITRESET>
+      <ITEM STRING="RES 7,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 BE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 6,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 B6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 5,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 AE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 4,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 A6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 3,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 9E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 2,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 96" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 1,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 8E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 0,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 86" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 7,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 BE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 6,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 B6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 5,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 AE" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 4,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 A6" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 3,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 9E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 2,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 96" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 1,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 8E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 0,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 86" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RES 7,A">
+        <OPCODE OPCODE="CB BF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,(HL)">
+        <OPCODE OPCODE="CB BE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,L">
+        <OPCODE OPCODE="CB BD" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,H">
+        <OPCODE OPCODE="CB BC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,E">
+        <OPCODE OPCODE="CB BB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,D">
+        <OPCODE OPCODE="CB BA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,C">
+        <OPCODE OPCODE="CB B9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 7,B">
+        <OPCODE OPCODE="CB B8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,A">
+        <OPCODE OPCODE="CB B7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,(HL)">
+        <OPCODE OPCODE="CB B6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,L">
+        <OPCODE OPCODE="CB B5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,H">
+        <OPCODE OPCODE="CB B4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,E">
+        <OPCODE OPCODE="CB B3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,D">
+        <OPCODE OPCODE="CB B2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,C">
+        <OPCODE OPCODE="CB B1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 6,B">
+        <OPCODE OPCODE="CB B0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,A">
+        <OPCODE OPCODE="CB AF" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,(HL)">
+        <OPCODE OPCODE="CB AE" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,L">
+        <OPCODE OPCODE="CB AD" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,H">
+        <OPCODE OPCODE="CB AC" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,E">
+        <OPCODE OPCODE="CB AB" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,D">
+        <OPCODE OPCODE="CB AA" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,C">
+        <OPCODE OPCODE="CB A9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 5,B">
+        <OPCODE OPCODE="CB A8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,A">
+        <OPCODE OPCODE="CB A7" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,(HL)">
+        <OPCODE OPCODE="CB A6" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,L">
+        <OPCODE OPCODE="CB A5" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,H">
+        <OPCODE OPCODE="CB A4" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,E">
+        <OPCODE OPCODE="CB A3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,D">
+        <OPCODE OPCODE="CB A2" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,C">
+        <OPCODE OPCODE="CB A1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 4,B">
+        <OPCODE OPCODE="CB A0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,A">
+        <OPCODE OPCODE="CB 9F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,(HL)">
+        <OPCODE OPCODE="CB 9E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,L">
+        <OPCODE OPCODE="CB 9D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,H">
+        <OPCODE OPCODE="CB 9C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,E">
+        <OPCODE OPCODE="CB 9B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,D">
+        <OPCODE OPCODE="CB 9A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,C">
+        <OPCODE OPCODE="CB 99" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 3,B">
+        <OPCODE OPCODE="CB 98" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,A">
+        <OPCODE OPCODE="CB 97" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,(HL)">
+        <OPCODE OPCODE="CB 96" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,L">
+        <OPCODE OPCODE="CB 95" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,H">
+        <OPCODE OPCODE="CB 94" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,E">
+        <OPCODE OPCODE="CB 93" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,D">
+        <OPCODE OPCODE="CB 92" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,C">
+        <OPCODE OPCODE="CB 91" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 2,B">
+        <OPCODE OPCODE="CB 90" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,A">
+        <OPCODE OPCODE="CB 8F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,(HL)">
+        <OPCODE OPCODE="CB 8E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,L">
+        <OPCODE OPCODE="CB 8D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,H">
+        <OPCODE OPCODE="CB 8C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,E">
+        <OPCODE OPCODE="CB 8B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,D">
+        <OPCODE OPCODE="CB 8A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,C">
+        <OPCODE OPCODE="CB 89" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 1,B">
+        <OPCODE OPCODE="CB 88" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,A">
+        <OPCODE OPCODE="CB 87" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,(HL)">
+        <OPCODE OPCODE="CB 86" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,L">
+        <OPCODE OPCODE="CB 85" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,H">
+        <OPCODE OPCODE="CB 84" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,E">
+        <OPCODE OPCODE="CB 83" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,D">
+        <OPCODE OPCODE="CB 82" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,C">
+        <OPCODE OPCODE="CB 81" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RES 0,B">
+        <OPCODE OPCODE="CB 80" SIZE="2"/>
+      </ITEM>
+    </BITRESET>
+    <ROTATESHIFT>
+      <ITEM STRING="SRL (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 3E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SRA (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 2E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SLA (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 26" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RR (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 1E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RL (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 16" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RRC (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 0E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RLC (IY+$)">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD CB 00 06" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SRL (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 3E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SRA (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 2E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="SLA (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 26" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RR (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 1E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RL (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 16" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RRC (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 0E" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RLC (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD CB 00 06" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="RLD">
+        <OPCODE OPCODE="ED 6F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRD">
+        <OPCODE OPCODE="ED 67" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL A">
+        <OPCODE OPCODE="CB 3F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL HL">
+        <OPCODE OPCODE="CB 3E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL L">
+        <OPCODE OPCODE="CB 3D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL H">
+        <OPCODE OPCODE="CB 3C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL E">
+        <OPCODE OPCODE="CB 3B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL D">
+        <OPCODE OPCODE="CB 3A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL C">
+        <OPCODE OPCODE="CB 39" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRL B">
+        <OPCODE OPCODE="CB 38" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL A">
+        <OPCODE OPCODE="CB 37" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL (HL)">
+        <OPCODE OPCODE="CB 36" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL L">
+        <OPCODE OPCODE="CB 35" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL H">
+        <OPCODE OPCODE="CB 34" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL E">
+        <OPCODE OPCODE="CB 33" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL D">
+        <OPCODE OPCODE="CB 32" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL C">
+        <OPCODE OPCODE="CB 31" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLL B">
+        <OPCODE OPCODE="CB 30" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA A">
+        <OPCODE OPCODE="CB 2F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA HL">
+        <OPCODE OPCODE="CB 2E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA L">
+        <OPCODE OPCODE="CB 2D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA H">
+        <OPCODE OPCODE="CB 2C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA E">
+        <OPCODE OPCODE="CB 2B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA D">
+        <OPCODE OPCODE="CB 2A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA C">
+        <OPCODE OPCODE="CB 29" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SRA B">
+        <OPCODE OPCODE="CB 28" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA A">
+        <OPCODE OPCODE="CB 27" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA HL">
+        <OPCODE OPCODE="CB 26" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA L">
+        <OPCODE OPCODE="CB 25" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA H">
+        <OPCODE OPCODE="CB 24" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA E">
+        <OPCODE OPCODE="CB 23" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA D">
+        <OPCODE OPCODE="CB 22" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA C">
+        <OPCODE OPCODE="CB 21" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SLA B">
+        <OPCODE OPCODE="CB 20" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR A">
+        <OPCODE OPCODE="CB 1F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR HL">
+        <OPCODE OPCODE="CB 1E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR L">
+        <OPCODE OPCODE="CB 1D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR H">
+        <OPCODE OPCODE="CB 1C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR E">
+        <OPCODE OPCODE="CB 1B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR D">
+        <OPCODE OPCODE="CB 1A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR C">
+        <OPCODE OPCODE="CB 19" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RR B">
+        <OPCODE OPCODE="CB 18" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL A">
+        <OPCODE OPCODE="CB 17" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL HL">
+        <OPCODE OPCODE="CB 16" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL L">
+        <OPCODE OPCODE="CB 15" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL H">
+        <OPCODE OPCODE="CB 14" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL E">
+        <OPCODE OPCODE="CB 13" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL D">
+        <OPCODE OPCODE="CB 12" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL C">
+        <OPCODE OPCODE="CB 11" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RL B">
+        <OPCODE OPCODE="CB 10" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC A">
+        <OPCODE OPCODE="CB 0F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC HL">
+        <OPCODE OPCODE="CB 0E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC L">
+        <OPCODE OPCODE="CB 0D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC H">
+        <OPCODE OPCODE="CB 0C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC E">
+        <OPCODE OPCODE="CB 0B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC D">
+        <OPCODE OPCODE="CB 0A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC C">
+        <OPCODE OPCODE="CB 09" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRC B">
+        <OPCODE OPCODE="CB 08" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC A">
+        <OPCODE OPCODE="CB 07" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC HL">
+        <OPCODE OPCODE="CB 06" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC L">
+        <OPCODE OPCODE="CB 05" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC H">
+        <OPCODE OPCODE="CB 04" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC E">
+        <OPCODE OPCODE="CB 03" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC D">
+        <OPCODE OPCODE="CB 02" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC C">
+        <OPCODE OPCODE="CB 01" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RLC B">
+        <OPCODE OPCODE="CB 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RRA">
+        <OPCODE OPCODE="1F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RLA">
+        <OPCODE OPCODE="17" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RRCA">
+        <OPCODE OPCODE="0F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RLCA">
+        <OPCODE OPCODE="07" SIZE="1"/>
+      </ITEM>
+    </ROTATESHIFT>
+    <CPUCONTROL>
+      <ITEM STRING="IM 2">
+        <OPCODE OPCODE="ED 5E" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IM 1">
+        <OPCODE OPCODE="ED 56" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="IM 0">
+        <OPCODE OPCODE="ED 46" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="EI">
+        <OPCODE OPCODE="FB" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DI">
+        <OPCODE OPCODE="F3" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="HALT">
+        <OPCODE OPCODE="76" SIZE="1"/>
+      </ITEM>
+    </CPUCONTROL>
+    <LOGICAL>
+      <ITEM STRING="OR (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="FD B6 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="XOR (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="FD AE 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="AND (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="FD A6 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="OR (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="DD B6 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="XOR (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="DD AE 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="AND (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="DD A6 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="OR $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="F6 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="XOR $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="EE 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="AND $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="E6 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="CP A">
+        <OPCODE OPCODE="BF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP (HL)">
+        <OPCODE OPCODE="BE" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP L">
+        <OPCODE OPCODE="BD" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP H">
+        <OPCODE OPCODE="BC" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP E">
+        <OPCODE OPCODE="BB" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP D">
+        <OPCODE OPCODE="BA" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP C">
+        <OPCODE OPCODE="B9" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CP B">
+        <OPCODE OPCODE="B8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR A">
+        <OPCODE OPCODE="B7" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR (HL)">
+        <OPCODE OPCODE="B6" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR L">
+        <OPCODE OPCODE="B5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR H">
+        <OPCODE OPCODE="B4" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR E">
+        <OPCODE OPCODE="B3" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR D">
+        <OPCODE OPCODE="B2" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR C">
+        <OPCODE OPCODE="B1" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="OR B">
+        <OPCODE OPCODE="B0" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR A">
+        <OPCODE OPCODE="AF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR (HL)">
+        <OPCODE OPCODE="AE" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR L">
+        <OPCODE OPCODE="AD" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR H">
+        <OPCODE OPCODE="AC" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR E">
+        <OPCODE OPCODE="AB" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR D">
+        <OPCODE OPCODE="AA" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR C">
+        <OPCODE OPCODE="A9" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="XOR B">
+        <OPCODE OPCODE="A8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND A">
+        <OPCODE OPCODE="A7" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND (HL)">
+        <OPCODE OPCODE="A6" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND L">
+        <OPCODE OPCODE="A5" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND H">
+        <OPCODE OPCODE="A4" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND E">
+        <OPCODE OPCODE="A3" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND D">
+        <OPCODE OPCODE="A2" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND C">
+        <OPCODE OPCODE="A1" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="AND B">
+        <OPCODE OPCODE="A0" SIZE="1"/>
+      </ITEM>
+    </LOGICAL>
+    <BLOCKTRANSFER>
+      <ITEM STRING="LDDR">
+        <OPCODE OPCODE="ED B8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LDIR">
+        <OPCODE OPCODE="ED B0" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LDD">
+        <OPCODE OPCODE="ED A8" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LDI">
+        <OPCODE OPCODE="ED A0" SIZE="2"/>
+      </ITEM>
+    </BLOCKTRANSFER>
+    <BLOCKSEARCH>
+      <ITEM STRING="CPDR">
+        <OPCODE OPCODE="ED B9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="CPIR">
+        <OPCODE OPCODE="ED B1" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="CPD">
+        <OPCODE OPCODE="ED A9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="CPI">
+        <OPCODE OPCODE="ED A1" SIZE="2"/>
+      </ITEM>
+    </BLOCKSEARCH>
+    <EXCHANGE>
+      <ITEM STRING="EX (SP),IY">
+        <OPCODE OPCODE="FD E3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="EX (SP),IX">
+        <OPCODE OPCODE="DD E3" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="EX DE,HL">
+        <OPCODE OPCODE="EB" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="EX (SP),HL">
+        <OPCODE OPCODE="E3" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="EXX">
+        <OPCODE OPCODE="D9" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="EX AF,AF'">
+        <OPCODE OPCODE="08" SIZE="1"/>
+      </ITEM>
+    </EXCHANGE>
+    <GPARITHMETRIC>
+      <ITEM STRING="NEG">
+        <OPCODE OPCODE="ED 44" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SCF">
+        <OPCODE OPCODE="37" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="CPL">
+        <OPCODE OPCODE="2F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DAA">
+        <OPCODE OPCODE="27" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="NOP">
+        <OPCODE OPCODE="00" SIZE="1"/>
+      </ITEM>
+    </GPARITHMETRIC>
+    <ARITHMETIC8BIT>
+      <ITEM STRING="CP (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD BE 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="SBC A,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 9E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="SUB (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 96 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="ADC A,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 8E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="ADD A,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 86 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="DEC (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 35 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="INC (IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 34 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CP (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD BE 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="SBC A,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 9E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="SUB (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 96 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="ADC A,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 8E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="ADD A,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 86 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="DEC (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 35 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="INC (IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 34 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CP $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="DATA" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="FE 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="DATA" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="DE 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="DEC IXl">
+        <OPCODE OPCODE="DD 2D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INC IXl">
+        <OPCODE OPCODE="DD 2C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="DEC IX">
+        <OPCODE OPCODE="DD 2B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="DEC IXh">
+        <OPCODE OPCODE="DD 25" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INC IXh">
+        <OPCODE OPCODE="DD 24" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INC IX">
+        <OPCODE OPCODE="DD 23" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SUB $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="DATA" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="D6 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADC A,$">
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="CE 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD A,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="C6 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC A,A">
+        <OPCODE OPCODE="9F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,(HL)">
+        <OPCODE OPCODE="9E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,L">
+        <OPCODE OPCODE="9D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,H">
+        <OPCODE OPCODE="9C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,E">
+        <OPCODE OPCODE="9B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,D">
+        <OPCODE OPCODE="9A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,C">
+        <OPCODE OPCODE="99" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SBC A,B">
+        <OPCODE OPCODE="98" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB A">
+        <OPCODE OPCODE="97" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB (HL)">
+        <OPCODE OPCODE="96" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB L">
+        <OPCODE OPCODE="95" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB H">
+        <OPCODE OPCODE="94" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB E">
+        <OPCODE OPCODE="93" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB D">
+        <OPCODE OPCODE="92" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB C">
+        <OPCODE OPCODE="91" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="SUB B">
+        <OPCODE OPCODE="90" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,A">
+        <OPCODE OPCODE="8F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,(HL)">
+        <OPCODE OPCODE="8E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,L">
+        <OPCODE OPCODE="8D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,H">
+        <OPCODE OPCODE="8C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,E">
+        <OPCODE OPCODE="8B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,D">
+        <OPCODE OPCODE="8A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,C">
+        <OPCODE OPCODE="89" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADC A,B">
+        <OPCODE OPCODE="88" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,A">
+        <OPCODE OPCODE="87" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,(HL)">
+        <OPCODE OPCODE="86" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,L">
+        <OPCODE OPCODE="85" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,H">
+        <OPCODE OPCODE="84" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,E">
+        <OPCODE OPCODE="83" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,D">
+        <OPCODE OPCODE="82" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,C">
+        <OPCODE OPCODE="81" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD A,B">
+        <OPCODE OPCODE="80" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC A">
+        <OPCODE OPCODE="3D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC A">
+        <OPCODE OPCODE="3C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC SP">
+        <OPCODE OPCODE="3B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC (HL)">
+        <OPCODE OPCODE="35" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC (HL)">
+        <OPCODE OPCODE="34" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC SP">
+        <OPCODE OPCODE="33" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC L">
+        <OPCODE OPCODE="2D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC L">
+        <OPCODE OPCODE="2C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC HL">
+        <OPCODE OPCODE="2B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC H">
+        <OPCODE OPCODE="25" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC H">
+        <OPCODE OPCODE="24" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC HL">
+        <OPCODE OPCODE="23" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC E">
+        <OPCODE OPCODE="1D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC E">
+        <OPCODE OPCODE="1C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC DE">
+        <OPCODE OPCODE="1B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC D">
+        <OPCODE OPCODE="15" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC D">
+        <OPCODE OPCODE="14" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC DE">
+        <OPCODE OPCODE="13" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC C">
+        <OPCODE OPCODE="0D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC C">
+        <OPCODE OPCODE="0C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC BC">
+        <OPCODE OPCODE="0B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="DEC B">
+        <OPCODE OPCODE="05" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC B">
+        <OPCODE OPCODE="04" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="INC BC">
+        <OPCODE OPCODE="03" SIZE="1"/>
+      </ITEM>
+    </ARITHMETIC8BIT>
+    <ARITHMETIC16BIT>
+      <ITEM STRING="ADD IY,SP">
+        <OPCODE OPCODE="FD 39" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="DEC IY">
+        <OPCODE OPCODE="FD 2B" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IY,IY">
+        <OPCODE OPCODE="FD 29" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="INC IY">
+        <OPCODE OPCODE="FD 23" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IY,DE">
+        <OPCODE OPCODE="FD 19" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IY,BC">
+        <OPCODE OPCODE="FD 09" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADC HL,SP">
+        <OPCODE OPCODE="ED 7A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC HL,SP">
+        <OPCODE OPCODE="ED 72" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADC HL,HL">
+        <OPCODE OPCODE="ED 6A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC HL,HL">
+        <OPCODE OPCODE="ED 62" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADC HL,DE">
+        <OPCODE OPCODE="ED 5A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC HL,DE">
+        <OPCODE OPCODE="ED 52" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADC HL,BC">
+        <OPCODE OPCODE="ED 4A" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="SBC HL,BC">
+        <OPCODE OPCODE="ED 42" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,SP">
+        <OPCODE OPCODE="DD 79" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,IX">
+        <OPCODE OPCODE="DD 69" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,DE">
+        <OPCODE OPCODE="DD 59" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,BC">
+        <OPCODE OPCODE="DD 49" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,SP">
+        <OPCODE OPCODE="DD 39" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD IX,IX">
+        <OPCODE OPCODE="DD 29" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="ADD HL,SP">
+        <OPCODE OPCODE="39" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD HL,HL">
+        <OPCODE OPCODE="29" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD HL,DE">
+        <OPCODE OPCODE="19" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="ADD HL,BC">
+        <OPCODE OPCODE="09" SIZE="1"/>
+      </ITEM>
+    </ARITHMETIC16BIT>
+    <RST>
+      <ITEM STRING="RST 38h">
+        <ARGUMENT RST="0x38"/>
+        <OPCODE OPCODE="FF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 30h">
+        <ARGUMENT RST="0x30"/>
+        <OPCODE OPCODE="F7" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 28h">
+        <ARGUMENT RST="0x28"/>
+        <OPCODE OPCODE="EF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 20h">
+        <ARGUMENT RST="0x20"/>
+        <OPCODE OPCODE="E7" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 18h">
+        <ARGUMENT RST="0x18"/>
+        <OPCODE OPCODE="DF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 10h">
+        <ARGUMENT RST="0x10"/>
+        <OPCODE OPCODE="D7" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 08h">
+        <ARGUMENT RST="0x8"/>
+        <OPCODE OPCODE="CF" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RST 00h">
+        <ARGUMENT RST="0"/>
+        <OPCODE OPCODE="C7" SIZE="1"/>
+      </ITEM>
+    </RST>
+    <RETURN>
+      <ITEM STRING="RETI">
+        <OPCODE OPCODE="ED 4D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RETN">
+        <OPCODE OPCODE="ED 45" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="RET M">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="F8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET P">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="F0" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET PE">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="E8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET PO">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="E0" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET C">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="D8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET NC">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="D0" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET">
+        <OPCODE OPCODE="C9" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET Z">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="C8" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="RET NZ">
+        <CONDICIONAL/>
+        <OPCODE OPCODE="C0" SIZE="1"/>
+      </ITEM>
+    </RETURN>
+    <CALL>
+      <ITEM STRING="CALL M,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="FC 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL P,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="F4 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL PE,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="EC 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL PO,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="E4 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL C,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="DC 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL NC,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="D4 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL $">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="CD 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL Z,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="CC 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="CALL NZ,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="C4 00 00" SIZE="3"/>
+      </ITEM>
+    </CALL>
+    <JUMP>
+      <ITEM STRING="JP M,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="FA 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP P,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="F2 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP PE,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="EA 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP PO,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="E2 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP C,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="DA 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP NC,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="D2 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP Z,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="CA 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP $">
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="C3 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP NZ,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="ABSOLUTE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="C2 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="JP (IY)">
+		<ARGUMENT DESTINATION_TYPE="REGISTER_ADDRESS" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD E9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JP (IX)">
+		<ARGUMENT DESTINATION_TYPE="REGISTER_ADDRESS" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD E9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JR C,$">
+        <CONDICIONAL/>
+		<ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="38 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JR NC,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="30 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JR Z,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="28 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JR NZ,$">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="20 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JR $">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="18 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="DJNZ $">
+        <CONDICIONAL/>
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" DESTINATION_TYPE="RELATIVE_ADDRESS" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="10 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="JP (HL)">
+        <OPCODE OPCODE="E9" SIZE="1"/>
+      </ITEM>
+    </JUMP>
+    <LOAD8BIT>
+      <ITEM STRING="LD (IY+$),$">
+        <ARGUMENT SIZE="1" COUNT="2" OPCODE_POSITION="2" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 36 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),$">
+        <ARGUMENT SIZE="1" COUNT="2" OPCODE_POSITION="2" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 36 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD A,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="FD 7E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),A">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="A" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 77 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),L">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="L" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 75 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),H">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="H" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 74 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),E">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="E" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 73 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),D">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="D" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 72 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),C">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="C" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 71 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IY+$),B">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="B" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 70 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD L,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="L"/>
+        <OPCODE OPCODE="FD 6E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD H,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="H"/>
+        <OPCODE OPCODE="FD 66 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD E,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="E"/>
+        <OPCODE OPCODE="FD 5E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD D,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="D"/>
+        <OPCODE OPCODE="FD 56 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD C,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="C"/>
+        <OPCODE OPCODE="FD 4E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD B,(IY+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IY" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="B"/>
+        <OPCODE OPCODE="FD 46 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD A,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="DD 7E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),A">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="A" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 77 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),L">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="L" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 75 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),H">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="H" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 74 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),E">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="E" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 73 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),D">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="D" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 72 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),C">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="C" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 71 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD (IX+$),B">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="B" DESTINATION_TYPE="REGISTER_OFFSET" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 70 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD L,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="L"/>
+        <OPCODE OPCODE="DD 6E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD H,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="H"/>
+        <OPCODE OPCODE="DD 66 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD E,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="E"/>
+        <OPCODE OPCODE="DD 5E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD D,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="D"/>
+        <OPCODE OPCODE="DD 56 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD C,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="C"/>
+        <OPCODE OPCODE="DD 4E 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD B,(IX+$)">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="REGISTER_OFFSET" SOURCE_OPERAND="IX" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="B"/>
+        <OPCODE OPCODE="DD 46 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD A,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="3A 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD ($),A">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="A" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL"/>
+        <OPCODE OPCODE="32 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD A,R">
+        <OPCODE OPCODE="ED 5F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD A,I">
+        <OPCODE OPCODE="ED 57" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD R,A">
+        <OPCODE OPCODE="ED 4F" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD I,A">
+        <OPCODE OPCODE="ED 47" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD C,IXl">
+        <OPCODE OPCODE="DD 4D" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD C,IXh">
+        <OPCODE OPCODE="DD 4C" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD B,IXl">
+        <OPCODE OPCODE="DD 45" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD B,IXh">
+        <OPCODE OPCODE="DD 44" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD A,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="A"/>
+        <OPCODE OPCODE="3E 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER_ADDRESS" DESTINATION_OPERAND="HL"/>
+        <OPCODE OPCODE="36 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD L,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="L"/>
+        <OPCODE OPCODE="2E 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD H,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="H"/>
+        <OPCODE OPCODE="26 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD E,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="E"/>
+        <OPCODE OPCODE="1E 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD D,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="D"/>
+        <OPCODE OPCODE="16 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD C,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="C"/>
+        <OPCODE OPCODE="0E 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD B,$">
+        <ARGUMENT SIZE="1" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="B"/>
+        <OPCODE OPCODE="06 00" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD A,A">
+        <OPCODE OPCODE="7F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,(HL)">
+        <OPCODE OPCODE="7E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,L">
+        <OPCODE OPCODE="7D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,H">
+        <OPCODE OPCODE="7C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,E">
+        <OPCODE OPCODE="7B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,D">
+        <OPCODE OPCODE="7A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,C">
+        <OPCODE OPCODE="79" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,B">
+        <OPCODE OPCODE="78" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),A">
+        <OPCODE OPCODE="77" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),L">
+        <OPCODE OPCODE="75" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),H">
+        <OPCODE OPCODE="74" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),E">
+        <OPCODE OPCODE="73" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),D">
+        <OPCODE OPCODE="72" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),C">
+        <OPCODE OPCODE="71" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (HL),B">
+        <OPCODE OPCODE="70" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,A">
+        <OPCODE OPCODE="6F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,(HL)">
+        <OPCODE OPCODE="6E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,L">
+        <OPCODE OPCODE="6D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,H">
+        <OPCODE OPCODE="6C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,E">
+        <OPCODE OPCODE="6B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,D">
+        <OPCODE OPCODE="6A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,C">
+        <OPCODE OPCODE="69" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD L,B">
+        <OPCODE OPCODE="68" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,A">
+        <OPCODE OPCODE="67" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,(HL)">
+        <OPCODE OPCODE="66" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,L">
+        <OPCODE OPCODE="65" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,H">
+        <OPCODE OPCODE="64" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,E">
+        <OPCODE OPCODE="63" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,D">
+        <OPCODE OPCODE="62" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,C">
+        <OPCODE OPCODE="61" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD H,B">
+        <OPCODE OPCODE="60" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,A">
+        <OPCODE OPCODE="5F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,(HL)">
+        <OPCODE OPCODE="5E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,L">
+        <OPCODE OPCODE="5D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,H">
+        <OPCODE OPCODE="5C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,E">
+        <OPCODE OPCODE="5B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,D">
+        <OPCODE OPCODE="5A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,C">
+        <OPCODE OPCODE="59" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD E,B">
+        <OPCODE OPCODE="58" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,A">
+        <OPCODE OPCODE="57" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,(HL)">
+        <OPCODE OPCODE="56" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,L">
+        <OPCODE OPCODE="55" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,H">
+        <OPCODE OPCODE="54" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,E">
+        <OPCODE OPCODE="53" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,D">
+        <OPCODE OPCODE="52" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,C">
+        <OPCODE OPCODE="51" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD D,B">
+        <OPCODE OPCODE="50" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,A">
+        <OPCODE OPCODE="4F" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,(HL)">
+        <OPCODE OPCODE="4E" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,L">
+        <OPCODE OPCODE="4D" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,H">
+        <OPCODE OPCODE="4C" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,E">
+        <OPCODE OPCODE="4B" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,D">
+        <OPCODE OPCODE="4A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,C">
+        <OPCODE OPCODE="49" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD C,B">
+        <OPCODE OPCODE="48" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,A">
+        <OPCODE OPCODE="47" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,(HL)">
+        <OPCODE OPCODE="46" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,L">
+        <OPCODE OPCODE="45" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,H">
+        <OPCODE OPCODE="44" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,E">
+        <OPCODE OPCODE="43" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,D">
+        <OPCODE OPCODE="42" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,C">
+        <OPCODE OPCODE="41" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD B,B">
+        <OPCODE OPCODE="40" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,(DE)">
+        <OPCODE OPCODE="1A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (DE),A">
+        <OPCODE OPCODE="12" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD A,(BC)">
+        <OPCODE OPCODE="0A" SIZE="1"/>
+      </ITEM>
+      <ITEM STRING="LD (BC),A">
+        <OPCODE OPCODE="02" SIZE="1"/>
+      </ITEM>
+    </LOAD8BIT>
+    <LOAD16BIT>
+      <ITEM STRING="LD IY,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 2A 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),IY">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 22 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD IY,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="IY"/>
+        <OPCODE OPCODE="FD 21 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD SP,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="SP"/>
+        <OPCODE OPCODE="ED 7B 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),SP">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="SP"/>
+        <OPCODE OPCODE="ED 73 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD HL,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="HL"/>
+        <OPCODE OPCODE="ED 6B 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),HL">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="HL"/>
+        <OPCODE OPCODE="ED 63 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD DE,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="DE"/>
+        <OPCODE OPCODE="ED 5B 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),DE">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="DE"/>
+        <OPCODE OPCODE="ED 53 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD BC,($)">
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="BC"/>
+        <OPCODE OPCODE="ED 4B 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),BC">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="BC"/>
+        <OPCODE OPCODE="ED 43 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD IX,($)">
+		<ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 2A 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD ($),IX">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 22 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD IX,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="IX"/>
+        <OPCODE OPCODE="DD 21 00 00" SIZE="4"/>
+      </ITEM>
+      <ITEM STRING="LD SP,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="SP"/>
+        <OPCODE OPCODE="31 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD HL,($)">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" SOURCE_TYPE="VARIABLE" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="HL"/>
+        <OPCODE OPCODE="2A 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD ($),HL">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="2" DESTINATION_TYPE="VARIABLE" DESTINATION_OPERAND="LITERAL" SOURCE_TYPE="REGISTER" SOURCE_OPERAND="HL"/>
+        <OPCODE OPCODE="22 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD HL,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="HL"/>
+        <OPCODE OPCODE="21 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD DE,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="DE"/>
+        <OPCODE OPCODE="11 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD BC,$">
+        <ARGUMENT SIZE="2" COUNT="1" OPCODE_POSITION="1" SOURCE_TYPE="DATA" SOURCE_OPERAND="LITERAL" DESTINATION_TYPE="REGISTER" DESTINATION_OPERAND="BC"/>
+        <OPCODE OPCODE="01 00 00" SIZE="3"/>
+      </ITEM>
+      <ITEM STRING="LD SP,IY">
+        <OPCODE OPCODE="FD F9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD SP,IX">
+        <OPCODE OPCODE="DD F9" SIZE="2"/>
+      </ITEM>
+      <ITEM STRING="LD SP,HL">
+        <OPCODE OPCODE="F9" SIZE="1"/>
+      </ITEM>
+    </LOAD16BIT>
+  </GROUPS>
+</MNEMONIC_LIST>

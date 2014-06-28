@@ -331,7 +331,7 @@ uint DisassembledItem::GetMnemonicStrCount()
 }
 
 
-
+// TODO: Move to Mnemonics (GetByteCode(byte index)
 byte DisassembledItem::GetByteOpCode(uint opcode_index)
 {
 	byte ret = 0;

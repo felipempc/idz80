@@ -8,27 +8,27 @@
  * This module stores source code lines
  **************************************************************/
 
-#ifndef CODEVIEWLINE_H
-#define CODEVIEWLINE_H
+#ifndef SOURCECODELINES_H
+#define SOURCECODELINES_H
 
 #include "idz80_base.h"
 #include "disassembled_item.h"
 #include "dasmdata.h"
-#include "sourcecodelist.h"
+#include "sourcecodeaccess.h"
 #include "labelmanager.h"
 
-class CodeViewLine
+class SourceCodeLines: public SourceCodeAccess
 {
     public:
-        CodeViewLine(DAsmData *dasm, LabelManager *labels);
-        virtual ~CodeViewLine();
+        SourceCodeLines(DAsmData *dasm, LabelManager *labels);
+        virtual ~SourceCodeLines();
 
         void Clear();
         int AddDasm(const DisassembledIndex dasmitem, const wxString &comment);
         int AddProgLabel(const ProgramAddress labeladdr, const wxString &comment);
         int AddVarLabel(const ProgramAddress labeladdr, const wxString &comment);
         int AddOrg(const ProgramAddress org, const wxString &comment);
-        int Add(const wxString &comment);
+        int AddComment(const wxString &comment);
         void Del(const LineNumber idx);
         void DelItem(CodeViewItem *cvi);
         void DelComment(CodeViewItem *cvi);
@@ -36,31 +36,27 @@ class CodeViewLine
         void EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         void EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         void EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
-        void Edit(const wxString &comment, const LineNumber pos);
+        void EditComment(const wxString &comment, const LineNumber pos);
         int InsertDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos);
         int InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         int InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos);
         int InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos);
-        int Insert(const wxString &comment, const LineNumber pos);       //create a new line with comment
+        int InsertComment(const wxString &comment, const LineNumber pos);       //create a new line with comment
         int AppendComment(const wxString &comment, const LineNumber pos); // append a comment to an existing line
         void linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm);
         void UpdateDasmIndex(LineNumber index, const int delta);
 
         bool IsEmpty();
 
-        uint GetCount();
-        void setData(CodeViewItem *cvi);
         int getLineOfAddress(ProgramAddress addr);
         int getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr);
         int getFirstInstructionLine();
-        CodeViewItem *getData(LineNumber index);
 
         void SetFirstInstructionLine(int fstiline);
 
 
     protected:
     private:
-        SourceCodeLines code_line_;
         LabelManager    *labels_;
         int             itemcount_;
         DAsmData        *disassembled_;

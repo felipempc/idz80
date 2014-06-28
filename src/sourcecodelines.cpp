@@ -8,9 +8,11 @@
  * This module stores source code lines
  ****************************************************************/
 
-#include "codeviewline.h"
 
-CodeViewLine::CodeViewLine(DAsmData *dasm, LabelManager *labels)
+#include "sourcecodelines.h"
+
+
+SourceCodeLines::SourceCodeLines(DAsmData *dasm, LabelManager *labels)
 {
     itemcount_ = -1;
     first_intruction_line = -1;
@@ -18,36 +20,27 @@ CodeViewLine::CodeViewLine(DAsmData *dasm, LabelManager *labels)
     labels_ = labels;
 }
 
-CodeViewLine::~CodeViewLine()
+
+
+
+SourceCodeLines::~SourceCodeLines()
 {
-    Clear();
+    SourceCodeLines::Clear();
 }
 
 
 
-CodeViewItem *CodeViewLine::getData(LineNumber index)
+
+void SourceCodeLines::Clear()
 {
-    return code_line_.GetLine(index);
-}
-
-
-
-
-void CodeViewLine::setData(CodeViewItem *cvi)
-{
-    code_line_.Add(cvi);
-}
-
-
-
-void CodeViewLine::Clear()
-{
-    code_line_.Clear();
+    SourceCodeContainer::Clear();
     itemcount_ = -1;
 }
 
 
-int CodeViewLine::AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+
+
+int SourceCodeLines::AddNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
 							 const int org, const wxString &comment)
 {
     CodeViewItem *cvi;
@@ -66,18 +59,22 @@ int CodeViewLine::AddNewItem(const int dasmitem, const int labelprogaddr, const 
     cvi->Org = org;
     cvi->RectArg1 = 0;
     cvi->RectArg2 = 0;
-    code_line_.Add(cvi);
+    Add(cvi);
    return ++itemcount_;
 }
 
 
-int CodeViewLine::AddDasm(const DisassembledIndex dasmitem, const wxString &comment)
+
+
+int SourceCodeLines::AddDasm(const DisassembledIndex dasmitem, const wxString &comment)
 {
     return (AddNewItem(dasmitem, -1, -1, -1, comment));
 }
 
 
-int CodeViewLine::AddProgLabel(const ProgramAddress labeladdr, const wxString &comment)
+
+
+int SourceCodeLines::AddProgLabel(const ProgramAddress labeladdr, const wxString &comment)
 {
     if (labeladdr >= 0)
         return (AddNewItem(-1, labeladdr, -1, -1, comment));
@@ -85,7 +82,9 @@ int CodeViewLine::AddProgLabel(const ProgramAddress labeladdr, const wxString &c
 }
 
 
-int CodeViewLine::AddVarLabel(const ProgramAddress labeladdr, const wxString &comment)
+
+
+int SourceCodeLines::AddVarLabel(const ProgramAddress labeladdr, const wxString &comment)
 {
     if (labeladdr >= 0)
         return (AddNewItem(-1, -1, labeladdr, -1, comment));
@@ -93,30 +92,51 @@ int CodeViewLine::AddVarLabel(const ProgramAddress labeladdr, const wxString &co
 }
 
 
-int CodeViewLine::AddOrg(const ProgramAddress org, const wxString &comment)
+
+
+int SourceCodeLines::AddOrg(const ProgramAddress org, const wxString &comment)
 {
     return (AddNewItem(-1, -1, -1, org, comment));
 }
 
-int CodeViewLine::Add(const wxString &comment)
+
+
+
+int SourceCodeLines::AddComment(const wxString &comment)
 {
     return (AddNewItem(-1, -1, -1, -1, comment));
 }
 
+
+
+
 // TODO: Very slow, fix it !
-void CodeViewLine::DelItem(CodeViewItem *cvi)
+void SourceCodeLines::DelItem(CodeViewItem *cvi)
 {
-    uint pos = code_line_.Find(cvi);
+    LineNumber pos;
+
+    try
+    {
+        pos  = Find(cvi);
+    }
+    catch (uint e)
+    {
+        if (e == LINE_NOT_FOUND)
+            return;
+    }
+
     if ((first_intruction_line >= 0) && (pos < first_intruction_line))
         first_intruction_line--;
 
-    code_line_.Remove(cvi);
+    RemoveLine(pos);
 
     itemcount_--;
 }
 
 
-void CodeViewLine::DelComment(CodeViewItem *cvi)
+
+
+void SourceCodeLines::DelComment(CodeViewItem *cvi)
 {
     if (cvi->Comment)
     {
@@ -126,31 +146,28 @@ void CodeViewLine::DelComment(CodeViewItem *cvi)
 }
 
 
-void CodeViewLine::Del(const LineNumber idx)
+
+
+void SourceCodeLines::Del(const LineNumber idx)
 {
-    if (idx < code_line_.GetCount())
+    if (idx < GetCount())
     {
         if ((first_intruction_line >= 0) && (idx < first_intruction_line))
             first_intruction_line--;
-        DelItem(getData(idx));
+        RemoveLine(idx);
     }
 }
 
 
 
-void CodeViewLine::EditItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+
+void SourceCodeLines::EditItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
 							const int org, const wxString &comment, const LineNumber pos)
 {
     CodeViewItem *cvi;
-    cvi = getData(pos);
+    cvi = Line(pos);
     if (comment.IsEmpty())
-    {
-        if (cvi->Comment)
-        {
-            delete cvi->Comment;
-            cvi->Comment = 0;
-        }
-    }
+        DelComment(cvi);
     else
     {
         if (cvi->Comment == 0)
@@ -168,42 +185,54 @@ void CodeViewLine::EditItem(const int dasmitem, const int labelprogaddr, const i
         cvi->LabelVarAddr = labels_->var_labels->GetDatabyAddress(labelvaraddr);
 }
 
-void CodeViewLine::EditDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
+
+
+
+void SourceCodeLines::EditDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         EditItem(dasmitem, -1, -1, -1, comment, pos);
 }
 
 
-void CodeViewLine::EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+
+
+void SourceCodeLines::EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         EditItem(-1, labeladdr, -1, -1, comment, pos);
 }
 
 
-void CodeViewLine::EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+
+
+void SourceCodeLines::EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         EditItem(-1, -1, labeladdr, -1, comment, pos);
 }
 
 
-void CodeViewLine::EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
+
+
+void SourceCodeLines::EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         EditItem(-1, -1, -1, org, comment, pos);
 }
 
 
 
-void CodeViewLine::Edit(const wxString &comment,const LineNumber pos)
+
+void SourceCodeLines::EditComment(const wxString &comment,const LineNumber pos)
 {
     EditItem(-1, -1, -1, -1, comment, pos);
 }
 
 
-int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
+
+
+int SourceCodeLines::InsertNewItem(const int dasmitem, const int labelprogaddr, const int labelvaraddr,
 								const int org, const wxString &comment, LineNumber pos)
 {
     CodeViewItem *cvi;
@@ -227,7 +256,7 @@ int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, con
     cvi->RectArg1 = 0;
     cvi->RectArg2 = 0;
 
-    code_line_.Insert(cvi, pos);
+    Insert(cvi, pos);
     itemcount_++;
 
     return pos;
@@ -235,9 +264,10 @@ int CodeViewLine::InsertNewItem(const int dasmitem, const int labelprogaddr, con
 
 
 
-int CodeViewLine::InsertDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
+
+int SourceCodeLines::InsertDasm(const DisassembledIndex dasmitem, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         return (InsertNewItem(dasmitem, -1, -1, -1, comment, pos));
     else
         return (AddDasm(dasmitem, comment));
@@ -247,74 +277,81 @@ int CodeViewLine::InsertDasm(const DisassembledIndex dasmitem, const wxString &c
 
 
 
-int CodeViewLine::InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+
+int SourceCodeLines::InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     CodeViewItem *cvi;
 
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
     {
         pos = InsertNewItem(-1, labeladdr, -1, -1, comment, pos);
-        cvi = getData(pos);
+        cvi = Line(pos);
         if (cvi && cvi->LabelProgAddr)
             return (pos);
 
-        DelItem(cvi);
+        if (cvi)
+            RemoveLine(pos);
     }
     return -1;
 }
 
-int CodeViewLine::InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+
+
+
+int SourceCodeLines::InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     CodeViewItem *cvi;
 
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
     {
         pos = InsertNewItem(-1, -1, labeladdr, -1, comment, pos);
-        cvi = getData(pos);
+        cvi = Line(pos);
         if (cvi && cvi->LabelVarAddr)
             return (pos);
-        DelItem(cvi);
+
+        if (cvi)
+            RemoveLine(pos);
     }
     return -1;
 }
 
 
-int CodeViewLine::InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
+
+
+int SourceCodeLines::InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         return (InsertNewItem(-1, -1, -1, org, comment, pos));
     return -1;
 }
 
 
 
+
 //create a new line with comment
-int CodeViewLine::Insert(const wxString &comment, const LineNumber pos)
+int SourceCodeLines::InsertComment(const wxString &comment, const LineNumber pos)
 {
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
         return (InsertNewItem(-1, -1, -1, -1, comment, pos));
     return -1;
 }
 
 
-// append a comment to an existing line
 
-int CodeViewLine::AppendComment(const wxString &comment, const LineNumber pos)
+
+// append a comment to an existing line
+int SourceCodeLines::AppendComment(const wxString &comment, const LineNumber pos)
 {
     CodeViewItem *cvi;
     int i;
     i = -1;
-    if (pos < code_line_.GetCount())
+    if (pos < GetCount())
     {
-        cvi = getData(pos);
+        cvi = Line(pos);
         if (cvi)
         {
             if (comment.IsEmpty())
-            {
-                if (cvi->Comment)
-                    delete cvi->Comment;
-                cvi->Comment = 0;
-            }
+                DelComment(cvi);
             else
             {
                 if (cvi->Comment == 0)
@@ -330,22 +367,21 @@ int CodeViewLine::AppendComment(const wxString &comment, const LineNumber pos)
 }
 
 
-bool CodeViewLine::IsEmpty()
+
+
+bool SourceCodeLines::IsEmpty()
 {
     return (GetCount() == 0);
 }
 
 
-uint CodeViewLine::GetCount()
-{
-    return (code_line_.GetCount());
-}
+
 
 /*
  * Search for an instruction line which address is "addr". Returns the line number, if found.
  * TODO: Find a better solution.
  */
-int CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr)
+int SourceCodeLines::getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr)
 {
     uint    item_count = 0;
     bool    found_item = false;
@@ -356,7 +392,7 @@ int CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, Progr
 
     while ((item_count < line_count) && !found_item)
     {
-        cvi = getData(line_index);
+        cvi = Line(line_index);
         if (cvi && (cvi->Dasmitem >= 0))
         {
             de = disassembled_->GetData(cvi->Dasmitem);
@@ -374,18 +410,26 @@ int CodeViewLine::getLineOfAddress(LineNumber line_index, uint line_count, Progr
     return index;
 }
 
-int CodeViewLine::getLineOfAddress(ProgramAddress addr)
+
+
+
+int SourceCodeLines::getLineOfAddress(ProgramAddress addr)
 {
     return getLineOfAddress(0, GetCount(), addr);
 }
 
 
-int CodeViewLine::getFirstInstructionLine()
+
+
+int SourceCodeLines::getFirstInstructionLine()
 {
     return first_intruction_line;
 }
 
-void CodeViewLine::SetFirstInstructionLine(int fstiline)
+
+
+
+void SourceCodeLines::SetFirstInstructionLine(int fstiline)
 {
     if (fstiline < GetCount())
         first_intruction_line = fstiline;
@@ -393,13 +437,14 @@ void CodeViewLine::SetFirstInstructionLine(int fstiline)
 
 
 
-void CodeViewLine::UpdateDasmIndex(LineNumber index, const int delta)
+
+void SourceCodeLines::UpdateDasmIndex(LineNumber index, const int delta)
 {
     CodeViewItem *cvi;
 
     while (index < GetCount())
     {
-        cvi = getData(index);
+        cvi = Line(index);
         if (cvi->Dasmitem >= 0)
             cvi->Dasmitem += delta;
         index++;
@@ -408,7 +453,8 @@ void CodeViewLine::UpdateDasmIndex(LineNumber index, const int delta)
 
 
 
-void CodeViewLine::linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm)
+
+void SourceCodeLines::linkData(DisassembledIndex indexdasm, LineNumber indexline, uint countdasm)
 {
 	wxString        str;
 	DisassembledItem     *de;
@@ -417,7 +463,7 @@ void CodeViewLine::linkData(DisassembledIndex indexdasm, LineNumber indexline, u
 
     while (countdasm-- > 0)
 	{
-	    cvi = getData(indexline);
+	    cvi = Line(indexline);
 	    if (cvi)
         {
             if (cvi->LabelProgAddr)

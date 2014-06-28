@@ -605,7 +605,7 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
     for (i = line_info.firstLine; i < line_info.lastLine; i++)
     {
-        cvi = m_CodeViewLine->getData(i);
+        cvi = m_CodeViewLine->Line(i);
         if (cvi->Dasmitem >= 0)
         {
 			if (cvi->Comment)
@@ -822,7 +822,7 @@ void CodeView::TreatSingleSelection()
 {
 	bool    testcomment = false;
 
-	line_info.lineitem = m_CodeViewLine->getData(line_info.cursorPosition);
+	line_info.lineitem = m_CodeViewLine->Line(line_info.cursorPosition);
 	if (line_info.lineitem)
 	{
 		// Does the line have comment ?
@@ -877,7 +877,7 @@ void CodeView::TreatMultiSelection()
 
     for (first_instruction = line_info.firstLine; first_instruction <= line_info.lastLine; first_instruction++)
     {
-        line_info.lineitem = m_CodeViewLine->getData(first_instruction);
+        line_info.lineitem = m_CodeViewLine->Line(first_instruction);
         first_found = (line_info.lineitem && (line_info.lineitem->Dasmitem >= 0));
         if (first_found)
             break;
@@ -885,7 +885,7 @@ void CodeView::TreatMultiSelection()
 
     for (last_instruction = line_info.lastLine; last_instruction > first_instruction; last_instruction--)
     {
-        last_line = m_CodeViewLine->getData(last_instruction);
+        last_line = m_CodeViewLine->Line(last_instruction);
         last_found = (last_line && (last_line->Dasmitem >= 0));
         if (last_found)
             break;
