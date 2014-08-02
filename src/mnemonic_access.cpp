@@ -44,7 +44,7 @@ void MnemonicAccess::Find(wxArrayInt& mnemonics_found_list, byte opcode, uint sc
             else
                 index = mnemonics_found_list[item_count];
 
-            mnemonic = Item(index);
+            Item(index);
 
             /* In four-byte instructions of Z80, there are opcodes that
                have its argument in the middle of it (DD CB's and FD CB's series)

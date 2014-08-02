@@ -10,7 +10,7 @@
 
 #include "mnemonic_item_base.h"
 
-MnemonicItem::MnemonicItem()
+MnemonicItemBase::MnemonicItemBase()
 {
     group_= GRP_NONE;
     source_.operand = OP_NONE;
@@ -26,12 +26,12 @@ MnemonicItem::MnemonicItem()
     mnemonic_string_ = 0;
 }
 
-MnemonicItem::~MnemonicItem()
+MnemonicItemBase::~MnemonicItemBase()
 {
     if (mnemonic_string_)
     {
-        mnemonic_string->Clear();
-        mnemonic_string->Shrink();
+        mnemonic_string_->Clear();
+        mnemonic_string_->Shrink();
     }
 }
 

@@ -15,6 +15,7 @@
 
 #include "mnemonic_item.h"
 
+
 typedef std::vector<MnemonicItem *> MnemonicList;
 typedef unsigned int MnemonicIndex;
 

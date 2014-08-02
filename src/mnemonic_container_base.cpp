@@ -11,15 +11,3 @@
 
 #include "mnemonic_container_base.h"
 
-
-/*
-MnemonicContainerBase::MnemonicContainerBase()
-{
-
-}
-
-MnemonicContainerBase::~MnemonicContainerBase()
-{
-    //dtor
-}
-*/

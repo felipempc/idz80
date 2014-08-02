@@ -34,7 +34,7 @@ Groups MnemonicItem::GetGroup()
 
 
 
-Operands MnemonicItem::GetSourceArgument()
+Arguments MnemonicItem::GetSourceArgument()
 {
     return source_;
 }
@@ -42,7 +42,7 @@ Operands MnemonicItem::GetSourceArgument()
 
 
 
-Operands MnemonicItem::GetDestinationArgument()
+Arguments MnemonicItem::GetDestinationArgument()
 {
     return destination_;
 }
@@ -175,7 +175,7 @@ void MnemonicItem::SetArgumentConfig(byte argcount, byte argsize, byte argpositi
 
 
 
-void MnemonicItem::SetConditionalBranch(bool isconditional = false);
+void MnemonicItem::SetConditionalBranch(bool isconditional)
 {
     conditional_ = isconditional;
 }

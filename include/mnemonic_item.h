@@ -29,8 +29,8 @@ class MnemonicItem : public MnemonicItemBase
 */
         Groups GetGroup();
 
-        Operands GetSourceArgument();
-        Operands GetDestinationArgument();
+        Arguments GetSourceArgument();
+        Arguments GetDestinationArgument();
 
         ByteCode &GetByteCode();
         byte GetByteCode(byte index);
