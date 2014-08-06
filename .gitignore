@@ -12,4 +12,6 @@ info.txt
 Thumbs.db
 *.out
 trash/*
+build_codeblocks/bin/*
+build_codeblocks/obj/*
 

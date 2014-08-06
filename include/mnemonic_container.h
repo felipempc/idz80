@@ -19,8 +19,6 @@
 #include "mnemonic_access.h"
 
 
-typedef std::vector<wxXmlNode *> NodeGroupList;
-
 
 class MnemonicContainer : public MnemonicAccess
 {
@@ -28,20 +26,16 @@ class MnemonicContainer : public MnemonicAccess
         MnemonicContainer(wxTextCtrl *log);
         ~MnemonicContainer();
 
-        bool Open(const wxString &mnemonicfile);
+        void AddInstruction(MnemonicItem *mnemonicitem);
+
     protected:
     private:
         uint num_groups_, num_instructions_;
-        wxXmlDocument *xml_mnemonic;
+
 
         //DEBUG
         wxTextCtrl *log_;
 
-        void AddInstruction(MnemonicItem *mnemonicitem);
-        void ProcessFile();
-        void ProcessGroup(const wxXmlNode *groupitem);
-        bool FindGroups(NodeGroupList &grouplist);
-        void ReadInstruction(wxXmlNode *instruction_node);
 };
 
 #endif // MNEMONICCONTAINER_H

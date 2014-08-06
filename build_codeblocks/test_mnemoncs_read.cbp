@@ -15,9 +15,9 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D__WXDEBUG__" />
+					<Add option="-D_IDZ80_DEBUG_" />
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
-					<Add directory="X:/idz80/include" />
-					<Add directory="X:/idz80/src" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
@@ -37,18 +37,18 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add directory="K:/wxw/wx301/lib/gcc_dll/mswu" />
+					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
+					<Add directory="include" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="K:/wxw/wx301/lib/gcc_dll/mswu" />
+					<Add directory="$(WXW)/lib/gcc_dll/mswu" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="libwxmsw30u_core.a" />
-					<Add library="libwxbase30u.a" />
-					<Add library="libwxpng.a" />
-					<Add library="libwxzlib.a" />
-					<Add directory="K:/wxw/wx301/lib/gcc_dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_xml_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw30u_core_gcc_custom.dll" />
+					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
 			<Environment>
@@ -64,12 +64,15 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(WXW)/include" />
+			<Add directory="../include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WXW)/include" />
+			<Add directory="../resource" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
+			<Add directory="../resource" />
 		</Linker>
 		<Unit filename="../include/idz80_basic_types.h" />
 		<Unit filename="../include/mnemonic_access.h" />
@@ -77,14 +80,12 @@
 		<Unit filename="../include/mnemonic_container_base.h" />
 		<Unit filename="../include/mnemonic_item.h" />
 		<Unit filename="../include/mnemonic_item_base.h" />
+		<Unit filename="../include/mnemonicxmlfile.h" />
 		<Unit filename="../src/mnemonic_access.cpp" />
 		<Unit filename="../src/mnemonic_container.cpp" />
-		<Unit filename="../src/mnemonic_container_base.cpp" />
 		<Unit filename="../src/mnemonic_item.cpp" />
 		<Unit filename="../src/mnemonic_item_base.cpp" />
-		<Unit filename="resource.rc">
-			<Option compilerVar="WINDRES" />
-		</Unit>
+		<Unit filename="../src/mnemonicxmlfile.cpp" />
 		<Unit filename="test_mnemoncs_readApp.cpp" />
 		<Unit filename="test_mnemoncs_readApp.h" />
 		<Unit filename="test_mnemoncs_readMain.cpp" />

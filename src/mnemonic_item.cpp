@@ -12,19 +12,6 @@
 
 #include "mnemonic_item.h"
 
-/*
-MnemonicItem::MnemonicItem()
-{
-    //ctor
-}
-
-MnemonicItem::~MnemonicItem()
-{
-    //dtor
-}
-*/
-
-
 
 Groups MnemonicItem::GetGroup()
 {
@@ -113,6 +100,7 @@ unsigned int MnemonicItem::GetMnemonicStrCount()
 {
     if (mnemonic_string_)
         return mnemonic_string_->GetCount();
+    return 0;
 }
 
 

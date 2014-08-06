@@ -23,10 +23,6 @@ class MnemonicItem : public MnemonicItemBase
             MAX_BYTECODE_REACHED
         };
 
-/*
-        MnemonicItem();
-        ~MnemonicItem();
-*/
         Groups GetGroup();
 
         Arguments GetSourceArgument();

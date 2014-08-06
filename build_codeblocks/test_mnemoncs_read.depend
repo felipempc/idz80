@@ -146,7 +146,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\motif\chkconf.h
 
-1402782960 k:\wxw\wx301\include\wx\x11\chkconf.h
+1402782959 k:\wxw\wx301\include\wx\x11\chkconf.h
 
 1402782958 k:\wxw\wx301\include\wx\android\chkconf.h
 
@@ -154,7 +154,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\univ\chkconf.h
 
-1402782960 k:\wxw\wx301\include\wx\version.h
+1402782959 k:\wxw\wx301\include\wx\version.h
 	"wx/cpp.h"
 
 1402782958 k:\wxw\wx301\include\wx\cpp.h
@@ -183,7 +183,7 @@
 	<tchar.h>
 	<ctype.h>
 
-1402782960 k:\wxw\wx301\include\wx\windowid.h
+1402782959 k:\wxw\wx301\include\wx\windowid.h
 
 1402782958 k:\wxw\wx301\include\wx\msw\winundef.h
 
@@ -225,7 +225,7 @@
 	"wx/iosfwrap.h"
 	"wx/crt.h"
 
-1402782960 k:\wxw\wx301\include\wx\wxcrtbase.h
+1402782959 k:\wxw\wx301\include\wx\wxcrtbase.h
 	"wx/chartype.h"
 	<stdio.h>
 	<string.h>
@@ -312,7 +312,7 @@
 1402782958 k:\wxw\wx301\include\wx\thread.h
 	"wx/defs.h"
 
-1402782960 k:\wxw\wx301\include\wx\vector.h
+1402782959 k:\wxw\wx301\include\wx\vector.h
 	"wx/defs.h"
 	<vector>
 	<algorithm>
@@ -357,7 +357,7 @@
 	"wx/fontenc.h"
 	"wx/thread.h"
 
-1402782960 k:\wxw\wx301\include\wx\unix\tls.h
+1402782959 k:\wxw\wx301\include\wx\unix\tls.h
 	<pthread.h>
 
 1402782958 k:\wxw\wx301\include\wx\iosfwrap.h
@@ -371,12 +371,12 @@
 	"wx/wxcrt.h"
 	"wx/wxcrtvararg.h"
 
-1402782960 k:\wxw\wx301\include\wx\wxcrt.h
+1402782959 k:\wxw\wx301\include\wx\wxcrt.h
 	"wx/wxcrtbase.h"
 	"wx/string.h"
 	<string.h>
 
-1402782960 k:\wxw\wx301\include\wx\wxcrtvararg.h
+1402782959 k:\wxw\wx301\include\wx\wxcrtvararg.h
 	"wx/wxcrt.h"
 	"wx/strvararg.h"
 	"wx/string.h"
@@ -387,12 +387,12 @@
 	"wx/chartype.h"
 	"wx/strvararg.h"
 
-1402782960 k:\wxw\wx301\include\wx\xti.h
+1402782959 k:\wxw\wx301\include\wx\xti.h
 	"wx/defs.h"
 	"wx/xtitypes.h"
 	"wx/xtihandler.h"
 
-1402782960 k:\wxw\wx301\include\wx\xtitypes.h
+1402782959 k:\wxw\wx301\include\wx\xtitypes.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/hashmap.h"
@@ -472,7 +472,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\cocoa\log.h
 
-1402782960 k:\wxw\wx301\include\wx\xtihandler.h
+1402782959 k:\wxw\wx301\include\wx\xtihandler.h
 	"wx/defs.h"
 	"wx/xti.h"
 
@@ -480,11 +480,11 @@
 	"wx/memory.h"
 	"wx/flags.h"
 
-1402782960 k:\wxw\wx301\include\wx\xti2.h
+1402782959 k:\wxw\wx301\include\wx\xti2.h
 	"wx/xtiprop.h"
 	"wx/xtictor.h"
 
-1402782960 k:\wxw\wx301\include\wx\xtiprop.h
+1402782959 k:\wxw\wx301\include\wx\xtiprop.h
 	"wx/defs.h"
 	"wx/xti.h"
 	"wx/any.h"
@@ -532,7 +532,7 @@
 1402782958 k:\wxw\wx301\include\wx\anystr.h
 	"wx/string.h"
 
-1402782960 k:\wxw\wx301\include\wx\variant.h
+1402782959 k:\wxw\wx301\include\wx\variant.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -544,7 +544,7 @@
 	"wx/iosfwrap.h"
 	"wx/any.h"
 
-1402782960 k:\wxw\wx301\include\wx\xtictor.h
+1402782959 k:\wxw\wx301\include\wx\xtictor.h
 	"wx/defs.h"
 	"wx/xti.h"
 
@@ -673,7 +673,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\msw\microwin.h
 
-1402782960 k:\wxw\wx301\include\wx\window.h
+1402782959 k:\wxw\wx301\include\wx\window.h
 	"wx/event.h"
 	"wx/list.h"
 	"wx/cursor.h"
@@ -727,7 +727,7 @@
 	"wx/string.h"
 	"wx/object.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\font.h
+1402782959 k:\wxw\wx301\include\wx\x11\font.h
 
 1402782958 k:\wxw\wx301\include\wx\dfb\font.h
 	"wx/dfb/dfbptr.h"
@@ -785,7 +785,7 @@
 1402782958 k:\wxw\wx301\include\wx\msw\palette.h
 	"wx/gdiobj.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\palette.h
+1402782959 k:\wxw\wx301\include\wx\x11\palette.h
 	"wx/list.h"
 
 1402782958 k:\wxw\wx301\include\wx\generic\paletteg.h
@@ -804,7 +804,7 @@
 1402782958 k:\wxw\wx301\include\wx\generic\colour.h
 	"wx/object.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\colour.h
+1402782959 k:\wxw\wx301\include\wx\x11\colour.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -849,7 +849,7 @@
 1402782958 k:\wxw\wx301\include\wx\gtk1\region.h
 	"wx/list.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\region.h
+1402782959 k:\wxw\wx301\include\wx\x11\region.h
 	"wx/list.h"
 
 1402782958 k:\wxw\wx301\include\wx\dfb\region.h
@@ -870,7 +870,7 @@
 	"wx/list.h"
 	"wx/os2/private.h"
 
-1402782960 k:\wxw\wx301\include\wx\utils.h
+1402782959 k:\wxw\wx301\include\wx\utils.h
 	"wx/object.h"
 	"wx/list.h"
 	"wx/filefn.h"
@@ -886,7 +886,7 @@
 	<unistd.h>
 	<stdio.h>
 
-1402782960 k:\wxw\wx301\include\wx\versioninfo.h
+1402782959 k:\wxw\wx301\include\wx\versioninfo.h
 	"wx/string.h"
 
 1402782958 k:\wxw\wx301\include\wx\meta\implicitconversion.h
@@ -903,7 +903,7 @@
 1402782958 k:\wxw\wx301\include\wx\platinfo.h
 	"wx/string.h"
 
-1402782960 k:\wxw\wx301\include\wx\validate.h
+1402782959 k:\wxw\wx301\include\wx\validate.h
 	"wx/defs.h"
 	"wx/event.h"
 
@@ -963,7 +963,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\gtk1\window.h
 
-1402782960 k:\wxw\wx301\include\wx\x11\window.h
+1402782959 k:\wxw\wx301\include\wx\x11\window.h
 	"wx/region.h"
 
 1402782958 k:\wxw\wx301\include\wx\dfb\window.h
@@ -989,7 +989,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\msw\brush.h
 
-1402782960 k:\wxw\wx301\include\wx\x11\brush.h
+1402782959 k:\wxw\wx301\include\wx\x11\brush.h
 	"wx/gdiobj.h"
 
 1402782958 k:\wxw\wx301\include\wx\gtk\brush.h
@@ -1023,7 +1023,7 @@
 	"wx/math.h"
 	"wx/palette.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\bitmap.h
+1402782959 k:\wxw\wx301\include\wx\x11\bitmap.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -1113,7 +1113,7 @@
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\pen.h
+1402782959 k:\wxw\wx301\include\wx\x11\pen.h
 	"wx/gdicmn.h"
 	"wx/gdiobj.h"
 
@@ -1212,7 +1212,7 @@
 1402782958 k:\wxw\wx301\include\wx\imagiff.h
 	"wx/image.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\cursor.h
+1402782959 k:\wxw\wx301\include\wx\x11\cursor.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/colour.h"
@@ -1306,7 +1306,7 @@
 	"wx/dfb/dfbptr.h"
 	"wx/vidmode.h"
 
-1402782960 k:\wxw\wx301\include\wx\vidmode.h
+1402782959 k:\wxw\wx301\include\wx\vidmode.h
 
 1402782958 k:\wxw\wx301\include\wx\gtk\app.h
 
@@ -1375,7 +1375,7 @@
 	"wx/icon.h"
 	"wx/dynarray.h"
 
-1402782960 k:\wxw\wx301\include\wx\weakref.h
+1402782959 k:\wxw\wx301\include\wx\weakref.h
 	"wx/tracker.h"
 	"wx/meta/convertible.h"
 	"wx/meta/int2type.h"
@@ -1388,7 +1388,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\gtk1\toplevel.h
 
-1402782960 k:\wxw\wx301\include\wx\x11\toplevel.h
+1402782959 k:\wxw\wx301\include\wx\x11\toplevel.h
 
 1402782958 k:\wxw\wx301\include\wx\dfb\toplevel.h
 
@@ -1681,7 +1681,7 @@
 
 1402782958 k:\wxw\wx301\include\wx\os2\wxrsc.h
 
-1402782960 k:\wxw\wx301\include\wx\x11\app.h
+1402782959 k:\wxw\wx301\include\wx\x11\app.h
 	"wx/gdicmn.h"
 	"wx/event.h"
 
@@ -2349,7 +2349,7 @@
 	"wx/afterstd.h"
 	"wx/msw/winundef.h"
 
-1402782960 k:\wxw\wx301\include\wx\x11\textctrl.h
+1402782959 k:\wxw\wx301\include\wx\x11\textctrl.h
 	"wx/univ/textctrl.h"
 	"wx/scrolwin.h"
 	"wx/arrstr.h"
@@ -2980,7 +2980,7 @@
 	<vector>
 	"mnemonic_access.h"
 
-1402782960 k:\wxw\wx301\include\wx\xml\xml.h
+1402782959 k:\wxw\wx301\include\wx\xml\xml.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/object.h"
@@ -3005,4 +3005,70 @@
 	<wx/filedlg.h>
 	"test_mnemoncs_readMain.h"
 	"mnemonic_container.h"
+
+1404605040 source:x:\idz80\idz80\src\mnemonic_access.cpp
+	"mnemonic_access.h"
+
+1404605028 x:\idz80\idz80\include\mnemonic_access.h
+	<wx/dynarray.h>
+	"mnemonic_container_base.h"
+	"idz80_basic_types.h"
+
+1404606960 x:\idz80\idz80\include\mnemonic_container_base.h
+	<vector>
+	"mnemonic_item.h"
+
+1407271374 x:\idz80\idz80\include\mnemonic_item.h
+	<mnemonic_item_base.h>
+
+1403808931 x:\idz80\idz80\include\mnemonic_item_base.h
+	<wx/arrstr.h>
+	"idz80_basic_types.h"
+
+1403808304 x:\idz80\idz80\include\idz80_basic_types.h
+
+1407282130 source:x:\idz80\idz80\src\mnemonic_container.cpp
+	"mnemonic_container.h"
+
+1407281760 x:\idz80\idz80\include\mnemonic_container.h
+	<wx/xml/xml.h>
+	<wx/string.h>
+	<wx/textctrl.h>
+	<vector>
+	"mnemonic_access.h"
+
+1404604900 source:x:\idz80\idz80\src\mnemonic_container_base.cpp
+	"mnemonic_container_base.h"
+
+1404521024 source:x:\idz80\idz80\src\mnemonic_item_base.cpp
+	"mnemonic_item_base.h"
+
+1404521328 source:x:\idz80\idz80\build_codeblocks\test_mnemoncs_readapp.cpp
+	"test_mnemoncs_readApp.h"
+	"test_mnemoncs_readMain.h"
+
+1404517990 x:\idz80\idz80\build_codeblocks\test_mnemoncs_readapp.h
+	<wx/app.h>
+
+1404521424 x:\idz80\idz80\build_codeblocks\test_mnemoncs_readmain.h
+	<wx/frame.h>
+	<wx/toplevel.h>
+
+1404607402 source:x:\idz80\idz80\build_codeblocks\test_mnemoncs_readmain.cpp
+	<wx/menu.h>
+	<wx/statusbr.h>
+	<wx/sizer.h>
+	<wx/textctrl.h>
+	<wx/msgdlg.h>
+	<wx/filedlg.h>
+	"test_mnemoncs_readMain.h"
+	"mnemonic_container.h"
+
+1407271426 source:x:\idz80\idz80\src\mnemonic_item.cpp
+	"mnemonic_item.h"
+
+1384867446 source:x:\idz80\idz80\build_codeblocks\resource.rc
+	"wx/msw/wx.rc"
+
+1402782958 k:\wxw\wx301\lib\gcc_dll\mswu\wx\setup.h
 
