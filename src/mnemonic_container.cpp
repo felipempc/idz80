@@ -24,9 +24,19 @@ MnemonicContainer::MnemonicContainer(wxTextCtrl *log)
     #endif
 }
 
+
+
+
 MnemonicContainer::~MnemonicContainer()
 {
-    //dtor
+    MnemonicItem    *mnemonic;
+
+    for(int i = 0; i < mnlist_.size(); i++)
+    {
+        mnemonic = mnlist_.back();
+        delete mnemonic;
+    }
+    mnlist_.clear();
 }
 
 
@@ -34,7 +44,25 @@ MnemonicContainer::~MnemonicContainer()
 
 void MnemonicContainer::AddInstruction(MnemonicItem *mnemonicitem)
 {
-
+    if (!mnemonicitem)
+        mnlist_.push_back(mnemonicitem);
 }
 
 
+
+
+void MnemonicContainer::SetStatistics(Statistics &_statistics)
+{
+    num_groups_ = _statistics.numgroups;
+    num_instructions_ = _statistics.numinstructions;
+}
+
+
+
+
+
+void MnemonicContainer::ShowStatistics()
+{
+    log_->AppendText(wxString::Format("Number of groups found = %d\n", num_groups_));
+    log_->AppendText(wxString::Format("Number of instructions found = %d\n", num_instructions_));
+}

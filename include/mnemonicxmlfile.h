@@ -103,19 +103,24 @@ class MnemonicXMLFile
         static const wxString ATTRIBUTE_VALUE_LITERAL;
 
 
-        static const wxString ARGUMENT_MARK;
+        static const wxUniChar ARGUMENT_MARK;
 
     private:
         wxXmlDocument *xml_mnemonic_;
-        MnemonicContainer mnemonics;
-        wxTextCtrl *log;
+        MnemonicContainer *mnemonics_;
+        wxTextCtrl *log_;
+        Statistics statistics_;
 
         void ProcessFile();
         void ProcessGroup(const wxXmlNode *groupitem);
         bool FindGroups(NodeGroupList &grouplist);
-        void ReadInstruction(wxXmlNode *instruction_node);
+        MnemonicItem *ProcessInstruction(wxXmlNode *instruction_node, const Groups currentgroup);
         Groups GetGroupFromStr(const wxString &groupstr);
+        void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
+        bool ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
 
 };
+
+//TODO: Evoluir MnemonicXMLFile para preencher todo Mnemonics
 
 #endif // MNEMONICXMLFILE_H

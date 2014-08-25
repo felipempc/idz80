@@ -18,7 +18,11 @@
 #include <vector>
 #include "mnemonic_access.h"
 
-
+struct Statistics
+{
+    uint numgroups;
+    uint numinstructions;
+};
 
 class MnemonicContainer : public MnemonicAccess
 {
@@ -27,6 +31,8 @@ class MnemonicContainer : public MnemonicAccess
         ~MnemonicContainer();
 
         void AddInstruction(MnemonicItem *mnemonicitem);
+        void SetStatistics(Statistics &_statistics);
+        void ShowStatistics();
 
     protected:
     private:

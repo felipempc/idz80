@@ -59,7 +59,7 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WXW" value="K:\wxw\wx300" />
+				<Variable name="WXW" value="K:\wxw\wx301" />
 			</Environment>
 		</Build>
 		<Compiler>

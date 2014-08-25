@@ -16,6 +16,7 @@
 
 #include "test_mnemoncs_readMain.h"
 #include "mnemonic_container.h"
+#include "mnemonicxmlfile.h"
 
 
 BEGIN_EVENT_TABLE(test_mnemoncs_readFrame, wxFrame)
@@ -92,7 +93,10 @@ void test_mnemoncs_readFrame::OnOpen(wxCommandEvent& event)
     logwindow_->AppendText(caption);
 
     MnemonicContainer mnemonics(logwindow_);
-    mnemonics.Open(filechoosen);
+    mnemonics.ShowStatistics();
+    MnemonicXMLFile mnemonic_loader(&mnemonics, logwindow_);
+    mnemonic_loader.Open(filechoosen);
+    mnemonics.ShowStatistics();
 
 }
 
