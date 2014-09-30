@@ -118,6 +118,7 @@ class MnemonicXMLFile
         Groups GetGroupFromStr(const wxString &groupstr);
         void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
         bool ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
+        wxXmlNode *GetOpcodeNode(wxXmlNode *intruction_node);
 
 };
 

@@ -225,8 +225,9 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
         log_->AppendText(wxString::Format("Item '%s' = [%s]\n", opcode_str, str_debug));
         #endif // _IDZ80_DEBUG_
 
-        instruction_detail = instruction_node->GetChildren();
-        if (instruction_detail && (instruction_detail->GetName().IsSameAs(MNEMONIC_OPCODE_STR)))
+        instruction_detail = GetOpcodeNode(instruction_node);
+
+        if (instruction_detail)
         {
             mnemonic_item = new MnemonicItem();
             mnemonic_item->SetGroup(currentgroup);
@@ -432,5 +433,18 @@ bool MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
 
 
 
+
+wxXmlNode *MnemonicXMLFile::GetOpcodeNode(wxXmlNode *intruction_node)
+{
+    wxXmlNode *actual_param;
+    actual_param = intruction_node->GetChildren();
+    while (actual_param)
+    {
+        if (actual_param->GetName().IsSameAs(MNEMONIC_OPCODE_STR))
+            return actual_param;
+        actual_param = actual_param->GetNext();
+    }
+    return 0;
+}
 
 

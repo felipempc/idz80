@@ -31,7 +31,7 @@ MnemonicContainer::~MnemonicContainer()
 {
     MnemonicItem    *mnemonic;
 
-    for(int i = 0; i < mnlist_.size(); i++)
+    for(unsigned int i = 0; i < mnlist_.size(); i++)
     {
         mnemonic = mnlist_.back();
         delete mnemonic;
