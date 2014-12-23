@@ -205,7 +205,6 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
     wxXmlNode *instruction_detail;
     bool success = false;
     int counter;
-    long temp_value = 0;
 
     mnemonic_item = static_cast<MnemonicItem *>(0);
 
@@ -240,6 +239,7 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
                 delete mnemonic_item;
                 return static_cast<MnemonicItem *>(0);
             }
+
             success = instruction_detail->GetAttribute(ATTRIBUTE_SIZE_STR, &temp_str);
             if (!success)
             {
@@ -247,6 +247,7 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
                 delete mnemonic_item;
                 return static_cast<MnemonicItem *>(0);
             }
+
             success = ParseOpcodeString(mnemonic_item, opcode_str, temp_str);
             if (!success)
             {
@@ -254,6 +255,16 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
                 delete mnemonic_item;
                 return static_cast<MnemonicItem *>(0);
             }
+            #ifdef _IDZ80_DEBUG_
+            str_debug.Clear();
+            for(counter = 0; counter < mnemonic_item->GetByteCodeSize(); counter++)
+            {
+                str_debug << wxString::Format("%.2X ", mnemonic_item->GetByteCode(counter));
+            }
+            str_debug = str_debug.Trim();
+
+            log_->AppendText(wxString::Format("Bytecode<%d> = [%s]\n", mnemonic_item->GetByteCodeSize(), str_debug));
+            #endif // _IDZ80_DEBUG_
         }
     }
 
@@ -417,7 +428,7 @@ bool MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
     }
     #ifdef _IDZ80_DEBUG_
     else
-        log_->AppendText("Size validated.\n");
+        log_->AppendText(wxString::Format("Size validated [%d].\n", informed_size));
     #endif // _IDZ80_DEBUG_
 
     for(uint counter = 0; counter < informed_size; counter++)
@@ -428,6 +439,7 @@ bool MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
         byte_code[counter] = static_cast<byte>(converted);
     }
     instruction->SetByteCode(byte_code, informed_size);
+    log_->AppendText(wxString::Format("Bytecode size = %d [%d]\n", informed_size, instruction->GetByteCodeSize()));
     return true;
 }
 

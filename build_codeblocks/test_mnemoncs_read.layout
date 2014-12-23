@@ -1,49 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="..\src\mnemonic_access.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="459" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\include\mnemonic_item.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="963" topLine="17" />
-		</Cursor>
-	</File>
-	<File name="..\include\mnemonic_item_base.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1745" topLine="99" />
-		</Cursor>
-	</File>
-	<File name="..\src\mnemonic_item.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="480" topLine="114" />
-		</Cursor>
-	</File>
 	<File name="..\src\mnemonic_item_base.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1036" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\src\mnemonicxmlfile.cpp" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8521" topLine="234" />
-		</Cursor>
-	</File>
-	<File name="test_mnemoncs_readApp.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="692" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="test_mnemoncs_readMain.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2525" topLine="68" />
-		</Cursor>
-	</File>
 	<File name="..\src\mnemonic_container.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="866" topLine="23" />
+			<Cursor1 position="1010" topLine="27" />
 		</Cursor>
 	</File>
 	<File name="test_mnemoncs_readMain.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,24 +17,60 @@
 			<Cursor1 position="450" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="..\src\mnemonic_item.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1013" topLine="51" />
+		</Cursor>
+	</File>
+	<File name="test_mnemoncs_readMain.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2525" topLine="68" />
+		</Cursor>
+	</File>
 	<File name="..\include\mnemonic_container.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1011" topLine="11" />
+			<Cursor1 position="762" topLine="6" />
 		</Cursor>
 	</File>
 	<File name="..\include\mnemonic_container_base.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="640" topLine="0" />
+			<Cursor1 position="689" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\include\mnemonic_access.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="892" topLine="0" />
+			<Cursor1 position="661" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="test_mnemoncs_readApp.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="692" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\include\mnemonicxmlfile.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5596" topLine="104" />
+			<Cursor1 position="5596" topLine="86" />
 		</Cursor>
 	</File>
+	<File name="..\include\mnemonic_item.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="837" topLine="16" />
+		</Cursor>
+	</File>
+	<File name="..\src\mnemonic_access.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2476" topLine="69" />
+		</Cursor>
+	</File>
+	<File name="..\src\mnemonicxmlfile.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5741" topLine="184" />
+		</Cursor>
+	</File>
+	<File name="..\include\mnemonic_item_base.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2020" topLine="110" />
+		</Cursor>
+	</File>
+	<EditorTabsLayout layout="096abca05499a5810000266d00000002=*0;test_mnemoncs_read:..\src\mnemonic_item.cpp,1;test_mnemoncs_read:..\include\mnemonic_item.h,2;test_mnemoncs_read:..\src\mnemonic_container.cpp,3;test_mnemoncs_read:..\include\mnemonicxmlfile.h,4;test_mnemoncs_read:..\src\mnemonicxmlfile.cpp@layout2|name=dummy;caption=;state=2098174;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=825;besth=385;minw=825;minh=385;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=096abca05499a5810000266d00000002;caption=;state=2098172;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=200;besth=200;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|dock_size(5,0,0)=202|" />
 </CodeBlocks_layout_file>

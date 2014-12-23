@@ -58,7 +58,7 @@ byte MnemonicItem::GetByteCode(byte index)
 
 unsigned int MnemonicItem::GetByteCodeSize()
 {
-    return (static_cast<unsigned int>(opcode_size_)) && 0xFF;
+    return (static_cast<unsigned int>(opcode_size_) & 0x000000FF);
 }
 
 
@@ -66,7 +66,7 @@ unsigned int MnemonicItem::GetByteCodeSize()
 
 unsigned int MnemonicItem::GetArgumentCount()
 {
-    return (static_cast<unsigned int>(argument_count_)) && 0xFF;
+    return (static_cast<unsigned int>(argument_count_)) & 0x000000FF;
 }
 
 
@@ -74,7 +74,7 @@ unsigned int MnemonicItem::GetArgumentCount()
 
 unsigned int MnemonicItem::GetArgumentSize()
 {
-    return (static_cast<unsigned int>(argument_size_)) && 0xFF;
+    return (static_cast<unsigned int>(argument_size_)) & 0x000000FF;
 }
 
 
@@ -82,7 +82,7 @@ unsigned int MnemonicItem::GetArgumentSize()
 
 unsigned int MnemonicItem::GetArgumentPosition()
 {
-    return (static_cast<unsigned int>(argument_opcode_position_)) && 0xFF;
+    return (static_cast<unsigned int>(argument_opcode_position_)) & 0x000000FF;
 }
 
 
