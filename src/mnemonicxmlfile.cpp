@@ -183,6 +183,7 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
         new_instruction = ProcessInstruction(nextitem, current_group);
         if (new_instruction)
         {
+            ProcessArguments(nextitem, new_instruction);
             mnemonics_->AddInstruction(new_instruction);
             statistics_.numinstructions++;
         }
@@ -224,7 +225,7 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
         log_->AppendText(wxString::Format("Item '%s' = [%s]\n", opcode_str, str_debug));
         #endif // _IDZ80_DEBUG_
 
-        instruction_detail = GetOpcodeNode(instruction_node);
+        instruction_detail = GetInInstructionNode(instruction_node, MNEMONIC_OPCODE_STR);
 
         if (instruction_detail)
         {
@@ -269,6 +270,14 @@ MnemonicItem *MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, c
     }
 
     return mnemonic_item;
+}
+
+
+
+
+void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *intruction)
+{
+
 }
 
 
@@ -446,13 +455,13 @@ bool MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
 
 
 
-wxXmlNode *MnemonicXMLFile::GetOpcodeNode(wxXmlNode *intruction_node)
+wxXmlNode *MnemonicXMLFile::GetInInstructionNode(wxXmlNode *intruction_node, const wxString &node_str)
 {
     wxXmlNode *actual_param;
     actual_param = intruction_node->GetChildren();
     while (actual_param)
     {
-        if (actual_param->GetName().IsSameAs(MNEMONIC_OPCODE_STR))
+        if (actual_param->GetName().IsSameAs(node_str))
             return actual_param;
         actual_param = actual_param->GetNext();
     }

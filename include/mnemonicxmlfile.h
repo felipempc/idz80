@@ -115,10 +115,11 @@ class MnemonicXMLFile
         void ProcessGroup(const wxXmlNode *groupitem);
         bool FindGroups(NodeGroupList &grouplist);
         MnemonicItem *ProcessInstruction(wxXmlNode *instruction_node, const Groups currentgroup);
+        void ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *intruction);
         Groups GetGroupFromStr(const wxString &groupstr);
         void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
         bool ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
-        wxXmlNode *GetOpcodeNode(wxXmlNode *intruction_node);
+        wxXmlNode *GetInInstructionNode(wxXmlNode *intruction_node, const wxString &node_str);
 
 };
 
