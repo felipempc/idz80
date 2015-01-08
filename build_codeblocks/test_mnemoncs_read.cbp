@@ -23,9 +23,9 @@
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="$(WXW)/lib/gcc_dll/wxbase30ud_gcc_custom.dll" />
-					<Add library="$(WXW)/lib/gcc_dll/wxbase30ud_xml_gcc_custom.dll" />
-					<Add library="$(WXW)/lib/gcc_dll/wxmsw30ud_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30ud_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30ud_xml_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw30ud_core_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
@@ -45,9 +45,9 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="$(WXW)/lib/gcc_dll/wxbase30u_gcc_custom.dll" />
-					<Add library="$(WXW)/lib/gcc_dll/wxbase30u_xml_gcc_custom.dll" />
-					<Add library="$(WXW)/lib/gcc_dll/wxmsw30u_core_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_xml_gcc_custom.dll" />
+					<Add library="$(WXW)\lib\gcc_dll\wxmsw30u_core_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>

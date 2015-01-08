@@ -116,6 +116,9 @@ class MnemonicItemBase
     public:
         MnemonicItemBase();
         virtual ~MnemonicItemBase();
+
+        void Reset();
+
     protected:
         Groups		group_;
         Arguments   source_,

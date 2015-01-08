@@ -153,7 +153,7 @@ void MnemonicItem::SetByteCode(ByteCode &bytecode, byte opcodesize)
 
 
 
-void MnemonicItem::SetArgumentConfig(byte argcount, byte argsize, byte argposition)
+void MnemonicItem::ConfigArguments(byte argcount, byte argsize, byte argposition)
 {
     argument_count_ = argcount;
     argument_size_ = argsize;

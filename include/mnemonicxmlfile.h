@@ -17,7 +17,14 @@
 
 enum XMLF_Exceptions
 {
-    XMLFE_GROUP_NOT_FOUND
+    //XMLFE_GROUP_NOT_FOUND
+    XMLFE_ATTR_OPCODE_NOT_FOUND,
+    XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV,
+    XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR,
+    XMLFE_ATTR_OPCODE_CONVERSION_ERROR,
+    XMLFE_ITEM_OPCODE_NOT_FOUND,
+    XMLFE_ATTR_SIZE_NOT_FOUND,
+    XMLFE_ATTR_MNMONIC_STR_NOT_FOUND
 };
 
 typedef std::vector<wxXmlNode *> NodeGroupList;
@@ -63,9 +70,9 @@ class MnemonicXMLFile
         static const wxString MNEMONIC_CONDICIONAL;
 
         static const wxString ATTRIBUTE_VERSION_STR;
-        static const wxString ATTRIBUTE_ITEM_STR;
+        static const wxString ATTRIBUTE_PROCESSOR_STR;
         static const wxString ATTRIBUTE_SIZE_STR;
-        static const wxString ATTRIBUTE_STRING_STR;
+        static const wxString ATTRIBUTE_MNMONIC_STR;
         static const wxString ATTRIBUTE_OPCODE_STR;
         static const wxString ATTRIBUTE_COUNT_STR;
         static const wxString ATTRIBUTE_ARGUMENT_POSITION;
@@ -114,12 +121,15 @@ class MnemonicXMLFile
         void ProcessFile();
         void ProcessGroup(const wxXmlNode *groupitem);
         bool FindGroups(NodeGroupList &grouplist);
-        MnemonicItem *ProcessInstruction(wxXmlNode *instruction_node, const Groups currentgroup);
-        void ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *intruction);
+        void ProcessInstruction(wxXmlNode *instruction_node, MnemonicItem * const instruction);
+        void ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *instruction);
+        void ProcessCharacteristcs(wxXmlNode *instruction_node, MnemonicItem *instruction);
         Groups GetGroupFromStr(const wxString &groupstr);
+        OperandType GetOperandTypeFromStr(const wxString &ot_str);
+        Operands GetOperandFromStr(const wxString &op_str);
         void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
-        bool ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
-        wxXmlNode *GetInInstructionNode(wxXmlNode *intruction_node, const wxString &node_str);
+        void ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
+        wxXmlNode *GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str);
 
 };
 

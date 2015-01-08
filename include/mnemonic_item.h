@@ -48,7 +48,7 @@ class MnemonicItem : public MnemonicItemBase
 
         void SetByteCode(ByteCode &bytecode, byte opcodesize);
 
-        void SetArgumentConfig(byte argcount, byte argsize, byte argposition);
+        void ConfigArguments(byte argcount, byte argsize, byte argposition);
 
         void SetConditionalBranch(bool isconditional = false);
 

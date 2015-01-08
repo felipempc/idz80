@@ -3,25 +3,25 @@
   <GROUPS>
     <STACK>
       <ITEM STRING="PUSH IY">
-        <OPCODE OPCODE="FD E5" SIZE="2"/>
+        <TESTERROR_OPCODE OPCODE="FD E5" SIZE="2"/>
       </ITEM>
       <ITEM STRING="POP IY">
-        <OPCODE OPCODE="FD E1" SIZE="2"/>
+        <OPCODE TESTERROR_OPCODE="FD E1" SIZE="2"/>
       </ITEM>
       <ITEM STRING="PUSH IX">
-        <OPCODE OPCODE="DD E5" SIZE="2"/>
+        <OPCODE OPCODE="DD E5" TESTERROR_SIZE="2"/>
       </ITEM>
-      <ITEM STRING="POP IX">
+      <ITEM TESTERROR_STRING="POP IX">
         <OPCODE OPCODE="DD E1" SIZE="2"/>
       </ITEM>
       <ITEM STRING="PUSH AF">
-        <OPCODE OPCODE="F5" SIZE="1"/>
+        <OPCODE OPCODE="F5" SIZE="error1"/>
       </ITEM>
       <ITEM STRING="POP AF">
-        <OPCODE OPCODE="F1" SIZE="1"/>
+        <OPCODE OPCODE="R1" SIZE="1"/>
       </ITEM>
       <ITEM STRING="PUSH HL">
-        <OPCODE OPCODE="E5" SIZE="1"/>
+        <OPCODE OPCODE="E5" SIZE="2"/>
       </ITEM>
       <ITEM STRING="POP HL">
         <OPCODE OPCODE="E1" SIZE="1"/>

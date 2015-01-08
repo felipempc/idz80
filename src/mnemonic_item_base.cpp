@@ -12,19 +12,12 @@
 
 MnemonicItemBase::MnemonicItemBase()
 {
-    group_= GRP_NONE;
-    source_.operand = OP_NONE;
-    source_.type = OT_NONE;
-    destination_.operand = OP_NONE;
-    destination_.type = OT_NONE;
-    memset(bytecode_, 0, sizeof(ByteCode));
-    opcode_size_ = 0;
-    argument_count_ = 0;
-    argument_size_ = 0;
-    argument_opcode_position_ = 0;
-    conditional_ = false;
+    Reset();
     mnemonic_string_ = 0;
 }
+
+
+
 
 MnemonicItemBase::~MnemonicItemBase()
 {
@@ -36,3 +29,19 @@ MnemonicItemBase::~MnemonicItemBase()
 }
 
 
+
+
+void MnemonicItemBase::Reset()
+{
+    group_= GRP_NONE;
+    source_.operand = OP_NONE;
+    source_.type = OT_NONE;
+    destination_.operand = OP_NONE;
+    destination_.type = OT_NONE;
+    memset(bytecode_, 0, sizeof(ByteCode));
+    opcode_size_ = 0;
+    argument_count_ = 0;
+    argument_size_ = 0;
+    argument_opcode_position_ = 0;
+    conditional_ = false;
+}
