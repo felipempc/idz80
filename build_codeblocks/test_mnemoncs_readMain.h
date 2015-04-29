@@ -24,7 +24,8 @@ class test_mnemoncs_readFrame: public wxFrame
         {
             idMenuQuit = 1000,
             idMenuAbout,
-            idMenuOpen
+            idMenuOpen,
+            idMenuViewMnemonics
         };
 
         wxTextCtrl  *logwindow_;
@@ -33,6 +34,7 @@ class test_mnemoncs_readFrame: public wxFrame
         void OnClose(wxCloseEvent& event);
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
+        void OnViewMnemonics(wxCommandEvent& event);
         DECLARE_EVENT_TABLE()
 };
 

@@ -96,6 +96,14 @@ bool MnemonicItem::GetConditionalBranch()
 
 
 
+bool MnemonicItem::HasExplicitArguments()
+{
+    return explicit_arguments_;
+}
+
+
+
+
 unsigned int MnemonicItem::GetMnemonicStrCount()
 {
     if (mnemonic_string_)
@@ -166,6 +174,14 @@ void MnemonicItem::ConfigArguments(byte argcount, byte argsize, byte argposition
 void MnemonicItem::SetConditionalBranch(bool isconditional)
 {
     conditional_ = isconditional;
+}
+
+
+
+
+void MnemonicItem::SetExplicitArguments(bool isexplicit)
+{
+    explicit_arguments_ = isexplicit;
 }
 
 

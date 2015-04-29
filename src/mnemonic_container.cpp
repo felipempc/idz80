@@ -15,13 +15,16 @@ MnemonicContainer::MnemonicContainer(wxTextCtrl *log)
     num_groups_ = 0;
     num_instructions_ = 0;
 
-    #ifdef _IDZ80_DEBUG_
     if (log)
     {
         log_ = log;
+
+    #ifdef _IDZ80_DEBUG_
         log_->AppendText("Welcome to Mnemonic Container !\n\n");
-    }
     #endif
+    }
+    else
+        log_ = 0;
 }
 
 
@@ -63,6 +66,9 @@ void MnemonicContainer::SetStatistics(Statistics &_statistics)
 
 void MnemonicContainer::ShowStatistics()
 {
-    log_->AppendText(wxString::Format("Number of groups found = %d\n", num_groups_));
-    log_->AppendText(wxString::Format("Number of instructions found = %d\n", num_instructions_));
+    if(log_)
+    {
+        log_->AppendText(wxString::Format("Number of groups found = %d\n", num_groups_));
+        log_->AppendText(wxString::Format("Number of valid instructions found = %d\n", num_instructions_));
+    }
 }

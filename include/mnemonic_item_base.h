@@ -129,6 +129,7 @@ class MnemonicItemBase
         byte        argument_size_;
         byte        argument_opcode_position_;
         bool        conditional_;
+        bool        explicit_arguments_;
 		wxArrayString	*mnemonic_string_;
 };
 

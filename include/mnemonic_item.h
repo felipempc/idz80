@@ -38,6 +38,8 @@ class MnemonicItem : public MnemonicItemBase
 
         bool GetConditionalBranch();
 
+        bool HasExplicitArguments();
+
         unsigned int GetMnemonicStrCount();
         wxString GetMnemonicStr(unsigned int index);
 
@@ -51,6 +53,8 @@ class MnemonicItem : public MnemonicItemBase
         void ConfigArguments(byte argcount, byte argsize, byte argposition);
 
         void SetConditionalBranch(bool isconditional = false);
+
+        void SetExplicitArguments(bool isexplicit = true);
 
         void SetMnemonicString(const wxArrayString &mnemonicstring);
 

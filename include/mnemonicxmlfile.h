@@ -17,14 +17,17 @@
 
 enum XMLF_Exceptions
 {
-    //XMLFE_GROUP_NOT_FOUND
     XMLFE_ATTR_OPCODE_NOT_FOUND,
     XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV,
     XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR,
     XMLFE_ATTR_OPCODE_CONVERSION_ERROR,
     XMLFE_ITEM_OPCODE_NOT_FOUND,
     XMLFE_ATTR_SIZE_NOT_FOUND,
-    XMLFE_ATTR_MNMONIC_STR_NOT_FOUND
+    XMLFE_ATTR_MNMONIC_STR_NOT_FOUND,
+    XMLFE_ARG_BASIC_SIZE_NOT_FOUND,
+    XMLFE_ARG_BASIC_COUNT_NOT_FOUND,
+    XMLFE_ARG_BASIC_POSITION_NOT_FOUND,
+    XMLFE_ARG_BASIC_LOAD_FAILED
 };
 
 typedef std::vector<wxXmlNode *> NodeGroupList;
@@ -68,6 +71,7 @@ class MnemonicXMLFile
         static const wxString MNEMONIC_OPCODE_STR;
         static const wxString MNEMONIC_ARGUMENT_STR;
         static const wxString MNEMONIC_CONDICIONAL;
+        static const wxString MNEMONIC_EXPLICIT_ARGUMENT;
 
         static const wxString ATTRIBUTE_VERSION_STR;
         static const wxString ATTRIBUTE_PROCESSOR_STR;
@@ -121,6 +125,7 @@ class MnemonicXMLFile
         void ProcessFile();
         void ProcessGroup(const wxXmlNode *groupitem);
         bool FindGroups(NodeGroupList &grouplist);
+        bool hasExplicitArguments(wxXmlNode *instruction_node);
         void ProcessInstruction(wxXmlNode *instruction_node, MnemonicItem * const instruction);
         void ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *instruction);
         void ProcessCharacteristcs(wxXmlNode *instruction_node, MnemonicItem *instruction);
@@ -130,6 +135,7 @@ class MnemonicXMLFile
         void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
         void ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
         wxXmlNode *GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str);
+        void PrintErrorMessages(XMLF_Exceptions e, int line);
 
 };
 

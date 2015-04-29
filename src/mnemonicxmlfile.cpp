@@ -62,6 +62,7 @@ const wxString MnemonicXMLFile::ATTRIBUTE_RST_VALUE = "RST";
 
 // Instruction Characteristcs
 const wxString MnemonicXMLFile::MNEMONIC_CONDICIONAL = "CONDICIONAL";
+const wxString MnemonicXMLFile::MNEMONIC_EXPLICIT_ARGUMENT = "EXPLICIT_ARGUMENT";
 
 // Operand attributes
 const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_DESTINATION_TYPE = "DESTINATION_TYPE";
@@ -109,6 +110,8 @@ MnemonicXMLFile::MnemonicXMLFile(MnemonicContainer *mnm, wxTextCtrl *_log)
     xml_mnemonic_ = 0;
     mnemonics_ = mnm;
     log_ = _log;
+    statistics_.numgroups = 0;
+    statistics_.numinstructions = 0;
 }
 
 MnemonicXMLFile::~MnemonicXMLFile()
@@ -165,7 +168,7 @@ void MnemonicXMLFile::ProcessFile()
         group_item = group_list[index];
 
         #ifdef _IDZ80_DEBUG_
-        log_->AppendText(wxString::Format("%d: Processing group '%s'.\n", index, group_item->GetName()));
+        log_->AppendText(wxString::Format("<<< %d >>>  Processing group '%s'.\n", index, group_item->GetName()));
         #endif // _IDZ80_DEBUG_
 
         ProcessGroup(group_item);
@@ -180,7 +183,7 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
     wxXmlNode *nextitem;
     Groups current_group;
     MnemonicItem *new_instruction;
-    bool aloccate_new = true;
+    bool allocate_new = true;
     int line;
     unsigned int group_instructions = 0;
 
@@ -192,7 +195,7 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
 
     while (nextitem)
     {
-        if(aloccate_new)
+        if(allocate_new)
         {
             new_instruction = new MnemonicItem();
             new_instruction->SetGroup(current_group);
@@ -201,48 +204,19 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
         try
         {
             ProcessInstruction(nextitem, new_instruction);
-            ProcessArguments(nextitem, new_instruction);
             ProcessCharacteristcs(nextitem, new_instruction);
+            ProcessArguments(nextitem, new_instruction);
             mnemonics_->AddInstruction(new_instruction);
             statistics_.numinstructions++;
             group_instructions++;
-            aloccate_new = true;
+            allocate_new = true;
         }
         catch(XMLF_Exceptions e)
         {
             line = nextitem->GetLineNumber();
-            switch(e)
-            {
-                case XMLFE_ITEM_OPCODE_NOT_FOUND:
-                    log_->AppendText(wxString::Format("[%d] Can't find item OPCODE !\n", line));
-                    break;
-
-                case XMLFE_ATTR_OPCODE_NOT_FOUND:
-                    log_->AppendText(wxString::Format("[%d] Can't find attribute OPCODE !\n", line));
-                    break;
-
-                case XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV:
-                    log_->AppendText(wxString::Format("[%d] Can't convert opcode SIZE !\n", line));
-                    break;
-
-                case XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR:
-                    log_->AppendText(wxString::Format("[%d] Opcode size validation error !\n", line));
-                    break;
-
-                case XMLFE_ATTR_OPCODE_CONVERSION_ERROR:
-                    log_->AppendText(wxString::Format("[%d] Error while converting OPCODE sequence !\n", line));
-                    break;
-
-                case XMLFE_ATTR_SIZE_NOT_FOUND:
-                    log_->AppendText(wxString::Format("[%d] Can't find attribute SIZE !\n", line));
-                    break;
-
-                case XMLFE_ATTR_MNMONIC_STR_NOT_FOUND:
-                    log_->AppendText(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", line));
-                    break;
-            }
+            PrintErrorMessages(e, line);
             new_instruction->Reset();
-            aloccate_new = false;
+            allocate_new = false;
         }
 
         nextitem = nextitem->GetNext();
@@ -323,47 +297,54 @@ void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem
     OperandType operand_type;
 
     instruction_node = GetInInstructionNode(instruction_node, MNEMONIC_ARGUMENT_STR);
-    if (instruction_node)
+
+    if (!instruction_node)
+        return;
+
+    if (instruction->HasExplicitArguments())
     {
         if (instruction_node->GetAttribute(ATTRIBUTE_SIZE_STR, &value_str))
         {
             if (value_str.ToLong(&value_num))
                 arg_size = static_cast<byte>(value_num);
         }
+        else
+            throw XMLFE_ARG_BASIC_SIZE_NOT_FOUND;
 
         if (instruction_node->GetAttribute(ATTRIBUTE_COUNT_STR, &value_str))
         {
             if (value_str.ToLong(&value_num))
                 arg_count = static_cast<byte>(value_num);
         }
+        else
+            throw XMLFE_ARG_BASIC_COUNT_NOT_FOUND;
 
         if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_POSITION, &value_str))
         {
             if (value_str.ToLong(&value_num))
                 arg_pos = static_cast<byte>(value_num);
         }
+        else
+            throw XMLFE_ARG_BASIC_POSITION_NOT_FOUND;
 
         if ((arg_count * arg_pos * arg_size) != 0)
             instruction->ConfigArguments(arg_count, arg_size, arg_pos);
-        #ifdef _IDZ80_DEBUG_
         else
-            if((arg_count + arg_pos + arg_size) != 0)
-                log_->AppendText(wxString::Format("Failed to load basic argument[S,C,P] values [%d,%d,%d]!\n", arg_size, arg_count, arg_pos));
-        #endif // _IDZ80_DEBUG_
+            throw XMLFE_ARG_BASIC_LOAD_FAILED;
+    }
 
-        if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_DESTINATION_TYPE, &value_str))
-        {
-            operand_type = GetOperandTypeFromStr(value_str);
-            if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_DESTINATION_OPERAND, &value_str))
-                instruction->SetDestinationArgument(operand_type, GetOperandFromStr(value_str));
-        }
+    if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_DESTINATION_TYPE, &value_str))
+    {
+        operand_type = GetOperandTypeFromStr(value_str);
+        if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_DESTINATION_OPERAND, &value_str))
+            instruction->SetDestinationArgument(operand_type, GetOperandFromStr(value_str));
+    }
 
-        if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_SOURCE_TYPE, &value_str))
-        {
-            operand_type = GetOperandTypeFromStr(value_str);
-            if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_SOURCE_OPERAND, &value_str))
-                instruction->SetSourceArgument(operand_type, GetOperandFromStr(value_str));
-        }
+    if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_SOURCE_TYPE, &value_str))
+    {
+        operand_type = GetOperandTypeFromStr(value_str);
+        if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_SOURCE_OPERAND, &value_str))
+            instruction->SetSourceArgument(operand_type, GetOperandFromStr(value_str));
     }
 }
 
@@ -372,11 +353,19 @@ void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem
 
 void MnemonicXMLFile::ProcessCharacteristcs(wxXmlNode *instruction_node, MnemonicItem *instruction)
 {
-    instruction_node = GetInInstructionNode(instruction_node, MNEMONIC_CONDICIONAL);
-    if (instruction_node)
+    wxXmlNode *instnode = 0;
+    instnode = GetInInstructionNode(instruction_node, MNEMONIC_CONDICIONAL);
+    if (instnode)
     {
         instruction->SetConditionalBranch(true);
     }
+
+    instnode = GetInInstructionNode(instruction_node, MNEMONIC_EXPLICIT_ARGUMENT);
+    if (instnode)
+    {
+        instruction->SetExplicitArguments(true);
+    }
+
 }
 
 
@@ -635,3 +624,57 @@ wxXmlNode *MnemonicXMLFile::GetInInstructionNode(wxXmlNode *instruction_node, co
 }
 
 
+
+
+void MnemonicXMLFile::PrintErrorMessages(XMLF_Exceptions e, int line)
+{
+    switch(e)
+    {
+        case XMLFE_ITEM_OPCODE_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find item OPCODE !\n", line));
+            break;
+
+        case XMLFE_ATTR_OPCODE_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute OPCODE !\n", line));
+            break;
+
+        case XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV:
+            log_->AppendText(wxString::Format("[%d] Can't convert opcode SIZE !\n", line));
+            break;
+
+        case XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR:
+            log_->AppendText(wxString::Format("[%d] Opcode size validation error !\n", line));
+            break;
+
+        case XMLFE_ATTR_OPCODE_CONVERSION_ERROR:
+            log_->AppendText(wxString::Format("[%d] Error while converting OPCODE sequence !\n", line));
+            break;
+
+        case XMLFE_ATTR_SIZE_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute SIZE !\n", line));
+            break;
+
+        case XMLFE_ATTR_MNMONIC_STR_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", line));
+            break;
+
+        case XMLFE_ARG_BASIC_SIZE_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute argument SIZE !\n", line));
+            break;
+
+        case XMLFE_ARG_BASIC_COUNT_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute argument COUNT !\n", line));
+            break;
+
+        case XMLFE_ARG_BASIC_POSITION_NOT_FOUND:
+            log_->AppendText(wxString::Format("[%d] Can't find attribute argument POSITION !\n", line));
+            break;
+
+        case XMLFE_ARG_BASIC_LOAD_FAILED:
+            log_->AppendText(wxString::Format("[%d] Argument basic attributes failed to load !\n", line));
+            break;
+
+        default:
+            log_->AppendText(wxString::Format("[%d] Unknow error !\n", line));
+    }
+}

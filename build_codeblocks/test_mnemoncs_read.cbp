@@ -23,9 +23,9 @@
 					<Add directory="$(WXW)/lib/gcc_dll/mswud" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="$(WXW)\lib\gcc_dll\wxbase30ud_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase30ud_xml_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw30ud_core_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxbase30ud_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxbase30ud_xml_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxmsw30ud_core_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
@@ -45,14 +45,14 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxbase30u_xml_gcc_custom.dll" />
-					<Add library="$(WXW)\lib\gcc_dll\wxmsw30u_core_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxbase30u_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxbase30u_xml_gcc_custom.dll" />
+					<Add library="$(WXW)/lib/gcc_dll/wxmsw30u_core_gcc_custom.dll" />
 					<Add directory="$(WXW)/lib/gcc_dll" />
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WXW" value="K:\wxw\wx302" />
+				<Variable name="WXW" value="K:\bibliotecas\wxw\wx302" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -86,6 +86,8 @@
 		<Unit filename="../src/mnemonic_item.cpp" />
 		<Unit filename="../src/mnemonic_item_base.cpp" />
 		<Unit filename="../src/mnemonicxmlfile.cpp" />
+		<Unit filename="dialog_mnemonics.cpp" />
+		<Unit filename="dialog_mnemonics.h" />
 		<Unit filename="test_mnemoncs_readApp.cpp" />
 		<Unit filename="test_mnemoncs_readApp.h" />
 		<Unit filename="test_mnemoncs_readMain.cpp" />

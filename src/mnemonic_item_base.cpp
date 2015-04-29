@@ -44,4 +44,5 @@ void MnemonicItemBase::Reset()
     argument_size_ = 0;
     argument_opcode_position_ = 0;
     conditional_ = false;
+    explicit_arguments_ = false;
 }
