@@ -15,7 +15,7 @@
 #include <wx/filedlg.h>
 
 #include "test_mnemoncs_readMain.h"
-#include "mnemonic_container.h"
+
 #include "mnemonicxmlfile.h"
 #include "dialog_mnemonics.h"
 
@@ -28,25 +28,28 @@ BEGIN_EVENT_TABLE(test_mnemoncs_readFrame, wxFrame)
     EVT_MENU(idMenuViewMnemonics, test_mnemoncs_readFrame::OnViewMnemonics)
 END_EVENT_TABLE()
 
+
+
+
 test_mnemoncs_readFrame::test_mnemoncs_readFrame(wxFrame *frame, const wxString& title)
     : wxFrame(frame, -1, title)
 {
     // create a menu bar
-    wxMenuBar* mbar = new wxMenuBar();
-    wxMenu* fileMenu = new wxMenu(_T(""));
+    mainwindow_menubar = new wxMenuBar();
+    wxMenu* fileMenu = new wxMenu("");
     fileMenu->Append(idMenuOpen, "&Open\tAlt-F3", "Open a Mnemonic file");
     fileMenu->Append(idMenuQuit, "&Quit\tAlt-F4", "Quit the application");
-    mbar->Append(fileMenu, "&File");
+    mainwindow_menubar->Append(fileMenu, "&File");
 
     wxMenu* viewmenu = new wxMenu("");
     viewmenu->Append(idMenuViewMnemonics, "&Mnemonics\tAlt-m", "View mnemonics");
-    mbar->Append(viewmenu, "&View");
+    mainwindow_menubar->Append(viewmenu, "&View");
 
-    wxMenu* helpMenu = new wxMenu(_T(""));
-    helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
-    mbar->Append(helpMenu, _("&Help"));
+    wxMenu* helpMenu = new wxMenu("");
+    helpMenu->Append(idMenuAbout, "&About\tF1", "Show info about this application");
+    mainwindow_menubar->Append(helpMenu, "&Help");
 
-    SetMenuBar(mbar);
+    SetMenuBar(mainwindow_menubar);
 
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
@@ -56,12 +59,15 @@ test_mnemoncs_readFrame::test_mnemoncs_readFrame(wxFrame *frame, const wxString&
     wxBoxSizer *logwindowsizer = new wxBoxSizer(wxVERTICAL);
     logwindow_ = new wxTextCtrl(this,wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(800, 600), wxTE_MULTILINE|wxTE_RICH);
     logwindowsizer->Add(logwindow_);
+    mnemonics_ = new MnemonicContainer(logwindow_);
 
+    mainwindow_menubar->Enable(idMenuViewMnemonics, false);
 }
 
 
 test_mnemoncs_readFrame::~test_mnemoncs_readFrame()
 {
+    delete mnemonics_;
 }
 
 void test_mnemoncs_readFrame::OnClose(wxCloseEvent &event)
@@ -98,12 +104,13 @@ void test_mnemoncs_readFrame::OnOpen(wxCommandEvent& event)
     caption.Printf("Reading mnemonic file %s...\n", filechoosen);
     logwindow_->AppendText(caption);
 
-    MnemonicContainer mnemonics(logwindow_);
-    mnemonics.ShowStatistics();
-    MnemonicXMLFile mnemonic_loader(&mnemonics, logwindow_);
-    mnemonic_loader.Open(filechoosen);
-    mnemonics.ShowStatistics();
-
+    mnemonics_->ShowStatistics();
+    MnemonicXMLFile mnemonic_loader(mnemonics_, logwindow_);
+    if (mnemonic_loader.Open(filechoosen))
+    {
+        mainwindow_menubar->Enable(idMenuViewMnemonics, true);
+    }
+    mnemonics_->ShowStatistics();
 }
 
 
@@ -111,10 +118,11 @@ void test_mnemoncs_readFrame::OnOpen(wxCommandEvent& event)
 
 void test_mnemoncs_readFrame::OnViewMnemonics(wxCommandEvent& event)
 {
-    Dialog_Mnemonics view_mnemonics(this);
+    Dialog_Mnemonics view_mnemonics(this, mnemonics_);
 
     view_mnemonics.ShowModal();
 }
+
 
 
 

@@ -182,7 +182,7 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
 {
     wxXmlNode *nextitem;
     Groups current_group;
-    MnemonicItem *new_instruction;
+    MnemonicItem *new_instruction = 0;
     bool allocate_new = true;
     int line;
     unsigned int group_instructions = 0;

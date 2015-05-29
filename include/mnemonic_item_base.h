@@ -114,9 +114,6 @@ struct Arguments
 class MnemonicItemBase
 {
     public:
-        MnemonicItemBase();
-        virtual ~MnemonicItemBase();
-
         void Reset();
 
     protected:

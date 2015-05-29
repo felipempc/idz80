@@ -14,4 +14,4 @@ Thumbs.db
 trash/*
 build_codeblocks/bin/*
 build_codeblocks/obj/*
-
+*.png

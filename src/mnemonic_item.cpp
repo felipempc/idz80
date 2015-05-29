@@ -13,6 +13,48 @@
 #include "mnemonic_item.h"
 
 
+
+MnemonicItem::MnemonicItem()
+{
+    Reset();
+    mnemonic_string_ = 0;
+}
+
+
+
+
+MnemonicItem::~MnemonicItem()
+{
+    if (mnemonic_string_)
+    {
+        mnemonic_string_->Clear();
+        mnemonic_string_->Shrink();
+        delete mnemonic_string_;
+    }
+}
+
+
+
+
+void MnemonicItem::Reset()
+{
+    group_= GRP_NONE;
+    source_.operand = OP_NONE;
+    source_.type = OT_NONE;
+    destination_.operand = OP_NONE;
+    destination_.type = OT_NONE;
+    memset(bytecode_, 0, sizeof(ByteCode));
+    opcode_size_ = 0;
+    argument_count_ = 0;
+    argument_size_ = 0;
+    argument_opcode_position_ = 0;
+    conditional_ = false;
+    explicit_arguments_ = false;
+}
+
+
+
+
 Groups MnemonicItem::GetGroup()
 {
     return group_;

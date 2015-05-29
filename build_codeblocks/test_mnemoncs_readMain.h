@@ -12,6 +12,7 @@
 
 #include <wx/frame.h>
 #include <wx/toplevel.h>
+#include "mnemonic_container.h"
 //include "test_mnemoncs_readApp.h"
 
 class test_mnemoncs_readFrame: public wxFrame
@@ -19,6 +20,8 @@ class test_mnemoncs_readFrame: public wxFrame
     public:
         test_mnemoncs_readFrame(wxFrame *frame, const wxString& title);
         ~test_mnemoncs_readFrame();
+
+
     private:
         enum
         {
@@ -29,6 +32,8 @@ class test_mnemoncs_readFrame: public wxFrame
         };
 
         wxTextCtrl  *logwindow_;
+        MnemonicContainer *mnemonics_;
+        wxMenuBar *mainwindow_menubar;
 
         void OnOpen(wxCommandEvent& event);
         void OnClose(wxCloseEvent& event);

@@ -31,6 +31,7 @@ class MnemonicContainer : public MnemonicAccess
         ~MnemonicContainer();
 
         void AddInstruction(MnemonicItem *mnemonicitem);
+        unsigned int GetCount();
         void SetStatistics(Statistics &_statistics);
         void ShowStatistics();
 

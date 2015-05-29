@@ -1709,9 +1709,10 @@
 1402782958 k:\wxw\wx301\include\wx\univ\theme.h
 	"wx/string.h"
 
-1430336843 x:\idz80\build_codeblocks\test_mnemoncs_readmain.h
+1432444644 x:\idz80\build_codeblocks\test_mnemoncs_readmain.h
 	<wx/frame.h>
 	<wx/toplevel.h>
+	"mnemonic_container.h"
 
 1402782960 k:\wxw\wx301\include\wx\wx.h
 	"wx/defs.h"
@@ -2961,19 +2962,19 @@
 	<vector>
 	"mnemonic_item.h"
 
-1429579450 x:\idz80\include\mnemonic_item.h
+1432608021 x:\idz80\include\mnemonic_item.h
 	<mnemonic_item_base.h>
 
-1429579422 x:\idz80\include\mnemonic_item_base.h
+1432607823 x:\idz80\include\mnemonic_item_base.h
 	<wx/arrstr.h>
 	"idz80_basic_types.h"
 
 1403811906 x:\idz80\include\idz80_basic_types.h
 
-1429573666 source:x:\idz80\src\mnemonic_container.cpp
+1432449252 source:x:\idz80\src\mnemonic_container.cpp
 	"mnemonic_container.h"
 
-1407722106 x:\idz80\include\mnemonic_container.h
+1432444128 x:\idz80\include\mnemonic_container.h
 	<wx/xml/xml.h>
 	<wx/string.h>
 	<wx/textctrl.h>
@@ -2990,13 +2991,13 @@
 1404604900 source:x:\idz80\src\mnemonic_container_base.cpp
 	"mnemonic_container_base.h"
 
-1429579536 source:x:\idz80\src\mnemonic_item.cpp
+1432608057 source:x:\idz80\src\mnemonic_item.cpp
 	"mnemonic_item.h"
 
-1429579578 source:x:\idz80\src\mnemonic_item_base.cpp
+1432607316 source:x:\idz80\src\mnemonic_item_base.cpp
 	"mnemonic_item_base.h"
 
-1430337147 source:x:\idz80\build_codeblocks\test_mnemoncs_readmain.cpp
+1432444636 source:x:\idz80\build_codeblocks\test_mnemoncs_readmain.cpp
 	<wx/menu.h>
 	<wx/statusbr.h>
 	<wx/sizer.h>
@@ -3004,7 +3005,6 @@
 	<wx/msgdlg.h>
 	<wx/filedlg.h>
 	"test_mnemoncs_readMain.h"
-	"mnemonic_container.h"
 	"mnemonicxmlfile.h"
 	"dialog_mnemonics.h"
 
@@ -3075,7 +3075,7 @@
 
 1402782958 k:\wxw\wx301\lib\gcc_dll\mswu\wx\setup.h
 
-1430243074 source:x:\idz80\src\mnemonicxmlfile.cpp
+1432448330 source:x:\idz80\src\mnemonicxmlfile.cpp
 	"mnemonicxmlfile.h"
 
 1429579140 x:\idz80\include\mnemonicxmlfile.h
@@ -7295,7 +7295,7 @@
 	"wx/msw/winundef.h"
 	"wx/features.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\platform.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\platform.h
 	<unistd.h>
 	<TargetConditionals.h>
 	<AvailabilityMacros.h>
@@ -7310,19 +7310,19 @@
 	<AvailabilityMacros.h>
 	"wx/chkconf.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\config_xcode.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\config_xcode.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\android\config_android.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\compiler.h
 
-1412631243 k:\bibliotecas\wxw\wx302\lib\gcc_dll\mswud\wx\setup.h
+1412631244 k:\bibliotecas\wxw\wx302\lib\gcc_dll\mswud\wx\setup.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\libraries.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\libraries.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\libraries.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\libraries.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\gccpriv.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\gccpriv.h
 	<_mingw.h>
 	<w32api.h>
 
@@ -7341,40 +7341,40 @@
 	"wx/unix/chkconf.h"
 	"wx/univ/chkconf.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\chkconf.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\chkconf.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\chkconf.h
 	"wx/osx/iphone/chkconf.h"
 	"wx/osx/carbon/chkconf.h"
 	"wx/osx/cocoa/chkconf.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\iphone\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\iphone\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\carbon\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\carbon\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\cocoa\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\cocoa\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\chkconf.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\chkconf.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\android\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\unix\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\unix\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\chkconf.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\chkconf.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\version.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\version.h
 	"wx/cpp.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cpp.h
@@ -7403,9 +7403,9 @@
 	<tchar.h>
 	<ctype.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\windowid.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\windowid.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\winundef.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\winundef.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\features.h
 
@@ -7422,7 +7422,7 @@
 	<iterator>
 	"wx/afterstd.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\string.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\string.h
 	"wx/defs.h"
 	<ctype.h>
 	<stdio.h>
@@ -7445,7 +7445,7 @@
 	"wx/iosfwrap.h"
 	"wx/crt.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\wxcrtbase.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\wxcrtbase.h
 	"wx/chartype.h"
 	<stdio.h>
 	<string.h>
@@ -7454,7 +7454,7 @@
 	<time.h>
 	<io.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\strvararg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\strvararg.h
 	"wx/platform.h"
 	"wx/cpp.h"
 	"wx/chartype.h"
@@ -7466,7 +7466,7 @@
 	<tr1/type_traits>
 	"wx/stringimpl.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\strconv.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\strconv.h
 	"wx/defs.h"
 	"wx/chartype.h"
 	"wx/buffer.h"
@@ -7479,19 +7479,19 @@
 	"wx/wxcrtbase.h"
 	<stdlib.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\typeinfo.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\typeinfo.h
 	"wx/defs.h"
 	<typeinfo>
 	<string.h>
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\fontenc.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\unichar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\unichar.h
 	"wx/defs.h"
 	"wx/chartype.h"
 	"wx/stringimpl.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\stringimpl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stringimpl.h
 	"wx/defs.h"
 	"wx/chartype.h"
 	"wx/wxcrtbase.h"
@@ -7500,34 +7500,34 @@
 	<string>
 	"wx/afterstd.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\stringops.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stringops.h
 	"wx/chartype.h"
 	"wx/stringimpl.h"
 	"wx/unichar.h"
 	"wx/buffer.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\tls.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\tls.h
 	"wx/defs.h"
 	"wx/msw/tls.h"
 	"wx/os2/tls.h"
 	"wx/unix/tls.h"
 	<stdlib.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\tls.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\tls.h
 	"wx/msw/wrapwin.h"
 	"wx/thread.h"
 	"wx/vector.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wrapwin.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wrapwin.h
 	"wx/platform.h"
 	<winsock2.h>
 	<windows.h>
 	"wx/msw/winundef.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\thread.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\thread.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\vector.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\vector.h
 	"wx/defs.h"
 	<vector>
 	<algorithm>
@@ -7538,29 +7538,29 @@
 	<new>
 	"wx/afterstd.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\scopeguard.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\scopeguard.h
 	"wx/defs.h"
 	"wx/except.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\except.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\movable.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\movable.h
 	"wx/meta/pod.h"
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\pod.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\pod.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\if.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\if.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\tls.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\tls.h
 	"wx/os2/private.h"
 	"wx/thread.h"
 	"wx/vector.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\private.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\private.h
 	<os2.h>
 	<os2def.h>
 	<X11/Xmd.h>
@@ -7572,7 +7572,7 @@
 	"wx/fontenc.h"
 	"wx/thread.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\unix\tls.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\unix\tls.h
 	<pthread.h>
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\iosfwrap.h
@@ -7586,48 +7586,48 @@
 	"wx/wxcrt.h"
 	"wx/wxcrtvararg.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\wxcrt.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\wxcrt.h
 	"wx/wxcrtbase.h"
 	"wx/string.h"
 	<string.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\wxcrtvararg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\wxcrtvararg.h
 	"wx/wxcrt.h"
 	"wx/strvararg.h"
 	"wx/string.h"
 	<stdarg.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xml\xml.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xml\xml.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/object.h"
 	"wx/list.h"
 	"wx/versioninfo.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\object.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\object.h
 	"wx/memory.h"
 	"wx/xti.h"
 	"wx/rtti.h"
 	"wx/xti2.h"
 	"wx/msw/msvcrt.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\memory.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\memory.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/msgout.h"
 	<stddef.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msgout.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msgout.h
 	"wx/defs.h"
 	"wx/chartype.h"
 	"wx/strvararg.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xti.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xti.h
 	"wx/defs.h"
 	"wx/xtitypes.h"
 	"wx/xtihandler.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xtitypes.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xtitypes.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/hashmap.h"
@@ -7655,7 +7655,7 @@
 	"wx/fontenc.h"
 	"wx/language.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\translation.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\translation.h
 	"wx/defs.h"
 	"wx/string.h"
 	"wx/buffer.h"
@@ -7664,17 +7664,17 @@
 	"wx/strconv.h"
 	"wx/scopedptr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\language.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\language.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\scopedptr.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\scopedptr.h
 	"wx/defs.h"
 	"wx/checkeddelete.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\checkeddelete.h
 	"wx/cpp.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\log.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\log.h
 	"wx/defs.h"
 	"wx/cpp.h"
 	"wx/string.h"
@@ -7692,19 +7692,19 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\log.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xtihandler.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xtihandler.h
 	"wx/defs.h"
 	"wx/xti.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\rtti.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\rtti.h
 	"wx/memory.h"
 	"wx/flags.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xti2.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xti2.h
 	"wx/xtiprop.h"
 	"wx/xtictor.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xtiprop.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xtiprop.h
 	"wx/defs.h"
 	"wx/xti.h"
 	"wx/any.h"
@@ -7719,7 +7719,7 @@
 	"wx/datetime.h"
 	"wx/variant.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\list.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\list.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -7739,9 +7739,9 @@
 	"wx/anystr.h"
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\time.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\time.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\longlong.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\longlong.h
 	"wx/defs.h"
 	"wx/string.h"
 	<limits.h>
@@ -7752,7 +7752,7 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\anystr.h
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\variant.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\variant.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -7764,18 +7764,18 @@
 	"wx/iosfwrap.h"
 	"wx/any.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\xtictor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\xtictor.h
 	"wx/defs.h"
 	"wx/xti.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\msvcrt.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\msvcrt.h
 	<stdlib.h>
 	<crtdbg.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\versioninfo.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\versioninfo.h
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\textctrl.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/textentry.h"
@@ -7805,7 +7805,7 @@
 	"wx/cocoa/control.h"
 	"wx/os2/control.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\window.h
 	"wx/event.h"
 	"wx/list.h"
 	"wx/cursor.h"
@@ -7858,7 +7858,7 @@
 	"wx/hashmap.h"
 	"wx/math.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\math.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\math.h
 	"wx/defs.h"
 	<math.h>
 	<cmath>
@@ -7878,10 +7878,10 @@
 	"wx/os2/cursor.h"
 	"wx/utils.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\cursor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\cursor.h
 	"wx/msw/gdiimage.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\gdiimage.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\gdiimage.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/list.h"
@@ -7889,7 +7889,7 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gdiobj.h
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\cursor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\cursor.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
@@ -7922,7 +7922,7 @@
 	"wx/imagxpm.h"
 	"wx/imagiff.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\stream.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stream.h
 	"wx/defs.h"
 	<stdio.h>
 	"wx/object.h"
@@ -7956,7 +7956,7 @@
 	<fcntl.h>
 	<sys/types.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\private.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\private.h
 	"wx/msw/wrapwin.h"
 	"wx/msw/microwin.h"
 	"wx/log.h"
@@ -7964,7 +7964,7 @@
 	"wx/gdicmn.h"
 	"wx/colour.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\microwin.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\microwin.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\colour.h
 	"wx/defs.h"
@@ -7980,10 +7980,10 @@
 	"wx/cocoa/colour.h"
 	"wx/os2/colour.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\colour.h
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\colour.h
 	"wx/object.h"
 	"wx/string.h"
 
@@ -7996,7 +7996,7 @@
 	"wx/gdiobj.h"
 	"wx/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\palette.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\palette.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/gdiobj.h"
@@ -8006,10 +8006,10 @@
 	"wx/osx/palette.h"
 	"wx/os2/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\palette.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\palette.h
 	"wx/gdiobj.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\palette.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\palette.h
 	"wx/list.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\paletteg.h
@@ -8018,32 +8018,32 @@
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\palette.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\palette.h
 	"wx/gdiobj.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\palette.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\palette.h
 	"wx/gdiobj.h"
 	"wx/os2/private.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\colour.h
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\colour.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
 	"wx/gdiobj.h"
 	"wx/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\colour.h
 	"wx/osx/core/colour.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\core\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\core\colour.h
 	"wx/object.h"
 	"wx/string.h"
 	"wx/osx/core/cfref.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\core\cfref.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\core\cfref.h
 	<unistd.h>
 	<AvailabilityMacros.h>
 
@@ -8051,7 +8051,7 @@
 	"wx/object.h"
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\colour.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\colour.h
 	"wx/object.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\imagbmp.h
@@ -8090,7 +8090,7 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\imagiff.h
 	"wx/image.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\cursor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\cursor.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/colour.h"
@@ -8099,7 +8099,7 @@
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\cursor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\cursor.h
 	"wx/bitmap.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\bitmap.h
@@ -8119,12 +8119,12 @@
 	"wx/os2/bitmap.h"
 	"wx/generic/mask.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\bitmap.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\bitmap.h
 	"wx/msw/gdiimage.h"
 	"wx/math.h"
 	"wx/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\bitmap.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\bitmap.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/string.h"
@@ -8145,19 +8145,19 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\dfbptr.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\bitmap.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\bitmap.h
 	"wx/palette.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\bitmap.h
 	"wx/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\bitmap.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\bitmap.h
 	"wx/os2/private.h"
 	"wx/os2/gdiimage.h"
 	"wx/gdicmn.h"
 	"wx/palette.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\gdiimage.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\gdiimage.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/list.h"
@@ -8167,10 +8167,10 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\cursor.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\cursor.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\cursor.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\utils.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\utils.h
 	"wx/object.h"
 	"wx/list.h"
 	"wx/filefn.h"
@@ -8186,26 +8186,26 @@
 	<unistd.h>
 	<stdio.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\implicitconversion.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\implicitconversion.h
 	"wx/defs.h"
 	"wx/meta/if.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\mousestate.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\mousestate.h
 	"wx/gdicmn.h"
 	"wx/kbdstate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\kbdstate.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\kbdstate.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\platinfo.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\platinfo.h
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\tracker.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\tracker.h
 	"wx/defs.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\convertible.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\convertible.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\removeref.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\removeref.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\font.h
 	"wx/defs.h"
@@ -8222,10 +8222,10 @@
 	"wx/cocoa/font.h"
 	"wx/os2/font.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\font.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\font.h
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\font.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\font.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\font.h
 
@@ -8237,20 +8237,20 @@
 	"wx/string.h"
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\font.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\font.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\font.h
 	"wx/dfb/dfbptr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\font.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\font.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\font.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\font.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\font.h
 	"wx/gdiobj.h"
 	"wx/os2/private.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\region.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/msw/region.h"
@@ -8262,23 +8262,23 @@
 	"wx/cocoa/region.h"
 	"wx/os2/region.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\region.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\region.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\region.h
 	"wx/list.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\region.h
 	"wx/list.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\region.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\region.h
 	"wx/osx/carbon/region.h"
 	"wx/generic/region.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\carbon\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\carbon\region.h
 	"wx/list.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\region.h
@@ -8286,11 +8286,11 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\region.h
 	"wx/generic/region.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\region.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\region.h
 	"wx/list.h"
 	"wx/os2/private.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\validate.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\validate.h
 	"wx/defs.h"
 	"wx/event.h"
 
@@ -8308,9 +8308,9 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\accel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\accel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\accel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\accel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\accel.h
 	"wx/object.h"
 	"wx/string.h"
 	"wx/event.h"
@@ -8321,11 +8321,11 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\accel.h
 	"wx/generic/accel.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\accel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\accel.h
 	"wx/string.h"
 	"wx/event.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\accel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\accel.h
 	"wx/object.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\access.h
@@ -8333,16 +8333,16 @@
 	"wx/variant.h"
 	"wx/msw/ole/access.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\ole\access.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\ole\access.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\window.h
 	"wx/settings.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\settings.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\settings.h
 	"wx/colour.h"
 	"wx/font.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\window.h
 	"wx/region.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\window.h
@@ -8350,13 +8350,13 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\window.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\window.h
 	"wx/region.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\window.h
 	"wx/dfb/dfbptr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\window.h
 	"wx/brush.h"
 	"wx/dc.h"
 
@@ -8374,9 +8374,9 @@
 	"wx/cocoa/brush.h"
 	"wx/os2/brush.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\brush.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\brush.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\brush.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\brush.h
 	"wx/gdiobj.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\brush.h
@@ -8395,7 +8395,7 @@
 	"wx/gdiobj.h"
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\brush.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\brush.h
 	"wx/gdicmn.h"
 	"wx/gdiobj.h"
 	"wx/bitmap.h"
@@ -8405,7 +8405,7 @@
 	"wx/gdiobj.h"
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\brush.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\brush.h
 	"wx/bitmap.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dc.h
@@ -8424,7 +8424,7 @@
 	"wx/region.h"
 	"wx/affinematrix2d.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\pen.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\pen.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 	"wx/msw/pen.h"
@@ -8436,11 +8436,11 @@
 	"wx/cocoa/pen.h"
 	"wx/os2/pen.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\pen.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\pen.h
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\pen.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\pen.h
 	"wx/gdicmn.h"
 	"wx/gdiobj.h"
 
@@ -8460,7 +8460,7 @@
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\pen.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\pen.h
 	"wx/gdiobj.h"
 	"wx/colour.h"
 	"wx/bitmap.h"
@@ -8469,7 +8469,7 @@
 	"wx/gdiobj.h"
 	"wx/gdicmn.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\pen.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\pen.h
 	"wx/gdiobj.h"
 	"wx/bitmap.h"
 
@@ -8496,28 +8496,28 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\objcassociate.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\window.h
 	<os2.h>
 	"wx/hash.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\window.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\window.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\control.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\control.h
 	"wx/univ/inphand.h"
 	"wx/univ/inpcons.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\inphand.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\inphand.h
 	"wx/univ/inpcons.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\inpcons.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\inpcons.h
 	"wx/object.h"
 	"wx/event.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\control.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\control.h
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\control.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\control.h
 	"wx/window.h"
 	"wx/list.h"
 	"wx/validate.h"
@@ -8530,7 +8530,7 @@
 	"wx/list.h"
 	"wx/window.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\control.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\control.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\control.h
 	"wx/cocoa/NSControl.h"
@@ -8539,10 +8539,10 @@
 	"wx/hashmap.h"
 	"wx/cocoa/ObjcAssociate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\control.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\control.h
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\textentry.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\textentry.h
 	"wx/filefn.h"
 	"wx/gdicmn.h"
 	"wx/gtk/textentry.h"
@@ -8553,14 +8553,14 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\textentry.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\textentry.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\textentry.h
 	"wx/control.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\textentry.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\textentry.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\textentry.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\textentry.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\textentry.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\textentry.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\ioswrap.h
 	"wx/beforestd.h"
@@ -8569,22 +8569,22 @@
 	"wx/afterstd.h"
 	"wx/msw/winundef.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\textctrl.h
 	"wx/univ/textctrl.h"
 	"wx/scrolwin.h"
 	"wx/arrstr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\textctrl.h
 	"wx/scrolwin.h"
 	"wx/univ/inphand.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\scrolwin.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\scrolwin.h
 	"wx/panel.h"
 	"wx/gtk/scrolwin.h"
 	"wx/gtk1/scrolwin.h"
 	"wx/generic/scrolwin.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\panel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\panel.h
 	"wx/window.h"
 	"wx/containr.h"
 	"wx/univ/panel.h"
@@ -8595,9 +8595,9 @@
 	"wx/defs.h"
 	"wx/event.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\panel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\panel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\panel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\panel.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\panelg.h
 	"wx/bitmap.h"
@@ -8608,18 +8608,18 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\scrolwin.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\textctrlce.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\textctrlce.h
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\textctrl.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\textctrl.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\textctrl.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\textctrl.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\textctrl.h
 	"wx/control.h"
 	"wx/textctrl.h"
 
@@ -8630,7 +8630,7 @@
 	"wx/hashmap.h"
 	"wx/cocoa/ObjcAssociate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\textctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\textctrl.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\app.h
 	"wx/event.h"
@@ -8666,13 +8666,13 @@
 	"wx/chartype.h"
 	"wx/msw/init.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\init.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\init.h
 	"wx/msw/wrapwin.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\unix\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\unix\app.h
 	<signal.h>
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\app.h
 	"wx/event.h"
 	"wx/icon.h"
 
@@ -8693,27 +8693,27 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\iconloc.h
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\icon.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\icon.h
 	"wx/msw/gdiimage.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\icon.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\icon.h
 	"wx/bitmap.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\icon.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\icon.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\icon.h
 	"wx/bitmap.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\icon.h
 	"wx/gdicmn.h"
 	"wx/gdiobj.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\icon.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\icon.h
 	"wx/bitmap.h"
 	"wx/os2/gdiimage.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\app.h
 	"wx/event.h"
 	"wx/hashmap.h"
 
@@ -8721,7 +8721,7 @@
 	"wx/dfb/dfbptr.h"
 	"wx/vidmode.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\vidmode.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\vidmode.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\app.h
 
@@ -8742,7 +8742,7 @@
 	"wx/cocoa/frame.h"
 	"wx/os2/frame.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\toplevel.h
 	"wx/nonownedwnd.h"
 	"wx/iconbndl.h"
 	"wx/weakref.h"
@@ -8757,7 +8757,7 @@
 	"wx/motif/toplevel.h"
 	"wx/univ/toplevel.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\nonownedwnd.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\nonownedwnd.h
 	"wx/window.h"
 	"wx/dfb/nonownedwnd.h"
 	"wx/gtk/nonownedwnd.h"
@@ -8770,7 +8770,7 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\nonownedwnd.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\nonownedwnd.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\nonownedwnd.h
 	"wx/window.h"
 	"wx/graphics.h"
 
@@ -8782,7 +8782,7 @@
 	"wx/image.h"
 	"wx/vector.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\nonownedwnd.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\nonownedwnd.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\iconbndl.h
 	"wx/gdiobj.h"
@@ -8790,24 +8790,24 @@
 	"wx/icon.h"
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\weakref.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\weakref.h
 	"wx/tracker.h"
 	"wx/meta/convertible.h"
 	"wx/meta/int2type.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\meta\int2type.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\meta\int2type.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\toplevel.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\toplevel.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\toplevel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\toplevel.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\dfb\toplevel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\toplevel.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\toplevel.h
 	"wx/hashmap.h"
@@ -8817,16 +8817,16 @@
 	"wx/hashmap.h"
 	"wx/cocoa/ObjcAssociate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\toplevel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\toplevel.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\toplevel.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\toplevel.h
 	"wx/univ/inpcons.h"
 	"wx/univ/inphand.h"
 	"wx/icon.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\statusbr.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\statusbr.h
 	"wx/defs.h"
 	"wx/control.h"
 	"wx/list.h"
@@ -8837,15 +8837,15 @@
 	"wx/osx/statusbr.h"
 	"wx/generic/statusbr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\statusbr.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\statusbr.h
 	"wx/univ/inpcons.h"
 	"wx/arrstr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\statusbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\statusbar.h
 	"wx/vector.h"
 	"wx/tooltip.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\tooltip.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\tooltip.h
 	"wx/defs.h"
 	"wx/msw/tooltip.h"
 	"wx/gtk/tooltip.h"
@@ -8854,7 +8854,7 @@
 	"wx/cocoa/tooltip.h"
 	"wx/os2/tooltip.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\tooltip.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\tooltip.h
 	"wx/object.h"
 	"wx/gdicmn.h"
 
@@ -8867,38 +8867,38 @@
 	"wx/string.h"
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\tooltip.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\tooltip.h
 	"wx/string.h"
 	"wx/event.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\tooltip.h
 	"wx/object.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\tooltip.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\tooltip.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\statusbr.h
 	"wx/defs.h"
 	"wx/pen.h"
 	"wx/arrstr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\statusbr.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\statusbr.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\frame.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\frame.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\frame.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\frame.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\frame.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\frame.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\frame.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\frame.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\frame.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\frame.h
 	"wx/toolbar.h"
 	"wx/accel.h"
 	"wx/icon.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\toolbar.h
 	"wx/defs.h"
 	"wx/tbarbase.h"
 	"wx/univ/toolbar.h"
@@ -8911,13 +8911,13 @@
 	"wx/cocoa/toolbar.h"
 	"wx/os2/toolbar.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\tbarbase.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\tbarbase.h
 	"wx/defs.h"
 	"wx/bitmap.h"
 	"wx/list.h"
 	"wx/control.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\toolbar.h
 	"wx/button.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\button.h
@@ -8941,20 +8941,20 @@
 	"wx/gtk/anybutton.h"
 	"wx/osx/anybutton.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\anybutton.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\anybutton.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\anybutton.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\anybutton.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\anybutton.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\anybutton.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\anybutton.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\button.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\button.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\button.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\button.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\button.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\button.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\button.h
 
@@ -8963,7 +8963,7 @@
 	"wx/object.h"
 	"wx/list.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\button.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\button.h
 	"wx/control.h"
 	"wx/gdicmn.h"
 
@@ -8978,10 +8978,10 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\objcref.h
 	"wx/osx/core/cfref.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\button.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\button.h
 	"wx/control.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\toolbar.h
 	"wx/dynarray.h"
 	"wx/imaglist.h"
 
@@ -8994,35 +8994,35 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\imaglist.h
 	"wx/list.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\imaglist.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\imaglist.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\imaglist.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\imaglist.h
 	"wx/defs.h"
 	"wx/list.h"
 	"wx/icon.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\tbarwce.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\tbarwce.h
 	"wx/dynarray.h"
 	"wx/msw/toolbar.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\toolbar.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\toolbar.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\toolbar.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\toolbar.h
 	"wx/tbarbase.h"
 	"wx/dynarray.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\toolbar.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\toolbar.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\toolbar.h
 	"wx/timer.h"
 	"wx/tbarbase.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\timer.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\timer.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/longlong.h"
@@ -9030,26 +9030,26 @@
 	"wx/stopwatch.h"
 	"wx/utils.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\stopwatch.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stopwatch.h
 	"wx/defs.h"
 	"wx/longlong.h"
 	"wx/time.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\time.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\time.h
 	"wx/longlong.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\frame.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\frame.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\frame.h
 	"wx/os2/wxrsc.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\wxrsc.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\wxrsc.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\x11\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\x11\app.h
 	"wx/gdicmn.h"
 	"wx/event.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\app.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/gdicmn.h"
@@ -9058,7 +9058,7 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\app.h
 	"wx/osx/core/cfref.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\app.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\app.h
 	<types.h>
 	<sys/ioctl.h>
 	<sys/select.h>
@@ -9070,10 +9070,10 @@
 	"wx/event.h"
 	"wx/icon.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\theme.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\theme.h
 	"wx/string.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\menu.h
 	"wx/defs.h"
 	"wx/list.h"
 	"wx/window.h"
@@ -9087,7 +9087,7 @@
 	"wx/cocoa/menu.h"
 	"wx/os2/menu.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\menuitem.h
 	"wx/defs.h"
 	"wx/object.h"
 	"wx/univ/menuitem.h"
@@ -9099,24 +9099,24 @@
 	"wx/cocoa/menuitem.h"
 	"wx/os2/menuitem.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\menuitem.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\menuitem.h
 	"wx/ownerdrw.h"
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\ownerdrw.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\ownerdrw.h
 	"wx/defs.h"
 	"wx/font.h"
 	"wx/colour.h"
 	"wx/msw/ownerdrw.h"
 	"wx/os2/ownerdrw.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\ownerdrw.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\ownerdrw.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\ownerdrw.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\ownerdrw.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\menuitem.h
 	"wx/bitmap.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\menuitem.h
@@ -9125,7 +9125,7 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\menuitem.h
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\menuitem.h
 	"wx/defs.h"
 	"wx/bitmap.h"
 
@@ -9134,22 +9134,22 @@
 	"wx/bitmap.h"
 	"wx/cocoa/ObjcRef.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\menuitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\menuitem.h
 	"wx/defs.h"
 	"wx/os2/private.h"
 	"wx/ownerdrw.h"
 	"wx/bitmap.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\menu.h
 	"wx/accel.h"
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\menu.h
 	"wx/accel.h"
 	"wx/dynarray.h"
 	"wx/arrstr.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\menu.h
 	"wx/colour.h"
 	"wx/font.h"
 	"wx/arrstr.h"
@@ -9158,7 +9158,7 @@
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\menu.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\menu.h
 	"wx/arrstr.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\menu.h
@@ -9169,16 +9169,16 @@
 	"wx/hashmap.h"
 	"wx/cocoa/ObjcAssociate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\menu.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\menu.h
 	"wx/accel.h"
 	"wx/list.h"
 	"wx/dynarray.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\sizer.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\sizer.h
 	"wx/defs.h"
 	"wx/window.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msgdlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msgdlg.h
 	"wx/defs.h"
 	"wx/dialog.h"
 	"wx/stockitem.h"
@@ -9203,7 +9203,7 @@
 	"wx/cocoa/dialog.h"
 	"wx/os2/dialog.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\sharedptr.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\sharedptr.h
 	"wx/defs.h"
 	"wx/atomic.h"
 
@@ -9214,18 +9214,18 @@
 	<atomic.h>
 	"wx/thread.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\univ\dialog.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\dialog.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\dialog.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\dialog.h
 	"wx/panel.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\dialog.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\dialog.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\dialog.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\dialog.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\dialog.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\dialog.h
 	"wx/panel.h"
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\dialog.h
@@ -9237,10 +9237,10 @@
 	"wx/hashmap.h"
 	"wx/cocoa/ObjcAssociate.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\dialog.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\dialog.h
 	"wx/panel.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\stockitem.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stockitem.h
 	"wx/defs.h"
 	"wx/chartype.h"
 	"wx/string.h"
@@ -9252,15 +9252,15 @@
 	"wx/msgdlg.h"
 	"wx/generic/msgdlgg.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\msgdlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\msgdlg.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\msgdlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\msgdlg.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\msgdlg.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\msgdlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\msgdlg.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\msgdlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\msgdlg.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\filedlg.h
 	"wx/defs.h"
@@ -9283,26 +9283,26 @@
 	"wx/filedlg.h"
 	"wx/generic/filectrlg.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\listctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\listctrl.h
 	"wx/defs.h"
 	"wx/listbase.h"
 	"wx/msw/listctrl.h"
 	"wx/osx/listctrl.h"
 	"wx/generic/listctrl.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\listbase.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\listbase.h
 	"wx/colour.h"
 	"wx/font.h"
 	"wx/gdicmn.h"
 	"wx/event.h"
 	"wx/control.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\listctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\listctrl.h
 	"wx/textctrl.h"
 	"wx/dynarray.h"
 	"wx/vector.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\listctrl.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\listctrl.h
 	"wx/defs.h"
 	"wx/generic/listctrl.h"
 
@@ -9352,9 +9352,9 @@
 	"wx/strconv.h"
 	"wx/fontenc.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\msw\filedlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\filedlg.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\motif\filedlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\filedlg.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\filedlg.h
 	"wx/gtk/filectrl.h"
@@ -9362,13 +9362,263 @@
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\filedlg.h
 	"wx/generic/filedlgg.h"
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\osx\filedlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\filedlg.h
 
 1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\filedlg.h
 
-1412631243 k:\bibliotecas\wxw\wx302\include\wx\os2\filedlg.h
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\filedlg.h
 
-1430338914 x:\idz80\build_codeblocks\dialog_mnemonics.h
+1432444886 x:\idz80\build_codeblocks\dialog_mnemonics.h
 	"wx/dialog.h"
 	"wx/sizer.h"
+	"wx/stattext.h"
+	"wx/combobox.h"
+	"wx/checkbox.h"
+	"wx/statbox.h"
+	<mnemonic_container.h>
+
+1432446672 source:x:\idz80\build_codeblocks\dialog_mnemonics.cpp
+	"dialog_mnemonics.h"
+	"wx/button.h"
+	<wx/msgdlg.h>
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\stattext.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/univ/stattext.h"
+	"wx/msw/stattext.h"
+	"wx/motif/stattext.h"
+	"wx/gtk/stattext.h"
+	"wx/gtk1/stattext.h"
+	"wx/osx/stattext.h"
+	"wx/cocoa/stattext.h"
+	"wx/os2/stattext.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\stattext.h
+	"wx/generic/stattextg.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\stattextg.h
+	"wx/stattext.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\stattext.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\stattext.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\stattext.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\stattext.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\stattext.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\stattext.h
+	"wx/cocoa/NSTextField.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\stattext.h
+	"wx/control.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\combobox.h
+	"wx/defs.h"
+	"wx/textctrl.h"
+	"wx/ctrlsub.h"
+	"wx/textentry.h"
+	"wx/univ/combobox.h"
+	"wx/msw/combobox.h"
+	"wx/motif/combobox.h"
+	"wx/gtk/combobox.h"
+	"wx/gtk1/combobox.h"
+	"wx/osx/combobox.h"
+	"wx/cocoa/combobox.h"
+	"wx/os2/combobox.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\ctrlsub.h
+	"wx/defs.h"
+	"wx/arrstr.h"
+	"wx/control.h"
+	"wx/msw/ctrlsub.h"
+	"wx/motif/ctrlsub.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\ctrlsub.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\ctrlsub.h
+	"wx/dynarray.h"
+	"wx/generic/ctrlsub.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\ctrlsub.h
+	"wx/dynarray.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\combobox.h
+	"wx/combo.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\combo.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/renderer.h"
+	"wx/bitmap.h"
+	"wx/textentry.h"
+	"wx/msw/combo.h"
+	"wx/generic/combo.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\renderer.h
+	"wx/gdicmn.h"
+	"wx/colour.h"
+	"wx/font.h"
+	"wx/bitmap.h"
+	"wx/string.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\combo.h
+	"wx/timer.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\generic\combo.h
+	"wx/dcbuffer.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\dcbuffer.h
+	"wx/dcmemory.h"
+	"wx/dcclient.h"
+	"wx/window.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\dcmemory.h
+	"wx/dc.h"
+	"wx/bitmap.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\dcclient.h
+	"wx/dc.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\combobox.h
+	"wx/choice.h"
+	"wx/textentry.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\choice.h
+	"wx/defs.h"
+	"wx/ctrlsub.h"
+	"wx/univ/choice.h"
+	"wx/msw/wince/choicece.h"
+	"wx/msw/choice.h"
+	"wx/motif/choice.h"
+	"wx/gtk/choice.h"
+	"wx/gtk1/choice.h"
+	"wx/osx/choice.h"
+	"wx/cocoa/choice.h"
+	"wx/os2/choice.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\choice.h
+	"wx/combobox.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\wince\choicece.h
+	"wx/defs.h"
+	"wx/dynarray.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\choice.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\choice.h
+	"wx/clntdata.h"
+	"wx/dynarray.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\choice.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\choice.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\choice.h
+	"wx/control.h"
+	"wx/dynarray.h"
+	"wx/arrstr.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\choice.h
+	"wx/cocoa/NSMenu.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\choice.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\combobox.h
+	"wx/choice.h"
+	"wx/textentry.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\combobox.h
+	"wx/choice.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\combobox.h
+	"wx/defs.h"
+	"wx/object.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\combobox.h
+	"wx/containr.h"
+	"wx/choice.h"
+	"wx/textctrl.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\combobox.h
+	"wx/hashmap.h"
+	"wx/cocoa/ObjcAssociate.h"
+	"wx/textctrl.h"
+	"wx/dynarray.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\combobox.h
+	"wx/choice.h"
+	"wx/textentry.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\checkbox.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/univ/checkbox.h"
+	"wx/msw/checkbox.h"
+	"wx/motif/checkbox.h"
+	"wx/gtk/checkbox.h"
+	"wx/gtk1/checkbox.h"
+	"wx/osx/checkbox.h"
+	"wx/cocoa/checkbox.h"
+	"wx/os2/checkbox.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\checkbox.h
+	"wx/button.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\checkbox.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\checkbox.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\checkbox.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\checkbox.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\checkbox.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\checkbox.h
+	"wx/cocoa/NSButton.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\checkbox.h
+	"wx/control.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\statbox.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/containr.h"
+	"wx/univ/statbox.h"
+	"wx/msw/statbox.h"
+	"wx/motif/statbox.h"
+	"wx/gtk/statbox.h"
+	"wx/gtk1/statbox.h"
+	"wx/osx/statbox.h"
+	"wx/cocoa/statbox.h"
+	"wx/os2/statbox.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\univ\statbox.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\msw\statbox.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\motif\statbox.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk\statbox.h
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\gtk1\statbox.h
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\osx\statbox.h
+	"wx/control.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\statbox.h
+	"wx/cocoa/NSBox.h"
+
+1412631242 k:\bibliotecas\wxw\wx302\include\wx\cocoa\nsbox.h
+	"wx/hashmap.h"
+	"wx/cocoa/ObjcAssociate.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\statbox.h
+	"wx/control.h"
+
+1412631244 k:\bibliotecas\wxw\wx302\lib\gcc_dll\mswu\wx\setup.h
 

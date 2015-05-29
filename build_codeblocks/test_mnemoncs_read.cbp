@@ -84,7 +84,6 @@
 		<Unit filename="../src/mnemonic_access.cpp" />
 		<Unit filename="../src/mnemonic_container.cpp" />
 		<Unit filename="../src/mnemonic_item.cpp" />
-		<Unit filename="../src/mnemonic_item_base.cpp" />
 		<Unit filename="../src/mnemonicxmlfile.cpp" />
 		<Unit filename="dialog_mnemonics.cpp" />
 		<Unit filename="dialog_mnemonics.h" />
