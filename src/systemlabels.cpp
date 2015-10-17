@@ -9,7 +9,6 @@
  **************************************************************/
 
  #include "systemlabels.h"
- #include "mndb_tools.h"
 
 SystemLabelList::SystemLabelList(const wxString& section, LogWindow *logparent)
 {
@@ -113,7 +112,9 @@ bool SystemLabelList::readData()
         while ((!m_file->Eof()) && (str != end_section))
         {
 			line++;
-			TrimComment(str);
+            str = str.BeforeFirst('#');
+            str = str.Trim();
+
             ParseString(str, arrstr);
             if (arrstr.GetCount() == 2)
 			{
@@ -201,4 +202,41 @@ uint SystemLabelList::GetCount()
 {
 	return (m_data.GetCount());
 }
+
+
+
+
+void SystemLabelList::ParseString(wxString& source_string, wxArrayString& string_list)
+{
+    int			str_len, str_index;
+    wxString	stemp;
+    bool		found_string = true;
+
+    string_list.Clear();
+    str_index = source_string.Find('"');
+    found_string = (str_index > 0);
+    if (found_string)
+		stemp = source_string.Left(str_index);
+	else
+		stemp = source_string;
+    str_len = stemp.Len();
+    str_index = stemp.First(' ');
+    while (str_len > 0)
+    {
+        string_list.Add(stemp.Left(str_index));
+        stemp = stemp.AfterFirst(' ');
+        str_len = stemp.Len();
+        str_index = stemp.Find(' ');
+        if ((str_index < 0) && (str_len > 0))
+            str_index = str_len;
+    }
+    if (found_string)
+	{
+		stemp = source_string.AfterFirst('"');
+		stemp = stemp.BeforeLast('"');
+		string_list.Add(stemp);
+	}
+}
+
+
 

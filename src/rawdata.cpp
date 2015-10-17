@@ -60,7 +60,7 @@ bool RawData::LoadToBuffer(const wxString filename)
             else
             {
                 buffer_.UngetWriteBuf(buffer_size);
-                filename_.Assign(filename);
+                filename_.Assign(filename, wxPATH_NATIVE);
                 success = true;
             }
         }

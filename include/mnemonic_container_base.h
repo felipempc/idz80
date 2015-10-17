@@ -17,7 +17,7 @@
 
 
 typedef std::vector<MnemonicItem *> MnemonicList;
-typedef unsigned int MnemonicIndex;
+typedef int MnemonicIndex;
 
 
 class MnemonicContainerBase

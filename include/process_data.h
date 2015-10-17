@@ -57,7 +57,7 @@ class ProcessData : public LabelManager, public LogBase, public ProcessBase
         bool RemoveLineAndProgLabels(const int index);
 
         void SearchInstructionArgument(word argument_value, uint search_config);
-        bool SearchInstructionArgumentContinue(ProgramAddress &address);
+        bool SearchInstructionArgumentContinue(AbsoluteAddress &address);
 
 
         void SetGauge(wxGauge *g);

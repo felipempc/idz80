@@ -31,11 +31,11 @@ class SourceCodeContainer
         ~SourceCodeContainer();
 
         void Clear();
-        uint GetCount();
+        unsigned int GetCount();
         LineNumber Find(CodeViewItem *cvi);
 
     protected:
-        static const uint LINE_NOT_FOUND = 1;
+        static const unsigned int LINE_NOT_FOUND = 1;
 
         SourceCodeList  code_list_;
 

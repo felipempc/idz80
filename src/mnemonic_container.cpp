@@ -32,12 +32,24 @@ MnemonicContainer::MnemonicContainer(wxTextCtrl *log)
 
 MnemonicContainer::~MnemonicContainer()
 {
+    Clear();
+}
+
+
+
+
+void MnemonicContainer::Clear()
+{
     MnemonicItem    *mnemonic = 0;
     unsigned int    to_delete = mnlist_.size();
+
+    num_groups_ = 0;
+    num_instructions_ = 0;
 
     while(to_delete--)
     {
         mnemonic = mnlist_.back();
+        mnlist_.pop_back();
         delete mnemonic;
     }
     mnlist_.clear();

@@ -24,17 +24,18 @@
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
+
+WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
 */
 
 
-typedef unsigned int ProgramAddress;
+//typedef unsigned int ProgramAddress; // rawdata
 //typedef unsigned int LineNumber;
-typedef unsigned int FileOffset;
-typedef unsigned int DisassembledIndex;
+//typedef unsigned int FileOffset; //rawdata
+//typedef unsigned int DisassembledIndex;
 typedef unsigned int LabelIndex;
 //typedef unsigned int DataIndex;
 
-WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
 
 int CompareInt(int *item1, int *item2);
 int CompareSortedInt(int item1, int item2);

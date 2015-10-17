@@ -114,9 +114,9 @@ struct Arguments
 class MnemonicItemBase
 {
     public:
-        void Reset();
 
     protected:
+        unsigned int mnemonic_signature_;
         Groups		group_;
         Arguments   source_,
                     destination_;

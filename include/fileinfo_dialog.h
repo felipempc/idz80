@@ -18,15 +18,16 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 
-#include "process_data.h"
+#include "idz80_main_base.h"
+//#include "process_data.h"
 
 class ShowFileInfo: public wxDialog
 {
 	public:
 
-		ShowFileInfo(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+		ShowFileInfo(IDZ80MainBase *parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 
-		void SendInfo(ProcessData *process);
+//		void SendInfo(ProcessData *process);
 
 		wxButton* B_OK;
 
@@ -64,7 +65,7 @@ class ShowFileInfo: public wxDialog
 		static const long ID_PANEL1;
 
 	private:
-	    ProcessData *m_process;
+//	    ProcessData *m_process;
 
 		void OnB_OKClick(wxCommandEvent& event);
 		void OnInit(wxInitDialogEvent& event);

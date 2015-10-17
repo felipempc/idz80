@@ -1,74 +1,35 @@
 /****************************************************************
 * Name:      IDZ80
- * Purpose:   Interactive Disassembler for Z80 processors
- * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   09-11-2009 (D-M-Y)
- * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
- **************************************************************
- * Represents one disassembled item
- **************************************************************/
-
-
- #include "disassembled_item.h"
- #include "mndb_tools.h"
- #include "idz80_base.h"
+* Purpose:   Interactive Disassembler for Z80 processors
+* Author:    Felipe MPC (idz80a@gmail.com)
+* Created:   09-11-2009 (D-M-Y) / Rewrited 30/06/2015
+* License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+**************************************************************
+* Represents one disassembled item
+**************************************************************/
 
 
 
-DisassembledItem::DisassembledItem(RawData* rawdata)
+#include "disassembled_item.h"
+
+
+
+DisassembledItem::DisassembledItem(RawData* program_file)
+                :DisassembledItemData(program_file)
 {
-    data_file_ = rawdata;
+    binary_data_ = program_file;
+    style_ = 0;
+    is_data_ = false;
     Clear();
-    SetStyleDefault();
-    ModuleName = "Dasmelement";
 }
+
+
+
 
 DisassembledItem::~DisassembledItem()
 {
-    Clear();
-}
-
-
-void DisassembledItem::SetStyleDefault()
-{
-    arguments_style_.hasArgumentLabel = 0;
-	arguments_style_.hasLabel = 0;
-	arguments_style_.arg1 = ast_bytehex;
-	arguments_style_.arg2 = ast_bytehex;
-	arguments_style_.arg1styled = 0;
-	arguments_style_.arg2styled = 0;
-}
-
-
-word DisassembledItem::GetArgument(uint argument_index, uint baseaddress)
-{
-    uint ret = 0;
-    word h, l;
-    signed char relative_address = 0;
-
-    if ((item_type_ == et_Instruction) && mnemonic_)
-    {
-        if ((mnemonic_->GetArgumentSize() == 1) && (mnemonic_->GetArgumentCount() == 1))
-            if (mnemonic_->GetArgumentType(0) == ARG_REL_ADDR)
-            {
-                relative_address = static_cast<signed char>(opcode_arguments_[0]);
-                ret = ConvertRelativeToAbsoluteAddress(relative_address, baseaddress);
-            }
-            else
-            {
-                ret = static_cast<uint>(opcode_arguments_[0]) & 0xFF;
-            }
-        else
-        if ((mnemonic_->GetArgumentSize() == 1) && (mnemonic_->GetArgumentCount() == 2))
-            ret = static_cast<word>(opcode_arguments_[argument_index]) & 0xFF;
-        else
-        {
-            l = static_cast<word>(opcode_arguments_[0]) & 0xFF;
-            h = static_cast<word>(opcode_arguments_[1]) & 0xFF;
-            ret = static_cast<word>(h * 0x100 + l);
-        }
-    }
-    return ret;
+    if (style_)
+        delete style_;
 }
 
 
@@ -77,323 +38,193 @@ word DisassembledItem::GetArgument(uint argument_index, uint baseaddress)
 void DisassembledItem::Clear()
 {
     mnemonic_ = 0;
-    memset(opcode_arguments_, '\0', sizeof(OpCodeArguments));
-    memset(opcode_, '\0', sizeof(ByteCode));
-    offset_in_file_ = opcode_size_ = 0;
-    item_type_ = et_None;
-}
-
-
-
-
-wxString DisassembledItem::GetCodeStr()
-{
-    static wxString gcstr;
-    uint i;
-    byte b;
-
-    gcstr.Clear();
-    for (i = 0; i < opcode_size_; i++)
+    memset(&arguments_, 0, sizeof(ExplicitArguments));
+    offset_in_file_ = 0;
+    if(style_)
     {
-        b = data_file_->GetData(offset_in_file_ + i);
-        gcstr << gcstr.Format("%.2X ", b);
+        delete style_;
+        style_ = 0;
     }
-    gcstr.Trim(true);
-    return (gcstr);
 }
 
 
-wxString DisassembledItem::GetAsciiStr()
-{
-    static wxString gastr;
-    uint i, b;
 
-    gastr.Clear();
-    for (i = 0; i < opcode_size_; i++)
+
+void DisassembledItem::CopyArguments(const ExplicitArguments &arguments)
+{
+    memcpy(&arguments_, &arguments, sizeof(ExplicitArguments));
+}
+
+
+
+
+wxString DisassembledItem::GetOpcodeAsString()
+{
+    wxString as_string;
+    byte bytecode;
+
+    if(mnemonic_)
     {
-        b = static_cast<uint>(data_file_->GetData(offset_in_file_ + i));
-        b = b & 0xFF;
-        if ((b < 32) || (b > 126))
-            b = '.';
-        gastr << gastr.Format("%c", b);
+        as_string.Clear();
+        for (unsigned int counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
+        {
+            bytecode = binary_data_->GetData(offset_in_file_ + counter);
+            as_string << wxString::Format("%.2X ", bytecode);
+        }
+        as_string.Trim(true);
     }
-    return (gastr);
+
+    return as_string;
 }
 
 
 
 
-InstructionTypes DisassembledItem::GetInstructionType()
+wxString DisassembledItem::GetAsciiCodeAsString()
 {
-    if (mnemonic_)
-        return mnemonic_->GetInstructionType();
-    else
-        return IT_ERROR;
+    wxString as_string;
+    byte bytecode;
+
+    if(mnemonic_)
+    {
+        as_string.Clear();
+        for (unsigned int counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
+        {
+            bytecode = binary_data_->GetData(offset_in_file_ + counter);
+            if ((bytecode < 32) || (bytecode > 126))
+                bytecode = '.';
+            as_string << wxString::Format("%c", bytecode);
+        }
+    }
+
+    return as_string;
 }
 
 
 
-InstructionDetails DisassembledItem::GetInstructionDetail()
+
+ArgumentStyle DisassembledItem::GetArgumentStyle()
 {
-    if (mnemonic_)
-        return mnemonic_->GetInstructionDetail();
-    else
-        return II_ERROR;
+    ArgumentStyle style;
+    style.first = STYLE_NONE;
+    style.second = STYLE_NONE;
+
+    if(style_)
+    {
+        style.first = style_->first;
+        style.second = style_->second;
+    }
+
+    return style;
 }
 
 
 
 
-void DisassembledItem::CopyOpcode()
+ArgumentStyleOptions DisassembledItem::GetArgumentStyle(ArgumentIndex index)
 {
-	uint i;
+    if(style_)
+    {
+        if(index == FIRST_ARGUMENT)
+            return style_->first;
 
-	for (i = 0; i < MAX_OPCODE_SIZE; i++)
-	{
-		if (i < mnemonic_->GetOpCodeSize())
-			opcode_[i] = mnemonic_->GetOpCode(i);
-		else
-			opcode_[i] = 0;
-	}
+        if(index == SECOND_ARGUMENT)
+            return style_->second;
+    }
+
+    return STYLE_NONE;
 }
 
 
-bool DisassembledItem::CopyArguments()
+
+
+FileOffset DisassembledItem::GetOffsetInFile()
 {
-	uint	i,
-			totargs;
-	bool	ret = false;
-
-	if ((mnemonic_ > 0) && (offset_in_file_ >= 0))
-	{
-		totargs = mnemonic_->GetArgumentCount() * mnemonic_->GetArgumentSize();
-		for (i = 0; i < totargs; i++)
-			opcode_arguments_[i] = data_file_->GetData(offset_in_file_ + i + mnemonic_->GetArgumentPosition());
-		ret = true;
-	}
-	return ret;
+    return offset_in_file_;
 }
 
 
-void DisassembledItem::CopyArguments(OpCodeArguments &arg, uint size)
+
+
+byte DisassembledItem::GetByteOpcode(unsigned int index)
 {
-	if (size > MAX_NUM_ARG)
-		size = MAX_NUM_ARG;
+    if(binary_data_)
+        return binary_data_->GetData(offset_in_file_ + index);
 
-	memcpy(opcode_arguments_, arg, size);
+    return 0;
 }
 
 
-void DisassembledItem::CopyOpCode(ByteCode &bytecode)
+
+byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
 {
-	memcpy(opcode_, bytecode, MAX_OPCODE_SIZE);
+    return arguments_[index];
 }
 
 
 
-ProgramAddress DisassembledItem::ConvertRelativeToAbsoluteAddress(int reladdr, ProgramAddress baseaddress)
+
+byte DisassembledItem::GetArgumentValue(unsigned int index)
 {
-    return static_cast<ProgramAddress>(baseaddress + mnemonic_->GetOpCodeSize() + offset_in_file_ + reladdr);
+    if(index > 1)
+        index = 1;
+    return arguments_[index];
 }
 
 
-void DisassembledItem::SetOffset(uint _offset)
+
+
+MnemonicItem *DisassembledItem::GetMnemonic()
 {
-	offset_in_file_ = _offset;
+    return mnemonic_;
 }
 
-void DisassembledItem::SetLength(uint _length)
+
+
+
+RawData *DisassembledItem::GetProgram()
 {
-	opcode_size_ = _length;
+    return binary_data_;
 }
 
 
-void DisassembledItem::SetLength()
+
+
+void DisassembledItem::SetFileOffset(FileOffset _offset)
 {
-	if (mnemonic_ > 0)
-		opcode_size_ = mnemonic_->GetOpCodeSize();
-	else
-		opcode_size_ = 0;
+    if(_offset < binary_data_->GetSize())
+        offset_in_file_ = _offset;
 }
 
 
-void DisassembledItem::SetType(ElementType _etype)
+
+
+void DisassembledItem::SetArgumentStyle(ArgumentIndex index, ArgumentStyleOptions style)
 {
-	item_type_ = _etype;
-}
+    if(!style_)
+        style_ = new ArgumentStyle;
 
-void DisassembledItem::SetStyle(ArgStyle &_style)
-{
-    arguments_style_.hasArgumentLabel = _style.hasArgumentLabel;
-    arguments_style_.hasLabel = _style.hasLabel;
-    arguments_style_.arg1 = _style.arg1;
-    arguments_style_.arg2 = _style.arg2;
-    arguments_style_.arg1styled = _style.arg1styled;
-    arguments_style_.arg2styled = _style.arg2styled;
-}
-
-void DisassembledItem::SetStyleArgument(uint argument_index, StyleType ast)
-{
-	if (argument_index == 0)
-		arguments_style_.arg1 = ast;
-	if (argument_index == 1)
-		arguments_style_.arg2 = ast;
-}
-
-ArgStyle DisassembledItem::GetStyle()
-{
-	return arguments_style_;
+    if(index == FIRST_ARGUMENT)
+        style_->first = style;
+    if(index == SECOND_ARGUMENT)
+        style_->second = style;
 }
 
 
-StyleType DisassembledItem::GetStyleArgument(uint argument_index)
-{
-	StyleType ret = ast_bytehex;
-	if (argument_index == 0)
-		ret = arguments_style_.arg1;
-	if (argument_index == 1)
-		ret = arguments_style_.arg2;
-	return ret;
-}
 
 
 void DisassembledItem::SetMnemonic(MnemonicItem *mnemonic)
 {
-	mnemonic_ = mnemonic;
-	if (mnemonic > 0)
-		CopyOpcode();
+    mnemonic_ = mnemonic;
 }
 
-byte DisassembledItem::GetData(uint offset)
+
+
+
+AbsoluteAddress DisassembledItem::ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress)
 {
-    return data_file_->GetData(offset);
+    return static_cast<AbsoluteAddress>(baseaddress + mnemonic_->GetByteCodeSize() + offset_in_file_ + relative);
 }
 
 
-uint DisassembledItem::GetOffset()
-{
-	return offset_in_file_;
-}
-
-uint DisassembledItem::GetLength()
-{
-	return opcode_size_;
-}
-
-ElementType DisassembledItem::GetType()
-{
-	return item_type_;
-}
-
-
-ArgumentTypes DisassembledItem::GetArgumentType(uint argument_index)
-{
-	if (mnemonic_ > 0)
-		return mnemonic_->GetArgumentType(argument_index);
-	return ARG_NONE;
-}
-
-int DisassembledItem::GetArgumentCount()
-{
-	if (mnemonic_ > 0)
-		return mnemonic_->GetArgumentCount();
-	return -1;
-}
-
-
-int DisassembledItem::GetArgumentSize()
-{
-	return mnemonic_->GetArgumentSize();
-}
-
-BranchType DisassembledItem::GetBranchType()
-{
-	if (mnemonic_ > 0)
-		return mnemonic_->GetBranchType();
-	return BR_NONE;
-}
-
-
-wxString &DisassembledItem::GetMnemonicStr(uint index)
-{
-	static wxString ret;
-	ret = "Error !";
-
-	if (mnemonic_ && (index < mnemonic_->mnemonic_strings_.GetCount()))
-		return mnemonic_->mnemonic_strings_[index];
-	return ret;
-}
-
-
-uint DisassembledItem::GetMnemonicStrCount()
-{
-	return mnemonic_->mnemonic_strings_.GetCount();
-}
-
-
-// TODO: Move to Mnemonics (GetByteCode(byte index)
-byte DisassembledItem::GetByteOpCode(uint opcode_index)
-{
-	byte ret = 0;
-
-	if (opcode_index < MAX_OPCODE_SIZE)
-		ret = opcode_[opcode_index];
-	return ret;
-}
-
-
-byte DisassembledItem::GetByteArgument(uint argument_index)
-{
-	byte ret = 0;
-
-	if (argument_index < 2)
-		ret = opcode_arguments_[argument_index];
-	return ret;
-}
-
-
-
-bool DisassembledItem::HasArgumentLabel()
-{
-	return (arguments_style_.hasArgumentLabel == 1);
-}
-
-
-
-void DisassembledItem::SetArgLabel(bool hal)
-{
-    if (hal)
-        arguments_style_.hasArgumentLabel = 1;
-    else
-        arguments_style_.hasArgumentLabel = 0;
-}
-
-
-
-
-bool DisassembledItem::IsData()
-{
-    return (item_type_ == et_Data);
-}
-
-bool DisassembledItem::IsInstruction()
-{
-    return (item_type_ == et_Instruction);
-}
-
-
-bool DisassembledItem::IsArgumentProgramAddress()
-{
-    ArgumentTypes argtype = GetArgumentType(0);
-
-    return ((argtype == ARG_ABS_ADDR) || (argtype == ARG_REL_ADDR));
-}
-
-
-bool DisassembledItem::IsArgumentVariableAddress()
-{
-    ArgumentTypes argtype = GetArgumentType(0);
-
-    return (argtype == ARG_VARIABLE);
-}
 

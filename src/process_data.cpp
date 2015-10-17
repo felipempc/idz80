@@ -20,7 +20,7 @@ ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
 {
     Mnemonics = new MnemonicDataBase(logparent);
     Program = new RawData(logparent);
-    Disassembled = new DAsmData(logparent);
+    Disassembled = new DisassembledContainer(logparent);
     CodeViewLines = new SourceCodeLines(Disassembled, this);
     search_status_ = new SearchManager();
     disassembler_ = 0;
@@ -401,7 +401,7 @@ void ProcessData::TransformToData(SelectedItemInfo &selected)
             {
                 varitem = varlabels[i];
                 varindex = CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varitem);
-                if (!(cvi->LabelVarAddr) || (cvi->LabelVarAddr->Address != static_cast<ProgramAddress>(varitem)))
+                if (!(cvi->LabelVarAddr) || (cvi->LabelVarAddr->Address != static_cast<AbsoluteAddress>(varitem)))
                 {
                     LogIt(wxString::Format("Found var address 0x%X, line %d\n", varitem, varindex));
                     CodeViewLines->InsertVarLabel(varitem, "", varindex);
@@ -472,7 +472,7 @@ void ProcessData::DisassembleData(SelectedItemInfo &selected)
             {
                 progitem = proglabels[i];
                 progindex = CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), progitem);
-                if (!(cvi->LabelProgAddr) || (cvi->LabelProgAddr->Address != static_cast<ProgramAddress>(progitem)))
+                if (!(cvi->LabelProgAddr) || (cvi->LabelProgAddr->Address != static_cast<AbsoluteAddress>(progitem)))
                 {
                     LogIt(wxString::Format("Found program address 0x%X, line %d\n", progitem, progindex));
                     CodeViewLines->InsertProgLabel(progitem, "", progindex);
@@ -597,7 +597,7 @@ void ProcessData::SearchInstructionArgument(word argument_value, uint search_con
 
 
 
-bool ProcessData::SearchInstructionArgumentContinue(ProgramAddress &address)
+bool ProcessData::SearchInstructionArgumentContinue(AbsoluteAddress &address)
 {
     DisassembledItem *de;
     DisassembledIndex dasm_count;

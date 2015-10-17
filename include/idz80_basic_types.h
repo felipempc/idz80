@@ -8,16 +8,21 @@
  * Basic Types
  **************************************************************/
 
+#ifndef IDZ80BASICTYPES_H
+#define IDZ80BASICTYPES_H
 
 
- #ifndef IDZ80BASICTYPES_H
- #define IDZ80BASICTYPES_H
+#include <wx/dynarray.h>
 
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
 
+WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
 
- #endif // IDZ80BASICTYPES_H
+
+
+
+#endif // IDZ80BASICTYPES_H
 
 

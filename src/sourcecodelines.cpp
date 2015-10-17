@@ -12,7 +12,7 @@
 #include "sourcecodelines.h"
 
 
-SourceCodeLines::SourceCodeLines(DAsmData *dasm, LabelManager *labels)
+SourceCodeLines::SourceCodeLines(DisassembledContainer *dasm, LabelManager *labels)
 {
     itemcount_ = -1;
     first_intruction_line = -1;
@@ -74,7 +74,7 @@ int SourceCodeLines::AddDasm(const DisassembledIndex dasmitem, const wxString &c
 
 
 
-int SourceCodeLines::AddProgLabel(const ProgramAddress labeladdr, const wxString &comment)
+int SourceCodeLines::AddProgLabel(const AbsoluteAddress labeladdr, const wxString &comment)
 {
     if (labeladdr >= 0)
         return (AddNewItem(-1, labeladdr, -1, -1, comment));
@@ -84,7 +84,7 @@ int SourceCodeLines::AddProgLabel(const ProgramAddress labeladdr, const wxString
 
 
 
-int SourceCodeLines::AddVarLabel(const ProgramAddress labeladdr, const wxString &comment)
+int SourceCodeLines::AddVarLabel(const AbsoluteAddress labeladdr, const wxString &comment)
 {
     if (labeladdr >= 0)
         return (AddNewItem(-1, -1, labeladdr, -1, comment));
@@ -94,7 +94,7 @@ int SourceCodeLines::AddVarLabel(const ProgramAddress labeladdr, const wxString 
 
 
 
-int SourceCodeLines::AddOrg(const ProgramAddress org, const wxString &comment)
+int SourceCodeLines::AddOrg(const AbsoluteAddress org, const wxString &comment)
 {
     return (AddNewItem(-1, -1, -1, org, comment));
 }
@@ -197,7 +197,7 @@ void SourceCodeLines::EditDasm(const DisassembledIndex dasmitem, const wxString 
 
 
 
-void SourceCodeLines::EditProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+void SourceCodeLines::EditProgLabel(const AbsoluteAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     if (pos < GetCount())
         EditItem(-1, labeladdr, -1, -1, comment, pos);
@@ -206,7 +206,7 @@ void SourceCodeLines::EditProgLabel(const ProgramAddress labeladdr, const wxStri
 
 
 
-void SourceCodeLines::EditVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+void SourceCodeLines::EditVarLabel(const AbsoluteAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     if (pos < GetCount())
         EditItem(-1, -1, labeladdr, -1, comment, pos);
@@ -215,7 +215,7 @@ void SourceCodeLines::EditVarLabel(const ProgramAddress labeladdr, const wxStrin
 
 
 
-void SourceCodeLines::EditOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
+void SourceCodeLines::EditOrg(const AbsoluteAddress org, const wxString &comment, LineNumber pos)
 {
     if (pos < GetCount())
         EditItem(-1, -1, -1, org, comment, pos);
@@ -278,7 +278,7 @@ int SourceCodeLines::InsertDasm(const DisassembledIndex dasmitem, const wxString
 
 
 
-int SourceCodeLines::InsertProgLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+int SourceCodeLines::InsertProgLabel(const AbsoluteAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     CodeViewItem *cvi;
 
@@ -298,7 +298,7 @@ int SourceCodeLines::InsertProgLabel(const ProgramAddress labeladdr, const wxStr
 
 
 
-int SourceCodeLines::InsertVarLabel(const ProgramAddress labeladdr, const wxString &comment, LineNumber pos)
+int SourceCodeLines::InsertVarLabel(const AbsoluteAddress labeladdr, const wxString &comment, LineNumber pos)
 {
     CodeViewItem *cvi;
 
@@ -318,7 +318,7 @@ int SourceCodeLines::InsertVarLabel(const ProgramAddress labeladdr, const wxStri
 
 
 
-int SourceCodeLines::InsertOrg(const ProgramAddress org, const wxString &comment, LineNumber pos)
+int SourceCodeLines::InsertOrg(const AbsoluteAddress org, const wxString &comment, LineNumber pos)
 {
     if (pos < GetCount())
         return (InsertNewItem(-1, -1, -1, org, comment, pos));
@@ -381,7 +381,7 @@ bool SourceCodeLines::IsEmpty()
  * Search for an instruction line which address is "addr". Returns the line number, if found.
  * TODO: Find a better solution.
  */
-int SourceCodeLines::getLineOfAddress(LineNumber line_index, uint line_count, ProgramAddress addr)
+int SourceCodeLines::getLineOfAddress(LineNumber line_index, uint line_count, AbsoluteAddress addr)
 {
     uint    item_count = 0;
     bool    found_item = false;
@@ -396,7 +396,7 @@ int SourceCodeLines::getLineOfAddress(LineNumber line_index, uint line_count, Pr
         if (cvi && (cvi->Dasmitem >= 0))
         {
             de = disassembled_->GetData(cvi->Dasmitem);
-            line_address = disassembled_->GetBaseAddress(cvi->Dasmitem) + de->GetOffset();
+            line_address = disassembled_->GetBaseAddress(cvi->Dasmitem) + de->GetOffsetInFile();
             if (line_address == addr)
             {
                 found_item = true;
@@ -413,7 +413,7 @@ int SourceCodeLines::getLineOfAddress(LineNumber line_index, uint line_count, Pr
 
 
 
-int SourceCodeLines::getLineOfAddress(ProgramAddress addr)
+int SourceCodeLines::getLineOfAddress(AbsoluteAddress addr)
 {
     return getLineOfAddress(0, GetCount(), addr);
 }
@@ -458,7 +458,7 @@ void SourceCodeLines::linkData(DisassembledIndex indexdasm, LineNumber indexline
 {
 	wxString        str;
 	DisassembledItem     *de;
-	ProgramAddress  address;
+	AbsoluteAddress  address;
 	CodeViewItem    *cvi;
 
     while (countdasm-- > 0)
@@ -469,7 +469,7 @@ void SourceCodeLines::linkData(DisassembledIndex indexdasm, LineNumber indexline
             if (cvi->LabelProgAddr)
             {
                 de = disassembled_->GetData(indexdasm);
-                address = disassembled_->GetBaseAddress(indexdasm) + de->GetOffset();
+                address = disassembled_->GetBaseAddress(indexdasm) + de->GetOffsetInFile();
                 if (address >= cvi->LabelProgAddr->Address)
                     indexline++;
             }

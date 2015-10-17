@@ -15,41 +15,32 @@
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/aui/aui.h>
-#include <wx/frame.h>
 #include <wx/statusbr.h>
-
-
 #include <wx/arrstr.h>
 
-#include "mndb.h"
-#include "rawdata.h"
-#include "dasmdata.h"
-#include "process_data.h"
-#include "codeview.h"
+
+#include "idz80_main_base.h"
+//#include "mnemonic_container.h"
+//#include "rawdata.h"
+//#include "disassembled_container.h"
+//#include "process_data.h"
+//#include "codeview.h"
 #include "labelslist.h"
 #include "projectmanager_xml.h"
-#include "codegenerator.h"
+//#include "codegenerator.h"
 #include "logwindow.h"
 
 #include <wx/config.h>
 
-enum
-{
-    id_CD_EVT = 111
-};
+
 static const wxString LocalPath = "X:/idz80/";
 
-class IDZ80: public wxFrame, LogBase
+class IDZ80: public IDZ80MainBase, public LogBase
 {
 	public:
 
 		IDZ80(wxWindow* parent, wxArrayString &arraystr);
 		virtual ~IDZ80();
-
-		wxAuiManager* AuiManager1;
-		wxTextCtrl* PanelLog;
-		wxStatusBar* StatusBar1;
-        LogWindow      *Log;
 
 	protected:
 
@@ -79,20 +70,22 @@ class IDZ80: public wxFrame, LogBase
 		static const long IdMenuHelpAbout;
 		static const long IdMenuMnemonicXML;
 		static const long ID_STATUSBAR1;
-
-
 		static const long ID_VARLABELPANE;
 
 	private:
-        ProcessData     *process;
-        CodeView        *codeview;
-        wxIconBundle    *icons;
-        wxConfig        *config;
-        wxString        m_currentDir,
-                        m_lastDir;
-        ProjectManagerXML  *m_project;
-        wxArrayString	m_commandline;
-        bool            MaximizeMainWindow;
+		wxAuiManager    *aui_mgr_;
+		wxTextCtrl      *panel_log_;
+		wxStatusBar     *status_bar_;
+        LogWindow       *log_window_;
+
+//        ProcessData     *process_;
+//        CodeView        *codeview_;
+        wxIconBundle    *icons_;
+        wxConfig        *config_;
+        ProjectManagerXML
+                        *project_;
+        //wxArrayString	m_commandline;
+        bool            maximize_main_window_;
 
         bool LoadMnemonicsDB();
         bool SaveAs();
@@ -111,6 +104,9 @@ class IDZ80: public wxFrame, LogBase
         void SetupAUIPanes();
         void SetupMenuEvents();
         void SetupMenu();
+        void SetupStatusBar();
+        void SetupPanelLog();
+        void SetupLabels();
 
         wxString DialogLoadProgramFile();
         wxString DialogLoadProjectFile();

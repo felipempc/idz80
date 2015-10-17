@@ -12,8 +12,9 @@
 #ifndef _PROCESSBASE_H_
 #define _PROCESSBASE_H_
 
-#include "mndb.h"
-#include "dasmdata.h"
+#include "mnemonic_container.h"
+
+#include "disassembled_container.h"
 #include "rawdata.h"
 #include "SourceCodeLines.h"
 
@@ -21,9 +22,9 @@ class ProcessBase
 {
     public:
         SourceCodeLines     *CodeViewLines;
-        DAsmData            *Disassembled;
+        DisassembledContainer            *Disassembled;
         RawData             *Program;
-        MnemonicDataBase    *Mnemonics;
+        MnemonicContainer   *Mnemonics_;
 };
 
 

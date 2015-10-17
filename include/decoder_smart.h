@@ -29,12 +29,12 @@ protected:
 private:
     void ProcessCallSubrotine();
     void ProcessReturnSubrotine();
-    bool GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr);
-    bool GetNextFarJump(SortedIntArray *jmplist, ProgramAddress &nextaddr);
-    bool TestIfOutBoundaries(ProgramAddress addr);
+    bool GetNextNearJump(SortedIntArray *jmplist, AbsoluteAddress _start, AbsoluteAddress _end, AbsoluteAddress &nextaddr);
+    bool GetNextFarJump(SortedIntArray *jmplist, AbsoluteAddress &nextaddr);
+    bool TestIfOutBoundaries(AbsoluteAddress addr);
     void UpdateBoundaries();
     bool CallSubroutine(DisassembledItem *de);
-    bool ReturnSubroutine(DisassembledItem *de, ProgramAddress &dest_address);
+    bool ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_address);
     bool ProcessBranch(DisassembledItem *de, bool &processing_status);
     void FillData();
 

@@ -196,7 +196,7 @@ void CodeView::OnKeyRelease(wxKeyEvent& event)
 
 void CodeView::OnSearchContinue(wxCommandEvent& event)
 {
-    ProgramAddress address;
+    AbsoluteAddress address;
 
     if (Process->SearchInstructionArgumentContinue(address))
     {
@@ -472,7 +472,7 @@ void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
 void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
 {
     SearchArgumentDialog *search_dialog = new SearchArgumentDialog(this);
-    ProgramAddress address = 0;
+    AbsoluteAddress address = 0;
 
     if (search_dialog->ShowModal() == wxID_OK)
     {

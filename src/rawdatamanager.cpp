@@ -34,7 +34,7 @@ RawData *RawDataManager::AddFile(wxString name)
         current_file_ = 0;
         current_file_index_ = -1;
         LogIt("Error creating rawdata !");
-        return current_file_;
+        return 0;
     }
 
     if (current_file_->Open(name))
@@ -122,7 +122,7 @@ RawData *RawDataManager::Current()
 
 RawData *RawDataManager::Last()
 {
-    uint size = data_list_.size();
+    unsigned int size = data_list_.size();
 
     if (size > 0)
     {

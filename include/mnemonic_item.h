@@ -30,6 +30,8 @@ class MnemonicItem : public MnemonicItemBase
 
         Groups GetGroup();
 
+        unsigned int GetMnemonicSignature();
+
         Arguments GetSourceArgument();
         Arguments GetDestinationArgument();
 
@@ -62,6 +64,8 @@ class MnemonicItem : public MnemonicItemBase
         void SetExplicitArguments(bool isexplicit = true);
 
         void SetMnemonicString(const wxArrayString &mnemonicstring);
+
+        void SetMnemonicSignature(unsigned int signature);
 
     protected:
     private:

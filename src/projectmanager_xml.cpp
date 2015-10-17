@@ -14,11 +14,11 @@
 
 #include "projectmanager_xml.h"
 #include "mnemonic_item.h"
-#include "mndb_tools.h"
-
+#include "mnemonic_container.h"
+#include "labelmanager.h"
 
 const wxString ProjectManagerXML::PROJECT_EXTENSION = ".dap";
-const uint ProjectManagerXML::PROJECT_FILE_VERSION = 0;
+const unsigned int ProjectManagerXML::PROJECT_FILE_VERSION = 0;
 const wxString ProjectManagerXML::ROOT_STR = "IDZ80";
 const wxString ProjectManagerXML::SECTION_CODEVIEWLINE_STR = "CODEVIEWLINE";
 const wxString ProjectManagerXML::SECTION_DISASSEMBLED_STR = "DISASSEMBLED";
@@ -28,14 +28,17 @@ const wxString ProjectManagerXML::SECTION_VARLABEL_STR = "VARLABEL";
 const wxString ProjectManagerXML::SECTION_IOLABEL_STR = "IOLABEL";
 const wxString ProjectManagerXML::SECTION_CONSTANTLABEL_STR = "CONSTANTLABEL";
 
-const wxString ProjectManagerXML::SUBSECTION_FILENAME_STR = "NAME";
-const wxString ProjectManagerXML::SUBSECTION_FILEPATH_STR = "PATH";
-const wxString ProjectManagerXML::SUBSECTION_FILETYPE_STR = "TYPE";
-const wxString ProjectManagerXML::SUBSECTION_CARTRIDGE_STR = "CARTRIDGE";
-const wxString ProjectManagerXML::SUBSECTION_ADDRESS_STR = "ADDRESS";
-const wxString ProjectManagerXML::SUBSECTION_LABEL_STR = "LABEL";
-const wxString ProjectManagerXML::SUBSECTION_OPCODE_STR = "ITEM";
-const wxString ProjectManagerXML::SUBSECTION_LINE_STR = "LINE";
+const wxString ProjectManagerXML::SUBSECTION_FILE_STR = "FILE";
+
+const wxString ProjectManagerXML::PROPERTY_FILENAME_STR = "NAME";
+const wxString ProjectManagerXML::ATTRIBUTE_FILEPATH_STR = "PATH";
+const wxString ProjectManagerXML::PROPERTY_FILETYPE_STR = "TYPE";
+const wxString ProjectManagerXML::ATTRIBUTE_CARTRIDGE_STR = "CARTRIDGE";
+const wxString ProjectManagerXML::ATTRIBUTE_ADDRESS_STR = "ADDRESS";
+const wxString ProjectManagerXML::ATTRIBUTE_LABEL_STR = "LABEL";
+const wxString ProjectManagerXML::ATTRIBUTE_DATA_STR = "DATA";
+const wxString ProjectManagerXML::ATTRIBUTE_CODE_STR = "CODE";
+const wxString ProjectManagerXML::ATTRIBUTE_LINE_STR = "LINE";
 
 const wxString ProjectManagerXML::ATTRIBUTE_VERSION_STR = "VERSION";
 const wxString ProjectManagerXML::ATTRIBUTE_FILENAME_STR = "FILENAME";
@@ -46,13 +49,12 @@ const wxString ProjectManagerXML::ATTRIBUTE_EXECUTIONADDRESS_STR = "EXECUTION";
 const wxString ProjectManagerXML::ATTRIBUTE_ENDADDRESS_STR = "END";
 const wxString ProjectManagerXML::ATTRIBUTE_TOTALLINES_STR = "TOTAL_LINES";
 const wxString ProjectManagerXML::ATTRIBUTE_LABELUSERS_STR = "LABEL_USERS";
-const wxString ProjectManagerXML::ATTRIBUTE_OPCODETYPE_STR = "TYPE";
-const wxString ProjectManagerXML::ATTRIBUTE_OPCODELENGTH_STR = "LENGTH";
-const wxString ProjectManagerXML::ATTRIBUTE_OPCODEOFFSET_STR = "OFFSET";
-const wxString ProjectManagerXML::ATTRIBUTE_OPCODE_STR = "OPCODE";
-const wxString ProjectManagerXML::ATTRIBUTE_ARGUMENTNUM_STR = "NUM_ARGS";
-const wxString ProjectManagerXML::ATTRIBUTE_ARGUMENTSIZE_STR = "SIZE_ARG";
-const wxString ProjectManagerXML::ATTRIBUTE_ARGUMENTS_STR = "ARGUMENTS";
+
+const wxString ProjectManagerXML::ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR = "MNEMONIC_SIGNATURE";
+const wxString ProjectManagerXML::ATTRIBUTE_OPCODE_OFFSET_STR = "OFFSET";
+const wxString ProjectManagerXML::ATTRIBUTE_OPCODE_LENGTH_STR = "LENGTH";
+const wxString ProjectManagerXML::ATTRIBUTE_OPCODE_ARGUMENTS_STR = "ARGUMENTS";
+
 const wxString ProjectManagerXML::ATTRIBUTE_ORG_STR = "ORG";
 const wxString ProjectManagerXML::ATTRIBUTE_DASMITEM_STR = "DASMITEM";
 const wxString ProjectManagerXML::ATTRIBUTE_LINEPROGRAMLABEL_STR = "LINE_PROGRAMLABEL";
@@ -60,15 +62,18 @@ const wxString ProjectManagerXML::ATTRIBUTE_LINEVARLABEL_STR = "LINE_VARLABEL";
 const wxString ProjectManagerXML::ATTRIBUTE_COMMENT_STR = "COMMENT";
 
 
-ProjectManagerXML::ProjectManagerXML(ProcessData *process_data)
+
+
+ProjectManagerXML::ProjectManagerXML(IDZ80MainBase *parent)
 {
     saved = false;
     named = false;
     project_filename.Clear();
-    process = process_data;
-    CodeViewLines = process->CodeViewLines;
+    main_ = parent;
     log = 0;
 }
+
+
 
 
 bool ProjectManagerXML::IsSaved()
@@ -76,10 +81,16 @@ bool ProjectManagerXML::IsSaved()
     return saved;
 }
 
+
+
+
 bool ProjectManagerXML::HasName()
 {
     return named;
 }
+
+
+
 
 void ProjectManagerXML::New()
 {
@@ -87,6 +98,8 @@ void ProjectManagerXML::New()
     named = false;
     project_filename.Clear();
 }
+
+
 
 
 bool ProjectManagerXML::Save()
@@ -99,12 +112,12 @@ bool ProjectManagerXML::Save()
         LogIt("Preparing to write...\n");
         wxStopWatch sw;
         writeHeader(xml_doc);
-        writeDasmData(xml_doc);
+        writeDisassembled(xml_doc);
         writeCodeLine(xml_doc);
-        writeLabel(xml_doc, process->prog_labels, SECTION_PROGRAMLABEL_STR);
-        writeLabel(xml_doc, process->var_labels, SECTION_VARLABEL_STR);
-        writeLabel(xml_doc, process->io_labels, SECTION_IOLABEL_STR);
-        writeLabel(xml_doc, process->constant_labels, SECTION_CONSTANTLABEL_STR);
+        writeLabel(xml_doc, main_->Labels_->prog_labels, SECTION_PROGRAMLABEL_STR);
+        writeLabel(xml_doc, main_->Labels_->var_labels, SECTION_VARLABEL_STR);
+        writeLabel(xml_doc, main_->Labels_->io_labels, SECTION_IOLABEL_STR);
+        writeLabel(xml_doc, main_->Labels_->constant_labels, SECTION_CONSTANTLABEL_STR);
         writeFileProperties(xml_doc);
         LogIt(wxString::Format("It took %dms...\n", sw.Time()));
         LogIt("Now saving...\n");
@@ -120,11 +133,14 @@ bool ProjectManagerXML::Save()
 }
 
 
+
+
 bool ProjectManagerXML::Save(const wxString &filename)
 {
     SetFilename(filename);
     return Save();
 }
+
 
 
 
@@ -140,45 +156,64 @@ void ProjectManagerXML::writeHeader(wxXmlDocument &doc)
     doc.SetRoot(root);
 }
 
+
+
+
 void ProjectManagerXML::writeFileProperties(wxXmlDocument &doc)
 {
-    wxXmlNode *section, *items;
+    wxXmlNode *section, *rawfile, *property;
     wxString str;
+    unsigned int filecount = 0;
 
+
+    main_->Programs_->First();
     section = new wxXmlNode(doc.GetRoot(), wxXML_ELEMENT_NODE, SECTION_FILEPROPERTIES_STR);
-    items = new wxXmlNode(section, wxXML_ELEMENT_NODE, SUBSECTION_FILENAME_STR);
-    items->AddAttribute(ATTRIBUTE_FILENAME_STR, process->Program->GetFileName());
-    items = new wxXmlNode(section, wxXML_ELEMENT_NODE, SUBSECTION_FILEPATH_STR);
-    items->AddAttribute(ATTRIBUTE_ORIGINALPATH_STR, process->Program->GetFilePath());
 
-    switch (process->Program->GetFileType())
+    do
     {
-        case COM:
-                    str = "COM";
-                    break;
-        case BIN:
-                    str = "BIN";
-                    break;
-        case ROM:
-                    str = "ROM";
-                    break;
-        default:
-                    str = "UNKNOWN";
-                    break;
-    }
-    items = new wxXmlNode(section, wxXML_ELEMENT_NODE, SUBSECTION_FILETYPE_STR);
-    items->AddAttribute(ATTRIBUTE_FILETYPE_STR, str);
+        rawfile = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_FILE_STR, filecount));
 
-    if (process->Program->isCartridge())
-    {
-        items = new wxXmlNode(section, wxXML_ELEMENT_NODE, SUBSECTION_CARTRIDGE_STR);
-    }
+        switch (main_->Programs_->Current()->GetFileType())
+        {
+            case COM:
+                        str = "COM";
+                        break;
+            case BIN:
+                        str = "BIN";
+                        break;
+            case ROM:
+                        str = "ROM";
+                        break;
+            default:
+                        str = "UNKNOWN";
+                        break;
+        }
 
-    items = new wxXmlNode(section, wxXML_ELEMENT_NODE, SUBSECTION_ADDRESS_STR);
-    items->AddAttribute(ATTRIBUTE_STARTADDRESS_STR, wxString::Format("%X", process->Program->StartAddress));
-    items->AddAttribute(ATTRIBUTE_EXECUTIONADDRESS_STR, wxString::Format("%X", process->Program->ExecAddress));
-    items->AddAttribute(ATTRIBUTE_ENDADDRESS_STR, wxString::Format("%X", process->Program->EndAddress));
+        property = new wxXmlNode(rawfile, wxXML_ELEMENT_NODE, PROPERTY_FILETYPE_STR);
+        property->AddAttribute(PROPERTY_FILETYPE_STR, str);
+
+        if (main_->Programs_->Current()->isCartridge())
+        {
+            property = new wxXmlNode(rawfile, wxXML_ELEMENT_NODE, ATTRIBUTE_CARTRIDGE_STR);
+        }
+
+        property = new wxXmlNode(rawfile, wxXML_ELEMENT_NODE, ATTRIBUTE_ADDRESS_STR);
+        property->AddAttribute(ATTRIBUTE_STARTADDRESS_STR, wxString::Format("%X", main_->Programs_->Current()->StartAddress));
+        property->AddAttribute(ATTRIBUTE_EXECUTIONADDRESS_STR, wxString::Format("%X", main_->Programs_->Current()->ExecAddress));
+        property->AddAttribute(ATTRIBUTE_ENDADDRESS_STR, wxString::Format("%X", main_->Programs_->Current()->EndAddress));
+
+        property = new wxXmlNode(rawfile, wxXML_ELEMENT_NODE, ATTRIBUTE_FILEPATH_STR);
+        property->AddAttribute(ATTRIBUTE_ORIGINALPATH_STR, main_->Programs_->Current()->GetFilePath());
+
+        property = new wxXmlNode(rawfile, wxXML_ELEMENT_NODE, PROPERTY_FILENAME_STR);
+        property->AddAttribute(PROPERTY_FILENAME_STR, main_->Programs_->Current()->GetFileName());
+
+        filecount++;
+
+    } while(main_->Programs_->Next() != 0);
 }
+
+
 
 
 void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_label, const wxString &section_name)
@@ -200,7 +235,7 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
             label = current_label->GetData(i);
             if (label)
             {
-                items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LABEL_STR, i));
+                items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_LABEL_STR, i));
                 items->AddAttribute(label->LabelStr, wxString::Format("%X", label->Address));
 
                 if (label->LabelUsers)
@@ -216,78 +251,68 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
     }
 }
 
+
+
+
 /* Saves dasm structure
  *
  */
-void ProjectManagerXML::writeDasmData(wxXmlDocument &doc)
+void ProjectManagerXML::writeDisassembled(wxXmlDocument &doc)
 {
     wxXmlNode *section, *items;
-    int		i, c;
-    uint	j, arg_aux, total_lines;
-    wxString	aux_str;
-    DisassembledItem *de;
+    int		index;
+    unsigned int total_lines;
+    DisassembledItem *d_item;
 
-    if (process->Disassembled->GetCount() != 0)
+    if (main_->Disassembled_->GetCount() != 0)
     {
         section = new wxXmlNode(doc.GetRoot(), wxXML_ELEMENT_NODE, SECTION_DISASSEMBLED_STR);
-        total_lines = process->Disassembled->GetCount();
+        total_lines = main_->Disassembled_->GetCount();
         section->AddAttribute(ATTRIBUTE_TOTALLINES_STR, wxString::Format("%d", total_lines));
 
-        for (i = (total_lines - 1); i > -1; i--)
+        for (index = (total_lines - 1); index > -1; index--)
         {
-            de = process->Disassembled->GetData(i);
+            d_item = main_->Disassembled_->GetData(index);
 
-            items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_OPCODE_STR, i));
-            items->AddAttribute(ATTRIBUTE_OPCODETYPE_STR, wxString::Format("%.2X", de->GetType()));
-            items->AddAttribute(ATTRIBUTE_OPCODELENGTH_STR, wxString::Format("%.2X", de->GetLength()));
-            items->AddAttribute(ATTRIBUTE_OPCODEOFFSET_STR, wxString::Format("%.4X", de->GetOffset()));
+            if(d_item->isData())
+            {
+                items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_DATA_STR, index));
+                items->AddAttribute(ATTRIBUTE_OPCODE_LENGTH_STR, wxString::Format("%d", d_item->GetLength()));
+            }
+            else
+            {
+                items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_CODE_STR, index));
+                items->AddAttribute(ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR, wxString::Format("%d", d_item->GetMnemonic()->GetMnemonicSignature()));
+                if (d_item->GetMnemonic()->GetArgumentCount() > 0)
+                    items->AddAttribute(ATTRIBUTE_OPCODE_ARGUMENTS_STR, getArgumentAsString(d_item));
+            }
 
-            aux_str.Clear();
-            for(j = 0; j < de->GetLength(); j++)
-                aux_str << wxString::Format("%.2X ", de->GetByteOpCode(j));
-
-            aux_str.Trim();
-            items->AddAttribute(ATTRIBUTE_OPCODE_STR, aux_str);
-
-			if (de->GetArgumentCount() > 0)
-			{
-                items->AddAttribute(ATTRIBUTE_ARGUMENTNUM_STR, wxString::Format("%.2X", de->GetArgumentCount()));
-                items->AddAttribute(ATTRIBUTE_ARGUMENTSIZE_STR, wxString::Format("%.2X", de->GetArgumentSize()));
-
-				arg_aux = de->GetArgumentCount() * de->GetArgumentSize();
-				aux_str.Clear();
-				for(j = 0; j < arg_aux; j++)
-				{
-					c = de->GetByteArgument(j);
-					c = c & 0xFF;
-					aux_str << wxString::Format("%.2X ", c);
-				}
-				aux_str.Trim();
-                items->AddAttribute(ATTRIBUTE_ARGUMENTS_STR, aux_str);
-			}
+            items->AddAttribute(ATTRIBUTE_OPCODE_OFFSET_STR, wxString::Format("%d", d_item->GetOffsetInFile()));
         }
     }
 }
 
 
+
+
 void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
 {
     wxXmlNode *section, *item;
-    int i;
+    int countdown;
     CodeViewItem *cvi;
     uint    total_lines;
 
 
-    if (CodeViewLines->GetCount() > 0)
+    if (main_->CodeViewLines_->GetCount() > 0)
     {
         section = new wxXmlNode(doc.GetRoot(), wxXML_ELEMENT_NODE, SECTION_CODEVIEWLINE_STR);
-        total_lines = CodeViewLines->GetCount();
+        total_lines = main_->CodeViewLines_->GetCount();
         section->AddAttribute(ATTRIBUTE_TOTALLINES_STR, wxString::Format("%d", total_lines));
 
-        for (i = (total_lines - 1); i > -1; i--)
+        for (countdown = (total_lines - 1); countdown > -1; countdown--)
         {
-            cvi = CodeViewLines->Line(i);
-            item = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", SUBSECTION_LINE_STR, i));
+            cvi = main_->CodeViewLines_->Line(countdown);
+            item = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_LINE_STR, countdown));
             if (cvi->Org >= 0)
                 item->AddAttribute(ATTRIBUTE_ORG_STR, wxString::Format("%d", cvi->Org));
 
@@ -309,6 +334,81 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
 
 
 
+wxString ProjectManagerXML::getArgumentAsString(DisassembledItem *d_item)
+{
+    unsigned int arg_aux,
+                 arg_index,
+                 arg;
+    wxString aux_str;
+
+    arg_aux = d_item->GetMnemonic()->GetArgumentCount() * d_item->GetMnemonic()->GetArgumentSize();
+    aux_str.Clear();
+
+    for(arg_index = 0; arg_index < arg_aux; arg_index++)
+    {
+        arg = d_item->GetArgumentValue(arg_index);
+        arg = arg & 0xFF;
+        aux_str << wxString::Format("%.2X ", arg);
+    }
+    aux_str.Trim();
+    return aux_str;
+}
+
+
+
+
+void ProjectManagerXML::setArgumentFromString(const wxString &arg_str, DisassembledItem *d_item)
+{
+    unsigned int arg_count = d_item->GetMnemonic()->GetArgumentCount() *
+                             d_item->GetMnemonic()->GetArgumentSize(),
+                 index = 0,
+                 index_arg = 0;
+    ExplicitArguments arguments;
+    wxString str_aux;
+    long conv;
+
+
+    memset(&arguments, 0, sizeof(ExplicitArguments));
+
+    while(arg_count-- > 0)
+    {
+        str_aux = arg_str.Mid(index, 2);
+        str_aux.ToLong(&conv, 16);
+        arguments[index_arg] = static_cast<byte>(conv);
+        index += 3;
+        index_arg++;
+    }
+    d_item->CopyArguments(arguments);
+}
+
+
+
+
+void ProjectManagerXML::PrintReadDisassebledException(ExceptionData exceptiondata)
+{
+    switch(exceptiondata.code)
+    {
+    case RE_OPCODE_CONVERSION_FAIL:
+        LogIt(wxString::Format("[%d] Failed to convert number !", exceptiondata.line));
+        break;
+    case RE_OPCODE_LENGTH_NOT_FOUND:
+        LogIt(wxString::Format("[%d] Length attribute not found !", exceptiondata.line));
+        break;
+    case RE_OPCODE_MNEMONIC_SIGNATURE_NOT_FOUND:
+        LogIt(wxString::Format("[%d] Mnemonic Signature not found !", exceptiondata.line));
+        break;
+    case RE_OPCODE_OFFSET_NOT_FOUND:
+        LogIt(wxString::Format("[%d] Offset attribute not found !", exceptiondata.line));
+        break;
+    default:
+        LogIt(wxString::Format("[%d] Unknown error !", exceptiondata.line));
+        break;
+    }
+}
+
+
+
+
 bool ProjectManagerXML::Open(const wxString &filename, const wxString &syslabels_path)
 {
     bool ret;
@@ -320,6 +420,7 @@ bool ProjectManagerXML::Open(const wxString &filename, const wxString &syslabels
     {
         readHeader(xml_doc);
         readFileProperties(xml_doc);
+/*
         if (process->SetupSystemLabels())
         {
             process->LoadSystemLabels(syslabels_path);
@@ -330,11 +431,10 @@ bool ProjectManagerXML::Open(const wxString &filename, const wxString &syslabels
         readLabel(xml_doc, process->var_labels, SECTION_VARLABEL_STR);
         readLabel(xml_doc, process->prog_labels, SECTION_PROGRAMLABEL_STR);
         readLabel(xml_doc, process->constant_labels, SECTION_CONSTANTLABEL_STR);
+*/
     }
     return ret;
 }
-
-
 
 
 
@@ -359,6 +459,7 @@ bool ProjectManagerXML::readHeader(wxXmlDocument &doc)
 
 
 
+
 bool ProjectManagerXML::readFileProperties(wxXmlDocument &doc)
 {
     wxXmlNode   *node, *section;
@@ -378,7 +479,7 @@ bool ProjectManagerXML::readFileProperties(wxXmlDocument &doc)
         return false;
     }
 
-    node = findSection(section->GetChildren(), SUBSECTION_FILENAME_STR);
+    node = findSection(section->GetChildren(), ATTRIBUTE_FILENAME_STR);
     if (!node)
         return false;
     fullfilename = node->GetAttribute(ATTRIBUTE_FILENAME_STR);
@@ -388,7 +489,7 @@ bool ProjectManagerXML::readFileProperties(wxXmlDocument &doc)
         return false;
     }
 
-    node = findSection(section->GetChildren(), SUBSECTION_FILEPATH_STR);
+    node = findSection(section->GetChildren(), ATTRIBUTE_FILEPATH_STR);
     if (!node)
         return false;
     str = node->GetAttribute(ATTRIBUTE_ORIGINALPATH_STR);
@@ -407,14 +508,14 @@ bool ProjectManagerXML::readFileProperties(wxXmlDocument &doc)
         return false;
     }
 
-    node = findSection(section->GetChildren(), SUBSECTION_FILETYPE_STR);
+    node = findSection(section->GetChildren(), ATTRIBUTE_FILETYPE_STR);
     if (!node)
         return false;
     typeStr = node->GetAttribute(ATTRIBUTE_FILETYPE_STR);
     LogIt("File type is " + typeStr + "\n");
 
 
-    node = findSection(section->GetChildren(), SUBSECTION_ADDRESS_STR);
+    node = findSection(section->GetChildren(), ATTRIBUTE_ADDRESS_STR);
     if (!node)
         return false;
     str = node->GetAttribute(ATTRIBUTE_STARTADDRESS_STR);
@@ -449,16 +550,17 @@ bool ProjectManagerXML::readFileProperties(wxXmlDocument &doc)
     }
     LogIt("End =" + str + "\n");
     end_address = conv;
-
+/*
     process->Program->Open(fullfilename);
     process->Program->SetStrFileType(typeStr);
     process->Program->StartAddress = start_address;
     process->Program->ExecAddress = execution_address;
     process->Program->EndAddress = end_address;
-
+*/
 
     return true;
 }
+
 
 
 
@@ -502,7 +604,7 @@ void ProjectManagerXML::readLabel(wxXmlDocument &doc, LabelListCtrl *current_lab
             str_name = attribute->GetName();
             str_addr = attribute->GetValue();
             str_users = node->GetAttribute(ATTRIBUTE_LABELUSERS_STR);
-            ParseString(str_users, arrstr);
+//            ParseString(str_users, arrstr);
             for(i = 0; i < arrstr.Count(); i++)
                 if (arrstr.Item(i).ToLong(&conv))
                     labelusers.Add(static_cast<int>(conv));
@@ -527,9 +629,11 @@ void ProjectManagerXML::readLabel(wxXmlDocument &doc, LabelListCtrl *current_lab
 }
 
 
+
+
 /* Loads dasm structure from string lines
  */
-void ProjectManagerXML::readDasmData(wxXmlDocument &doc)
+void ProjectManagerXML::readDisassembled(wxXmlDocument &doc)
 {
     wxXmlNode   *section, *node;
     wxString    str;
@@ -559,7 +663,7 @@ void ProjectManagerXML::readDasmData(wxXmlDocument &doc)
     linecount = 0;
     while (node)
     {
-        if (fillDasmData(node))
+        if (fill_Disassembled(node))
             linecount++;
         node = node->GetNext();
     }
@@ -569,120 +673,72 @@ void ProjectManagerXML::readDasmData(wxXmlDocument &doc)
 }
 
 
-bool ProjectManagerXML::fillDasmData(wxXmlNode *datanode)
+
+
+bool ProjectManagerXML::fill_Disassembled(wxXmlNode *datanode)
 {
     wxString	str;
-    uint		i;
     long		conv;
-    wxArrayString   arr_str;
-    uint		len,
-                arg_num = 0,
-				arg_size = 0,
-				arg_aux = 0;
-    ByteCode		bc;
-    OpCodeArguments	args;
-    DisassembledItem		*de;
-    MnemonicItem	*mi;
-    bool    hasArguments = false;
-    uint    health = 0;
+    DisassembledItem		*code_item;
+    DisassembledItemData    *data_item;
+    ExceptionData           exceptiondata;
 
-    de = new DisassembledItem(process->Program);
 
-    str = datanode->GetAttribute(ATTRIBUTE_OPCODETYPE_STR);
-    if (!str.IsEmpty() && str.ToLong(&conv, 16))
+    if(datanode->GetName().IsSameAs(ATTRIBUTE_DATA_STR))
     {
-        de->SetType(static_cast<enum ElementType>(conv));
-        health = 1;
+        data_item = new DisassembledItemData(main_->Programs_->First());
+        str = datanode->GetAttribute(ATTRIBUTE_OPCODE_LENGTH_STR);
+        if(str.IsEmpty())
+        {
+            exceptiondata.code = RE_OPCODE_LENGTH_NOT_FOUND;
+            exceptiondata.line = datanode->GetLineNumber();
+            throw exceptiondata;
+        }
+        if(!str.ToLong(&conv))
+        {
+            exceptiondata.code = RE_OPCODE_CONVERSION_FAIL;
+            exceptiondata.line = datanode->GetLineNumber();
+            throw exceptiondata;
+        }
+        data_item->SetLength(static_cast<unsigned int>(conv));
+    }
+    else
+    {
+        code_item = new DisassembledItem(main_->Programs_->First());
+        str = datanode->GetAttribute(ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR);
+        if(str.IsEmpty())
+        {
+            exceptiondata.code = RE_OPCODE_MNEMONIC_SIGNATURE_NOT_FOUND;
+            exceptiondata.line = datanode->GetLineNumber();
+            throw exceptiondata;
+        }
+        if(!str.ToLong(&conv))
+        {
+            exceptiondata.code = RE_OPCODE_CONVERSION_FAIL;
+            exceptiondata.line = datanode->GetLineNumber();
+            throw exceptiondata;
+        }
+        code_item->SetMnemonic(main_->Mnemonics_->FindBySignature(static_cast<unsigned int>(conv)));
+
+        str = datanode->GetAttribute(ATTRIBUTE_OPCODE_ARGUMENTS_STR);
+        if(!str.IsEmpty())
+            setArgumentFromString(str, code_item);
     }
 
-    str = datanode->GetAttribute(ATTRIBUTE_OPCODELENGTH_STR);
-    if (!str.IsEmpty() && str.ToLong(&conv, 16))
+    str = datanode->GetAttribute(ATTRIBUTE_OPCODE_OFFSET_STR);
+    if(str.IsEmpty())
     {
-        len = static_cast<uint>(conv);
-        de->SetLength(len);
-        health += 2;
+        exceptiondata.code = RE_OPCODE_OFFSET_NOT_FOUND;
+        exceptiondata.line = datanode->GetLineNumber();
+        throw exceptiondata;
     }
-
-    str = datanode->GetAttribute(ATTRIBUTE_OPCODEOFFSET_STR);
-    if (!str.IsEmpty() && str.ToLong(&conv, 16))
+    if(!str.ToLong(&conv))
     {
-        de->SetOffset(static_cast<uint>(conv));
-        health += 4;
+        exceptiondata.code = RE_OPCODE_CONVERSION_FAIL;
+        exceptiondata.line = datanode->GetLineNumber();
+        throw exceptiondata;
     }
-
-
-    str = datanode->GetAttribute(ATTRIBUTE_OPCODE_STR);
-    if (!str.IsEmpty() && len)
-    {
-        ParseString(str, arr_str);
-        memset(&bc, 0, MAX_OPCODE_SIZE);
-        for (i = 0; i < len; i++)
-        {
-            str = arr_str[i];
-            str.ToLong(&conv, 16);
-            if (i < sizeof(ByteCode))
-                bc[i] = static_cast<unsigned char>(conv);
-        }
-        de->CopyOpCode(bc);
-        mi = process->Mnemonics->FindByOpCode(bc);
-        if (mi != 0)
-        {
-            de->SetMnemonic(mi);
-            health += 8;
-            hasArguments = mi->HasArgument();
-        }
-    }
-
-    if (health < 0xF)
-    {
-        LogIt(wxString::Format("[%d] Failed to load new instruction (health = %X)\n", datanode->GetLineNumber(), health));
-        delete de;
-        return false;
-    }
-
-    if (hasArguments)
-    {
-        str = datanode->GetAttribute(ATTRIBUTE_ARGUMENTNUM_STR);
-        if (!str.IsEmpty() && str.ToLong(&conv, 16))
-        {
-            arg_num = static_cast<uint>(conv);
-            health += 16;
-        }
-
-        str = datanode->GetAttribute(ATTRIBUTE_ARGUMENTSIZE_STR);
-        if (!str.IsEmpty() && str.ToLong(&conv, 16))
-        {
-            arg_size = static_cast<uint>(conv);
-            health += 32;
-        }
-
-        arg_aux = arg_size * arg_num;
-
-        str = datanode->GetAttribute(ATTRIBUTE_ARGUMENTS_STR);
-        if (!str.IsEmpty() && arg_aux)
-        {
-            memset(&args, 0, sizeof(OpCodeArguments));
-            ParseString(str, arr_str);
-            for (i = 0; i < arg_aux; i++)
-            {
-                str = arr_str[i];
-                str.ToLong(&conv, 16);
-                if (i < sizeof(OpCodeArguments))
-                    args[i] = static_cast<unsigned char>(conv);
-            }
-            de->CopyArguments(args, arg_aux);
-            health += 64;
-        }
-
-        if (health < 0x7F)
-        {
-            LogIt(wxString::Format("[%d] Failed to load new instruction arguments (health = %X)\n", datanode->GetLineNumber(), health));
-            delete de;
-            return false;
-        }
-    }
-
-    process->Disassembled->AddDasm(de);
+    code_item->SetFileOffset(static_cast<FileOffset>(conv));
     return true;
 }
 
@@ -734,6 +790,7 @@ void ProjectManagerXML::readCodeLine(wxXmlDocument &doc)
 
 
 
+
 bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 {
     wxString	str, str_comment;
@@ -751,7 +808,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        CodeViewLines->AddOrg(static_cast<int>(conv), str_comment);
+//        CodeViewLines->AddOrg(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -759,7 +816,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_DASMITEM_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        CodeViewLines->AddDasm(static_cast<int>(conv), str_comment);
+//        CodeViewLines->AddDasm(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -767,7 +824,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        CodeViewLines->AddProgLabel(static_cast<int>(conv), str_comment);
+//        CodeViewLines->AddProgLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -775,21 +832,21 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEVARLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-        CodeViewLines->AddVarLabel(static_cast<int>(conv), str_comment);
+//        CodeViewLines->AddVarLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
 
     if (commentary_line)
     {
-        CodeViewLines->AddComment(str_comment);
+//        CodeViewLines->AddComment(str_comment);
         health++;
     }
 
     // Empty line
     if (health == 0)
     {
-        CodeViewLines->AddComment("");
+//        CodeViewLines->AddComment("");
 
         #ifdef IDZ80DEBUG
         LogIt(wxString::Format("Empty line: %d\n", datanode->GetLineNumber()));
@@ -802,6 +859,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 
 
 
+
 void ProjectManagerXML::linkLabels(wxArrayInt *label_users)
 {
     DisassembledItem *de;
@@ -811,11 +869,12 @@ void ProjectManagerXML::linkLabels(wxArrayInt *label_users)
         for(i = 0; i < label_users->GetCount(); i++)
         {
             item = static_cast<uint>(label_users->Item(i));
-            de = process->Disassembled->GetData(item);
-            if (de != 0)
-                de->SetArgLabel();
+//            de = process->Disassembled->GetData(item);
+//            if (de != 0)
+//                de->SetArgLabel();
         }
 }
+
 
 
 
@@ -837,6 +896,8 @@ wxXmlNode *ProjectManagerXML::findSection(wxXmlNode *firstchild, const wxString 
 }
 
 
+
+
 void ProjectManagerXML::SetFilename(const wxString &filename)
 {
     int i;
@@ -856,6 +917,8 @@ void ProjectManagerXML::SetFilename(const wxString &filename)
 }
 
 
+
+
 wxString ProjectManagerXML::GetFilename()
 {
     int i;
@@ -870,10 +933,14 @@ wxString ProjectManagerXML::GetFilename()
 }
 
 
+
+
 void ProjectManagerXML::SetLog(wxTextCtrl *set_log)
 {
     log = set_log;
 }
+
+
 
 
 void ProjectManagerXML::LogIt(const wxString &str)
@@ -881,3 +948,7 @@ void ProjectManagerXML::LogIt(const wxString &str)
     if (log)
         log->AppendText(str);
 }
+
+
+
+

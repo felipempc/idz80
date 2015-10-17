@@ -12,10 +12,8 @@
 #ifndef MNEMONICCONTAINER_H
 #define MNEMONICCONTAINER_H
 
-#include <wx/xml/xml.h>
-#include <wx/string.h>
+
 #include <wx/textctrl.h>
-#include <vector>
 #include "mnemonic_access.h"
 
 struct Statistics
@@ -24,11 +22,15 @@ struct Statistics
     uint numinstructions;
 };
 
+
+
 class MnemonicContainer : public MnemonicAccess
 {
     public:
         MnemonicContainer(wxTextCtrl *log);
-        ~MnemonicContainer();
+        virtual ~MnemonicContainer();
+
+        void Clear();
 
         void AddInstruction(MnemonicItem *mnemonicitem);
         unsigned int GetCount();

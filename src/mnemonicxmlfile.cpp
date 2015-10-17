@@ -71,9 +71,9 @@ const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_SOURCE_TYPE = "SOURCE_TYPE";
 const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_SOURCE_OPERAND = "SOURCE_OPERAND";
 
 // Operand type values
-const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_ABSOLUTE = "ABSOLUTE";
-const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_RELATIVE = "RELATIVE";
-const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_IO = "IO";
+const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_ABSOLUTE = "ABSOLUTE_ADDRESS";
+const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_RELATIVE = "RELATIVE_ADDRESS";
+const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_IO = "IO_ADDRESS";
 const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_OFFSET = "OFFSET";
 const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_VARIABLE = "VARIABLE";
 const wxString MnemonicXMLFile::ATTRIBUTE_ARGUMENT_OPERAND_DATA = "DATA";
@@ -114,11 +114,13 @@ MnemonicXMLFile::MnemonicXMLFile(MnemonicContainer *mnm, wxTextCtrl *_log)
     statistics_.numinstructions = 0;
 }
 
+
+
+
 MnemonicXMLFile::~MnemonicXMLFile()
 {
     //dtor
 }
-
 
 
 
@@ -218,6 +220,9 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
             new_instruction->Reset();
             allocate_new = false;
         }
+        #ifdef _IDZ80_DEBUG_
+        log_->AppendText("\n");
+        #endif // _IDZ80_DEBUG_
 
         nextitem = nextitem->GetNext();
     }
@@ -255,7 +260,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
         if (counter_debug != (mnemonicslices.GetCount() - 1))
             str_debug << "*";
     }
-    log_->AppendText(wxString::Format("Item '%s' = [%s]\n", opcode_str, str_debug));
+    log_->AppendText(wxString::Format("[%.3d] Item '%s' = [%s]\n", statistics_.numinstructions, opcode_str, str_debug));
     #endif // _IDZ80_DEBUG_
 
 
@@ -271,6 +276,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
         throw XMLFE_ATTR_SIZE_NOT_FOUND;
 
     ParseOpcodeString(instruction, opcode_str, temp_str);
+    instruction->SetMnemonicSignature(CalculateSignature(instruction->GetByteCode()));
 
     #ifdef _IDZ80_DEBUG_
     str_debug.Clear();
@@ -280,7 +286,8 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
     }
     str_debug = str_debug.Trim();
 
-    log_->AppendText(wxString::Format("Bytecode<%d> = [%s]\n", instruction->GetByteCodeSize(), str_debug));
+    log_->AppendText(wxString::Format("[%.3d] Bytecode<%d> = [%s]\n", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
+    log_->AppendText(wxString::Format("[%.3d] Signature = [%X]\n", statistics_.numinstructions, instruction->GetMnemonicSignature()));
     #endif // _IDZ80_DEBUG_
 }
 
@@ -513,6 +520,8 @@ Operands MnemonicXMLFile::GetOperandFromStr(const wxString &op_str)
         return OP_F;
     if (op_str.IsSameAs(ATTRIBUTE_REGISTER_H))
         return OP_H;
+    if (op_str.IsSameAs(ATTRIBUTE_REGISTER_L))
+        return OP_L;
     if (op_str.IsSameAs(ATTRIBUTE_REGISTER_I))
         return OP_I;
     if (op_str.IsSameAs(ATTRIBUTE_REGISTER_R))
@@ -589,7 +598,7 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
         throw XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR;
 
     #ifdef _IDZ80_DEBUG_
-    log_->AppendText(wxString::Format("Size validated [%d].\n", informed_size));
+    log_->AppendText(wxString::Format("[%.3d] Size validated [%d].\n", statistics_.numinstructions, informed_size));
     #endif // _IDZ80_DEBUG_
 
     for(uint counter = 0; counter < informed_size; counter++)
@@ -602,9 +611,27 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
     }
     instruction->SetByteCode(byte_code, informed_size);
 
+
     #ifdef _IDZ80_DEBUG_
-    log_->AppendText(wxString::Format("Bytecode size = %d [%d]\n", informed_size, instruction->GetByteCodeSize()));
+    log_->AppendText(wxString::Format("[%.3d] Bytecode size = %d [%d]\n", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
     #endif // _IDZ80_DEBUG_
+}
+
+
+
+
+unsigned int MnemonicXMLFile::CalculateSignature(const ByteCode &bytecode)
+{
+    unsigned int signature = 0;
+    unsigned int countdown = MAX_OPCODE_SIZE;
+    unsigned int multiplier = 1;
+
+    while(countdown-- > 0)
+    {
+        signature += bytecode[countdown] * multiplier;
+        multiplier *= 0x100;
+    }
+    return signature;
 }
 
 

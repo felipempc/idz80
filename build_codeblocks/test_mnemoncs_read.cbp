@@ -65,6 +65,7 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(WXW)/include" />
 			<Add directory="../include" />
+			<Add directory="../include/debug/test mnemonics" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WXW)/include" />
@@ -74,6 +75,9 @@
 			<Add option="-mthreads" />
 			<Add directory="../resource" />
 		</Linker>
+		<Unit filename="../include/debug/test mnemonics/dialog_mnemonics.h" />
+		<Unit filename="../include/debug/test mnemonics/test_mnemoncs_readApp.h" />
+		<Unit filename="../include/debug/test mnemonics/test_mnemoncs_readMain.h" />
 		<Unit filename="../include/idz80_basic_types.h" />
 		<Unit filename="../include/mnemonic_access.h" />
 		<Unit filename="../include/mnemonic_container.h" />
@@ -81,16 +85,13 @@
 		<Unit filename="../include/mnemonic_item.h" />
 		<Unit filename="../include/mnemonic_item_base.h" />
 		<Unit filename="../include/mnemonicxmlfile.h" />
+		<Unit filename="../src/debug/test mnemonics/dialog_mnemonics.cpp" />
+		<Unit filename="../src/debug/test mnemonics/test_mnemoncs_readApp.cpp" />
+		<Unit filename="../src/debug/test mnemonics/test_mnemoncs_readMain.cpp" />
 		<Unit filename="../src/mnemonic_access.cpp" />
 		<Unit filename="../src/mnemonic_container.cpp" />
 		<Unit filename="../src/mnemonic_item.cpp" />
 		<Unit filename="../src/mnemonicxmlfile.cpp" />
-		<Unit filename="dialog_mnemonics.cpp" />
-		<Unit filename="dialog_mnemonics.h" />
-		<Unit filename="test_mnemoncs_readApp.cpp" />
-		<Unit filename="test_mnemoncs_readApp.h" />
-		<Unit filename="test_mnemoncs_readMain.cpp" />
-		<Unit filename="test_mnemoncs_readMain.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

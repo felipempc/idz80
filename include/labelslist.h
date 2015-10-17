@@ -20,6 +20,7 @@
 #include <wx/dynarray.h>
 
 #include "idz80_base.h"
+#include "disassembled_container.h"
 #include "logbase.h"
 #include "labelitem.h"
 
@@ -46,22 +47,22 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, LogWindow *logparent);
         ~LabelListCtrl();
 
-        int AddLabel(ProgramAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);
-        int AddLabel(ProgramAddress addr, wxString name, wxArrayInt &labelusers);
-        bool DelLabel(ProgramAddress addr);
-        void DelLabelUser(ProgramAddress addr, DisassembledIndex dasmitem);
+        int AddLabel(AbsoluteAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);
+        int AddLabel(AbsoluteAddress addr, wxString name, wxArrayInt &labelusers);
+        bool DelLabel(AbsoluteAddress addr);
+        void DelLabelUser(AbsoluteAddress addr, DisassembledIndex dasmitem);
         void EditLabel(LabelIndex listitem, wxString strlabel);
-		bool EditLabelDialog(ProgramAddress addr);
-        int GetLabel(ProgramAddress addr, wxString& str);
-        int GetLabelIndex(ProgramAddress addr);
+		bool EditLabelDialog(AbsoluteAddress addr);
+        int GetLabel(AbsoluteAddress addr, wxString& str);
+        int GetLabelIndex(AbsoluteAddress addr);
         wxString GetLabel(LabelIndex idx);
         wxString GetAddress(LabelIndex idx);
         LabelItem *GetData(LabelIndex index);
-        LabelItem *GetDatabyAddress(ProgramAddress addr);
+        LabelItem *GetDatabyAddress(AbsoluteAddress addr);
         wxArrayInt *GetLabelUsers(const LabelIndex index);
         TypeLabelList GetTypeList();
 
-        void GetLabelsBetweenRangeAddress(ProgramAddress first_address, ProgramAddress last_address, wxArrayInt *address_list);
+        void GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, wxArrayInt *address_list);
         uint GetCount();
         bool IsEmpty();
         void Clear();
@@ -82,8 +83,8 @@ class LabelListCtrl : public wxListCtrl, public LogBase
         TypeLabelList type_label_list_;
 
 
-        LabelItem *FindByAddress(ProgramAddress addr, LabelIndex &label_index);
-        wxString CreateDefaultName(const ProgramAddress addr);
+        LabelItem *FindByAddress(AbsoluteAddress addr, LabelIndex &label_index);
+        wxString CreateDefaultName(const AbsoluteAddress addr);
         void DeleteLabelData(LabelItem *label);
 
         void OnMouseRightDown(wxListEvent& event);

@@ -8,7 +8,7 @@
  * Defines a container to store source code lines
  **************************************************************/
 
-#include "sourcecodecontainer.h"
+#include "source_code_container.h"
 
 
 const uint SourceCodeContainer::LINE_NOT_FOUND;

@@ -26,6 +26,7 @@ class MnemonicAccess : public MnemonicContainerBase
 
         void Find(wxArrayInt& mnemonics_found_list, byte opcode, uint scanoffset);
         MnemonicItem *FindByOpCode(const ByteCode& code);
+        MnemonicItem *FindBySignature(const unsigned int &signature);
 
         MnemonicItem *First();
         MnemonicItem *Last();

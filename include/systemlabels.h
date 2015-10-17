@@ -18,10 +18,11 @@
 
 #include "idz80_base.h"
 #include "logbase.h"
+#include "rawdata.h"
 
 struct st_systemlabel
 {
-    uint Address;
+    AbsoluteAddress Address;
     wxString Label;
 };
 
@@ -47,6 +48,7 @@ class SystemLabelList: public LogBase
 		wxTextCtrl		*m_log;
 
 		bool readData();
+		void ParseString(wxString& source_string, wxArrayString& string_list);
 };
 
 

@@ -44,7 +44,7 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     str.Printf("DB ");
-    for (i = 0; i < de->GetLength(); i++)
+    for (i = 0; i < de->GetMnemonic()->GetByteCodeSize(); i++)
     {
         str << wxString::Format(str_number_format, de->GetData(de->GetOffset() + i));
         if (i < (de->GetLength() - 1))

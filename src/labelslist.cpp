@@ -11,7 +11,7 @@
 
 #include <wx/menu.h>
 #include "labelslist.h"
-#include "editlabel_dialog.h"
+//#include "editlabel_dialog.h"
 
 
 
@@ -69,7 +69,7 @@ void LabelListCtrl::Clear()
  *     Label List Control Implementation
  */
 
-int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, DisassembledIndex dasmitem)
+int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, DisassembledIndex dasmitem)
 {
     wxString buf;
     wxListItem li;
@@ -117,7 +117,7 @@ int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, DisassembledInde
 
 
 
-int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, wxArrayInt &labelusers)
+int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, wxArrayInt &labelusers)
 {
     wxString	buf;
     wxListItem	li;
@@ -179,7 +179,7 @@ int LabelListCtrl::AddLabel(ProgramAddress addr, wxString name, wxArrayInt &labe
 
 
 
-bool LabelListCtrl::DelLabel(ProgramAddress addr)
+bool LabelListCtrl::DelLabel(AbsoluteAddress addr)
 {
     uint		label;
     LabelItem	*lbl;
@@ -198,7 +198,7 @@ bool LabelListCtrl::DelLabel(ProgramAddress addr)
 }
 
 
-void LabelListCtrl::DelLabelUser(ProgramAddress addr, DisassembledIndex dasmitem)
+void LabelListCtrl::DelLabelUser(AbsoluteAddress addr, DisassembledIndex dasmitem)
 {
     int         i;
     uint        label;
@@ -230,7 +230,7 @@ void LabelListCtrl::DelLabelUser(ProgramAddress addr, DisassembledIndex dasmitem
 
 
 //TODO: MODIFY or Remove....
-int LabelListCtrl::GetLabel(ProgramAddress addr, wxString& str)
+int LabelListCtrl::GetLabel(AbsoluteAddress addr, wxString& str)
 {
     int i;
     wxListItem item;
@@ -270,7 +270,7 @@ wxString LabelListCtrl::GetLabel(LabelIndex idx)
 }
 
 
-int LabelListCtrl::GetLabelIndex(ProgramAddress addr)
+int LabelListCtrl::GetLabelIndex(AbsoluteAddress addr)
 {
     return (FindItem(-1, wxString::Format("%X", addr)));
 }
@@ -294,7 +294,7 @@ wxString LabelListCtrl::GetAddress(uint idx)
 }
 
 
-LabelItem *LabelListCtrl::FindByAddress(ProgramAddress addr, LabelIndex &label_index)
+LabelItem *LabelListCtrl::FindByAddress(AbsoluteAddress addr, LabelIndex &label_index)
 {
     int index;
     LabelItem *lbl;
@@ -315,7 +315,7 @@ LabelItem *LabelListCtrl::FindByAddress(ProgramAddress addr, LabelIndex &label_i
 
 
 
-LabelItem *LabelListCtrl::GetDatabyAddress(ProgramAddress addr)
+LabelItem *LabelListCtrl::GetDatabyAddress(AbsoluteAddress addr)
 {
     LabelIndex li;
 
@@ -324,7 +324,7 @@ LabelItem *LabelListCtrl::GetDatabyAddress(ProgramAddress addr)
 
 
 
-wxString LabelListCtrl::CreateDefaultName(const ProgramAddress addr)
+wxString LabelListCtrl::CreateDefaultName(const AbsoluteAddress addr)
 {
     return (wxString::Format("%s_%.4X", default_label_name_, addr));
 }
@@ -379,11 +379,11 @@ void LabelListCtrl::OnMouseRightDown(wxListEvent& event)
 
 void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
 {
-    EditLabelDlg adlab(this);
+//    EditLabelDlg adlab(this);
     LabelItem *lbl;
     int i;
 
-
+/*
     if (adlab.ShowModal() == wxID_OK)
     {
         i = AddLabel(adlab.GetAddress(), adlab.GetLabel());
@@ -391,7 +391,7 @@ void LabelListCtrl::OnMenuPopUpAdd(wxCommandEvent& event)
         if (lbl)
             lbl->LabelStr = adlab.GetLabel();
         SortAddress();
-    }
+    } */
 }
 
 void LabelListCtrl::OnMenuPopUpDel(wxCommandEvent& event)
@@ -414,15 +414,15 @@ void LabelListCtrl::OnMenuPopUpEdit(wxCommandEvent& event)
 
 
 
-bool LabelListCtrl::EditLabelDialog(ProgramAddress addr)
+bool LabelListCtrl::EditLabelDialog(AbsoluteAddress addr)
 {
-    EditLabelDlg adlab(this,true);
+ //   EditLabelDlg adlab(this,true);
     LabelItem *lbl;
     wxString str;
 	int idx;
 	bool ret = false;
 
-
+/*
     adlab.SetAddress(addr);
 	idx = GetLabel(addr, str);
 	if (idx >= 0)
@@ -439,7 +439,7 @@ bool LabelListCtrl::EditLabelDialog(ProgramAddress addr)
 				ret = true;
 			}
 		}
-	}
+	} */
 	return ret;
 }
 
@@ -469,7 +469,7 @@ void LabelListCtrl::EditLabel(uint listitem, wxString strlabel)
 
 
 
-void LabelListCtrl::GetLabelsBetweenRangeAddress(ProgramAddress first_address, ProgramAddress last_address, wxArrayInt *address_list)
+void LabelListCtrl::GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, wxArrayInt *address_list)
 {
     LabelItem   *lbl;
     uint    loopcount;

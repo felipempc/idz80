@@ -15,10 +15,11 @@
 #include <wx/dynarray.h>
 #include <wx/string.h>
 #include "idz80_base.h"
+#include "rawdata.h"
 
 struct LabelItem
 {
-    ProgramAddress Address;
+    AbsoluteAddress Address;
     wxArrayInt *LabelUsers;
     wxString LabelStr;
 };

@@ -338,7 +338,7 @@ bool SmartDecoder::ProcessBranch(DisassembledItem *de, bool &processing_status)
 
 
 
-bool SmartDecoder::ReturnSubroutine(DisassembledItem *de, ProgramAddress &dest_address)
+bool SmartDecoder::ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_address)
 {
     bool ret = false;
 
@@ -386,12 +386,12 @@ bool SmartDecoder::CallSubroutine(DisassembledItem *de)
 
 
 
-bool SmartDecoder::GetNextNearJump(SortedIntArray *jmplist, ProgramAddress _start, ProgramAddress _end, ProgramAddress &nextaddr)
+bool SmartDecoder::GetNextNearJump(SortedIntArray *jmplist, AbsoluteAddress _start, AbsoluteAddress _end, AbsoluteAddress &nextaddr)
 {
     bool    ret = false;
     int     i = 0,
             f;
-    ProgramAddress  address;
+    AbsoluteAddress  address;
 
     f = jmplist->GetCount();
     #ifdef IDZ80_DECODER
@@ -491,7 +491,7 @@ void SmartDecoder::UpdateBoundaries()
 
 
 
-bool SmartDecoder::TestIfOutBoundaries(ProgramAddress addr)
+bool SmartDecoder::TestIfOutBoundaries(AbsoluteAddress addr)
 {
     return ((addr > end_address_) || (addr < start_address_));
 }

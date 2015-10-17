@@ -13,17 +13,16 @@
 #define PROJECTMANAGERXML_H
 
 #include <wx/xml/xml.h>
-
-#include "process_data.h"
-
+#include <wx/textctrl.h>
+//#include "process_data.h"
+#include "labelslist.h"
+#include "idz80_main_base.h"
 
 class ProjectManagerXML
 {
     public:
-        ProjectManagerXML(ProcessData *process_data);
-/*
-        virtual ~ProjectManagerXML();
-*/
+        ProjectManagerXML(IDZ80MainBase *parent);
+
         bool IsSaved();
         bool HasName();
         void New();
@@ -36,9 +35,10 @@ class ProjectManagerXML
         void LogIt(const wxString &str);
         void SetLog(wxTextCtrl *set_log);
 
+
     protected:
         static const wxString PROJECT_EXTENSION;
-        static const uint PROJECT_FILE_VERSION;
+        static const unsigned int PROJECT_FILE_VERSION;
         static const wxString ROOT_STR;
         static const wxString SECTION_CODEVIEWLINE_STR;
         static const wxString SECTION_DISASSEMBLED_STR;
@@ -54,7 +54,8 @@ class ProjectManagerXML
         static const wxString SUBSECTION_CARTRIDGE_STR;
         static const wxString SUBSECTION_ADDRESS_STR;
         static const wxString SUBSECTION_LABEL_STR;
-        static const wxString SUBSECTION_OPCODE_STR;
+        static const wxString SUBSECTION_DATA_STR;
+        static const wxString SUBSECTION_CODE_STR;
         static const wxString SUBSECTION_LINE_STR;
 
         static const wxString ATTRIBUTE_VERSION_STR;
@@ -66,13 +67,12 @@ class ProjectManagerXML
         static const wxString ATTRIBUTE_ENDADDRESS_STR;
         static const wxString ATTRIBUTE_TOTALLINES_STR;
         static const wxString ATTRIBUTE_LABELUSERS_STR;
-        static const wxString ATTRIBUTE_OPCODETYPE_STR;
-        static const wxString ATTRIBUTE_OPCODELENGTH_STR;
-        static const wxString ATTRIBUTE_OPCODEOFFSET_STR;
-        static const wxString ATTRIBUTE_OPCODE_STR;
-        static const wxString ATTRIBUTE_ARGUMENTNUM_STR;
-        static const wxString ATTRIBUTE_ARGUMENTSIZE_STR;
-        static const wxString ATTRIBUTE_ARGUMENTS_STR;
+
+        static const wxString ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR;
+        static const wxString ATTRIBUTE_OPCODE_OFFSET_STR;
+        static const wxString ATTRIBUTE_OPCODE_LENGTH_STR;
+        static const wxString ATTRIBUTE_OPCODE_ARGUMENTS_STR;
+
         static const wxString ATTRIBUTE_ORG_STR;
         static const wxString ATTRIBUTE_DASMITEM_STR;
         static const wxString ATTRIBUTE_LINEPROGRAMLABEL_STR;
@@ -81,20 +81,32 @@ class ProjectManagerXML
 
 
     private:
+        enum ReadExceptions
+        {
+            RE_OPCODE_CONVERSION_FAIL,
+            RE_OPCODE_LENGTH_NOT_FOUND,
+            RE_OPCODE_MNEMONIC_SIGNATURE_NOT_FOUND,
+            RE_OPCODE_OFFSET_NOT_FOUND
+        };
+        struct ExceptionData
+        {
+            ReadExceptions  code;
+            int line;
+        };
+
         bool    saved, named;
         wxString    project_filename;
-        ProcessData *process;
-        SourceCodeLines    *CodeViewLines;
+        IDZ80MainBase *main_;
 
         wxTextCtrl  *log;
 
         bool readHeader(wxXmlDocument &doc);
         bool readFileProperties(wxXmlDocument &doc);
         void readLabel(wxXmlDocument &doc, LabelListCtrl *current_label, const wxString &labelstr);
-        void readDasmData(wxXmlDocument &doc);
+        void readDisassembled(wxXmlDocument &doc);
         void readCodeLine(wxXmlDocument &doc);
 
-        bool fillDasmData(wxXmlNode *datanode);
+        bool fill_Disassembled(wxXmlNode *datanode);
         bool fillCodeViewLine(wxXmlNode *datanode);
 
         wxXmlNode *findSection(wxXmlNode *firstchild, const wxString &section);
@@ -104,8 +116,13 @@ class ProjectManagerXML
         void writeHeader(wxXmlDocument &doc);
         void writeFileProperties(wxXmlDocument &doc);
         void writeLabel(wxXmlDocument &doc, LabelListCtrl *current_label, const wxString &section_name);
-        void writeDasmData(wxXmlDocument &doc);
+        void writeDisassembled(wxXmlDocument &doc);
         void writeCodeLine(wxXmlDocument &doc);
+
+        wxString getArgumentAsString(DisassembledItem *d_item);
+        void setArgumentFromString(const wxString &arg_str, DisassembledItem *d_item);
+
+        void PrintReadDisassebledException(ExceptionData exceptiondata);
 };
 
 #endif // PROJECTMANAGERXML_H

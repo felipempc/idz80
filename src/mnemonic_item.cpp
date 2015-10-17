@@ -50,6 +50,15 @@ void MnemonicItem::Reset()
     argument_opcode_position_ = 0;
     conditional_ = false;
     explicit_arguments_ = false;
+    mnemonic_signature_ = 0;
+}
+
+
+
+
+unsigned int MnemonicItem::GetMnemonicSignature()
+{
+    return mnemonic_signature_;
 }
 
 
@@ -241,3 +250,7 @@ void MnemonicItem::SetMnemonicString(const wxArrayString &mnemonicstring)
 
 
 
+void MnemonicItem::SetMnemonicSignature(unsigned int signature)
+{
+    mnemonic_signature_ = signature;
+}

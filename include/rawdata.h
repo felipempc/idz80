@@ -18,7 +18,6 @@
 #include <wx/buffer.h>
 #include <wx/filename.h>
 
-#include "idz80_base.h"
 #include "logbase.h"
 
 #include "binfile.h"
@@ -34,6 +33,9 @@ enum eFileType
 };
 typedef enum eFileType FileType;
 
+typedef unsigned int FileOffset;
+typedef unsigned int AbsoluteAddress;
+
 
 class RawData : public CartridgeRomFile, public BinFile, public LogBase
 {
@@ -44,8 +46,8 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
 
         byte GetData(FileOffset offset);
 
-        uint GetSize();
-        uint GetFileSize();
+        unsigned int GetSize();
+        unsigned int GetFileSize();
 
         bool IsLoaded();
 
@@ -64,9 +66,9 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
         bool isBIN();
         bool isCOM();
 
-        uint    StartAddress,
-                ExecAddress,
-                EndAddress;
+        AbsoluteAddress StartAddress,
+                        ExecAddress,
+                        EndAddress;
 
         RawData(LogWindow *logparent);
         ~RawData(void);
@@ -75,7 +77,7 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
         wxMemoryBuffer  buffer_;
         wxFileName      filename_;
         FileType        filetype_;
-        uint            header_offset_;
+        FileOffset      header_offset_;
 
         bool LoadToBuffer(const wxString filename);
         void SetupFileType();

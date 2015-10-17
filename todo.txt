@@ -1,7 +1,7 @@
 ﻿# TODO idz80 VERSÃO REESCRITA
 
-> 19-04-14 - Implementar mnemonic_container
-           - Criar e implementar mnemonic_access
+<05-09-15> SystemLabels inserir em LabelManager
+
 
 --->Futuro
 - Permitir abrir programas que contenham mais de um arquivo

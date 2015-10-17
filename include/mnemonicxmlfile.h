@@ -12,6 +12,7 @@
 #define MNEMONICXMLFILE_H
 
 #include <wx/textctrl.h>
+#include <wx/xml/xml.h>
 #include "mnemonic_container.h"
 
 
@@ -40,7 +41,7 @@ class MnemonicXMLFile
 
         bool Open(const wxString &mnemonicfile);
 
-    protected:
+    //protected:
         static const wxString MNEMONIC_FILE_VERSION_STR;
         static const wxString MNEMONIC_FILE_STR;
         static const wxString MNEMONIC_PROCESSOR_STR;
@@ -134,6 +135,7 @@ class MnemonicXMLFile
         Operands GetOperandFromStr(const wxString &op_str);
         void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
         void ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
+        unsigned int CalculateSignature(const ByteCode &bytecode);
         wxXmlNode *GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str);
         void PrintErrorMessages(XMLF_Exceptions e, int line);
 

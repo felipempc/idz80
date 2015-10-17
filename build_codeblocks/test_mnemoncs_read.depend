@@ -2950,7 +2950,7 @@
 1402782958 k:\wxw\wx301\include\wx\cocoa\mdi.h
 	"wx/frame.h"
 
-1418623968 source:x:\idz80\src\mnemonic_access.cpp
+1435275290 source:x:\idz80\src\mnemonic_access.cpp
 	"mnemonic_access.h"
 
 1404608628 x:\idz80\include\mnemonic_access.h
@@ -2958,27 +2958,25 @@
 	"mnemonic_container_base.h"
 	"idz80_basic_types.h"
 
-1404610560 x:\idz80\include\mnemonic_container_base.h
+1435275030 x:\idz80\include\mnemonic_container_base.h
 	<vector>
 	"mnemonic_item.h"
 
-1432608021 x:\idz80\include\mnemonic_item.h
+1441523974 x:\idz80\include\mnemonic_item.h
 	<mnemonic_item_base.h>
 
-1432607823 x:\idz80\include\mnemonic_item_base.h
+1441523734 x:\idz80\include\mnemonic_item_base.h
 	<wx/arrstr.h>
 	"idz80_basic_types.h"
 
-1403811906 x:\idz80\include\idz80_basic_types.h
+1435556756 x:\idz80\include\idz80_basic_types.h
+	<wx/dynarray.h>
 
-1432449252 source:x:\idz80\src\mnemonic_container.cpp
+1435546194 source:x:\idz80\src\mnemonic_container.cpp
 	"mnemonic_container.h"
 
-1432444128 x:\idz80\include\mnemonic_container.h
-	<wx/xml/xml.h>
-	<wx/string.h>
+1435545952 x:\idz80\include\mnemonic_container.h
 	<wx/textctrl.h>
-	<vector>
 	"mnemonic_access.h"
 
 1402782960 k:\wxw\wx301\include\wx\xml\xml.h
@@ -2991,13 +2989,13 @@
 1404604900 source:x:\idz80\src\mnemonic_container_base.cpp
 	"mnemonic_container_base.h"
 
-1432608057 source:x:\idz80\src\mnemonic_item.cpp
+1441524120 source:x:\idz80\src\mnemonic_item.cpp
 	"mnemonic_item.h"
 
 1432607316 source:x:\idz80\src\mnemonic_item_base.cpp
 	"mnemonic_item_base.h"
 
-1432444636 source:x:\idz80\build_codeblocks\test_mnemoncs_readmain.cpp
+1435274122 source:x:\idz80\build_codeblocks\test_mnemoncs_readmain.cpp
 	<wx/menu.h>
 	<wx/statusbr.h>
 	<wx/sizer.h>
@@ -3075,11 +3073,12 @@
 
 1402782958 k:\wxw\wx301\lib\gcc_dll\mswu\wx\setup.h
 
-1432448330 source:x:\idz80\src\mnemonicxmlfile.cpp
+1441540582 source:x:\idz80\src\mnemonicxmlfile.cpp
 	"mnemonicxmlfile.h"
 
-1429579140 x:\idz80\include\mnemonicxmlfile.h
+1441524816 x:\idz80\include\mnemonicxmlfile.h
 	<wx/textctrl.h>
+	<wx/xml/xml.h>
 	"mnemonic_container.h"
 
 1412634842 k:\wxw\wx302\include\wx\dynarray.h
@@ -9368,19 +9367,22 @@
 
 1412631244 k:\bibliotecas\wxw\wx302\include\wx\os2\filedlg.h
 
-1432444886 x:\idz80\build_codeblocks\dialog_mnemonics.h
+1435543365 x:\idz80\build_codeblocks\dialog_mnemonics.h
 	"wx/dialog.h"
 	"wx/sizer.h"
 	"wx/stattext.h"
-	"wx/combobox.h"
+	"wx/choice.h"
 	"wx/checkbox.h"
 	"wx/statbox.h"
+	<vector>
 	<mnemonic_container.h>
 
-1432446672 source:x:\idz80\build_codeblocks\dialog_mnemonics.cpp
+1435481192 source:x:\idz80\build_codeblocks\dialog_mnemonics.cpp
 	"dialog_mnemonics.h"
 	"wx/button.h"
 	<wx/msgdlg.h>
+	"mnemonic_item.h"
+	"mnemonicxmlfile.h"
 
 1412631244 k:\bibliotecas\wxw\wx302\include\wx\stattext.h
 	"wx/defs.h"
@@ -9621,4 +9623,44 @@
 	"wx/control.h"
 
 1412631244 k:\bibliotecas\wxw\wx302\lib\gcc_dll\mswu\wx\setup.h
+
+1435545472 source:x:\idz80\src\debug\test mnemonics\dialog_mnemonics.cpp
+	"dialog_mnemonics.h"
+	"wx/button.h"
+	<wx/msgdlg.h>
+	"mnemonic_item.h"
+	"mnemonicxmlfile.h"
+
+1435543366 x:\idz80\include\debug\test mnemonics\dialog_mnemonics.h
+	"wx/dialog.h"
+	"wx/sizer.h"
+	"wx/stattext.h"
+	"wx/choice.h"
+	"wx/checkbox.h"
+	"wx/statbox.h"
+	<vector>
+	<mnemonic_container.h>
+
+1404524928 source:x:\idz80\src\debug\test mnemonics\test_mnemoncs_readapp.cpp
+	"test_mnemoncs_readApp.h"
+	"test_mnemoncs_readMain.h"
+
+1404521590 x:\idz80\include\debug\test mnemonics\test_mnemoncs_readapp.h
+	<wx/app.h>
+
+1432444644 x:\idz80\include\debug\test mnemonics\test_mnemoncs_readmain.h
+	<wx/frame.h>
+	<wx/toplevel.h>
+	"mnemonic_container.h"
+
+1435546350 source:x:\idz80\src\debug\test mnemonics\test_mnemoncs_readmain.cpp
+	<wx/menu.h>
+	<wx/statusbr.h>
+	<wx/sizer.h>
+	<wx/textctrl.h>
+	<wx/msgdlg.h>
+	<wx/filedlg.h>
+	"test_mnemoncs_readMain.h"
+	"mnemonicxmlfile.h"
+	"dialog_mnemonics.h"
 

@@ -92,6 +92,23 @@ MnemonicItem *MnemonicAccess::FindByOpCode(const ByteCode& code)
 
 
 
+MnemonicItem *MnemonicAccess::FindBySignature(const unsigned int &signature)
+{
+    if(First() != 0)
+        while(!isEnd())
+        {
+            if(CurrentItem()->GetMnemonicSignature() == signature)
+                return CurrentItem();
+
+            if(Next() == 0)
+                break;
+        }
+    return static_cast<MnemonicItem *>(0);
+}
+
+
+
+
 MnemonicItem *MnemonicAccess::First()
 {
     if(mnlist_.size() > 0)
@@ -159,7 +176,7 @@ MnemonicItem *MnemonicAccess::Next()
 
 MnemonicItem *MnemonicAccess::Item(MnemonicIndex index)
 {
-    if(index < mnlist_.size())
+    if((index >= 0) && (index < mnlist_.size()))
     {
         current_index_ = index;
         current_item_ = mnlist_[index];

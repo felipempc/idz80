@@ -12,7 +12,7 @@
 #ifndef BINFILE_H
 #define BINFILE_H
 
-#include "idz80_base.h"
+#include "idz80_basic_types.h"
 
 struct stBinHeader
 {

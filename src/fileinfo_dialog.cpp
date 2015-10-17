@@ -31,7 +31,7 @@ const long ShowFileInfo::ID_STATICTEXT9 = wxNewId();
 const long ShowFileInfo::ID_PANEL1 = wxNewId();
 
 
-ShowFileInfo::ShowFileInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
+ShowFileInfo::ShowFileInfo(IDZ80MainBase *parent, wxWindowID id, const wxPoint& pos, const wxSize& size)
 {
 	Create(parent, wxID_ANY, "File Information", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "wxID_ANY");
 	SetClientSize(wxSize(400,249));
@@ -56,7 +56,7 @@ void ShowFileInfo::OnB_OKClick(wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-
+/*
 void ShowFileInfo::SendInfo(ProcessData *process)
 {
     const CartHeader  *cart;
@@ -136,9 +136,9 @@ void ShowFileInfo::SendInfo(ProcessData *process)
         StaticText6->SetLabel(str);
     }
 }
-
+*/
 
 void ShowFileInfo::OnInit(wxInitDialogEvent& event)
 {
-    m_process = 0;
+//    m_process = 0;
 }
