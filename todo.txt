@@ -1,6 +1,7 @@
 ﻿# TODO idz80 VERSÃO REESCRITA
 
-<05-09-15> SystemLabels inserir em LabelManager
+<22-12-15> NewProjectDialog permitir alterar start/exec/end addresses
+           Detector de arquivo não verifica arquivo BIN com extensao diferente
 
 
 --->Futuro

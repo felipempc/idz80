@@ -96,7 +96,7 @@ void RawData::SetupFileType()
                 SetFileType(BIN);
             }
             else
-                SetFileType(UNKNOWN);
+                GuessFileType();
 }
 
 
@@ -358,3 +358,30 @@ void RawData::ForceNoCartridge()
 }
 
 
+
+
+void RawData::GuessFileType()
+{
+    if (FillAndValidateBIN(buffer_.GetData()))
+    {
+        const BinHeader *binheader = GetBinHeader();
+        StartAddress = binheader->start_address;
+        EndAddress = binheader->end_address;
+        ExecAddress = binheader->execution_address;
+        header_offset_ = BIN_HEADER_SIZE;
+        filetype_ = BIN;
+        return;
+    }
+
+    if (ValidateCartridge(buffer_.GetData()))
+    {
+        header_offset_ = CARTRIDGE_HEADER_SIZE;
+        StartAddress = CARTRIDGE_HEADER_ADDRESS + header_offset_;
+        ExecAddress = StartAddress;
+        EndAddress = StartAddress + GetSize() - 1;
+        filetype_ = ROM;
+        return;
+    }
+
+    SetFileType(UNKNOWN);
+}

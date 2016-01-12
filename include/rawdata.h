@@ -62,6 +62,8 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
         void SetStrFileType(const wxString &str_type);
         void ForceNoCartridge();
 
+        void GuessFileType();
+
         bool isROM();
         bool isBIN();
         bool isCOM();

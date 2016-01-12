@@ -90,6 +90,7 @@
 		<Unit filename="../include/fileinfo_dialog.h" />
 		<Unit filename="../include/idz80_app.h" />
 		<Unit filename="../include/idz80_basic_types.h" />
+		<Unit filename="../include/idz80_directories.h" />
 		<Unit filename="../include/idz80_main_base.h" />
 		<Unit filename="../include/idz80_main_dialog.h" />
 		<Unit filename="../include/labelitem.h" />
