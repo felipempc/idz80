@@ -19,7 +19,7 @@
 #include <wx/scrolwin.h>
 
 
-#include "dasmdata.h"
+#include "disassembled_container.h"
 #include "process_data.h"
 #include "SourceCodeLines.h"
 #include "codeview_definitions.h"

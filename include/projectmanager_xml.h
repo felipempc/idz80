@@ -58,6 +58,18 @@ class ProjectManagerXML
         static const wxString SUBSECTION_CODE_STR;
         static const wxString SUBSECTION_LINE_STR;
 
+        static const wxString SUBSECTION_FILE_STR;
+
+        static const wxString PROPERTY_FILENAME_STR;
+        static const wxString ATTRIBUTE_FILEPATH_STR;
+        static const wxString PROPERTY_FILETYPE_STR;
+        static const wxString ATTRIBUTE_CARTRIDGE_STR;
+        static const wxString ATTRIBUTE_ADDRESS_STR;
+        static const wxString ATTRIBUTE_LABEL_STR;
+        static const wxString ATTRIBUTE_DATA_STR;
+        static const wxString ATTRIBUTE_CODE_STR;
+        static const wxString ATTRIBUTE_LINE_STR;
+
         static const wxString ATTRIBUTE_VERSION_STR;
         static const wxString ATTRIBUTE_FILENAME_STR;
         static const wxString ATTRIBUTE_ORIGINALPATH_STR;

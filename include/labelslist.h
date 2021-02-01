@@ -96,6 +96,6 @@ class LabelListCtrl : public wxListCtrl, public LogBase
 };
 
 
-int wxCALLBACK CompareAddress(long item1, long item2, long data);
-int wxCALLBACK CompareLabelStr(long item1, long item2, long data);
+int wxCALLBACK CompareAddress(long long item1, long long item2, long long data);
+int wxCALLBACK CompareLabelStr(long long item1, long long item2, long long data);
 #endif // LABELSLIST_H

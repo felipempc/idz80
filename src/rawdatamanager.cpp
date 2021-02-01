@@ -78,7 +78,7 @@ RawDataManager::~RawDataManager()
 
 RawData *RawDataManager::Index(uint index)
 {
-    if (index > data_list_.size())
+    if (index >= data_list_.size())
         return 0;
     current_file_ = data_list_[index];
     current_file_index_ = static_cast<int>(index);
@@ -137,5 +137,41 @@ RawData *RawDataManager::Last()
     return current_file_;
 }
 
+
+RawData *RawDataManager::Next()
+{
+    unsigned int size = data_list_.size();
+
+    current_file_index_++;
+
+    if (current_file_index_ < size)
+    {
+        current_file_ = data_list_[current_file_index_];
+    }
+    else
+    {
+        current_file_index_--;
+    }
+    return current_file_;
+
+}
+
+
+RawData *RawDataManager::Previous()
+{
+    unsigned int size = data_list_.size();
+
+    current_file_index_--;
+
+    if (current_file_index_ > 0)
+    {
+        current_file_ = data_list_[current_file_index_];
+    }
+    else
+        First();
+
+    return current_file_;
+
+}
 
 

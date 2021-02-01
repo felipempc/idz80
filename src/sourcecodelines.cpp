@@ -113,7 +113,7 @@ int SourceCodeLines::AddComment(const wxString &comment)
 // TODO: Very slow, fix it !
 void SourceCodeLines::DelItem(CodeViewItem *cvi)
 {
-    LineNumber pos;
+    LineNumber pos = 0;
 
     try
     {
