@@ -3429,7 +3429,7 @@
 1386838806 source:x:\idz80\src\idz80_base.cpp
 	"idz80_base.h"
 
-1444740354 source:x:\idz80\src\idz80_main_dialog.cpp
+1624147309 source:x:\idz80\src\idz80_main_dialog.cpp
 	<wx/filedlg.h>
 	<wx/dir.h>
 	<wx/filefn.h>
@@ -3456,7 +3456,7 @@
 1384878246 source:x:\idz80\src\labelmanager.cpp
 	"labelmanager.h"
 
-1438518389 source:x:\idz80\src\labelslist.cpp
+1612126015 source:x:\idz80\src\labelslist.cpp
 	<wx/menu.h>
 	"labelslist.h"
 
@@ -3577,7 +3577,7 @@
 	<vector>
 	"source_code_item.h"
 
-1390021322 source:x:\idz80\src\sourcecodeaccess.cpp
+1390024922 source:x:\idz80\src\sourcecodeaccess.cpp
 	"sourcecodeaccess.h"
 
 1438687653 source:x:\idz80\src\sourcecodecontainer.cpp
@@ -12100,4 +12100,6 @@
 1412631243 d:\users\felipe\onedrive\programação\bibliotecas\wxw\wx302\include\wx\os2\bmpbuttn.h
 	"wx/button.h"
 	"wx/dcclient.h"
+
+1520441738 k:\lib\wxw\wx304\lib\gcc_dll\mswud\wx\setup.h
 

@@ -8,6 +8,10 @@
  * This module disassembles a program
  **************************************************************/
 
+
+  // MUST BE COMPLETELY REWRITED !!!!
+
+
 #ifndef _DECODER_H_
 #define _DECODER_H_
 

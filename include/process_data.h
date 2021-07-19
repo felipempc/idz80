@@ -8,6 +8,10 @@
  * Process all data
  **************************************************************/
 
+
+  // MUST BE COMPLETELY REWRITED !!!!
+
+
 #ifndef _IDZ80_PROCESSDATA_H
 #define _IDZ80_PROCESSDATA_H
 

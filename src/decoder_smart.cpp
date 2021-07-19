@@ -10,6 +10,7 @@
 
 #include "decoder_smart.h"
 
+ // MUST BE COMPLETELY REWRITED !!!!
 
 SmartDecoder::SmartDecoder(ProcessBase *parent, LogWindow *logparent)
                 : Decoder(parent, logparent)

@@ -212,6 +212,17 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     NewProjectDialog dialog(this);
     dialog.ShowModal();
+
+    if (Programs_->First()->IsLoaded())
+    {
+        wxMenuBar *mb;
+        mb = GetMenuBar();
+        mb->Enable(idMenuToolsDasmAll, true);
+        mb->Enable(idMenuFileInfo, true);
+        mb->Enable(idMenuFileClose, true);
+        mb->Enable(idMenuToolsGenCode, false);
+        mb->Enable(idMenuToolsAutoLabel, false);
+    }
 }
 
 

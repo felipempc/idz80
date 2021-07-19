@@ -8,6 +8,9 @@
  * This module disassembles a program in smart mode.
  **************************************************************/
 
+  // MUST BE COMPLETELY REWRITED !!!!
+
+
 #ifndef _DECODER_SMART_H_
 #define _DECODER_SMART_H_
 

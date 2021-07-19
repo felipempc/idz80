@@ -85,10 +85,13 @@
 		</Linker>
 		<Unit filename="../include/binfile.h" />
 		<Unit filename="../include/cartridge_rom_file.h" />
+		<Unit filename="../include/decoder.h" />
+		<Unit filename="../include/decoder_smart.h" />
 		<Unit filename="../include/disassembled_container.h" />
 		<Unit filename="../include/disassembled_item.h" />
 		<Unit filename="../include/disassembled_item_base.h" />
 		<Unit filename="../include/disassembled_item_data.h" />
+		<Unit filename="../include/disassembled_list.h" />
 		<Unit filename="../include/file_settings_dialog.h" />
 		<Unit filename="../include/fileinfo_dialog.h" />
 		<Unit filename="../include/idz80_app.h" />
@@ -108,6 +111,8 @@
 		<Unit filename="../include/mnemonic_item_base.h" />
 		<Unit filename="../include/mnemonicxmlfile.h" />
 		<Unit filename="../include/newproject_dialog.h" />
+		<Unit filename="../include/process_base.h" />
+		<Unit filename="../include/process_data.h" />
 		<Unit filename="../include/projectmanager_xml.h" />
 		<Unit filename="../include/rawdata.h" />
 		<Unit filename="../include/rawdatamanager.h" />
@@ -119,9 +124,12 @@
 		<Unit filename="../include/version.h" />
 		<Unit filename="../src/binfile.cpp" />
 		<Unit filename="../src/cartridge_rom_file.cpp" />
+		<Unit filename="../src/decoder.cpp" />
+		<Unit filename="../src/decoder_smart.cpp" />
 		<Unit filename="../src/disassembled_container.cpp" />
 		<Unit filename="../src/disassembled_item.cpp" />
 		<Unit filename="../src/disassembled_item_data.cpp" />
+		<Unit filename="../src/disassembled_list.cpp" />
 		<Unit filename="../src/file_settings_dialog.cpp" />
 		<Unit filename="../src/fileinfo_dialog.cpp" />
 		<Unit filename="../src/idz80_app.cpp" />
@@ -136,6 +144,7 @@
 		<Unit filename="../src/mnemonic_item.cpp" />
 		<Unit filename="../src/mnemonicxmlfile.cpp" />
 		<Unit filename="../src/newproject_dialog.cpp" />
+		<Unit filename="../src/process_data.cpp" />
 		<Unit filename="../src/projectmanager_xml.cpp" />
 		<Unit filename="../src/rawdata.cpp" />
 		<Unit filename="../src/rawdatamanager.cpp" />
@@ -147,7 +156,9 @@
 		<Extensions>
 			<code_completion />
 			<envvars />
-			<debugger />
+			<debugger>
+				<search_path add="Y:\bin" />
+			</debugger>
 			<fortran_project />
 		</Extensions>
 	</Project>

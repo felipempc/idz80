@@ -11,7 +11,7 @@
 #include "decoder.h"
 #include <wx/string.h>
 
-
+ // MUST BE COMPLETELY REWRITED !!!!
 
 
 const uint Decoder::OPCODE_NOT_FOUND;

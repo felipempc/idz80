@@ -16,6 +16,9 @@
  * ProcessData Implementation
  */
 
+
+ // MUST BE COMPLETELY REWRITED !!!!
+
 ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
 {
     Mnemonics = new MnemonicDataBase(logparent);

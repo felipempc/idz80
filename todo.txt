@@ -13,3 +13,10 @@
 - Ativar WeirdRSTRoutines ao disassemblar pequenos trechos (não está funcionando corretamente)
 - Popup para procura em argumentos
   - FIXME: Procura circular não para.
+
+
+  STATUS
+  ------
+
+  18/06/2021 - NewProjectDialog carrega os arquivos para RawDataManager, mas não faz mais nada.
+
