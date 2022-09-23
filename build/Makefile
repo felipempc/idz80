@@ -111,8 +111,8 @@ $(EXECUTAVEL): $(OBJETOS)
 .PHONY: clean
 clean:
 	ver
-	-if exist $(OBJDIR)/*.o rm -v $(OBJDIR)/*.o
-	-if exist $(EXECUTAVEL) rm -v $(EXECUTAVEL)
+	-if exist $(OBJDIR)/*.o del \"$(OBJDIR)/*.o\""
+	-if exist $(EXECUTAVEL) del "$(EXECUTAVEL)"
 
 .PHONY: check
 check:

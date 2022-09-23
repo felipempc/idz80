@@ -49,7 +49,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     while (offset < maxitems)
     {
         scan = process_->Program->GetData(prg_index + offset);
-        process_->Mnemonics->Find(foundItems, scan, offset);
+        process_->Mnemonics_->Find(foundItems, scan, offset);
         offset++;
         if (foundItems.GetCount() < 2)
 			break;
@@ -58,8 +58,8 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     if (nitems == 1)
     {
         ret = foundItems.Last();
-        mnemonic = process_->Mnemonics->GetData(ret);
-        if (mnemonic->GetOpCodeSize() > maxitems)
+        mnemonic = process_->Mnemonics_->Item(ret); // TODO: remove -->>   GetData(ret);
+        if (mnemonic->GetByteCodeSize() > maxitems)
             ret = OPCODE_NOT_FOUND;
     }
     else

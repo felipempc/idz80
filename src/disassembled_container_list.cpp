@@ -9,18 +9,17 @@
  **************************************************************/
 
 
-#include "disassembled_list.h"
+#include "disassembled_container_list.h"
 
-#error "This file must be deleted!!"
 
-DisassembledList::DisassembledList()
+DisassembledContainerList::DisassembledContainerList()
 {
     current_item_index_ = -1;
     current_item_ = 0;
 }
 
 
-boolean DisassembledList::Add(DisassembledContainer *dc)
+bool DisassembledContainerList::Add(DisassembledContainer *dc)
 {
     if (dc != 0)
     {
@@ -32,7 +31,7 @@ boolean DisassembledList::Add(DisassembledContainer *dc)
     return false;
 }
 
-void DisassembledList::Delete(int index)
+void DisassembledContainerList::Delete(int index)
 {
     try
     {
@@ -41,54 +40,54 @@ void DisassembledList::Delete(int index)
     }
     catch (const std::out_of_range& oor)
     {
-        // do something
+        //TODO: do something
     }
 }
 
 
-DisassembledContainer *DisassembledList::First()
+DisassembledContainer *DisassembledContainerList::First()
 {
-
+    //TODO: Implement
 }
 
 
-DisassembledContainer *DisassembledList::Last()
+DisassembledContainer *DisassembledContainerList::Last()
 {
-
+    //TODO: Implement
 }
 
-DisassembledContainer *DisassembledList::Current()
+DisassembledContainer *DisassembledContainerList::Current()
 {
-
-}
-
-
-DisassembledContainer *DisassembledList::Previous()
-{
-
-}
-
-DisassembledContainer *DisassembledList::Next()
-{
-
+    //TODO: Implement
 }
 
 
-DisassembledContainer *DisassembledList::Index(int index)
+DisassembledContainer *DisassembledContainerList::Previous()
 {
+    //TODO: Implement
+}
 
+DisassembledContainer *DisassembledContainerList::Next()
+{
+    //TODO: Implement
 }
 
 
-int DisassembledList::CurrentIndex()
+DisassembledContainer *DisassembledContainerList::Index(int index)
 {
-
+    //TODO: Implement
 }
 
 
-bool DisassembledList::isEnd()
+int DisassembledContainerList::CurrentIndex()
 {
+    //TODO: Implement
+}
 
+
+bool DisassembledContainerList::isEnd()
+{
+    //TODO: Implement
 }
 
 

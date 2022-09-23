@@ -8,13 +8,9 @@
  * This module stores multiple disassembled containers (25/06/21)
  **************************************************************/
 
-//TODO: Remove
-#ifndef DISASSEMBLED_LIST_H_INCLUDED
-#error "This file must be deleted"
-#endif // DISASSEMBLED_LIST_H_INCLUDED
 
-#ifdef DISASSEMBLED_LIST_H_INCLUDED
-#define DISASSEMBLED_LIST_H_INCLUDED
+#ifndef DISASSEMBLED_CONTAINER_LIST_H_INCLUDED
+#define DISASSEMBLED_CONTAINER_LIST_H_INCLUDED
 
 
 #include <vector>
@@ -22,12 +18,12 @@
 
 
 
-class DisassembledList
+class DisassembledContainerList
 {
     public:
-    DisassembledList();
+    DisassembledContainerList();
 
-    boolean Add(*DisassembledContainer);
+    bool Add(DisassembledContainer *dc);
     void Delete(int index);
 
     DisassembledContainer *First();
@@ -50,4 +46,4 @@ class DisassembledList
 };
 
 
-#endif // DISASSEMBLED_LIST_H_INCLUDED
+#endif // DISASSEMBLED_CONTAINER_LIST_H_INCLUDED

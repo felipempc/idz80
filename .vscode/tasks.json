@@ -4,84 +4,50 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build release",
+            "label": "echo",
             "type": "shell",
-            "command": "mingw32-make",
-            "group": "build",
-            "options": {
-                "cwd": "X:/idz80/build"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": "$gcc"
+            "command": "echo Hello"
         },
         {
+            "type": "cppbuild",
             "label": "Build Debug",
-            "type": "shell",
-            "command": "mingw32-make",
+            "command": "Y:/bin/g++.exe",
             "args": [
-                "DEBUG=1"
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}\\src\\*.cpp",
+                "-o",
+                "${workspaceFolder}\\build\\debug\\${fileDirname}.exe",
+                "-I",
+                "${workspaceFolder}\\include",
+                "-I",
+                "K:\\lib\\wxw\\wx315\\include",
+                "-I",
+                "K:\\lib\\wxw\\wx315\\lib\\gcc_dll\\mswud",
+                "-L",
+                "K:\\lib\\wxw\\wx315\\lib\\gcc_dll",
+                "-l",
+                "wxmsw31ud_core",
+                "-l",
+                "wxmsw31ud_aui",
+                "-l",
+                "wxmsw31ud_adv",
+                "-l",
+                "wxbase31ud",
+                "-l",
+                "wxbase31ud_xml"
+            ],
+            "options": {
+                "cwd": "Y:/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "options": {
-                "cwd": "X:/idz80/build"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "Clean",
-            "type": "shell",
-            "command": "mingw32-make",
-            "args": ["clean"],
-            "group": "build",
-            "options": {
-                "cwd": "X:/idz80/build"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            },
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "Check variables",
-            "type": "shell",
-            "command": "mingw32-make",
-            "args": ["check"],
-            "group": "build",
-            "options": {
-                "cwd": "X:/idz80/build"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            },
-            "problemMatcher": "$gcc"
+            "detail": "compilador: Y:/bin/g++.exe"
         }
     ]
 }

@@ -8,6 +8,7 @@ obj/*
 *.zip
 *.ods
 *.d
+*.dll
 info.txt
 Thumbs.db
 *.out

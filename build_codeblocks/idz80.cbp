@@ -61,8 +61,8 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WXW" value="K:\lib\wxw\wx304" />
-				<Variable name="WXW_OLD" value="D:\Users\Felipe\OneDrive\Programação\bibliotecas\wxw\wx302" />
+				<Variable name="WXW" value="K:\lib\wxw\wx305" />
+				<Variable name="WXW_OLDxxx" value="D:\Users\Felipe\OneDrive\Programação\bibliotecas\wxw\wx302" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -88,10 +88,10 @@
 		<Unit filename="../include/decoder.h" />
 		<Unit filename="../include/decoder_smart.h" />
 		<Unit filename="../include/disassembled_container.h" />
+		<Unit filename="../include/disassembled_container_list.h" />
 		<Unit filename="../include/disassembled_item.h" />
 		<Unit filename="../include/disassembled_item_base.h" />
 		<Unit filename="../include/disassembled_item_data.h" />
-		<Unit filename="../include/disassembled_list.h" />
 		<Unit filename="../include/file_settings_dialog.h" />
 		<Unit filename="../include/fileinfo_dialog.h" />
 		<Unit filename="../include/idz80_app.h" />
@@ -127,9 +127,9 @@
 		<Unit filename="../src/decoder.cpp" />
 		<Unit filename="../src/decoder_smart.cpp" />
 		<Unit filename="../src/disassembled_container.cpp" />
+		<Unit filename="../src/disassembled_container_list.cpp" />
 		<Unit filename="../src/disassembled_item.cpp" />
 		<Unit filename="../src/disassembled_item_data.cpp" />
-		<Unit filename="../src/disassembled_list.cpp" />
 		<Unit filename="../src/file_settings_dialog.cpp" />
 		<Unit filename="../src/fileinfo_dialog.cpp" />
 		<Unit filename="../src/idz80_app.cpp" />
