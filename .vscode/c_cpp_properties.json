@@ -3,8 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "K:/lib/wxw/wx305/**",
-                "K:/lib/wxw/wx305/lib/gcc_dll/**",
+                "C:/msys64/ucrt64/include/wx-3.2/**",
+                "C:/msys64/ucrt64/lib/wx/include/msw-unicode-3.2/**",
                 "${workspaceFolder}/include/**"
             ],
             "defines": [
@@ -16,7 +16,7 @@
                 "WXUSINGDLL",
                 "wxUSE_UNICODE"
             ],
-            "compilerPath": "Y:/bin/g++.exe",
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "windows-gcc-x86"

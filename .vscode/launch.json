@@ -15,7 +15,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "Y:/bin",
+            "miDebuggerPath": "C:/msys64/ucrt64/bin",
             "setupCommands": [
                 {
                     "description": "Habilitar a reformatação automática para gdb",

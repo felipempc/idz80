@@ -11,7 +11,7 @@
         {
             "type": "cppbuild",
             "label": "Build Debug",
-            "command": "Y:/bin/g++.exe",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
@@ -38,7 +38,7 @@
                 "wxbase31ud_xml"
             ],
             "options": {
-                "cwd": "Y:/bin"
+                "cwd": "C:/msys64/ucrt64/bin"
             },
             "problemMatcher": [
                 "$gcc"
@@ -47,7 +47,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "compilador: Y:/bin/g++.exe"
+            "detail": "compilador: C:/msys64/ucrt64/bin/g++.exe"
         }
     ]
 }

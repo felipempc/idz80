@@ -4,9 +4,12 @@
 DRV = K:
 
 # wxWidgets
-WXWVERSION = 304
+WXWVERSION = 32
 WXVERSION_SHORT = 30
-WXW ?= $(DRV)/lib/wxw/wx$(WXWVERSION)
+WXW_INCLUDE1 ?= /ucrt64/include/wx-3.2/
+       #$(DRV)/lib/wxw/wx$(WXWVERSION)
+WXW_INCLUDE2 ?= /ucrt64/lib/wx/include/msw-unicode-3.2
+PROJECT_INCLUDE ?= ./include
 
 
 # Compilador
@@ -17,21 +20,21 @@ DEBUG ?= 0
 
 # Resource
 RS = windres
-RS_FLAGS = --include-dirs=$(WXW)/include
+RS_FLAGS = --include-dirs=$(WXW_INCLUDE1)
 
 # Date and time
-DATE = $(shell date /t)
-TIME = $(shell time /t)
+DATE = $(shell date +%y-%m-%d)
+TIME = $(shell date +%T)
 
 
 ifeq ($(DEBUG), 0)
 	# Release
 	CC_FLAGS = -O2 -Wredundant-decls -c -Wall -pipe -mthreads -std=c++98
 	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
-	INCLUDE0_PATH = $(WXW)/lib/gcc_dll/mswu
-	LIBFILE1 = -lwxbase$(WXVERSION_SHORT)u_gcc_custom
-	LIBFILE2 = -lwxmsw$(WXVERSION_SHORT)u_aui_gcc_custom
-	LIBFILE3 = -lwxmsw$(WXVERSION_SHORT)u_core_gcc_custom
+	INCLUDE0_PATH = $(WXW_INCLUDE2)
+	LIBFILE1 = -llibwx_baseu-3.2.dll
+	LIBFILE2 = -llibwx_mswu_aui-3.2.dll
+	LIBFILE3 = -llibwx_mswu_core-3.2.dll
 else
 	# DEBUG
 	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++98
@@ -42,9 +45,9 @@ else
 	LIBFILE3 = -lwxmsw$(WXVERSION_SHORT)ud_core_gcc_custom
 endif
 
-INCLUDE1_PATH = $(WXW)/include
-INCLUDE2_PATH = $(WXW)/contrib/include
-INCLUDE = -I$(INCLUDE0_PATH) -I$(INCLUDE1_PATH) -I$(INCLUDE2_PATH) -IX:/idz80/include
+INCLUDE1_PATH = $(PROJECT_INCLUDE)
+#INCLUDE2_PATH = $(WXW)/contrib/include
+INCLUDE = -I$(INCLUDE0_PATH) -I$(INCLUDE1_PATH)
 
 # Opções de linkedição
 LDFLAGS =  -Wl,--subsystem,windows -mwindows
@@ -71,8 +74,10 @@ RESDIR = ..
 
 
 # wildcard é utilizado para listar os arquivos-fonte no diretório atual
-FONTES_FULL = $(wildcard ../src/*.cpp)
-FONTES = $(notdir $(FONTES_FULL))
+#FONTES_FULL = 
+              #$(wildcard ../src/*.cpp)
+FONTES := $(shell ls src/*.cpp)
+         #$(notdir $(FONTES_FULL))
 
 # gera lista dos arquivos-objeto usando a lista de arquivos-fonte
 OBJETOS = $(FONTES:.cpp=.o)
