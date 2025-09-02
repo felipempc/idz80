@@ -30,6 +30,20 @@ enum ArgumentStyleOptions
 };
 
 
+/// @brief Text of a value hexadecimal representation: 5F, 5FH, 0x5F, $5F
+enum HexadecimalStrStyle
+{
+    HEX_STYLE_NONE,     // 5F
+    HEX_STYLE_H,        // 5FH
+    HEX_STYLE_0X,       // 0x5F
+    HEX_STYLE_$         // $5F
+};
+
+enum DataSeparation
+{
+    SPACE_SEPARATION,
+    COMMA_SEPARATION
+};
 
 struct ArgumentStyle
 {
@@ -61,7 +75,7 @@ class DisassembledItem : public DisassembledItemData
 
         void CopyArguments(const ExplicitArguments &arguments);
 
-        wxString GetOpcodeAsString();
+        wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATION);
         wxString GetAsciiCodeAsString();
 
         ArgumentStyle GetArgumentStyle();

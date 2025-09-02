@@ -58,20 +58,42 @@ void DisassembledItem::CopyArguments(const ExplicitArguments &arguments)
 
 
 
-wxString DisassembledItem::GetOpcodeAsString()
+/// @brief Return a string containing the opcode in hex format. Example: 3C BD FF
+/// @param hex_style Specifies the hex representation symbol: 00H, $00, 0x00
+/// @return The string
+wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style, const DataSeparation separation)
 {
-    wxString as_string;
+    wxString as_string, fmt_string("%.2X");
     byte bytecode;
+    unsigned int counter;
 
     if(mnemonic_)
     {
         as_string.Clear();
-        for (unsigned int counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
+        switch (hex_style) {
+            case HEX_STYLE_0X:
+                fmt_string = "0x%.2X";
+                break;
+            case HEX_STYLE_$:
+                fmt_string = "$%.2X";
+                break;
+            case HEX_STYLE_H:
+                fmt_string = "%.2XH";
+                break;
+        }
+
+        if  (separation == COMMA_SEPARATION)
+            fmt_string << ",";
+        else
+            fmt_string << " ";
+
+        for (counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
         {
             bytecode = binary_data_->GetData(offset_in_file_ + counter);
-            as_string << wxString::Format("%.2X ", bytecode);
+            as_string << wxString::Format(fmt_string, bytecode);
         }
-        as_string.Trim(true);
+        counter = as_string.Len() - 1;
+        as_string.Left(counter);
     }
 
     return as_string;

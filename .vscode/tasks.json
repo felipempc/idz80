@@ -4,50 +4,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
+            "label": "Build with Make",
             "type": "shell",
-            "command": "echo Hello"
-        },
-        {
-            "type": "cppbuild",
-            "label": "Build Debug",
-            "command": "C:/msys64/ucrt64/bin/g++.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${workspaceFolder}\\src\\*.cpp",
-                "-o",
-                "${workspaceFolder}\\build\\debug\\${fileDirname}.exe",
-                "-I",
-                "${workspaceFolder}\\include",
-                "-I",
-                "K:\\lib\\wxw\\wx315\\include",
-                "-I",
-                "K:\\lib\\wxw\\wx315\\lib\\gcc_dll\\mswud",
-                "-L",
-                "K:\\lib\\wxw\\wx315\\lib\\gcc_dll",
-                "-l",
-                "wxmsw31ud_core",
-                "-l",
-                "wxmsw31ud_aui",
-                "-l",
-                "wxmsw31ud_adv",
-                "-l",
-                "wxbase31ud",
-                "-l",
-                "wxbase31ud_xml"
+            "command": "mingw32-make",
+            "args":[
+                    "-f",
+                    "build/Makefile"
             ],
-            "options": {
-                "cwd": "C:/msys64/ucrt64/bin"
+            "group": {
+            "kind": "build",
+            "isDefault": true
             },
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "compilador: C:/msys64/ucrt64/bin/g++.exe"
+            "detail": "Run Gnu Make to build the project."
+        },
+
+        {
+        "label": "Teste de Task",
+        "type": "shell",
+        "command": "pwd"
         }
     ]
 }

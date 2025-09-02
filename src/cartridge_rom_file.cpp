@@ -98,19 +98,19 @@ bool CartridgeRomFile::GetEntries(SortedIntArray &entrylist)
 {
     bool success = false;
 
-    entrylist.Clear();
+    entrylist.clear();
 
     if (cartridge_header_)
     {
         if (cartridge_header_->init)
-            entrylist.Add(cartridge_header_->init);
+            entrylist.push_back(cartridge_header_->init);
         if (cartridge_header_->statement)
-            entrylist.Add(cartridge_header_->statement);
+            entrylist.push_back(cartridge_header_->statement);
         if (cartridge_header_->device)
-            entrylist.Add(cartridge_header_->device);
+            entrylist.push_back(cartridge_header_->device);
     }
 
-    if (entrylist.GetCount() > 0)
+    if (entrylist.size() > 0)
         success = true;
 
     return success;

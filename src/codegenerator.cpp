@@ -37,19 +37,23 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
     DisassembledItem *de;
     wxString str, str_number_format;
 
+/*
     if (m_cflags == cfM80)
         str_number_format = "%.2XH";
     else
         str_number_format = "0x%.2X";
-
+*/
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     str.Printf("DB ");
+    str << de->GetOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATION);
+    /* OBSOLETE
     for (i = 0; i < de->GetMnemonic()->GetByteCodeSize(); i++)
     {
         str << wxString::Format(str_number_format, de->GetData(de->GetOffset() + i));
         if (i < (de->GetLength() - 1))
             str << ",";
     }
+    */
     return str;
 }
 
@@ -92,9 +96,9 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 
     usedlabel = false;
     de = Process->Disassembled->GetData(cvi->Dasmitem);
-    nargs = de->GetArgumentCount();
+    nargs = de->GetMnemonic()->GetArgumentCount();
 
-    str_ret = de->GetMnemonicStr(0);
+    str_ret = de->GetMnemonic()->GetMnemonicStr(0);
     strparts = 1;
 
     str_1.Clear();

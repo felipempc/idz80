@@ -1,14 +1,21 @@
 ### Makefile IDZ80 ###
 
+# Verifica Sistema Operacional
+ifeq ($(OS),Windows_NT)
+        $(info OS var is $(OS))
+else
+        $(warning OS var is not set!)
+endif
+
 # Drive virtual pasta Coding
-DRV = K:
+#DRV = K:
 
 # wxWidgets
 WXWVERSION = 32
 WXVERSION_SHORT = 30
-WXW_INCLUDE1 ?= /ucrt64/include/wx-3.2/
+WXW_INCLUDE1 ?= C:/msys64/ucrt64/include/wx-3.2
        #$(DRV)/lib/wxw/wx$(WXWVERSION)
-WXW_INCLUDE2 ?= /ucrt64/lib/wx/include/msw-unicode-3.2
+WXW_INCLUDE2 ?= C:/msys64/ucrt64/lib/wx/include/msw-unicode-3.2
 PROJECT_INCLUDE ?= ./include
 
 
@@ -29,7 +36,7 @@ TIME = $(shell date +%T)
 
 ifeq ($(DEBUG), 0)
 	# Release
-	CC_FLAGS = -O2 -Wredundant-decls -c -Wall -pipe -mthreads -std=c++98
+	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -std=c++14
 	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE
 	INCLUDE0_PATH = $(WXW_INCLUDE2)
 	LIBFILE1 = -llibwx_baseu-3.2.dll
@@ -37,7 +44,7 @@ ifeq ($(DEBUG), 0)
 	LIBFILE3 = -llibwx_mswu_core-3.2.dll
 else
 	# DEBUG
-	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++98
+	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++14 -Wsequence-point
 	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG -DIDZ80_DECODER -DIDZ80_DASMED
 	INCLUDE0_PATH = $(WXW)/lib/gcc_dll/mswud
 	LIBFILE1 = -lwxbase$(WXVERSION_SHORT)ud_gcc_custom
@@ -45,9 +52,10 @@ else
 	LIBFILE3 = -lwxmsw$(WXVERSION_SHORT)ud_core_gcc_custom
 endif
 
-INCLUDE1_PATH = $(PROJECT_INCLUDE)
+INCLUDE1_PATH = $(WXW_INCLUDE1)
+INCLUDE2_PATH = $(PROJECT_INCLUDE)
 #INCLUDE2_PATH = $(WXW)/contrib/include
-INCLUDE = -I$(INCLUDE0_PATH) -I$(INCLUDE1_PATH)
+INCLUDE =-I$(INCLUDE1_PATH) -I$(INCLUDE0_PATH) -I$(INCLUDE2_PATH)
 
 # Opções de linkedição
 LDFLAGS =  -Wl,--subsystem,windows -mwindows
@@ -60,34 +68,22 @@ LIBPATH = -L$(WXW)/lib
 
 # Project's path
 ifeq ($(DEBUG), 0)
-	OBJDIR = ../obj/Release
-	OBJDIR_SHORT = obj/Release
-	BINDIR = ../bin/Release
+	OBJDIR = obj/Release
+	BINDIR = bin/Release
 else
-	OBJDIR = ../obj/Debug
-	OBJDIR_SHORT = obj/Debug
-	BINDIR = ../bin/Debug
+	OBJDIR = obj/Debug
+	BINDIR = bin/Debug
 endif
 
-SRCDIR = ../src
-RESDIR = ..
-
-
 # wildcard é utilizado para listar os arquivos-fonte no diretório atual
-#FONTES_FULL = 
-              #$(wildcard ../src/*.cpp)
-FONTES := $(shell ls src/*.cpp)
-         #$(notdir $(FONTES_FULL))
+FONTES_FULL = $(shell ls src/*.cpp)    #lista todos os arquivos-fonte
+FONTES := $(notdir $(FONTES_FULL))     #remove o diretorio antes do arquivo
 
 # gera lista dos arquivos-objeto usando a lista de arquivos-fonte
 OBJETOS = $(FONTES:.cpp=.o)
-#OBJETOS = $(subst src,$(OBJDIR_SHORT),$(OBJ_1))
 
 # Nome do arquivo executável
 EXECUTAVEL = $(BINDIR)/idz80_make.exe
-
-# Define os diretorios para make
-VPATH = $(OBJDIR) $(SRCDIR)
 
 #Regra all (Todos)
 all: $(EXECUTAVEL)
@@ -109,19 +105,14 @@ $(EXECUTAVEL): $(OBJETOS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 #Regra Compilar
-%.o: %.cpp
+%.o: src/%.cpp
 	@echo "Compilando $@ - [$^] ------------------------------------------------------------"
 	$(CC) $(CC_FLAGS) $(DEFS) -o $(OBJDIR)/$@ -c $^ $(INCLUDE)
 
 .PHONY: clean
 clean:
-	ver
-	-if exist $(OBJDIR)/*.o del \"$(OBJDIR)/*.o\""
-	-if exist $(EXECUTAVEL) del "$(EXECUTAVEL)"
+	rm -f $(OBJETOS) $(EXECUTAVEL)
 
-.PHONY: check
-check:
-	echo $(FONTES)
-	echo -------------------------------------------------------------------------------
-	echo $(OBJETOS)
-	
+# CMD
+#	-if exist $(OBJDIR)/*.o del \"$(OBJDIR)/*.o\""
+#	-if exist $(EXECUTAVEL) del "$(EXECUTAVEL)"

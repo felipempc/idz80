@@ -11,18 +11,17 @@
 #ifndef IDZ80BASICTYPES_H
 #define IDZ80BASICTYPES_H
 
+#include <vector>
 
-#include <wx/dynarray.h>
+// OBSOLETE: #include <wx/dynarray.h>
 
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
 
-WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
-
-
-
-
+/// @brief Normal vector, must be manually sorted. Include <algorithm> for sort.
+typedef std::vector<uint> SortedIntArray;
+// OBSOLETE: WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
 #endif // IDZ80BASICTYPES_H
 
 

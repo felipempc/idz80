@@ -73,9 +73,10 @@ bool BinFile::FillAndValidateBIN(void *source)
         }
 
     }
-
     return ret;
 }
+
+
 
 
 
