@@ -14,8 +14,8 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     ModuleName = "NPDialog";
 
 
-    add_icon_ = new wxBitmap(main_->app_resource_dir_ + "Plus icon.bmp", wxBITMAP_TYPE_BMP);
-    remove_icon_ = new wxBitmap(main_->app_resource_dir_ + "Minus icon.bmp", wxBITMAP_TYPE_BMP);
+    add_icon_ = new wxBitmap(main_->app_resource_dir_ + "\\Plus icon.bmp", wxBITMAP_TYPE_BMP);
+    remove_icon_ = new wxBitmap(main_->app_resource_dir_ + "\\Minus icon.bmp", wxBITMAP_TYPE_BMP);
     actualrow_ = -1;
 
     BuildDialog();

@@ -26,18 +26,17 @@
 //#include "process_data.h"
 //#include "codeview.h"
 #include "labelslist.h"
-#include "projectmanager_xml.h"
+//#include "projectmanager_xml.h"
 //#include "codegenerator.h"
 #include "logwindow.h"
 
 #include <wx/config.h>
 
 
-static const wxString LocalPath = "X:/idz80/";
-
 class IDZ80: public IDZ80MainBase, public LogBase
 {
 	public:
+		const wxString ResourceDir = "resource";
 
 		IDZ80(wxWindow* parent, wxArrayString &arraystr);
 		virtual ~IDZ80();
@@ -72,6 +71,7 @@ class IDZ80: public IDZ80MainBase, public LogBase
 		static const long ID_STATUSBAR1;
 		static const long ID_VARLABELPANE;
 
+
 	private:
 		wxAuiManager    *aui_mgr_;
 		wxTextCtrl      *panel_log_;
@@ -82,10 +82,10 @@ class IDZ80: public IDZ80MainBase, public LogBase
 //        CodeView        *codeview_;
         wxIconBundle    *icons_;
         wxConfig        *config_;
-        ProjectManagerXML
-                        *project_;
+//        ProjectManagerXML
+//                        *project_;
         //wxArrayString	m_commandline;
-        bool            maximize_main_window_;
+		bool            maximize_main_window_;
 
         bool LoadMnemonicsDB();
         bool SaveAs();
@@ -108,7 +108,7 @@ class IDZ80: public IDZ80MainBase, public LogBase
         void SetupPanelLog();
         void SetupLabels();
 
-        wxString DialogLoadProgramFile();
+        //wxString DialogLoadProgramFile();
         wxString DialogLoadProjectFile();
 
 
@@ -141,7 +141,6 @@ class IDZ80: public IDZ80MainBase, public LogBase
 
 		void OnFirstIdle(wxIdleEvent &event);
 
-		void OnProgressBarUpdate();
 };
 
 #endif

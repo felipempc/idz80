@@ -64,7 +64,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 //    codeview_ = 0;
     icons_ = 0;
     config_ = 0;
-    project_ = 0;
+//    project_ = 0;
 	maximize_main_window_ = true;
 //	CodeViewLines_ = 0;
     Disassembled_ = 0;
@@ -100,7 +100,7 @@ IDZ80::~IDZ80()
 {
     StoreConfiguration();
     aui_mgr_->UnInit();
-    delete project_;
+//    delete project_;
     delete config_;
     delete icons_;
 //    delete codeview_;
@@ -167,16 +167,16 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 		panel_log_->AppendText("*** First Idle Event failed to unbind !\n\n");
 	#endif
 
-    app_root_dir_ = LocalPath;
-    app_resource_dir_ = app_root_dir_ + "/resource/";
+    app_root_dir_ = wxGetCwd();
+    app_resource_dir_ = app_root_dir_ + "\\" + ResourceDir;
     fileopen_last_dir_ = "";
 
-    SetupIcon();
+    //SetupIcon();
     SetupMenuItemStatus();
 
 //    process_ = new ProcessData(this, log_window_);
 //    codeview_ = new CodeView(this, process_, log_window_);
-    project_ = new ProjectManagerXML(this);
+//    project_ = new ProjectManagerXML(this);
     Programs_ = new RawDataManager(log_window_);
 
 
@@ -268,16 +268,16 @@ void IDZ80::SetupMenuItemStatus()
 bool IDZ80::LoadMnemonicsDB()
 {
     wxString s;
-    bool ret;
+    bool ret = false;
 
-    s = app_resource_dir_ + "z80_instructions.xml";
+    s = app_resource_dir_ + "\\z80_instructions.xml";
 
     panel_log_->SetDefaultStyle(wxTextAttr(*wxBLACK));
     panel_log_->AppendText("Opening mnemonic file:\n");
     panel_log_->SetDefaultStyle(wxTextAttr(*wxRED));
     panel_log_->AppendText(s);
     panel_log_->AppendText("\n");
-
+/*
     if(Mnemonics_ == 0)
         Mnemonics_ = new MnemonicContainer(panel_log_);
     else
@@ -285,6 +285,7 @@ bool IDZ80::LoadMnemonicsDB()
     MnemonicXMLFile mnemonic(Mnemonics_, panel_log_);
 
     ret = mnemonic.Open(s);
+*/
     if (ret)
     {
         panel_log_->SetDefaultStyle(wxTextAttr(*wxBLACK));
@@ -305,7 +306,7 @@ bool IDZ80::LoadMnemonicsDB()
 
 void IDZ80::SetupIcon()
 {
-    wxString path = app_resource_dir_ + "HardwareChip.ico";
+    wxString path = app_resource_dir_ + "/HardwareChip.ico";
     icons_ = new wxIconBundle(path, wxBITMAP_TYPE_ICO);
     SetIcon(icons_->GetIcon(wxSize(-1, -1)));
 }
@@ -645,6 +646,7 @@ wxString IDZ80::DialogLoadProgramFile()
 //bool IDZ80::OpenProjectFile(const wxString filename)
 void IDZ80::OpenProjectFile()
 {
+/*
 	wxString filename;
 
 	filename = DialogLoadProjectFile();
@@ -662,6 +664,7 @@ void IDZ80::OpenProjectFile()
 		mb->Enable(idMenuToolsGenCode, true);
 		mb->Enable(idMenuToolsAutoLabel, true);
 	}
+*/
 }
 
 
@@ -749,7 +752,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     wxPoint ldpos;
     int     w,h,x,y;
     */
-    SortedIntArray  entries(CompareSortedInt);
+    //SortedIntArray  entries(CompareSortedInt);
     bool *simulateexecution;
 
     simulateexecution = (bool *)event.GetClientData();
@@ -978,8 +981,8 @@ bool IDZ80::SaveAs()
     if (dialog.ShowModal() == wxID_OK)
     {
         fname = dialog.GetPath();
-        if (project_->Save(fname))
-            ret = true;
+//        if (project_->Save(fname))
+//            ret = true;
     }
     return ret;
 }
@@ -1000,6 +1003,7 @@ void IDZ80::Clear_all()
 
 void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
 {
+/*
     if (project_->HasName())
     {
         if (!project_->Save())
@@ -1012,7 +1016,7 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
         {
             UpdateTitle(project_->GetFilename());
         }
-
+*/
 }
 
 
@@ -1020,10 +1024,12 @@ void IDZ80::OnMenuFileSaveProject(wxCommandEvent& event)
 
 void IDZ80::OnMenuFileSaveAsProject(wxCommandEvent& event)
 {
+/*
     if (SaveAs())
     {
         UpdateTitle(project_->GetFilename());
     }
+*/
 }
 
 
@@ -1031,9 +1037,9 @@ void IDZ80::OnMenuFileSaveAsProject(wxCommandEvent& event)
 
 void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 {
-    ShowFileInfo dialog(this);
+//    ShowFileInfo dialog(this);
 //    dialog.SendInfo(process_);
-    dialog.ShowModal();
+//  dialog.ShowModal();
 }
 
 
@@ -1073,7 +1079,7 @@ void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
 
     dasmwin->SetSizer(topsizer);
 
-    defaultFilename = project_->GetFilename() << ".mac";
+//    defaultFilename = project_->GetFilename() << ".mac";
 
     caption = "Save source code as";
     wildcard = "Source code files (*.mac)|*.mac|All files (*.*)|*.*";

@@ -11,6 +11,8 @@
 
 #include "codegenerator.h"
 
+// OBSOLETE: MUST BE COMPLETELY REWRITED
+
 codeGenerator::codeGenerator(ProcessData *parent)
 {
     Process = parent;
@@ -104,13 +106,14 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     str_1.Clear();
     str_2.Clear();
 
-    argument = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+    //Rewrite
+    argument = 0; //de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
 
     if (m_cflags == cfM80)
         str_number_format = "%XH";
     else
         str_number_format = "0x%X";
-
+/*
     if (de->HasArgumentLabel())
     {
         switch (de->GetArgumentType(0))
@@ -131,43 +134,29 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
                             break;
         }
     }
-
+*/
     if ((nargs == 1) && (!usedlabel))
     {
         str_1.Printf(str_number_format, argument);
-        /*
-        if (m_cflags == cfM80)
-            if (!isNumber(str_1[0]))
-                str_1.Prepend("0");
-        */
     }
     else    // two arguments
     if ((nargs == 2) && (!usedlabel))
     {
         str_1.Printf(str_number_format, argument);
-        /*
-        if (m_cflags == cfM80)
-            if (!isNumber(str_1[0]))
-                str_1.Prepend("0");
-        */
 
-        str_1 << de->GetMnemonicStr(1);
+        // str_1 << de->GetMnemonicStr(1);
         strparts++;
-        str_2.Printf(str_number_format, de->GetArgument(1, 0));
-        /*
-        if (m_cflags == cfM80)
-            if (!isNumber(str_2[0]))
-                str_2.Prepend("0");
-        */
+        //str_2.Printf(str_number_format, de->GetArgument(1, 0));
 
     }
 
     str_ret << str_1 << str_2;
-
+/*
     if (de->GetMnemonicStrCount() > strparts)
     {
         str_ret << de->GetMnemonicStr(strparts);
     }
+*/
     return str_ret;
 }
 
@@ -248,7 +237,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
                 de = Process->Disassembled->GetData(cvi->Dasmitem);
 
                 first_instruction = true;
-
+/*
                 switch (de->GetType())
                 {
                     case et_Data:
@@ -261,12 +250,14 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
                     default:
                                         break;
                 }
+*/
             }
             else
             /* -------------------------------------------------
              *  Render Labels
              * -------------------------------------------------*/
-            if (cvi->LabelProgAddr)
+
+             if (cvi->LabelProgAddr)
             {
                 first_instruction = true;
                 textCode << cvi->LabelProgAddr->LabelStr << ":";
@@ -276,6 +267,7 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
                 first_instruction = true;
                 textCode << cvi->LabelVarAddr->LabelStr << ":";
             }
+
         }
 
 
