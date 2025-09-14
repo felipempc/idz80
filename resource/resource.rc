@@ -1,1 +1,3 @@
 #include "wx/msw/wx.rc"
+
+IDI_APPICON ICON "resource/HardwareChip.ico"

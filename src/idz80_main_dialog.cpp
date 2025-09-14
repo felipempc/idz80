@@ -14,6 +14,7 @@
 #include <wx/filename.h>
 #include <wx/font.h>
 #include <wx/intl.h>
+#include <wx/icon.h>
 #include <wx/string.h>
 #include <wx/msgdlg.h>
 
@@ -77,6 +78,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
     log_window_ = new LogWindow(this, "IDZ80 - Log Window");
     SetTextLog(log_window_);
     ModuleName = "Main";
+
+    SetupIcon();
 
 	SetClientSize(wxSize(600,465));
 	Move(wxDefaultPosition);
@@ -177,14 +180,14 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 //    process_ = new ProcessData(this, log_window_);
 //    codeview_ = new CodeView(this, process_, log_window_);
 //    project_ = new ProjectManagerXML(this);
-    Programs_ = new RawDataManager(log_window_);
+//    Programs_ = new RawDataManager(log_window_);
 
 
-    Labels_ = new LabelManager();
-    SetupLabels();
+//    Labels_ = new LabelManager();
+//    SetupLabels();
 
-    SetupAUIPanes();
-    ReadStoredConfiguration();
+//    SetupAUIPanes();
+//    ReadStoredConfiguration();
     LoadMnemonicsDB();
 
 
@@ -204,15 +207,16 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	//TODO: Implement Log in project class
 	//project_->SetLog(panel_log_);
 
-	SetupMenuEvents();
+//	SetupMenuEvents();
 
 
     if (maximize_main_window_)
         Maximize();
 
-    NewProjectDialog dialog(this);
-    dialog.ShowModal();
+//    NewProjectDialog dialog(this);
+//    dialog.ShowModal();
 
+/*
     if (Programs_->First()->IsLoaded())
     {
         wxMenuBar *mb;
@@ -223,6 +227,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
         mb->Enable(idMenuToolsGenCode, false);
         mb->Enable(idMenuToolsAutoLabel, false);
     }
+*/
 }
 
 
@@ -306,9 +311,14 @@ bool IDZ80::LoadMnemonicsDB()
 
 void IDZ80::SetupIcon()
 {
-    wxString path = app_resource_dir_ + "/HardwareChip.ico";
-    icons_ = new wxIconBundle(path, wxBITMAP_TYPE_ICO);
-    SetIcon(icons_->GetIcon(wxSize(-1, -1)));
+    wxIcon icon(wxICON(IDI_APPICON));  // IDI_APPICON in resources.rc
+
+    // Check if the icon loaded successfully
+    if (icon.IsOk()) {
+        SetIcon(icon);
+    } else {
+        LogIt("Failed to load application icon from resources.\n");
+    }
 }
 
 
