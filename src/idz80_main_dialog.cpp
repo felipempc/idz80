@@ -63,7 +63,6 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
     log_window_ = 0;
 //    process_ = 0;
 //    codeview_ = 0;
-    icons_ = 0;
     config_ = 0;
 //    project_ = 0;
 	maximize_main_window_ = true;
@@ -105,7 +104,6 @@ IDZ80::~IDZ80()
     aui_mgr_->UnInit();
 //    delete project_;
     delete config_;
-    delete icons_;
 //    delete codeview_;
 //    delete process_;
 }

@@ -80,7 +80,7 @@ class IDZ80: public IDZ80MainBase, public LogBase
 
 //        ProcessData     *process_;
 //        CodeView        *codeview_;
-        wxIconBundle    *icons_;
+
         wxConfig        *config_;
 //        ProjectManagerXML
 //                        *project_;
