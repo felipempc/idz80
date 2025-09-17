@@ -13,6 +13,12 @@
 #include "mnemonicxmlfile.h"
 
 
+#ifdef _IDZ80_DEBUG_
+#include <wx/filefn.h>
+const wxString MnemonicXMLFile::DEBUG_OUTPUT_FILENAME = "mnemonic_info_debug.txt";
+#endif
+
+
 // File Main TAGS
 const wxString MnemonicXMLFile::MNEMONIC_FILE_STR = "MNEMONIC_LIST";
 const wxString MnemonicXMLFile::MNEMONIC_GROUP_STR = "GROUPS";
@@ -130,6 +136,25 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
     xml_mnemonic_ = new wxXmlDocument(mnemonicfile);
     bool ret;
 
+    #ifdef _IDZ80_DEBUG_
+    debug_file_open = false;
+    LogIt("Creating debug file info...\n");
+    wxString output_filename = wxPathOnly(mnemonicfile.fn_str());
+    output_filename.Append("\\");
+    output_filename.Append(DEBUG_OUTPUT_FILENAME);
+    LogIt(output_filename);
+    LogIt("\n");
+
+    if (debug_file.Open(output_filename))
+    {
+        debug_file.Clear();
+        debug_file_open = true;
+    }
+    else
+        debug_file_open = debug_file.Create(output_filename);
+
+    #endif
+
     ret = xml_mnemonic_->IsOk();
     if(ret)
     {
@@ -137,7 +162,9 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
         mnemonics_->SetStatistics(statistics_);
 
         #ifdef _IDZ80_DEBUG_
-        log_->AppendText("Open file completed !\n");
+        LogToFile(wxString::Format("Number of instructions: %d", statistics_.numinstructions));
+        LogToFile(wxString::Format("Number of groups: %d", statistics_.numgroups));
+        log_->AppendText("Mnemonics loaded!\n");
         #endif // _IDZ80_DEBUG_
 
     }
@@ -146,6 +173,15 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
         log_->AppendText("XML file failed to load !\n\n");
     }
 
+
+    #ifdef _IDZ80_DEBUG_
+    if(debug_file_open)
+    {
+        debug_file.Write();
+        debug_file.Close();
+        debug_file_open = false;
+    }
+    #endif
 
     delete xml_mnemonic_;
     xml_mnemonic_ = 0;
@@ -170,7 +206,7 @@ void MnemonicXMLFile::ProcessFile()
         group_item = group_list[index];
 
         #ifdef _IDZ80_DEBUG_
-        log_->AppendText(wxString::Format("<<< %d >>>  Processing group '%s'.\n", index, group_item->GetName()));
+        LogToFile(wxString::Format("<<< %d >>>  Processing group '%s'.", index, group_item->GetName()));
         #endif // _IDZ80_DEBUG_
 
         ProcessGroup(group_item);
@@ -221,7 +257,7 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
             allocate_new = false;
         }
         #ifdef _IDZ80_DEBUG_
-        log_->AppendText("\n");
+        LogToFile("\n");
         #endif // _IDZ80_DEBUG_
 
         nextitem = nextitem->GetNext();
@@ -260,7 +296,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
         if (counter_debug != (mnemonicslices.GetCount() - 1))
             str_debug << "*";
     }
-    log_->AppendText(wxString::Format("[%.3d] Item '%s' = [%s]\n", statistics_.numinstructions, opcode_str, str_debug));
+    LogToFile(wxString::Format("[%.3d] Item '%s' = [%s].", statistics_.numinstructions, opcode_str, str_debug));
     #endif // _IDZ80_DEBUG_
 
 
@@ -286,8 +322,8 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
     }
     str_debug = str_debug.Trim();
 
-    log_->AppendText(wxString::Format("[%.3d] Bytecode<%d> = [%s]\n", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
-    log_->AppendText(wxString::Format("[%.3d] Signature = [%X]\n", statistics_.numinstructions, instruction->GetMnemonicSignature()));
+    LogToFile(wxString::Format("[%.3d] Bytecode<%d> = [%s].", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
+    LogToFile(wxString::Format("[%.3d] Signature = [%X].", statistics_.numinstructions, instruction->GetMnemonicSignature()));
     #endif // _IDZ80_DEBUG_
 }
 
@@ -397,7 +433,7 @@ bool MnemonicXMLFile::FindGroups(NodeGroupList &grouplist)
     }
 
     #ifdef _IDZ80_DEBUG_
-    log_->AppendText(wxString::Format("Total groups = %d\n", statistics_.numgroups));
+    LogToFile(wxString::Format("Total groups = %d.", statistics_.numgroups));
     #endif
 
     return (statistics_.numgroups > 0);
@@ -598,7 +634,7 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
         throw XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR;
 
     #ifdef _IDZ80_DEBUG_
-    log_->AppendText(wxString::Format("[%.3d] Size validated [%d].\n", statistics_.numinstructions, informed_size));
+    LogToFile(wxString::Format("[%.3d] Size validated [%d].", statistics_.numinstructions, informed_size));
     #endif // _IDZ80_DEBUG_
 
     for(uint counter = 0; counter < informed_size; counter++)
@@ -613,7 +649,7 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
 
 
     #ifdef _IDZ80_DEBUG_
-    log_->AppendText(wxString::Format("[%.3d] Bytecode size = %d [%d]\n", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
+    LogToFile(wxString::Format("[%.3d] Bytecode size = %d [%d].", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
     #endif // _IDZ80_DEBUG_
 }
 
@@ -658,50 +694,63 @@ void MnemonicXMLFile::PrintErrorMessages(XMLF_Exceptions e, int line)
     switch(e)
     {
         case XMLFE_ITEM_OPCODE_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find item OPCODE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find item OPCODE !\n", line));
             break;
 
         case XMLFE_ATTR_OPCODE_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute OPCODE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute OPCODE !\n", line));
             break;
 
         case XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV:
-            log_->AppendText(wxString::Format("[%d] Can't convert opcode SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't convert opcode SIZE !\n", line));
             break;
 
         case XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR:
-            log_->AppendText(wxString::Format("[%d] Opcode size validation error !\n", line));
+            LogIt(wxString::Format("[%d] Opcode size validation error !\n", line));
             break;
 
         case XMLFE_ATTR_OPCODE_CONVERSION_ERROR:
-            log_->AppendText(wxString::Format("[%d] Error while converting OPCODE sequence !\n", line));
+            LogIt(wxString::Format("[%d] Error while converting OPCODE sequence !\n", line));
             break;
 
         case XMLFE_ATTR_SIZE_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute SIZE !\n", line));
             break;
 
         case XMLFE_ATTR_MNMONIC_STR_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", line));
             break;
 
         case XMLFE_ARG_BASIC_SIZE_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute argument SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument SIZE !\n", line));
             break;
 
         case XMLFE_ARG_BASIC_COUNT_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute argument COUNT !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument COUNT !\n", line));
             break;
 
         case XMLFE_ARG_BASIC_POSITION_NOT_FOUND:
-            log_->AppendText(wxString::Format("[%d] Can't find attribute argument POSITION !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument POSITION !\n", line));
             break;
 
         case XMLFE_ARG_BASIC_LOAD_FAILED:
-            log_->AppendText(wxString::Format("[%d] Argument basic attributes failed to load !\n", line));
+            LogIt(wxString::Format("[%d] Argument basic attributes failed to load !\n", line));
             break;
 
         default:
-            log_->AppendText(wxString::Format("[%d] Unknow error !\n", line));
+            LogIt(wxString::Format("[%d] Unknow error !\n", line));
     }
+}
+
+#ifdef _IDZ80_DEBUG_
+void MnemonicXMLFile::LogToFile(const wxString textout)
+{
+    if (debug_file_open)
+        debug_file.AddLine(textout);
+}
+#endif
+
+void MnemonicXMLFile::LogIt(const wxString textout)
+{
+    log_->AppendText(textout);
 }

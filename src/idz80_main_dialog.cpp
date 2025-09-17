@@ -172,7 +172,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     app_resource_dir_ = app_root_dir_ + "\\" + ResourceDir;
     fileopen_last_dir_ = "";
 
-    //SetupIcon();
     SetupMenuItemStatus();
 
 //    process_ = new ProcessData(this, log_window_);
@@ -280,7 +279,7 @@ bool IDZ80::LoadMnemonicsDB()
     panel_log_->SetDefaultStyle(wxTextAttr(*wxRED));
     panel_log_->AppendText(s);
     panel_log_->AppendText("\n");
-/*
+
     if(Mnemonics_ == 0)
         Mnemonics_ = new MnemonicContainer(panel_log_);
     else
@@ -288,7 +287,7 @@ bool IDZ80::LoadMnemonicsDB()
     MnemonicXMLFile mnemonic(Mnemonics_, panel_log_);
 
     ret = mnemonic.Open(s);
-*/
+
     if (ret)
     {
         panel_log_->SetDefaultStyle(wxTextAttr(*wxBLACK));

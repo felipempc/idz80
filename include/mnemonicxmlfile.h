@@ -11,8 +11,19 @@
 #ifndef MNEMONICXMLFILE_H
 #define MNEMONICXMLFILE_H
 
+// ****** DEBUG FLAG ******
+#ifndef _IDZ80_DEBUG_
+#define _IDZ80_DEBUG_
+#endif
+// ************************
+
 #include <wx/textctrl.h>
 #include <wx/xml/xml.h>
+
+#ifdef _IDZ80_DEBUG_
+#include <wx/textfile.h>
+#endif
+
 #include "mnemonic_container.h"
 
 
@@ -33,6 +44,7 @@ enum XMLF_Exceptions
 
 typedef std::vector<wxXmlNode *> NodeGroupList;
 
+
 class MnemonicXMLFile
 {
     public:
@@ -41,7 +53,12 @@ class MnemonicXMLFile
 
         bool Open(const wxString &mnemonicfile);
 
-    //protected:
+    protected:
+        #ifdef _IDZ80_DEBUG_
+        static const wxString DEBUG_OUTPUT_FILENAME;
+        wxTextFile debug_file;
+        bool debug_file_open;
+        #endif
         static const wxString MNEMONIC_FILE_VERSION_STR;
         static const wxString MNEMONIC_FILE_STR;
         static const wxString MNEMONIC_PROCESSOR_STR;
@@ -138,6 +155,11 @@ class MnemonicXMLFile
         unsigned int CalculateSignature(const ByteCode &bytecode);
         wxXmlNode *GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str);
         void PrintErrorMessages(XMLF_Exceptions e, int line);
+
+        void LogIt(const wxString textout);
+        #ifdef _IDZ80_DEBUG_
+        void LogToFile(const wxString textout);
+        #endif
 
 };
 

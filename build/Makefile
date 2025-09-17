@@ -46,13 +46,14 @@ BACKUPFILE := idz80_$(DATE)_$(TIME)
 ifeq ($(DEBUG), 0)
 #	Release
 	CC_FLAGS = -Wredundant-decls -c -Wall -Wextra -pipe -mthreads -std=c++17
-	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
+	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL -D_IDZ80_DEBUG_
 # -D__GNUWIN32__
 	INCLUDE0_PATH := $(WXW_INCLUDE2)
 	LIBFILE0 := wxbase32u_gcc_custom
 	LIBFILE1 := wxmsw32u_core_gcc_custom
 	LIBFILE2 := wxmsw32u_aui_gcc_custom
 	LIBFILE3 := wxmsw32u_adv_gcc_custom
+	LIBFILE4 := wxbase32u_xml_gcc_custom
 else
 #	DEBUG - Not updated for MSYS2 yet / Ainda não atualizado para utilizar MSYS2
 #	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++17 -Wsequence-point
@@ -70,7 +71,7 @@ INCLUDE :=-I$(PROJECT_INCLUDE) -I$(WXW_INCLUDE1) -I$(INCLUDE0_PATH)
 LDFLAGS =  -Wl,--subsystem,windows -mwindows
 
 # libs / Bibliotecas
-LIBS := -L$(WXLIBSDIR) -l$(LIBFILE0) -l$(LIBFILE1) -l$(LIBFILE2) -l$(LIBFILE3)
+LIBS := -L$(WXLIBSDIR) -l$(LIBFILE0) -l$(LIBFILE1) -l$(LIBFILE2) -l$(LIBFILE3) -l$(LIBFILE4)
 
 
 ifeq ($(DEBUG), 0)
@@ -84,7 +85,7 @@ endif
 # wildcard lists source files to the SOURCE_FILES_FULL variable / wildcard é utilizado para listar os arquivos-fonte para a variavel SOURCE_FILES_FULL
 SOURCE_FILES_FULL := $(wildcard $(SRCDIR)/*.cpp)
 # TEMP - working with few files, for now/ Usando somente poucos arquivos por enquanto
-SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/idz80_base.cpp src/idz80_main_dialog.cpp src/logbase.cpp src/logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp
+SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/idz80_base.cpp src/idz80_main_dialog.cpp src/logbase.cpp src/logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp src/mnemonic_access.cpp src/mnemonic_container.cpp src/mnemonic_item_base.cpp src/mnemonic_item.cpp src/mnemonicxmlfile.cpp
 OBJETOS_FULL := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES_TEMP))
 OBJETOS_FULL += $(OBJDIR)/$(RESOURCE_FILE:.rc=.o)    # Add the compiled resource
 #SOURCES_TEMP := $(notdir $(SOURCE_FILES_FULL))     #remove o diretorio antes do arquivo

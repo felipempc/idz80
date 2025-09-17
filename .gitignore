@@ -10,6 +10,7 @@ obj/*
 *.d
 *.dll
 info.txt
+mnemonic_info_debug.txt
 Thumbs.db
 *.out
 trash/*
