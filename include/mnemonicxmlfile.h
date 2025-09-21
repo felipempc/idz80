@@ -13,7 +13,7 @@
 
 // ****** DEBUG FLAG ******
 #ifndef _IDZ80_DEBUG_
-#define _IDZ80_DEBUG_
+//#define _IDZ80_DEBUG_
 #endif
 // ************************
 
@@ -54,11 +54,6 @@ class MnemonicXMLFile
         bool Open(const wxString &mnemonicfile);
 
     protected:
-        #ifdef _IDZ80_DEBUG_
-        static const wxString DEBUG_OUTPUT_FILENAME;
-        wxTextFile debug_file;
-        bool debug_file_open;
-        #endif
         static const wxString MNEMONIC_FILE_VERSION_STR;
         static const wxString MNEMONIC_FILE_STR;
         static const wxString MNEMONIC_PROCESSOR_STR;
@@ -157,9 +152,6 @@ class MnemonicXMLFile
         void PrintErrorMessages(XMLF_Exceptions e, int line);
 
         void LogIt(const wxString textout);
-        #ifdef _IDZ80_DEBUG_
-        void LogToFile(const wxString textout);
-        #endif
 
 };
 

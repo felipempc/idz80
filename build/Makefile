@@ -46,7 +46,7 @@ BACKUPFILE := idz80_$(DATE)_$(TIME)
 ifeq ($(DEBUG), 0)
 #	Release
 	CC_FLAGS = -Wredundant-decls -c -Wall -Wextra -pipe -mthreads -std=c++17
-	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL -D_IDZ80_DEBUG_
+	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
 # -D__GNUWIN32__
 	INCLUDE0_PATH := $(WXW_INCLUDE2)
 	LIBFILE0 := wxbase32u_gcc_custom

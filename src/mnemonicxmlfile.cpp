@@ -13,11 +13,6 @@
 #include "mnemonicxmlfile.h"
 
 
-#ifdef _IDZ80_DEBUG_
-#include <wx/filefn.h>
-const wxString MnemonicXMLFile::DEBUG_OUTPUT_FILENAME = "mnemonic_info_debug.txt";
-#endif
-
 
 // File Main TAGS
 const wxString MnemonicXMLFile::MNEMONIC_FILE_STR = "MNEMONIC_LIST";
@@ -136,25 +131,6 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
     xml_mnemonic_ = new wxXmlDocument(mnemonicfile);
     bool ret;
 
-    #ifdef _IDZ80_DEBUG_
-    debug_file_open = false;
-    LogIt("Creating debug file info...\n");
-    wxString output_filename = wxPathOnly(mnemonicfile.fn_str());
-    output_filename.Append("\\");
-    output_filename.Append(DEBUG_OUTPUT_FILENAME);
-    LogIt(output_filename);
-    LogIt("\n");
-
-    if (debug_file.Open(output_filename))
-    {
-        debug_file.Clear();
-        debug_file_open = true;
-    }
-    else
-        debug_file_open = debug_file.Create(output_filename);
-
-    #endif
-
     ret = xml_mnemonic_->IsOk();
     if(ret)
     {
@@ -162,9 +138,9 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
         mnemonics_->SetStatistics(statistics_);
 
         #ifdef _IDZ80_DEBUG_
-        LogToFile(wxString::Format("Number of instructions: %d", statistics_.numinstructions));
-        LogToFile(wxString::Format("Number of groups: %d", statistics_.numgroups));
-        log_->AppendText("Mnemonics loaded!\n");
+        LogIt(wxString::Format("Number of instructions: %d\n", statistics_.numinstructions));
+        LogIt(wxString::Format("Number of groups: %d\n", statistics_.numgroups));
+        LogIt("Mnemonics loaded!\n");
         #endif // _IDZ80_DEBUG_
 
     }
@@ -174,14 +150,6 @@ bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
     }
 
 
-    #ifdef _IDZ80_DEBUG_
-    if(debug_file_open)
-    {
-        debug_file.Write();
-        debug_file.Close();
-        debug_file_open = false;
-    }
-    #endif
 
     delete xml_mnemonic_;
     xml_mnemonic_ = 0;
@@ -205,9 +173,9 @@ void MnemonicXMLFile::ProcessFile()
     {
         group_item = group_list[index];
 
-        #ifdef _IDZ80_DEBUG_
-        LogToFile(wxString::Format("<<< %d >>>  Processing group '%s'.", index, group_item->GetName()));
-        #endif // _IDZ80_DEBUG_
+        //#ifdef _IDZ80_DEBUG_
+        //LogToFile(wxString::Format("<<< %d >>>  Processing group '%s'.", index, group_item->GetName()));
+        //#endif // _IDZ80_DEBUG_
 
         ProcessGroup(group_item);
     }
@@ -256,9 +224,9 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
             new_instruction->Reset();
             allocate_new = false;
         }
-        #ifdef _IDZ80_DEBUG_
-        LogToFile("\n");
-        #endif // _IDZ80_DEBUG_
+        //#ifdef _IDZ80_DEBUG_
+        //LogToFile("\n");
+        //#endif // _IDZ80_DEBUG_
 
         nextitem = nextitem->GetNext();
     }
@@ -287,7 +255,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
 
     ParseMnemonicString(opcode_str, mnemonicslices);
     instruction->SetMnemonicString(mnemonicslices);
-
+/*
     #ifdef _IDZ80_DEBUG_
     str_debug.Clear();
     for(counter_debug = 0; counter_debug < mnemonicslices.GetCount(); counter_debug++)
@@ -296,9 +264,9 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
         if (counter_debug != (mnemonicslices.GetCount() - 1))
             str_debug << "*";
     }
-    LogToFile(wxString::Format("[%.3d] Item '%s' = [%s].", statistics_.numinstructions, opcode_str, str_debug));
+    LogIt(wxString::Format("[%.3d] Item '%s' = [%s].", statistics_.numinstructions, opcode_str, str_debug));
     #endif // _IDZ80_DEBUG_
-
+*/
 
     instruction_detail = GetInInstructionNode(instruction_node, MNEMONIC_OPCODE_STR);
 
@@ -313,7 +281,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
 
     ParseOpcodeString(instruction, opcode_str, temp_str);
     instruction->SetMnemonicSignature(CalculateSignature(instruction->GetByteCode()));
-
+/*
     #ifdef _IDZ80_DEBUG_
     str_debug.Clear();
     for(counter_debug = 0; counter_debug < instruction->GetByteCodeSize(); counter_debug++)
@@ -322,9 +290,11 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
     }
     str_debug = str_debug.Trim();
 
-    LogToFile(wxString::Format("[%.3d] Bytecode<%d> = [%s].", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
-    LogToFile(wxString::Format("[%.3d] Signature = [%X].", statistics_.numinstructions, instruction->GetMnemonicSignature()));
+    LogIt(wxString::Format("[%.3d] Bytecode<%d> = [%s].", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
+    LogIt(wxString::Format("[%.3d] Signature = [%X].", statistics_.numinstructions, instruction->GetMnemonicSignature()));
     #endif // _IDZ80_DEBUG_
+*/
+
 }
 
 
@@ -433,7 +403,7 @@ bool MnemonicXMLFile::FindGroups(NodeGroupList &grouplist)
     }
 
     #ifdef _IDZ80_DEBUG_
-    LogToFile(wxString::Format("Total groups = %d.", statistics_.numgroups));
+    LogIt(wxString::Format("Total groups = %d.\n", statistics_.numgroups));
     #endif
 
     return (statistics_.numgroups > 0);
@@ -633,9 +603,9 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
     if (!validated)
         throw XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR;
 
-    #ifdef _IDZ80_DEBUG_
-    LogToFile(wxString::Format("[%.3d] Size validated [%d].", statistics_.numinstructions, informed_size));
-    #endif // _IDZ80_DEBUG_
+    //#ifdef _IDZ80_DEBUG_
+    //LogToFile(wxString::Format("[%.3d] Size validated [%d].", statistics_.numinstructions, informed_size));
+    //#endif // _IDZ80_DEBUG_
 
     for(uint counter = 0; counter < informed_size; counter++)
     {
@@ -648,9 +618,9 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
     instruction->SetByteCode(byte_code, informed_size);
 
 
-    #ifdef _IDZ80_DEBUG_
-    LogToFile(wxString::Format("[%.3d] Bytecode size = %d [%d].", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
-    #endif // _IDZ80_DEBUG_
+    //#ifdef _IDZ80_DEBUG_
+    //LogToFile(wxString::Format("[%.3d] Bytecode size = %d [%d].", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
+    //#endif // _IDZ80_DEBUG_
 }
 
 
@@ -742,6 +712,7 @@ void MnemonicXMLFile::PrintErrorMessages(XMLF_Exceptions e, int line)
     }
 }
 
+/*
 #ifdef _IDZ80_DEBUG_
 void MnemonicXMLFile::LogToFile(const wxString textout)
 {
@@ -749,6 +720,7 @@ void MnemonicXMLFile::LogToFile(const wxString textout)
         debug_file.AddLine(textout);
 }
 #endif
+*/
 
 void MnemonicXMLFile::LogIt(const wxString textout)
 {
