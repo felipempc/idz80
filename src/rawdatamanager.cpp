@@ -40,6 +40,7 @@ RawData *RawDataManager::AddFile(wxString name)
     if (current_file_->Open(name))
     {
         data_list_.push_back(current_file_);
+        LogIt(current_file_->GetFileName() + "   " + current_file_->GetFileTypeStr());
     }
     else
     {
@@ -54,8 +55,7 @@ RawData *RawDataManager::AddFile(wxString name)
 
 
 
-
-RawDataManager::~RawDataManager()
+void RawDataManager::Clear()
 {
     RawData *program_file;
     int size;
@@ -70,7 +70,14 @@ RawDataManager::~RawDataManager()
         data_list_.pop_back();
     }
     current_file_ = 0;
-    current_file_index_ = -1;
+    current_file_index_ = -1;    
+}
+
+
+
+RawDataManager::~RawDataManager()
+{
+    Clear();
 }
 
 
@@ -168,7 +175,7 @@ RawData *RawDataManager::Previous()
         current_file_ = data_list_[current_file_index_];
     }
     else
-        First();
+        current_file_ = First();
 
     return current_file_;
 

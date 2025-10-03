@@ -14,6 +14,7 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     ModuleName = "NPDialog";
 
 
+
     add_icon_ = new wxBitmap(main_->app_resource_dir_ + "\\Plus icon.bmp", wxBITMAP_TYPE_BMP);
     remove_icon_ = new wxBitmap(main_->app_resource_dir_ + "\\Minus icon.bmp", wxBITMAP_TYPE_BMP);
     actualrow_ = -1;
@@ -22,6 +23,8 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     Bind(wxEVT_SIZE, &NewProjectDialog::OnResize, this);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnAddButton, this, idADD_FILE_BUTTON);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnRemoveButton, this, idREMOVE_FILE_BUTTON);
+    Bind(wxEVT_BUTTON, &NewProjectDialog::OnOkButtonPressed, this, wxID_OK);
+    Bind(wxEVT_BUTTON, &NewProjectDialog::OnCancelButtonPressed, this, wxID_CANCEL);
     //Bind(wxEVT_BUTTON, &NewProjectDialog::OnUpdateButton, this, idUPDATE_DEBUG_STR);
     Bind(wxEVT_GRID_CELL_LEFT_CLICK, &NewProjectDialog::OnGridLeftClick, this);
     Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &NewProjectDialog::OnGridLeftClick, this);
@@ -43,6 +46,10 @@ void NewProjectDialog::BuildDialog()
     Create(0, wxID_ANY, "Project", wxPoint(100, 100), wxSize(500, 500), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "NewProject");
     wxPanel *main_panel = new wxPanel(this);
     main_sizer_ = new wxBoxSizer(wxVERTICAL);
+
+    wxPanel *okcancel_panel = new wxPanel(main_panel);
+    wxBoxSizer *okcancel_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxButton *B_Cancel, *B_Ok;
 
     wxPanel *file_panel = new wxPanel(main_panel);
     wxBoxSizer *file_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -73,6 +80,15 @@ void NewProjectDialog::BuildDialog()
     filegrid_->SetColLabelValue(4, "End");
     main_sizer_->Add(filegrid_, wxSizerFlags(0).Border(wxALL, 10));
     filegrid_->EnableEditing(false);
+
+    B_Ok = new wxButton(okcancel_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
+    B_Cancel = new wxButton(okcancel_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
+    okcancel_sizer->Add(B_Ok, wxSizerFlags(0).Border(wxALL, 10));  // 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
+    okcancel_sizer->AddSpacer(400);
+    okcancel_sizer->Add(B_Cancel, wxSizerFlags(0).Border(wxALL, 10));   //0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
+    okcancel_panel->SetSizer(okcancel_sizer);
+    main_sizer_->Add(okcancel_panel);
+
 
     main_panel->SetSizer(main_sizer_);
     main_sizer_->Fit(this);
@@ -177,7 +193,16 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     }
 }
 
+void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
+{
+    EndModal(wxID_OK);
+}
 
+void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
+{
+    main_->Programs_->Clear();
+    EndModal(wxID_CANCEL);
+}
 
 /*
 void NewProjectDialog::UpdateDebugString()

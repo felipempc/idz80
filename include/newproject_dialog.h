@@ -40,6 +40,8 @@ class NewProjectDialog: public wxDialog, public LogBase
         void OnResize(wxSizeEvent &event);
         void OnAddButton(wxCommandEvent &event);
         void OnRemoveButton(wxCommandEvent &event);
+        void OnOkButtonPressed(wxCommandEvent &event);
+        void OnCancelButtonPressed(wxCommandEvent &event);
 
         //void OnUpdateButton(wxCommandEvent& event);
         void OnGridLeftClick(wxGridEvent& event);

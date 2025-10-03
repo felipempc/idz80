@@ -25,6 +25,8 @@ class RawDataManager: public LogBase
 
         RawData *AddFile(wxString name);
 
+        void Clear();
+
         RawData *First();
         RawData *Last();
         RawData *Current();

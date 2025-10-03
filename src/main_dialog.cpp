@@ -133,7 +133,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 //    process_ = new ProcessData(this, log_window_);
 //    codeview_ = new CodeView(this, process_, log_window_);
 //    project_ = new ProjectManagerXML(this);
-//    Programs_ = new RawDataManager(log_window_);
+    Programs_ = new RawDataManager(log_window_);
 
 
 //    Labels_ = new LabelManager();
@@ -160,14 +160,11 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	//TODO: Implement Log in project class
 	//project_->SetLog(panel_log_);
 
-//	SetupMenuEvents();
+	SetupMenuEvents();
 
 
     if (maximize_main_window_)
         Maximize();
-
-//    NewProjectDialog dialog(this);
-//    dialog.ShowModal();
 
 /*
     if (Programs_->First()->IsLoaded())
@@ -231,6 +228,10 @@ bool IDZ80::LoadMnemonicsDB()
 
 void IDZ80::OpenProgramFile(wxString filename)
 {
+    NewProjectDialog dialog(this);
+    dialog.ShowModal();
+
+
     /* ----    OLD     ---------
 	static bool simulateexecution = false;
 	wxString    info,
