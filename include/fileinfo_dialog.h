@@ -18,7 +18,7 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 
-#include "idz80_main_base.h"
+#include "main_dialog_base.h"
 //#include "process_data.h"
 
 class ShowFileInfo: public wxDialog

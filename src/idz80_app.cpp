@@ -12,7 +12,7 @@
 #include "idz80_app.h"
 #include <wx/arrstr.h>
 
-#include "idz80_main_dialog.h"
+#include "main_dialog.h"
 
 #include <wx/image.h>
 

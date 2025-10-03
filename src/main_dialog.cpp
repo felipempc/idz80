@@ -18,7 +18,7 @@
 #include <wx/string.h>
 #include <wx/msgdlg.h>
 
-#include "idz80_main_dialog.h"
+#include "main_dialog.h"
 #include "version.h"
 #include "fileinfo_dialog.h"
 #include "systemlabels.h"

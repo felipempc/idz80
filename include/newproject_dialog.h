@@ -7,7 +7,7 @@
 #include "wx/arrstr.h"
 //include "wx/stattext.h" //DEBUG
 
-#include "idz80_main_base.h"
+#include "main_dialog_base.h"
 
 class NewProjectDialog: public wxDialog, public LogBase
 {

@@ -19,7 +19,7 @@
 #include <wx/arrstr.h>
 
 
-#include "idz80_main_base.h"
+#include "main_dialog_base.h"
 //#include "mnemonic_container.h"
 //#include "rawdata.h"
 //#include "disassembled_container.h"
