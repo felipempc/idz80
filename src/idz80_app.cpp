@@ -10,7 +10,6 @@
 
 
 #include "idz80_app.h"
-#include <wx/arrstr.h>
 
 #include "main_dialog.h"
 

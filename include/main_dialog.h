@@ -16,7 +16,7 @@
 #include <wx/textctrl.h>
 #include <wx/aui/aui.h>
 #include <wx/statusbr.h>
-#include <wx/arrstr.h>
+//#include <wx/arrstr.h>    // Remove
 
 
 #include "main_dialog_base.h"

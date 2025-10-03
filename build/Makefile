@@ -85,7 +85,7 @@ endif
 # wildcard lists source files to the SOURCE_FILES_FULL variable / wildcard é utilizado para listar os arquivos-fonte para a variavel SOURCE_FILES_FULL
 SOURCE_FILES_FULL := $(wildcard $(SRCDIR)/*.cpp)
 # TEMP - working with few files, for now/ Usando somente poucos arquivos por enquanto
-SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/main_dialog.cpp src/logbase.cpp src/logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp src/mnemonic_access.cpp src/mnemonic_container.cpp src/mnemonic_item_base.cpp src/mnemonic_item.cpp src/mnemonicxmlfile.cpp
+SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/main_dialog.cpp src/main_dialog_setup.cpp src/logbase.cpp src/logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp src/mnemonic_access.cpp src/mnemonic_container.cpp src/mnemonic_item_base.cpp src/mnemonic_item.cpp src/mnemonicxmlfile.cpp
 OBJETOS_FULL := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES_TEMP))
 OBJETOS_FULL += $(OBJDIR)/$(RESOURCE_FILE:.rc=.o)    # Add the compiled resource
 #SOURCES_TEMP := $(notdir $(SOURCE_FILES_FULL))     #remove o diretorio antes do arquivo
