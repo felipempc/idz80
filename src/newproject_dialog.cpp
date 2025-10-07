@@ -12,6 +12,7 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 {
     main_ = parent;
     ModuleName = "NPDialog";
+    SetTextLog(main_->GetTextLog());
 
 
 
@@ -25,9 +26,10 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnRemoveButton, this, idREMOVE_FILE_BUTTON);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnOkButtonPressed, this, wxID_OK);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnCancelButtonPressed, this, wxID_CANCEL);
-    //Bind(wxEVT_BUTTON, &NewProjectDialog::OnUpdateButton, this, idUPDATE_DEBUG_STR);
-    Bind(wxEVT_GRID_CELL_LEFT_CLICK, &NewProjectDialog::OnGridLeftClick, this);
-    Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &NewProjectDialog::OnGridLeftClick, this);
+    Bind(wxEVT_BUTTON, &NewProjectDialog::OnUpdateButton, this, idUPDATE_DEBUG_STR);
+    //Bind(wxEVT_GRID_CELL_LEFT_CLICK, &NewProjectDialog::OnGridLeftClick, this);
+    Bind(wxEVT_GRID_SELECT_CELL, &NewProjectDialog::OnGridSelected, this);
+    //Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &NewProjectDialog::OnUpdateButton /*&NewProjectDialog::OnGridLeftClick*/, this);
 }
 
 
@@ -59,17 +61,18 @@ void NewProjectDialog::BuildDialog()
     wxBitmapButton *file_remove_button = new wxBitmapButton(file_panel, idREMOVE_FILE_BUTTON, *remove_icon_);
     file_sizer->Add(file_remove_button, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
 
-    /*DEBUG
-    debugtext_ = new wxStaticText(file_panel, wxID_ANY, "[0 0 0 0]");
+    //DEBUG ->
+    debugtext_ = new wxStaticText(file_panel, wxID_ANY, "[- - - -]");
     file_sizer->Add(debugtext_, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
 
     wxButton *UpdateButton = new wxButton(file_panel, idUPDATE_DEBUG_STR, "Update");
     file_sizer->Add(UpdateButton, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
-    */
     file_panel->SetSizer(file_sizer);
+    // <- DEBUG
 
     main_sizer_->Add(file_panel, wxSizerFlags(0).Border(wxALL, 10));
 
+    // Grid 
     filegrid_ = new wxGrid(main_panel, wxID_ANY, wxPoint(0, 0), wxSize(500, 300));
     filegrid_->CreateGrid(0, 5);
     filegrid_->SetSelectionMode(wxGrid::wxGridSelectRows);
@@ -81,11 +84,12 @@ void NewProjectDialog::BuildDialog()
     main_sizer_->Add(filegrid_, wxSizerFlags(0).Border(wxALL, 10));
     filegrid_->EnableEditing(false);
 
+    // Horizontal panel for OK/Cancel buttons
     B_Ok = new wxButton(okcancel_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
     B_Cancel = new wxButton(okcancel_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
-    okcancel_sizer->Add(B_Ok, wxSizerFlags(0).Border(wxALL, 10));  // 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
+    okcancel_sizer->Add(B_Ok, wxSizerFlags(0).Border(wxALL, 10));
     okcancel_sizer->AddSpacer(400);
-    okcancel_sizer->Add(B_Cancel, wxSizerFlags(0).Border(wxALL, 10));   //0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
+    okcancel_sizer->Add(B_Cancel, wxSizerFlags(0).Border(wxALL, 10));
     okcancel_panel->SetSizer(okcancel_sizer);
     main_sizer_->Add(okcancel_panel);
 
@@ -97,6 +101,9 @@ void NewProjectDialog::BuildDialog()
 
 
 
+/// @brief Open a file picker dialog and return an array of string with the full name of the selected file(s). Save current directory in main_.
+/// @param file_list_str list with full name of the selected file(s)
+/// @return true if success
 bool NewProjectDialog::DialogLoadProgramFile(wxArrayString &file_list_str)
 {
     wxString caption = "Choose a file";
@@ -137,6 +144,8 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
         filegrid_->SetCellValue(actualrow_, 4, wxString::Format("0x%.4X", main_->Programs_->Current()->EndAddress));
         filegrid_->SetCellAlignment(actualrow_, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
 
+        filegrid_->AutoSize();
+
         ret = true;
     }
     else
@@ -174,23 +183,32 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
 {
     wxArrayInt selected_rows = filegrid_->GetSelectedRows();
-    int minor_item = 0xFFFF,
-        item_count = selected_rows.GetCount();
+    int minor_item = 0xFFFF;
+    int item_count = selected_rows.GetCount();
 
-    if(item_count == 0)
+    //DEBUG
+    LogIt(wxString::Format("Remove %d row(s).", item_count));
+
+    if(item_count == 0) {
+        debugtext_->SetLabel("Empty.");
         return;
-
+    }
+    
     for(int kill_row = 0; kill_row < item_count; kill_row++)
     {
-        if(selected_rows[kill_row] < minor_item)
+        if(selected_rows[kill_row] < minor_item) {
             minor_item = selected_rows[kill_row];
+            //DEBUG
+            LogIt(wxString::Format("%d-> minor item=%d", kill_row, minor_item));
+        }
     }
 
-    if(minor_item < item_count)
-    {
-        filegrid_->DeleteRows(minor_item, item_count);
-        actualrow_ -= item_count;
-    }
+    filegrid_->DeleteRows(minor_item, item_count);
+    actualrow_ -= item_count;
+    //DEBUG
+    LogIt(wxString::Format("Actual row is %d.", actualrow_));
+
+    filegrid_->ForceRefresh();
 }
 
 void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
@@ -204,8 +222,8 @@ void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
     EndModal(wxID_CANCEL);
 }
 
-/*
-void NewProjectDialog::UpdateDebugString()
+// DEBUG
+void NewProjectDialog::UpdateDebugString(int row)
 {
     wxArrayInt selected_rows = filegrid_->GetSelectedRows();
     wxString str_text = "[";
@@ -216,6 +234,7 @@ void NewProjectDialog::UpdateDebugString()
         for(int f = 0; f < selected_num; f++)
             str_text << wxString::Format("%d ", selected_rows[f]);
 
+        str_text << wxString::Format("%d ", row);
         str_text.Trim();
     }
     else
@@ -224,21 +243,29 @@ void NewProjectDialog::UpdateDebugString()
     str_text << "]";
     debugtext_->SetLabel(str_text);
 }
-*/
 
 
 
-/*
+
+// DEBUG
 void NewProjectDialog::OnUpdateButton(wxCommandEvent& event)
 {
-    UpdateDebugString();
+    UpdateDebugString(255);
 }
-*/
+
 
 
 
 void NewProjectDialog::OnGridLeftClick(wxGridEvent& event)
 {
+    /*
     if(!event.ControlDown())
         event.Skip();
+    */
+}
+
+void NewProjectDialog::OnGridSelected(wxGridEvent &event)
+{
+    if(!event.Selecting())
+        UpdateDebugString(event.GetRow());
 }

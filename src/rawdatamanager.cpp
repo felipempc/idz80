@@ -94,6 +94,21 @@ RawData *RawDataManager::Index(uint index)
 
 
 
+void RawDataManager::Remove(uint index)
+{
+    if (index >= data_list_.size())
+        return;
+    
+    if (Index(index) != 0) {
+        delete current_file_;
+        current_file_ = 0;
+    }
+    
+    data_list_.erase(data_list_.begin() + index);
+
+    First();    // Don't know where to go, go to First element then.
+}
+
 
 
 RawData *RawDataManager::First()

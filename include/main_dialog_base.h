@@ -23,7 +23,7 @@
 #include "idz80_directories.h"
 
 
-class IDZ80MainBase: public IDZ80Directories, public wxFrame
+class IDZ80MainBase: public IDZ80Directories, public LogBase, public wxFrame
 {
     public:
         SourceCodeLines     *CodeViewLines_;

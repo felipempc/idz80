@@ -56,6 +56,14 @@ ifeq ($(DEBUG), 0)
 	LIBFILE4 := wxbase32u_xml_gcc_custom
 else
 #	DEBUG - Not updated for MSYS2 yet / Ainda não atualizado para utilizar MSYS2
+	CC_FLAGS = -g -Wredundant-decls -c -Wall -Wextra -pedantic -Wsequence-point -pipe -mthreads -std=c++17
+	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
+	INCLUDE0_PATH := $(WXW_INCLUDE2)
+	LIBFILE0 := wxbase32u_gcc_custom
+	LIBFILE1 := wxmsw32u_core_gcc_custom
+	LIBFILE2 := wxmsw32u_aui_gcc_custom
+	LIBFILE3 := wxmsw32u_adv_gcc_custom
+	LIBFILE4 := wxbase32u_xml_gcc_custom
 #	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++17 -Wsequence-point
 #	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG -DIDZ80_DECODER -DIDZ80_DASMED
 #	INCLUDE0_PATH = $(WXW)/lib/gcc_dll/mswud

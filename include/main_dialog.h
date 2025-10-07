@@ -33,7 +33,7 @@
 #include <wx/config.h>
 
 
-class IDZ80: public IDZ80MainBase, public LogBase
+class IDZ80: public IDZ80MainBase
 {
 	public:
 		const wxString ResourceDir = "resource";

@@ -24,6 +24,7 @@ class LogBase
 
         void LogIt(const wxString &logstring);
         void SetTextLog(LogWindow *textlog);
+        LogWindow *GetTextLog();
 
         wxString    ModuleName;
 

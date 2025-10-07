@@ -22,6 +22,11 @@ void LogBase::SetTextLog(LogWindow *textlog)
     TextLog = textlog;
 }
 
+LogWindow *LogBase::GetTextLog()
+{
+    return TextLog;
+}
+
 void LogBase::LogIt(const wxString &logstring)
 {
     if (TextLog)

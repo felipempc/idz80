@@ -5,7 +5,7 @@
 #include "wx/grid.h"
 #include "wx/bitmap.h"
 #include "wx/arrstr.h"
-//include "wx/stattext.h" //DEBUG
+#include "wx/stattext.h" //DEBUG
 
 #include "main_dialog_base.h"
 
@@ -20,7 +20,7 @@ class NewProjectDialog: public wxDialog, public LogBase
         {
             idADD_FILE_BUTTON = 100,
             idREMOVE_FILE_BUTTON,
-            //idUPDATE_DEBUG_STR
+            idUPDATE_DEBUG_STR
         };
     private:
         IDZ80MainBase *main_;
@@ -30,7 +30,7 @@ class NewProjectDialog: public wxDialog, public LogBase
 
         wxGrid  *filegrid_;
         int actualrow_;
-        //wxStaticText *debugtext_;
+        wxStaticText *debugtext_;
 
         void BuildDialog();
         bool DialogLoadProgramFile(wxArrayString &file_list_str);
@@ -43,11 +43,12 @@ class NewProjectDialog: public wxDialog, public LogBase
         void OnOkButtonPressed(wxCommandEvent &event);
         void OnCancelButtonPressed(wxCommandEvent &event);
 
-        //void OnUpdateButton(wxCommandEvent& event);
+        void OnUpdateButton(wxCommandEvent& event);
         void OnGridLeftClick(wxGridEvent& event);
+        void OnGridSelected(wxGridEvent& event);
 
         //DEBUG
-        //void UpdateDebugString();
+        void UpdateDebugString(int row);
         //-----
 };
 
