@@ -1,7 +1,4 @@
-﻿# TODO idz80 VERSÃO REESCRITA
-
-<22-12-15> NewProjectDialog permitir alterar start/exec/end addresses
-           Detector de arquivo não verifica arquivo BIN com extensao diferente
+﻿# TODO idz80
 
 
 --->Futuro
@@ -11,12 +8,10 @@
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
 - Modificar base numerica dos DB e DW
 - Ativar WeirdRSTRoutines ao disassemblar pequenos trechos (não está funcionando corretamente)
-- Popup para procura em argumentos
-  - FIXME: Procura circular não para.
 
 
   STATUS
   ------
 
-  18/06/2021 - NewProjectDialog carrega os arquivos para RawDataManager, mas não faz mais nada.
+  10/2025 - NewProjectDialog em andamento criar frame para editar endereços do programa.
 
