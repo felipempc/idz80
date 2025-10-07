@@ -36,6 +36,7 @@ class RawDataManager: public LogBase
         RawData *Index(uint index);
 
         void Remove(uint index);
+        uint Count();
 
 
     protected:

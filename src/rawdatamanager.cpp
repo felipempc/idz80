@@ -109,7 +109,10 @@ void RawDataManager::Remove(uint index)
     First();    // Don't know where to go, go to First element then.
 }
 
-
+uint RawDataManager::Count()
+{
+    return data_list_.size();
+}
 
 RawData *RawDataManager::First()
 {

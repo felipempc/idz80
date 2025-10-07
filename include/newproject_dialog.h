@@ -5,7 +5,7 @@
 #include "wx/grid.h"
 #include "wx/bitmap.h"
 #include "wx/arrstr.h"
-#include "wx/stattext.h" //DEBUG
+//#include "wx/stattext.h" //DEBUG
 
 #include "main_dialog_base.h"
 
@@ -30,7 +30,7 @@ class NewProjectDialog: public wxDialog, public LogBase
 
         wxGrid  *filegrid_;
         int actualrow_;
-        wxStaticText *debugtext_;
+//        wxStaticText *debugtext_;
 
         void BuildDialog();
         bool DialogLoadProgramFile(wxArrayString &file_list_str);

@@ -37,6 +37,10 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 
 NewProjectDialog::~NewProjectDialog()
 {
+    // Debug
+    LogIt("Destroyed.");
+
+    delete filegrid_;
     delete add_icon_;
 }
 
@@ -47,52 +51,42 @@ void NewProjectDialog::BuildDialog()
 {
     Create(0, wxID_ANY, "Project", wxPoint(100, 100), wxSize(500, 500), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "NewProject");
     wxPanel *main_panel = new wxPanel(this);
-    main_sizer_ = new wxBoxSizer(wxVERTICAL);
+    main_sizer_ = new wxBoxSizer(wxHORIZONTAL);
 
-    wxPanel *okcancel_panel = new wxPanel(main_panel);
-    wxBoxSizer *okcancel_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxPanel *buttons_panel = new wxPanel(main_panel);
+    wxBoxSizer *buttons_sizer = new wxBoxSizer(wxVERTICAL);
     wxButton *B_Cancel, *B_Ok;
 
-    wxPanel *file_panel = new wxPanel(main_panel);
-    wxBoxSizer *file_sizer = new wxBoxSizer(wxHORIZONTAL);
-
-    wxBitmapButton *file_picker_button = new wxBitmapButton(file_panel, idADD_FILE_BUTTON, *add_icon_);
-    file_sizer->Add(file_picker_button, wxSizerFlags(0).Border(wxALL, 0));
-    wxBitmapButton *file_remove_button = new wxBitmapButton(file_panel, idREMOVE_FILE_BUTTON, *remove_icon_);
-    file_sizer->Add(file_remove_button, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
-
-    //DEBUG ->
-    debugtext_ = new wxStaticText(file_panel, wxID_ANY, "[- - - -]");
-    file_sizer->Add(debugtext_, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
-
-    wxButton *UpdateButton = new wxButton(file_panel, idUPDATE_DEBUG_STR, "Update");
-    file_sizer->Add(UpdateButton, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
-    file_panel->SetSizer(file_sizer);
-    // <- DEBUG
-
-    main_sizer_->Add(file_panel, wxSizerFlags(0).Border(wxALL, 10));
 
     // Grid 
     filegrid_ = new wxGrid(main_panel, wxID_ANY, wxPoint(0, 0), wxSize(500, 300));
     filegrid_->CreateGrid(0, 5);
     filegrid_->SetSelectionMode(wxGrid::wxGridSelectRows);
     filegrid_->SetColLabelValue(0, "Name");
+    filegrid_->SetColMinimalWidth(0, 90);
     filegrid_->SetColLabelValue(1, "Type");
+    filegrid_->SetColMinimalWidth(1, 40);
     filegrid_->SetColLabelValue(2, "Start");
+    filegrid_->SetColMinimalWidth(2, 55);
     filegrid_->SetColLabelValue(3, "Execution");
+    filegrid_->SetColMinimalWidth(3, 65);
     filegrid_->SetColLabelValue(4, "End");
+    filegrid_->SetColMinimalWidth(4, 55);
     main_sizer_->Add(filegrid_, wxSizerFlags(0).Border(wxALL, 10));
     filegrid_->EnableEditing(false);
+    //filegrid_->AutoSize();
 
-    // Horizontal panel for OK/Cancel buttons
-    B_Ok = new wxButton(okcancel_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
-    B_Cancel = new wxButton(okcancel_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
-    okcancel_sizer->Add(B_Ok, wxSizerFlags(0).Border(wxALL, 10));
-    okcancel_sizer->AddSpacer(400);
-    okcancel_sizer->Add(B_Cancel, wxSizerFlags(0).Border(wxALL, 10));
-    okcancel_panel->SetSizer(okcancel_sizer);
-    main_sizer_->Add(okcancel_panel);
-
+    // Buttons_panel
+    B_Ok = new wxButton(buttons_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
+    buttons_sizer->Add(B_Ok, wxSizerFlags(0).Border(wxALL, 10));
+    wxBitmapButton *file_picker_button = new wxBitmapButton(buttons_panel, idADD_FILE_BUTTON, *add_icon_);
+    buttons_sizer->Add(file_picker_button, wxSizerFlags(0).Border(wxALL, 10));
+    wxBitmapButton *file_remove_button = new wxBitmapButton(buttons_panel, idREMOVE_FILE_BUTTON, *remove_icon_);
+    buttons_sizer->Add(file_remove_button, wxSizerFlags(0).Border(wxLEFT | wxRIGHT, 10));
+    B_Cancel = new wxButton(buttons_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
+    buttons_sizer->Add(B_Cancel, wxSizerFlags(0).Border(wxALL, 10));
+    buttons_panel->SetSizer(buttons_sizer);
+    main_sizer_->Add(buttons_panel, wxSizerFlags(0).Border(wxALL, 10));
 
     main_panel->SetSizer(main_sizer_);
     main_sizer_->Fit(this);
@@ -143,9 +137,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
         filegrid_->SetCellAlignment(actualrow_, 3, wxALIGN_CENTRE, wxALIGN_CENTRE);
         filegrid_->SetCellValue(actualrow_, 4, wxString::Format("0x%.4X", main_->Programs_->Current()->EndAddress));
         filegrid_->SetCellAlignment(actualrow_, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
-
         filegrid_->AutoSize();
-
         ret = true;
     }
     else
@@ -175,6 +167,14 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 
     for(int idx = 0; idx < file_list.GetCount(); idx++)
         AddFileToGrid(file_list[idx]);
+    
+    // DEBUG
+    LogIt("Size of the Columns:");
+    LogIt(wxString::Format("Name = %d", filegrid_->GetColSize(0)));
+    LogIt(wxString::Format("Type = %d", filegrid_->GetColSize(1)));
+    LogIt(wxString::Format("Start = %d", filegrid_->GetColSize(2)));
+    LogIt(wxString::Format("Execution = %d", filegrid_->GetColSize(3)));
+    LogIt(wxString::Format("End = %d", filegrid_->GetColSize(4)));
 }
 
 
@@ -183,33 +183,42 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
 {
     wxArrayInt selected_rows = filegrid_->GetSelectedRows();
-    int minor_item = 0xFFFF;
+    int row_delete = -1;
     int item_count = selected_rows.GetCount();
+    int deleted_amount = 0;
 
     //DEBUG
     LogIt(wxString::Format("Remove %d row(s).", item_count));
-
-    if(item_count == 0) {
-        debugtext_->SetLabel("Empty.");
-        return;
+    wxString str_debug = "[";
+    for (int listitem = 0; listitem < item_count; listitem++) {
+        str_debug << wxString::Format("%d ", selected_rows[listitem]);
     }
+    str_debug.Trim();
+    str_debug << "]";
+    LogIt(str_debug);
+    // <- DEBUG
+
+    if(item_count == 0)
+        return;
     
     for(int kill_row = 0; kill_row < item_count; kill_row++)
     {
-        if(selected_rows[kill_row] < minor_item) {
-            minor_item = selected_rows[kill_row];
-            //DEBUG
-            LogIt(wxString::Format("%d-> minor item=%d", kill_row, minor_item));
+        row_delete = selected_rows[kill_row] - deleted_amount;
+        if ((row_delete >= 0) || (row_delete < filegrid_->GetNumberRows()))
+        {
+            filegrid_->DeleteRows(row_delete, 1);
+            main_->Programs_->Remove(row_delete);
+            deleted_amount++;
         }
+        //DEBUG
+        LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
     }
-
-    filegrid_->DeleteRows(minor_item, item_count);
-    actualrow_ -= item_count;
-    //DEBUG
-    LogIt(wxString::Format("Actual row is %d.", actualrow_));
+    actualrow_ = 0;
 
     filegrid_->ForceRefresh();
 }
+
+
 
 void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 {
@@ -225,23 +234,10 @@ void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 // DEBUG
 void NewProjectDialog::UpdateDebugString(int row)
 {
-    wxArrayInt selected_rows = filegrid_->GetSelectedRows();
-    wxString str_text = "[";
-    int selected_num = selected_rows.GetCount();
+    int grid_rows = filegrid_->GetNumberRows();
+    int programs = main_->Programs_->Count();
 
-    if (selected_num > 0)
-    {
-        for(int f = 0; f < selected_num; f++)
-            str_text << wxString::Format("%d ", selected_rows[f]);
-
-        str_text << wxString::Format("%d ", row);
-        str_text.Trim();
-    }
-    else
-        str_text << "none";
-
-    str_text << "]";
-    debugtext_->SetLabel(str_text);
+    LogIt(wxString::Format("Grid rows = %d, programs = %d.", grid_rows, programs));
 }
 
 
