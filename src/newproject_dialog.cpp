@@ -1,11 +1,19 @@
-
+/**************************************************************
+ * Name:      IDZ80
+ * Purpose:   Interactive Disassembler for Z80 processors
+ * Author:    Felipe MPC (idz80a@gmail.com)
+ * Created:   20-12-2013 (D-M-Y)
+ * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+ **************************************************************
+ * Load programs to disassemble
+ **************************************************************/
 
 #include "newproject_dialog.h"
 #include "wx/filedlg.h"
-#include "wx/bmpbuttn.h"
-#include "wx/dynarray.h" // DEBUG
 
 
+// DEFinition for debug = IDZ80_NPRJD_DEBUG
+//#define IDZ80_NPRJD_DEBUG
 
 
 NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
@@ -23,6 +31,18 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnOkButtonPressed, this, wxID_OK);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnCancelButtonPressed, this, wxID_CANCEL);
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this, idGRID_LEFT_DCLICK);
+
+    if (main_->Programs_->Count() != 0) {
+        for(int j = 0; j < main_->Programs_->Count(); j++){
+            FillRow(main_->Programs_->Index(j));
+        }
+        program_loaded = true;
+    }
+    else {
+        OK_button_->Disable();
+        Remove_button_->Disable();
+        program_loaded = false;
+    }
 }
 
 
@@ -30,8 +50,9 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 
 NewProjectDialog::~NewProjectDialog()
 {
-    // Debug
+    #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Destroyed.");
+    #endif
 
     delete filegrid_;
 }
@@ -68,12 +89,10 @@ void NewProjectDialog::BuildDialog()
 
     // Buttons_panel
     OK_button_ = new wxButton(buttons_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
-    OK_button_->Disable();
     buttons_sizer->Add(OK_button_, wxSizerFlags(0).Border(wxALL, 10));
     Add_button_ = new wxButton(buttons_panel, idADD_FILE_BUTTON, "Add", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "AddButton");
     buttons_sizer->Add(Add_button_, wxSizerFlags(0).Border(wxALL, 10));
     Remove_button_ = new wxButton(buttons_panel, idREMOVE_FILE_BUTTON, "Remove", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "RemoveButton");
-    Remove_button_->Disable();
     buttons_sizer->Add(Remove_button_, wxSizerFlags(0).Border(wxALL, 10));
     Cancel_button_ = new wxButton(buttons_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
     buttons_sizer->Add(Cancel_button_, wxSizerFlags(0).Border(wxALL, 10));
@@ -109,41 +128,43 @@ bool NewProjectDialog::DialogLoadProgramFile(wxArrayString &file_list_str)
 
 
 
-
-
 bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
-    bool ret = false;
+    RawData *program = 0;
 
-    if(main_->Programs_->AddFile(filestr))
-    {
-        filegrid_->AppendRows();
-        actualrow_++;
-
-        filegrid_->SetCellValue(actualrow_, 0, main_->Programs_->Current()->GetFileName());
-        filegrid_->SetCellValue(actualrow_, 1, main_->Programs_->Current()->GetFileTypeStr());
-        filegrid_->SetCellAlignment(actualrow_, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
-        filegrid_->SetCellValue(actualrow_, 2, wxString::Format("0x%.4X", main_->Programs_->Current()->StartAddress));
-        filegrid_->SetCellAlignment(actualrow_, 2, wxALIGN_CENTRE, wxALIGN_CENTRE);
-        filegrid_->SetCellValue(actualrow_, 3, wxString::Format("0x%.4X", main_->Programs_->Current()->ExecAddress));
-        filegrid_->SetCellAlignment(actualrow_, 3, wxALIGN_CENTRE, wxALIGN_CENTRE);
-        filegrid_->SetCellValue(actualrow_, 4, wxString::Format("0x%.4X", main_->Programs_->Current()->EndAddress));
-        filegrid_->SetCellAlignment(actualrow_, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
-        filegrid_->AutoSizeColumns();
-        ret = true;
-    }
-    else
-    {
+    program = main_->Programs_->AddFile(filestr);
+    if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
+        return false;
     }
-    return ret;
+    FillRow(program);
+    return true;
 }
+
+
+
+void NewProjectDialog::FillRow(RawData *program)
+{
+    filegrid_->AppendRows();
+    actualrow_++;
+
+    filegrid_->SetCellValue(actualrow_, 0, program->GetFileName());
+    filegrid_->SetCellValue(actualrow_, 1, program->GetFileTypeStr());
+    filegrid_->SetCellAlignment(actualrow_, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    filegrid_->SetCellValue(actualrow_, 2, wxString::Format("0x%.4X", program->StartAddress));
+    filegrid_->SetCellAlignment(actualrow_, 2, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    filegrid_->SetCellValue(actualrow_, 3, wxString::Format("0x%.4X", program->ExecAddress));
+    filegrid_->SetCellAlignment(actualrow_, 3, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    filegrid_->SetCellValue(actualrow_, 4, wxString::Format("0x%.4X", program->EndAddress));
+    filegrid_->SetCellAlignment(actualrow_, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    filegrid_->AutoSizeColumns();
+}
+
 
 
 
 void NewProjectDialog::OnResize(wxSizeEvent &event)
 {
-
     main_sizer_->Fit(this);
 }
 
@@ -163,15 +184,15 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
     OK_button_->Enable();
     Remove_button_->Enable();
     
-    // DEBUG
-    /*
+    #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Size of the Columns:");
     LogIt(wxString::Format("Name = %d", filegrid_->GetColSize(0)));
     LogIt(wxString::Format("Type = %d", filegrid_->GetColSize(1)));
     LogIt(wxString::Format("Start = %d", filegrid_->GetColSize(2)));
     LogIt(wxString::Format("Execution = %d", filegrid_->GetColSize(3)));
     LogIt(wxString::Format("End = %d", filegrid_->GetColSize(4)));
-    */
+    #endif
+
 }
 
 
@@ -184,8 +205,8 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     int item_count = selected_rows.GetCount();
     int deleted_amount = 0;
 
-    //DEBUG
-    /*
+
+    #ifdef IDZ80_NPRJD_DEBUG
     LogIt(wxString::Format("Remove %d row(s).", item_count));
     wxString str_debug = "[";
     for (int listitem = 0; listitem < item_count; listitem++) {
@@ -194,8 +215,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     str_debug.Trim();
     str_debug << "]";
     LogIt(str_debug);
-    */
-    // <- DEBUG
+    #endif
 
     if(item_count == 0)
         return;
@@ -209,8 +229,9 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
             main_->Programs_->Remove(row_delete);
             deleted_amount++;
         }
-        //DEBUG
-        //LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
+        #ifdef IDZ80_NPRJD_DEBUG
+        LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
+        #endif
     }
     actualrow_ = filegrid_->GetNumberRows() - 1;
 
@@ -231,13 +252,16 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
-    main_->Programs_->Clear();
+    if (!program_loaded)
+        main_->Programs_->Clear();
+    LogIt("Cancelled.");
     EndModal(wxID_CANCEL);
 }
 
 void NewProjectDialog::OnGridLeftDoubleClick(wxGridEvent &event)
 {
     int line = event.GetRow();
+    LogIt("---");
     LogIt(wxString::Format("Left double clicked on line %d", line));
 }
 

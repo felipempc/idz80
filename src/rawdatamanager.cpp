@@ -11,6 +11,9 @@
 
 #include "rawdatamanager.h"
 
+// DEFinition for debug = IDZ80_RAWDATAMGR_DEBUG
+//#define IDZ80_RAWDATAMGR_DEBUG
+
 RawDataManager::RawDataManager(LogWindow *logparent)
 {
     logwindow = logparent;
@@ -40,7 +43,10 @@ RawData *RawDataManager::AddFile(wxString name)
     if (current_file_->Open(name))
     {
         data_list_.push_back(current_file_);
+
+        #ifdef IDZ80_RAWDATAMGR_DEBUG
         LogIt(current_file_->GetFileName() + "   " + current_file_->GetFileTypeStr());
+        #endif
     }
     else
     {
