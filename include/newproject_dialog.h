@@ -35,7 +35,7 @@ class NewProjectDialog: public wxDialog, public LogBase
         wxBoxSizer *main_sizer_;
 
         wxGrid  *filegrid_;
-        wxButton *Cancel_button_, *OK_button_, *Add_button_, *Remove_button_;
+        wxButton *Cancel_button_, *OK_button_, *Add_button_, *Edit_button_, *Remove_button_;
         int actualrow_;
         bool program_loaded;
 
@@ -44,13 +44,16 @@ class NewProjectDialog: public wxDialog, public LogBase
 
         bool AddFileToGrid(wxString& filestr);
         void FillRow(RawData *program);
+        void DialogEditRow(int line);
 
         void OnResize(wxSizeEvent &event);
         void OnAddButton(wxCommandEvent &event);
+        void OnEditButton(wxCommandEvent &event);
         void OnRemoveButton(wxCommandEvent &event);
         void OnOkButtonPressed(wxCommandEvent &event);
         void OnCancelButtonPressed(wxCommandEvent &event);
-        void OnGridLeftDoubleClick(wxGridEvent& event);
+        void OnGridSelectedRow(wxGridEvent &event);
+        void OnGridLeftDoubleClick(wxGridEvent &event);
 };
 
 #endif // NEWPROJECTDIALOG_H

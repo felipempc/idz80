@@ -13,5 +13,8 @@
   STATUS
   ------
 
-  10/2025 - NewProjectDialog em andamento criar frame para editar endereços do programa.
+  10/2025 - NewProjectDialog - Funciona abrindo, adicionando e removendo programas. Se sair e voltar ele também mostra os programas
+                               selecionados anteriormente. Evento duplo clique na linha do grid não funciona.
+                               Criar frame para editar endereços do programa. 
+            main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
 

@@ -10,6 +10,7 @@
 
 #include "newproject_dialog.h"
 #include "wx/filedlg.h"
+#include "file_settings_dialog.h"
 
 
 // DEFinition for debug = IDZ80_NPRJD_DEBUG
@@ -27,10 +28,12 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     BuildDialog();
     Bind(wxEVT_SIZE, &NewProjectDialog::OnResize, this);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnAddButton, this, idADD_FILE_BUTTON);
+    Bind(wxEVT_BUTTON, &NewProjectDialog::OnEditButton, this, wxID_EDIT);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnRemoveButton, this, idREMOVE_FILE_BUTTON);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnOkButtonPressed, this, wxID_OK);
     Bind(wxEVT_BUTTON, &NewProjectDialog::OnCancelButtonPressed, this, wxID_CANCEL);
-    Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this, idGRID_LEFT_DCLICK);
+    Bind(wxEVT_GRID_SELECT_CELL, &NewProjectDialog::OnGridSelectedRow, this);
+    Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
     if (main_->Programs_->Count() != 0) {
         for(int j = 0; j < main_->Programs_->Count(); j++){
@@ -40,9 +43,11 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     }
     else {
         OK_button_->Disable();
-        Remove_button_->Disable();
         program_loaded = false;
     }
+
+    Edit_button_->Disable();
+    Remove_button_->Disable();
 }
 
 
@@ -86,10 +91,11 @@ void NewProjectDialog::BuildDialog()
     main_sizer_->Add(filegrid_, wxSizerFlags(0).Border(wxALL, 10));
     filegrid_->EnableEditing(false);
 
-
     // Buttons_panel
     OK_button_ = new wxButton(buttons_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
     buttons_sizer->Add(OK_button_, wxSizerFlags(0).Border(wxALL, 10));
+    Edit_button_ = new wxButton(buttons_panel, wxID_EDIT, "Edit", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_EDIT");
+    buttons_sizer->Add(Edit_button_, wxSizerFlags(0).Border(wxALL, 10));
     Add_button_ = new wxButton(buttons_panel, idADD_FILE_BUTTON, "Add", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "AddButton");
     buttons_sizer->Add(Add_button_, wxSizerFlags(0).Border(wxALL, 10));
     Remove_button_ = new wxButton(buttons_panel, idREMOVE_FILE_BUTTON, "Remove", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "RemoveButton");
@@ -161,6 +167,21 @@ void NewProjectDialog::FillRow(RawData *program)
 }
 
 
+void NewProjectDialog::DialogEditRow(int line)
+{
+    RawData *program;
+
+    if ((line >= 0) || (line < main_->Programs_->Count())) {
+        program = main_->Programs_->Index(line);
+        if (program == 0)
+            return;
+        
+        FileSettingsDialog config(program);
+        config.SetData();
+        config.ShowModal();
+    }
+}
+
 
 
 void NewProjectDialog::OnResize(wxSizeEvent &event)
@@ -182,7 +203,6 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
         AddFileToGrid(file_list[idx]);
     
     OK_button_->Enable();
-    Remove_button_->Enable();
     
     #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Size of the Columns:");
@@ -195,6 +215,17 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 
 }
 
+
+
+void NewProjectDialog::OnEditButton(wxCommandEvent &event)
+{
+    if(filegrid_->GetSelectedRows().Count() != 1) {
+        LogIt("Cannot edit multiple lines!");
+        return;
+    }
+    int line = filegrid_->GetSelectedRows().front();
+    DialogEditRow(line);
+}
 
 
 
@@ -250,18 +281,32 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
     EndModal(wxID_OK);
 }
 
+
+
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
     if (!program_loaded)
         main_->Programs_->Clear();
-    LogIt("Cancelled.");
+
     EndModal(wxID_CANCEL);
 }
+
+
+
+void NewProjectDialog::OnGridSelectedRow(wxGridEvent &event)
+{
+    int line = event.GetRow();
+    if(filegrid_->GetGridCursorRow() >= 0) {
+        Edit_button_->Enable();
+        Remove_button_->Enable();
+    }
+}
+
+
 
 void NewProjectDialog::OnGridLeftDoubleClick(wxGridEvent &event)
 {
     int line = event.GetRow();
-    LogIt("---");
-    LogIt(wxString::Format("Left double clicked on line %d", line));
+    DialogEditRow(line);
 }
 
