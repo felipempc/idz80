@@ -40,9 +40,9 @@ class FileSettingsDialog: public wxDialog
 		uint GetStartAddress();
 		uint GetExecAddress();
 		uint GetEndAddress();
-		bool WantsAutoDisassembly();
-		bool WantsAutoLabel();
-		bool WantsSimulateExecution();
+//		bool WantsAutoDisassembly();
+//		bool WantsAutoLabel();
+//		bool WantsSimulateExecution();
 
 	protected:
 
@@ -56,13 +56,12 @@ class FileSettingsDialog: public wxDialog
 		static const long ID_PANEL1;
 
 	private:
-        wxNotebook      *bookCtrl;
-        wxPanel         *main_panel,
-                        *yesno_panel;
-        wxRadioBox      *RadioFileTypeBox;
-        wxCheckBox      *AutoLabel_CheckBox,
+		wxPanel *main_panel_;
+/*        wxCheckBox      *AutoLabel_CheckBox,
                         *AutoDisassemble_CheckBox,
                         *SimulateExecution_CheckBox;
+*/
+		wxRadioBox      *RadioFileTypeBox;
 
         uint	StartAddress,
 				ExecAddress,
@@ -74,11 +73,12 @@ class FileSettingsDialog: public wxDialog
         void OnSizeEvent(wxSizeEvent &event);
         void OnAddressFieldsKeypress(wxCommandEvent &event);
 
-        void SetupProgramSettings(wxNotebook *book);
-        void CreateAddressBox(wxStaticBoxSizer *boxsizer);
+        void SetupProgramSettings(wxPanel *panel);	//wxNotebook *book);
+		void BuildDialog();
+		void SetupRadioTypeChooser(wxPanel *panel);
+		void SetupAddressBox(wxPanel *panel);
+		void SetupOkCancelButtons(wxPanel *panel);
         void CheckAddressSanity();
-
-        void SetupDAsmSettings(wxNotebook *book);
 };
 
 #endif
