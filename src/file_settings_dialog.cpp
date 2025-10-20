@@ -27,29 +27,33 @@ const long FileSettingsDialog::ID_TXT_END = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_END = wxNewId();
 const long FileSettingsDialog::ID_RADIOBOX1 = wxNewId();
 const long FileSettingsDialog::ID_PANEL1 = wxNewId();
+const long FileSettingsDialog::ID_PANEL2 = wxNewId();
 
 
 
-FileSettingsDialog::FileSettingsDialog(RawData *program)
+FileSettingsDialog::FileSettingsDialog(IDZ80MainBase *parent)
 {
-	Create(0, wxID_ANY, "Configuration", wxPoint(100, 100), wxSize(300, 300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "id");
+	Create(0, wxID_ANY, "Configuration", wxPoint(100, 100), wxSize(300, 300), wxDEFAULT_DIALOG_STYLE, "id");
+    ModuleName = "FileSettings";
+    SetTextLog(parent->GetTextLog());
+
 
     BuildDialog();
 
 	Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
-    Bind(wxEVT_SIZE, &FileSettingsDialog::OnSizeEvent, this);
-    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_START);
-    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_EXECUTION);
-    Bind(wxEVT_TEXT, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_END);
+    //Bind(wxEVT_SIZE, &FileSettingsDialog::OnSizeEvent, this);
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_START);
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_EXECUTION);
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_END);
 
 
 	StartAddress = 0;
 	ExecAddress = 0;
 	EndAddress = 0;
 
-	m_program = program;
+	m_program = parent->Programs_->Current();
 
-    SetMinSize(wxSize(300, 300));
+    SetMinSize(wxSize(250, 250));
 	Txt_StartAddress->SetFocus();
 }
 
@@ -66,21 +70,30 @@ FileSettingsDialog::~FileSettingsDialog()
 void FileSettingsDialog::BuildDialog()
 {
 	main_panel_ = new wxPanel(this);
+    wxPanel *panel_settings = new wxPanel(main_panel_);
+    wxPanel *yesno_panel = new wxPanel(main_panel_);
+
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *panel_settings_sizer = new wxBoxSizer(wxHORIZONTAL);
+    //main_panel_->SetSizerAndFit(main_sizer);
+    panel_settings->SetSizer(panel_settings_sizer);
+
+    SetupRadioTypeChooser(panel_settings);
+    SetupAddressBox(panel_settings);
+    main_sizer->Add(panel_settings, wxSizerFlags(0).Border(wxALL, 10));
+    SetupOkCancelButtons(yesno_panel);
+    main_sizer->Add(yesno_panel,  wxSizerFlags(0).Expand());
     main_panel_->SetSizer(main_sizer);
-    
-    //SetupProgramSettings(main_panel_); REMOVE
-
-    SetupRadioTypeChooser(main_panel_);
-    SetupOkCancelButtons(main_panel_);
-
+    main_sizer->Fit(this);
 }
+
+
 
 void FileSettingsDialog::SetupRadioTypeChooser(wxPanel *panel)
 {
-    wxPanel *panel_settings = new wxPanel(panel, ID_PANEL1, wxDefaultPosition, wxSize(200,200), wxTAB_TRAVERSAL, "ID_PANEL1");
-	wxBoxSizer *sizer_settings = new wxBoxSizer(wxHORIZONTAL);
-    panel_settings->SetSizer(sizer_settings);
+    wxPanel *panel_radio = new wxPanel(panel, ID_PANEL1, wxDefaultPosition, wxSize(115,115), wxTAB_TRAVERSAL, "ID_PANEL1");
+    wxBoxSizer *radio_sizer = new wxBoxSizer(wxHORIZONTAL);
+    panel_radio->SetSizer(radio_sizer);
 
 	wxString file_type_list[4] =
 	{
@@ -89,11 +102,14 @@ void FileSettingsDialog::SetupRadioTypeChooser(wxPanel *panel)
 		"COM",
 		"BIN"
 	};
-	RadioFileTypeBox = new wxRadioBox(panel_settings, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
-    sizer_settings->Add(RadioFileTypeBox, wxSizerFlags(0).Left().Top().Border(wxALL, 10).FixedMinSize());
-
-    SetupAddressBox(panel_settings);
+	RadioFileTypeBox = new wxRadioBox(panel_radio, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
+    radio_sizer->Add(RadioFileTypeBox);
+    radio_sizer->Fit(panel_radio);
+    panel->GetSizer()->Add(panel_radio); //, wxSizerFlags(0).Left().Top().Border(wxALL, 5).FixedMinSize());
+    panel->GetSizer()->AddSpacer(10);
 }
+
+
 
 void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
 {
@@ -102,27 +118,27 @@ void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
             *panel_address_exec,
             *panel_address_end;
 
-    wxBoxSizer  *address_sizer,
-                *address_start_sizer,
+    wxStaticBoxSizer  *address_sizer;
+    wxBoxSizer  *address_start_sizer,
                 *address_exec_sizer,
                 *address_end_sizer;
 
     wxStaticText    *text;
 
-    panel_address = new wxPanel(panel);
+    panel_address = new wxPanel(panel); //, ID_PANEL2, wxDefaultPosition, wxSize(200, 200), wxTAB_TRAVERSAL, "ID_PANEL2");
     panel_address_start = new wxPanel(panel_address);
     address_start_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_start, ID_TXT_START, "Start", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_START");
     address_start_sizer->Add(text, wxSizerFlags(0).Left());
-    Txt_StartAddress = new wxTextCtrl(panel_address_start, ID_TXTCTRL_START, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "START_ADDRESS");
-    address_start_sizer->Add(Txt_StartAddress, wxSizerFlags(0).Left());
-    panel_address_start->SetSizer(address_start_sizer);
+    Txt_StartAddress = new wxTextCtrl(panel_address_start, ID_TXTCTRL_START, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "START_ADDRESS");
+    address_start_sizer->Add(Txt_StartAddress, wxSizerFlags(0).Left().Expand());
+    panel_address_start->SetSizerAndFit(address_start_sizer);
 
     panel_address_exec = new wxPanel(panel_address);
     address_exec_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_exec, ID_TXT_EXECUTION, "Execution", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_EXECUTION");
     address_exec_sizer->Add(text, wxSizerFlags(0).Left());
-    Txt_ExecAddress = new wxTextCtrl(panel_address_exec, ID_TXTCTRL_EXECUTION, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "EXECUTION_ADDRESS");
+    Txt_ExecAddress = new wxTextCtrl(panel_address_exec, ID_TXTCTRL_EXECUTION, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "EXECUTION_ADDRESS");
     address_exec_sizer->Add(Txt_ExecAddress, wxSizerFlags(0).Left());
     panel_address_exec->SetSizer(address_exec_sizer);
 
@@ -130,72 +146,34 @@ void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
     address_end_sizer = new wxBoxSizer(wxVERTICAL);
     text = new wxStaticText(panel_address_end, ID_TXT_END, "End", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_END");
     address_end_sizer->Add(text, wxSizerFlags(0).Left());
-    Txt_EndAddress = new wxTextCtrl(panel_address_end, ID_TXTCTRL_END, wxEmptyString, wxDefaultPosition, wxSize(80,20), 0, wxDefaultValidator, "END_ADDRESS");
+    Txt_EndAddress = new wxTextCtrl(panel_address_end, ID_TXTCTRL_END, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "END_ADDRESS");
     address_end_sizer->Add(Txt_EndAddress, wxSizerFlags(0).Left());
     panel_address_end->SetSizer(address_end_sizer);
 
-    address_sizer = new wxBoxSizer(wxVERTICAL);
+    address_sizer = new wxStaticBoxSizer(wxVERTICAL, panel_address, "Address");
     address_sizer->Add(panel_address_start, wxSizerFlags(1).Left().Border(wxALL, 5));
     address_sizer->Add(panel_address_exec, wxSizerFlags(1).Left().Border(wxALL, 5));
     address_sizer->Add(panel_address_end, wxSizerFlags(1).Left().Border(wxALL, 5));
     panel_address->SetSizer(address_sizer);
 
-    //boxsizer->Add(panel_address, wxSizerFlags(1).Expand());
-
-    panel->GetSizer()->Add(panel_address, wxSizerFlags(0).Left().Top().Border(wxALL, 10));
+    panel->GetSizer()->Add(panel_address); //, wxSizerFlags(0).Left().Top().Border(wxALL, 5).Expand());
 }
 
 
 
 void FileSettingsDialog::SetupOkCancelButtons(wxPanel *panel)
 {
-    wxPanel *yesno_panel = new wxPanel(panel);
     wxBoxSizer *yesno_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *yes_button = new wxButton(yesno_panel, wxID_OK, "OK");
+    wxButton *yes_button = new wxButton(panel, wxID_OK, "OK");
     yesno_sizer->Add(yes_button, wxSizerFlags(0).Border(wxALL, 10));
-    yesno_sizer->AddStretchSpacer(1);
-    wxButton *no_button = new wxButton(yesno_panel, wxID_CANCEL, "Cancel");
+    yesno_sizer->AddSpacer(60);
+    wxButton *no_button = new wxButton(panel, wxID_CANCEL, "Cancel");
     yesno_sizer->Add(no_button, wxSizerFlags(0).Border(wxALL, 10));
-    yesno_sizer->AddStretchSpacer(1);
-    yesno_panel->SetSizer(yesno_sizer);
+    panel->SetSizer(yesno_sizer);
     //yesno_panel->SetOwnBackgroundColour(*wxBLACK);
- 
-    panel->GetSizer()->Add(yesno_panel,  wxSizerFlags(1).Expand());
 }
 
-
-// Remove it
-/*
-void FileSettingsDialog::SetupProgramSettings(wxPanel *panel)    //wxNotebook *book)
-{
-    wxPanel *panel_settings, *panel_address;
-	wxBoxSizer  *sizer_settings;
-	wxStaticBoxSizer    *AddressBox;
-
-
-    panel_settings = new wxPanel(panel, ID_PANEL1, wxDefaultPosition, wxSize(200,200), wxTAB_TRAVERSAL, "ID_PANEL1");
-	sizer_settings = new wxBoxSizer(wxHORIZONTAL);
-
-	wxString file_type_list[4] =
-	{
-		"ROM",
-		"ROM (Cartridge)",
-		"COM",
-		"BIN"
-	};
-	RadioFileTypeBox = new wxRadioBox(panel_settings, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
-    sizer_settings->Add(RadioFileTypeBox, wxSizerFlags(0).Left().Top().Border(wxALL, 10).FixedMinSize());
-
-	AddressBox = new wxStaticBoxSizer(wxVERTICAL, panel_settings, "Address");
-	CreateAddressBox(panel_address);
-
-
-    panel_settings->SetSizer(sizer_settings);
-
-    panel->GetSizer()->Add(panel_settings);
-}
-*/
 
 
 /*
@@ -259,6 +237,8 @@ void FileSettingsDialog::SetData()
             else
                 RadioFileTypeBox->SetSelection(0);
             break;
+        case UNKNOWN:
+            break;
 
     }
 }
@@ -305,11 +285,11 @@ void FileSettingsDialog::UpdateFormAddress()
     EndAddress = m_program->EndAddress;
     ExecAddress = m_program->ExecAddress;
     str.Printf("%.4X", StartAddress);
-    Txt_StartAddress->SetValue(str);
+    Txt_StartAddress->ChangeValue(str);
     str.Printf("%.4X", EndAddress);
-    Txt_EndAddress->SetValue(str);
+    Txt_EndAddress->ChangeValue(str);
     str.Printf("%.4X", ExecAddress);
-    Txt_ExecAddress->SetValue(str);
+    Txt_ExecAddress->ChangeValue(str);
 }
 
 
@@ -324,7 +304,8 @@ void FileSettingsDialog::CheckAddressSanity()
 
     if (ExecAddress > EndAddress)
         ExecAddress = StartAddress;
-
+    
+    UpdateFormAddress();
 }
 
 
@@ -359,12 +340,12 @@ void FileSettingsDialog::OnRadioBoxSelect(wxCommandEvent &event)
 }
 
 
-
+/*
 void FileSettingsDialog::OnSizeEvent(wxSizeEvent &event)
 {
     main_panel_->SetSize(event.GetSize());
 }
-
+*/
 
 
 void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
@@ -375,11 +356,11 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
     int id;
     wxTextCtrl  *edited_field;
 
-
     id = event.GetId();
     if (id == ID_TXTCTRL_START)
     {
         str = Txt_StartAddress->GetValue();
+        LogIt(wxString::Format("Changed START: %s", str));
         edited_field = Txt_StartAddress;
         modified_address_field = &StartAddress;
     }
@@ -387,6 +368,7 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
     if (id == ID_TXTCTRL_EXECUTION)
     {
         str = Txt_ExecAddress->GetValue();
+        LogIt(wxString::Format("Changed EXECUTION: %s", str));
         edited_field = Txt_ExecAddress;
         modified_address_field = &ExecAddress;
     }
@@ -394,6 +376,7 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
     if (id == ID_TXTCTRL_END)
     {
         str = Txt_EndAddress->GetValue();
+        LogIt(wxString::Format("Changed END: %s", str));
         edited_field = Txt_EndAddress;
         modified_address_field = &EndAddress;
     }

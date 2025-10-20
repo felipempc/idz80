@@ -11,7 +11,7 @@
 #ifndef DIALOGFILESETTINGS_H
 #define DIALOGFILESETTINGS_H
 
-#include <wx/notebook.h>
+//#include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/radiobox.h>
@@ -19,15 +19,16 @@
 #include <wx/panel.h>
 #include <wx/dialog.h>
 
-#include <wx/checkbox.h>
+//#include <wx/checkbox.h>
+#include "main_dialog_base.h"
 #include "rawdata.h"
 
 
-class FileSettingsDialog: public wxDialog
+class FileSettingsDialog: public wxDialog, public LogBase
 {
 	public:
 
-		FileSettingsDialog(RawData *program);
+		FileSettingsDialog(IDZ80MainBase *parent);
 		virtual ~FileSettingsDialog();
 
 
@@ -54,6 +55,7 @@ class FileSettingsDialog: public wxDialog
 		static const long ID_TXTCTRL_END;
 		static const long ID_RADIOBOX1;
 		static const long ID_PANEL1;
+		static const long ID_PANEL2;
 
 	private:
 		wxPanel *main_panel_;
@@ -70,10 +72,9 @@ class FileSettingsDialog: public wxDialog
 
 		void UpdateFormAddress();
         void OnRadioBoxSelect(wxCommandEvent &event);
-        void OnSizeEvent(wxSizeEvent &event);
+       // void OnSizeEvent(wxSizeEvent &event);
         void OnAddressFieldsKeypress(wxCommandEvent &event);
 
-        void SetupProgramSettings(wxPanel *panel);	//wxNotebook *book);
 		void BuildDialog();
 		void SetupRadioTypeChooser(wxPanel *panel);
 		void SetupAddressBox(wxPanel *panel);

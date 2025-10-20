@@ -1,3 +1,4 @@
 {
-    "terminal.integrated.tabs.defaultColor": "terminal.ansiBlue"
+    "terminal.integrated.tabs.defaultColor": "terminal.ansiBlue",
+    "C_Cpp.errorSquiggles": "enabled"
 }

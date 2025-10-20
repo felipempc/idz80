@@ -19,9 +19,9 @@
 
 NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 {
-    main_ = parent;
+    main_dialog_ = parent;
     ModuleName = "NPDialog";
-    SetTextLog(main_->GetTextLog());
+    SetTextLog(main_dialog_->GetTextLog());
 
     actualrow_ = -1;
 
@@ -35,9 +35,9 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     Bind(wxEVT_GRID_SELECT_CELL, &NewProjectDialog::OnGridSelectedRow, this);
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
-    if (main_->Programs_->Count() != 0) {
-        for(int j = 0; j < main_->Programs_->Count(); j++){
-            FillRow(main_->Programs_->Index(j));
+    if (main_dialog_->Programs_->Count() != 0) {
+        for(int j = 0; j < main_dialog_->Programs_->Count(); j++){
+            FillRow(main_dialog_->Programs_->Index(j));
         }
         program_loaded = true;
     }
@@ -119,14 +119,14 @@ bool NewProjectDialog::DialogLoadProgramFile(wxArrayString &file_list_str)
 {
     wxString caption = "Choose a file";
     wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, main_->fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
+    wxFileDialog dialog(this, caption, main_dialog_->fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
     bool ret = false;
 
     if (dialog.ShowModal() == wxID_OK)
     {
         ret = true;
         dialog.GetPaths(file_list_str);
-        main_->fileopen_last_dir_ = dialog.GetDirectory();
+        main_dialog_->fileopen_last_dir_ = dialog.GetDirectory();
     }
 
     return ret;
@@ -138,7 +138,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
     RawData *program = 0;
 
-    program = main_->Programs_->AddFile(filestr);
+    program = main_dialog_->Programs_->AddFile(filestr);
     if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
         return false;
@@ -171,12 +171,12 @@ void NewProjectDialog::DialogEditRow(int line)
 {
     RawData *program;
 
-    if ((line >= 0) || (line < main_->Programs_->Count())) {
-        program = main_->Programs_->Index(line);
+    if ((line >= 0) || (line < main_dialog_->Programs_->Count())) {
+        program = main_dialog_->Programs_->Index(line);
         if (program == 0)
             return;
         
-        FileSettingsDialog config(program);
+        FileSettingsDialog config(main_dialog_);
         config.SetData();
         config.ShowModal();
     }
@@ -257,7 +257,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
         if ((row_delete >= 0) || (row_delete < filegrid_->GetNumberRows()))
         {
             filegrid_->DeleteRows(row_delete, 1);
-            main_->Programs_->Remove(row_delete);
+            main_dialog_->Programs_->Remove(row_delete);
             deleted_amount++;
         }
         #ifdef IDZ80_NPRJD_DEBUG
@@ -286,7 +286,7 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
     if (!program_loaded)
-        main_->Programs_->Clear();
+        main_dialog_->Programs_->Clear();
 
     EndModal(wxID_CANCEL);
 }
@@ -299,6 +299,7 @@ void NewProjectDialog::OnGridSelectedRow(wxGridEvent &event)
     if(filegrid_->GetGridCursorRow() >= 0) {
         Edit_button_->Enable();
         Remove_button_->Enable();
+        main_dialog_->Programs_->Index(line);
     }
 }
 

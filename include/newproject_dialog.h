@@ -31,7 +31,7 @@ class NewProjectDialog: public wxDialog, public LogBase
             idGRID_LEFT_DCLICK
         };
     private:
-        IDZ80MainBase *main_;
+        IDZ80MainBase *main_dialog_;
         wxBoxSizer *main_sizer_;
 
         wxGrid  *filegrid_;
