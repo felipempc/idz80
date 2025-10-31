@@ -11,7 +11,6 @@
 #ifndef DIALOGFILESETTINGS_H
 #define DIALOGFILESETTINGS_H
 
-//#include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/radiobox.h>
@@ -19,7 +18,7 @@
 #include <wx/panel.h>
 #include <wx/dialog.h>
 
-//#include <wx/checkbox.h>
+
 #include "main_dialog_base.h"
 #include "rawdata.h"
 
@@ -41,9 +40,6 @@ class FileSettingsDialog: public wxDialog, public LogBase
 		uint GetStartAddress();
 		uint GetExecAddress();
 		uint GetEndAddress();
-//		bool WantsAutoDisassembly();
-//		bool WantsAutoLabel();
-//		bool WantsSimulateExecution();
 
 	protected:
 
@@ -59,27 +55,38 @@ class FileSettingsDialog: public wxDialog, public LogBase
 
 	private:
 		wxPanel *main_panel_;
-/*        wxCheckBox      *AutoLabel_CheckBox,
-                        *AutoDisassemble_CheckBox,
-                        *SimulateExecution_CheckBox;
-*/
 		wxRadioBox      *RadioFileTypeBox;
 
         uint	StartAddress,
 				ExecAddress,
 				EndAddress;
+		FileType m_filetype;
+		bool m_cartridge;
+		
         RawData *m_program;
 
 		void UpdateFormAddress();
+		void ResetOriginalAddresses();
+
         void OnRadioBoxSelect(wxCommandEvent &event);
-       // void OnSizeEvent(wxSizeEvent &event);
-        void OnAddressFieldsKeypress(wxCommandEvent &event);
+		void OnOKPressed(wxCommandEvent &event);
+		void OnCancelPressed(wxCommandEvent &event);
+        void OnAddressFieldsKeypress(wxCommandEvent &event); // OBSOLETE
+		void OnAddressFieldEnterPress(wxCommandEvent &event);
+		void OnKeypressStartAddress(wxCommandEvent &event);
+		void OnKeypressExecutionAddress(wxCommandEvent &event);
+		void OnKeypressEndAddress(wxCommandEvent &event);
 
 		void BuildDialog();
 		void SetupRadioTypeChooser(wxPanel *panel);
 		void SetupAddressBox(wxPanel *panel);
 		void SetupOkCancelButtons(wxPanel *panel);
+		void ChangeStartAddress();
+		void ChangeExecutionAddress();
+		void ChangeEndAddress();
         void CheckAddressSanity();
+		bool CheckHexadecimal(wxString &str_number, long &convert);
+		bool CheckIfZ80Addressable(long &number);
 };
 
 #endif

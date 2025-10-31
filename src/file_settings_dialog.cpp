@@ -34,26 +34,28 @@ const long FileSettingsDialog::ID_PANEL2 = wxNewId();
 FileSettingsDialog::FileSettingsDialog(IDZ80MainBase *parent)
 {
 	Create(0, wxID_ANY, "Configuration", wxPoint(100, 100), wxSize(300, 300), wxDEFAULT_DIALOG_STYLE, "id");
+
     ModuleName = "FileSettings";
     SetTextLog(parent->GetTextLog());
-
+    m_program = parent->Programs_->Current();
 
     BuildDialog();
 
-	Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
-    //Bind(wxEVT_SIZE, &FileSettingsDialog::OnSizeEvent, this);
-    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_START);
-    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_EXECUTION);
-    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldsKeypress, this, ID_TXTCTRL_END);
+	//Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
+    Bind(wxEVT_BUTTON, &FileSettingsDialog::OnOKPressed, this, wxID_OK);
+    Bind(wxEVT_BUTTON, &FileSettingsDialog::OnCancelPressed, this, wxID_CANCEL);
 
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnKeypressStartAddress, this, ID_TXTCTRL_START);
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnKeypressExecutionAddress, this, ID_TXTCTRL_EXECUTION);
+    Bind(wxEVT_TEXT, &FileSettingsDialog::OnKeypressEndAddress, this, ID_TXTCTRL_END);
 
-	StartAddress = 0;
-	ExecAddress = 0;
-	EndAddress = 0;
-
-	m_program = parent->Programs_->Current();
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldEnterPress, this, ID_TXTCTRL_START);
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldEnterPress, this, ID_TXTCTRL_EXECUTION);
+    Bind(wxEVT_TEXT_ENTER, &FileSettingsDialog::OnAddressFieldEnterPress, this, ID_TXTCTRL_END);
 
     SetMinSize(wxSize(250, 250));
+    SetData();
+
 	Txt_StartAddress->SetFocus();
 }
 
@@ -176,39 +178,24 @@ void FileSettingsDialog::SetupOkCancelButtons(wxPanel *panel)
 
 
 
-/*
-void FileSettingsDialog::SetupDAsmSettings(wxNotebook *book)
+void FileSettingsDialog::ChangeStartAddress()
 {
-    wxPanel *checkbox_panel, *dasm_box_panel;
-    wxBoxSizer *chkbox_sizer;
-    wxStaticBoxSizer *box_dasm;
-
-    checkbox_panel = new wxPanel(book);
-    dasm_box_panel = new wxPanel(checkbox_panel, wxID_ANY, wxDefaultPosition, wxSize(200, 200));
-    box_dasm = new wxStaticBoxSizer(wxVERTICAL, dasm_box_panel, "Disassemble");
-
-    chkbox_sizer = new wxBoxSizer(wxVERTICAL);
-
-    AutoDisassemble_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Auto disassemble");
-    box_dasm->Add(AutoDisassemble_CheckBox, wxSizerFlags(1).Left());
-
-    AutoLabel_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Auto label");
-    box_dasm->Add(AutoLabel_CheckBox, wxSizerFlags(1).Left());
-
-    SimulateExecution_CheckBox = new wxCheckBox(box_dasm->GetStaticBox(), wxID_ANY, "Simulate execution");
-    box_dasm->Add(SimulateExecution_CheckBox, wxSizerFlags(1).Left());
-
-    chkbox_sizer->Add(box_dasm);
-    checkbox_panel->SetSizer(chkbox_sizer);
-
-    AutoDisassemble_CheckBox->SetValue(true);
-    AutoLabel_CheckBox->SetValue(true);
-    SimulateExecution_CheckBox->SetValue(false);
-
-    book->AddPage(checkbox_panel, "Options");
+    LogIt("Start address modified.");
 }
-*/
 
+
+
+void FileSettingsDialog::ChangeExecutionAddress()
+{
+    LogIt("Execution address modified.");
+}
+
+
+
+void FileSettingsDialog::ChangeEndAddress()
+{
+    LogIt("End address modified.");
+}
 
 
 
@@ -218,9 +205,11 @@ void FileSettingsDialog::SetData()
     FileType t;
     bool    cartrom;
 
+    ResetOriginalAddresses();
     UpdateFormAddress();
 
     t = m_program->GetFileType();
+    m_filetype = t;
     switch (t)
     {
         case BIN:
@@ -261,35 +250,26 @@ uint FileSettingsDialog::GetEndAddress()
     return EndAddress;
 }
 
-/*
-bool FileSettingsDialog::WantsAutoDisassembly()
-{
-    return AutoDisassemble_CheckBox->IsChecked();
-}
 
-bool FileSettingsDialog::WantsAutoLabel()
-{
-    return AutoLabel_CheckBox->IsChecked();
-}
-
-bool FileSettingsDialog::WantsSimulateExecution()
-{
-    return SimulateExecution_CheckBox->IsChecked();
-}
-*/
 
 void FileSettingsDialog::UpdateFormAddress()
 {
     wxString str;
-    StartAddress = m_program->StartAddress;
-    EndAddress = m_program->EndAddress;
-    ExecAddress = m_program->ExecAddress;
     str.Printf("%.4X", StartAddress);
     Txt_StartAddress->ChangeValue(str);
     str.Printf("%.4X", EndAddress);
     Txt_EndAddress->ChangeValue(str);
     str.Printf("%.4X", ExecAddress);
     Txt_ExecAddress->ChangeValue(str);
+}
+
+
+
+void FileSettingsDialog::ResetOriginalAddresses()
+{
+    StartAddress = m_program->StartAddress;
+    EndAddress = m_program->EndAddress;
+    ExecAddress = m_program->ExecAddress;
 }
 
 
@@ -304,52 +284,96 @@ void FileSettingsDialog::CheckAddressSanity()
 
     if (ExecAddress > EndAddress)
         ExecAddress = StartAddress;
-    
-    UpdateFormAddress();
 }
+
+
+
+bool FileSettingsDialog::CheckHexadecimal(wxString &str_number, long &convert)
+{
+    if (str_number.IsEmpty())
+        return false;
+    
+    
+    if (!str_number.ToLong(&convert, 16)) {
+        wxMessageBox("Only hexadecimal numbers allowed !", "Error ...");
+        return false;
+    }
+    return true;
+}
+
+
+
+bool FileSettingsDialog::CheckIfZ80Addressable(long &number)
+{
+    bool is_addressable = number <= 0xFFFF;
+
+    if (!is_addressable)
+        wxMessageBox(wxString::Format("Value 0x%X is greater than Z80 can address!", number), "Error ...");
+    
+    return is_addressable;
+}
+
 
 
 void FileSettingsDialog::OnRadioBoxSelect(wxCommandEvent &event)
 {
     int selection = event.GetSelection();
-    Txt_StartAddress->SetValue(wxString::Format("DEBUG = %d",selection));
 
     switch (selection)
     {
     case 0: //ROM
-            m_program->SetFileType(ROM);
-            m_program->ForceNoCartridge();
+            //m_program->SetFileType(ROM);
+            //m_program->ForceNoCartridge();
+            m_filetype = ROM;
+            m_cartridge = false;
             break;
     case 1: //ROM Cartridge
+            /*
             m_program->SetFileType(ROM);
             if (!m_program->isCartridge())
             {
                 RadioFileTypeBox->SetSelection(0);
                 RadioFileTypeBox->Enable(1, false);
             }
+            */
+            m_filetype = ROM;
+            m_cartridge = true;
             break;
     case 2: //COM
-            m_program->SetFileType(COM);
+            //m_program->SetFileType(COM);
+            m_filetype = COM;
             break;
     case 3: //BIN
-            m_program->SetFileType(BIN);
+            //m_program->SetFileType(BIN);
+            m_filetype = BIN;
             break;
     }
 
+    ResetOriginalAddresses();
     UpdateFormAddress();
 }
 
 
-/*
-void FileSettingsDialog::OnSizeEvent(wxSizeEvent &event)
+
+void FileSettingsDialog::OnOKPressed(wxCommandEvent &event)
 {
-    main_panel_->SetSize(event.GetSize());
+    // TODO: Save modifications, if modified
+    EndModal(wxID_OK);
 }
-*/
 
 
+
+void FileSettingsDialog::OnCancelPressed(wxCommandEvent &event)
+{
+    EndModal(wxID_CANCEL);
+}
+
+
+
+// OBSOLETE
 void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
 {
+    // Processa cada tecla no TextCrl, filtra caracteres não correspondentes a um valor hexadecimal. Não verifica limites.
     long    conv;
     wxString    str;
     uint    *modified_address_field;
@@ -394,5 +418,67 @@ void FileSettingsDialog::OnAddressFieldsKeypress(wxCommandEvent &event)
             CheckAddressSanity();
         }
     }
+    UpdateFormAddress();
+}
 
+void FileSettingsDialog::OnAddressFieldEnterPress(wxCommandEvent &event)
+{
+    // Processa ao teclar enter em algum campo endereço. Deve calcular os limites do endereçamento.
+}
+
+
+
+void FileSettingsDialog::OnKeypressStartAddress(wxCommandEvent &event)
+{
+    wxString str_number;
+    long number;
+    bool error_detected = true;
+
+    str_number = Txt_StartAddress->GetValue();
+    if (CheckHexadecimal(str_number, number))
+        if (CheckIfZ80Addressable(number)) {
+            error_detected = false;
+            StartAddress = number;
+        }
+    
+    if(error_detected)
+        Txt_StartAddress->SelectAll();
+    
+    //LogIt("START field pressed.");
+}
+
+void FileSettingsDialog::OnKeypressExecutionAddress(wxCommandEvent &event)
+{
+    wxString str_number;
+    long number;
+    bool error_detected = true;
+
+    str_number = Txt_ExecAddress->GetValue();
+    if (CheckHexadecimal(str_number, number))
+        if (CheckIfZ80Addressable(number)) {
+            error_detected = false;
+            ExecAddress = number;
+        }
+
+    if(error_detected)
+        Txt_ExecAddress->SelectAll();
+    //LogIt("EXECUTION field pressed.");
+}
+
+void FileSettingsDialog::OnKeypressEndAddress(wxCommandEvent &event)
+{
+    wxString str_number;
+    long number;
+    bool error_detected = true;
+
+    str_number = Txt_EndAddress->GetValue();
+    if (CheckHexadecimal(str_number, number))
+        if (CheckIfZ80Addressable(number)) {
+            error_detected = false;
+            EndAddress = number;
+        }
+    
+    if(error_detected)
+        Txt_EndAddress->SelectAll();
+    //LogIt("END field pressed.");
 }

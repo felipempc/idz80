@@ -177,7 +177,6 @@ void NewProjectDialog::DialogEditRow(int line)
             return;
         
         FileSettingsDialog config(main_dialog_);
-        config.SetData();
         config.ShowModal();
     }
 }
@@ -269,6 +268,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     if(filegrid_->GetNumberRows() == 0) {
         OK_button_->Disable();
         Remove_button_->Disable();
+        Edit_button_->Disable();
     }
 
     filegrid_->ForceRefresh();
