@@ -305,6 +305,21 @@ void RawData::SetFileType(FileType filetype)
     }
 }
 
+
+
+void RawData::SetNewAddresses(AbsoluteAddress start_addr, AbsoluteAddress exec_addr, AbsoluteAddress end_addr)
+{
+    AbsoluteAddress difference = end_addr - start_addr;
+    if ((difference <= GetSize()) && (start_addr >= exec_addr < end_addr))
+    {
+        EndAddress = end_addr;
+        StartAddress = start_addr;
+        ExecAddress = exec_addr;
+    }
+}
+
+
+
 void RawData::SetStrFileType(const wxString &str_type)
 {
     str_type.Upper();

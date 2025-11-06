@@ -59,6 +59,7 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
         wxString GetFileTypeStr();
 
         void SetFileType(FileType filetype);
+        void SetNewAddresses(AbsoluteAddress start_addr, AbsoluteAddress exec_addr, AbsoluteAddress end_addr);
         void SetStrFileType(const wxString &str_type);
         void ForceNoCartridge();
 

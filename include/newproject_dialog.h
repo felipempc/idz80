@@ -44,6 +44,7 @@ class NewProjectDialog: public wxDialog, public LogBase
 
         bool AddFileToGrid(wxString& filestr);
         void FillRow(RawData *program);
+        void UpdateAddressCells(int line, RawData *program);
         void DialogEditRow(int line);
 
         void OnResize(wxSizeEvent &event);

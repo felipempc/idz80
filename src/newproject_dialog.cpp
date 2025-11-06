@@ -167,6 +167,18 @@ void NewProjectDialog::FillRow(RawData *program)
 }
 
 
+
+void NewProjectDialog::UpdateAddressCells(int line, RawData *program)
+{
+    filegrid_->SetCellValue(line, 1, program->GetFileTypeStr());
+    filegrid_->SetCellValue(line, 2, wxString::Format("0x%.4X", program->StartAddress));
+    filegrid_->SetCellValue(line, 3, wxString::Format("0x%.4X", program->ExecAddress));
+    filegrid_->SetCellValue(line, 4, wxString::Format("0x%.4X", program->EndAddress));
+    filegrid_->AutoSizeColumns();
+}
+
+
+
 void NewProjectDialog::DialogEditRow(int line)
 {
     RawData *program;
@@ -177,7 +189,8 @@ void NewProjectDialog::DialogEditRow(int line)
             return;
         
         FileSettingsDialog config(main_dialog_);
-        config.ShowModal();
+        if (config.ShowModal() == wxID_OK)
+            UpdateAddressCells(line, program);
     }
 }
 

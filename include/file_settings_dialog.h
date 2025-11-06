@@ -28,18 +28,6 @@ class FileSettingsDialog: public wxDialog, public LogBase
 	public:
 
 		FileSettingsDialog(IDZ80MainBase *parent);
-		virtual ~FileSettingsDialog();
-
-
-		wxTextCtrl		*Txt_ExecAddress;
-		wxTextCtrl		*Txt_EndAddress;
-		wxTextCtrl		*Txt_StartAddress;
-
-
-		void SetData();
-		uint GetStartAddress();
-		uint GetExecAddress();
-		uint GetEndAddress();
 
 	protected:
 
@@ -54,36 +42,41 @@ class FileSettingsDialog: public wxDialog, public LogBase
 		static const long ID_PANEL2;
 
 	private:
-		wxPanel *main_panel_;
-		wxRadioBox      *RadioFileTypeBox;
+		wxPanel 	*m_main_panel;
+		wxRadioBox	*m_radio_filetype_box;
 
-        uint	StartAddress,
-				ExecAddress,
-				EndAddress;
-		FileType m_filetype;
-		bool m_cartridge;
+        uint		m_start_address,
+					m_exec_address,
+					m_end_address;
+		FileType	m_filetype;
+		bool		m_cartridge;
+		bool		m_changed;
+
+		wxButton	*m_reset_button;
 		
-        RawData *m_program;
+        RawData		*m_program;
 
+		wxTextCtrl	*m_txtctrl_exec_address;
+		wxTextCtrl	*m_txtctrl_end_address;
+		wxTextCtrl	*m_txtctrl_start_address;
+
+
+		void SetData();
 		void UpdateFormAddress();
 		void ResetOriginalAddresses();
 
         void OnRadioBoxSelect(wxCommandEvent &event);
 		void OnOKPressed(wxCommandEvent &event);
+		void OnResetPressed(wxCommandEvent &event);
 		void OnCancelPressed(wxCommandEvent &event);
-        void OnAddressFieldsKeypress(wxCommandEvent &event); // OBSOLETE
 		void OnAddressFieldEnterPress(wxCommandEvent &event);
-		void OnKeypressStartAddress(wxCommandEvent &event);
-		void OnKeypressExecutionAddress(wxCommandEvent &event);
-		void OnKeypressEndAddress(wxCommandEvent &event);
+		void OnKeypressCheckAddress(wxCommandEvent &event);
+		void OnTextCtrlLostFocus(wxFocusEvent& event);
 
 		void BuildDialog();
 		void SetupRadioTypeChooser(wxPanel *panel);
 		void SetupAddressBox(wxPanel *panel);
-		void SetupOkCancelButtons(wxPanel *panel);
-		void ChangeStartAddress();
-		void ChangeExecutionAddress();
-		void ChangeEndAddress();
+		void SetupButtons(wxPanel *panel);
         void CheckAddressSanity();
 		bool CheckHexadecimal(wxString &str_number, long &convert);
 		bool CheckIfZ80Addressable(long &number);
