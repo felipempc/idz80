@@ -18,7 +18,7 @@
 const uint CartridgeRomFile::CARTRIDGE_HEADER_SIZE;
 const word CartridgeRomFile::ID_CARTRIDGE_ROM;
 const word CartridgeRomFile::ID_CARTRIDGE_SUBROM;
-const word CartridgeRomFile::CARTRIDGE_HEADER_ADDRESS;
+const word CartridgeRomFile::CARTRIDGE_PAGE_ADDRESS;
 const word CartridgeRomFile::CARTRIDGE_LAST_ADDRESS;
 
 
@@ -65,15 +65,16 @@ bool CartridgeRomFile::ValidateCartridge(void *source)
     m_cartridge_header->id = static_cast<word>((*header++ * 0x100 + *header) & 0xFFFF);
 
 
+
 	if ((m_cartridge_header->id == ID_CARTRIDGE_ROM) || (m_cartridge_header->id == ID_CARTRIDGE_SUBROM))
 	{
-		cart_init = ((m_cartridge_header->init) && (m_cartridge_header->init > CARTRIDGE_HEADER_ADDRESS) &&
+		cart_init = ((m_cartridge_header->init) && (m_cartridge_header->init > CARTRIDGE_PAGE_ADDRESS) &&
                     (m_cartridge_header->init < CARTRIDGE_LAST_ADDRESS));
-        cart_statement = ((m_cartridge_header->statement) && (m_cartridge_header->statement > CARTRIDGE_HEADER_ADDRESS) &&
+        cart_statement = ((m_cartridge_header->statement) && (m_cartridge_header->statement > CARTRIDGE_PAGE_ADDRESS) &&
                         (m_cartridge_header->statement < CARTRIDGE_LAST_ADDRESS));
-        cart_device = ((m_cartridge_header->device) && (m_cartridge_header->device > CARTRIDGE_HEADER_ADDRESS) &&
+        cart_device = ((m_cartridge_header->device) && (m_cartridge_header->device > CARTRIDGE_PAGE_ADDRESS) &&
                     (m_cartridge_header->device < CARTRIDGE_LAST_ADDRESS));
-        cart_text = ((m_cartridge_header->text) && (m_cartridge_header->text > CARTRIDGE_HEADER_ADDRESS) &&
+        cart_text = ((m_cartridge_header->text) && (m_cartridge_header->text > CARTRIDGE_PAGE_ADDRESS) &&
                     (m_cartridge_header->text < CARTRIDGE_LAST_ADDRESS));
 
 		is_cartridge = cart_init || cart_statement || cart_device || cart_text;

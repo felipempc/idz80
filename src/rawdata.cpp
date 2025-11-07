@@ -282,7 +282,7 @@ void RawData::SetFileType(FileType filetype)
 				if (ValidateCartridge(buffer_.GetData()))
 				{
 					header_offset_ = CARTRIDGE_HEADER_SIZE;
-					StartAddress = CARTRIDGE_HEADER_ADDRESS + header_offset_;
+					StartAddress = CARTRIDGE_PAGE_ADDRESS + header_offset_;
 					ExecAddress = StartAddress;
 					EndAddress = StartAddress + GetSize() - 1;
 				}
@@ -391,7 +391,7 @@ void RawData::GuessFileType()
     if (ValidateCartridge(buffer_.GetData()))
     {
         header_offset_ = CARTRIDGE_HEADER_SIZE;
-        StartAddress = CARTRIDGE_HEADER_ADDRESS + header_offset_;
+        StartAddress = CARTRIDGE_PAGE_ADDRESS + header_offset_;
         ExecAddress = StartAddress;
         EndAddress = StartAddress + GetSize() - 1;
         filetype_ = ROM;

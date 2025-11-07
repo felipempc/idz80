@@ -43,8 +43,19 @@ class CartridgeRomFile
 
     protected:
         static const uint CARTRIDGE_HEADER_SIZE = 16;
-		static const word CARTRIDGE_LAST_ADDRESS = 0xC000;
-		static const word CARTRIDGE_HEADER_ADDRESS = 0x4000;
+
+        // Memory pages
+        static const word MEMORY_PAGE_0_START = 0x0000;
+        static const word MEMORY_PAGE_0_END = 0x3FFF;
+        static const word MEMORY_PAGE_1_START = 0x4000;
+        static const word MEMORY_PAGE_1_END = 0x7FFF;
+        static const word MEMORY_PAGE_2_START = 0x8000;
+        static const word MEMORY_PAGE_2_END = 0xBFFF;
+        static const word MEMORY_PAGE_3_START = 0xC000;
+        static const word MEMORY_PAGE_3_END = 0xFFFF;
+
+		static const word CARTRIDGE_PAGE_ADDRESS = MEMORY_PAGE_1_START;
+		static const word CARTRIDGE_LAST_ADDRESS = MEMORY_PAGE_3_START;
 
 		bool ValidateCartridge(void *source);
 
