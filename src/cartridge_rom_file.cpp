@@ -11,6 +11,7 @@
 
 
 #include "cartridge_rom_file.h"
+#include <cstring>      // for memcpy
 
 
 
@@ -25,9 +26,8 @@ const word CartridgeRomFile::CARTRIDGE_LAST_ADDRESS;
 
 CartridgeRomFile::CartridgeRomFile()
 {
-    cartridge_header_ = 0;
+    m_cartridge_header = 0;
 }
-
 
 
 
@@ -38,15 +38,13 @@ CartridgeRomFile::~CartridgeRomFile()
 
 
 
-
 void CartridgeRomFile::ClearCartridgeInfo()
 {
-    if (cartridge_header_)
-        delete cartridge_header_;
+    if (m_cartridge_header)
+        delete m_cartridge_header;
 
-    cartridge_header_ = 0;
+    m_cartridge_header = 0;
 }
-
 
 
 
@@ -59,32 +57,32 @@ bool CartridgeRomFile::ValidateCartridge(void *source)
             cart_device = false;
     byte    *header;
 
-    if (!cartridge_header_)
-        cartridge_header_ = new CartHeader;
+    if (!m_cartridge_header)
+        m_cartridge_header = new CartHeader;
 
     header = static_cast<byte *>(source);
-    memcpy(cartridge_header_, source, sizeof(CartHeader));
-    cartridge_header_->id = static_cast<word>((*header++ * 0x100 + *header) & 0xFFFF);
+    std::memcpy(m_cartridge_header, source, sizeof(CartHeader));
+    m_cartridge_header->id = static_cast<word>((*header++ * 0x100 + *header) & 0xFFFF);
 
 
-	if ((cartridge_header_->id == ID_CARTRIDGE_ROM) || (cartridge_header_->id == ID_CARTRIDGE_SUBROM))
+	if ((m_cartridge_header->id == ID_CARTRIDGE_ROM) || (m_cartridge_header->id == ID_CARTRIDGE_SUBROM))
 	{
-		cart_init = ((cartridge_header_->init) && (cartridge_header_->init > CARTRIDGE_HEADER_ADDRESS) &&
-                    (cartridge_header_->init < CARTRIDGE_LAST_ADDRESS));
-        cart_statement = ((cartridge_header_->statement) && (cartridge_header_->statement > CARTRIDGE_HEADER_ADDRESS) &&
-                        (cartridge_header_->statement < CARTRIDGE_LAST_ADDRESS));
-        cart_device = ((cartridge_header_->device) && (cartridge_header_->device > CARTRIDGE_HEADER_ADDRESS) &&
-                    (cartridge_header_->device < CARTRIDGE_LAST_ADDRESS));
-        cart_text = ((cartridge_header_->text) && (cartridge_header_->text > CARTRIDGE_HEADER_ADDRESS) &&
-                    (cartridge_header_->text < CARTRIDGE_LAST_ADDRESS));
+		cart_init = ((m_cartridge_header->init) && (m_cartridge_header->init > CARTRIDGE_HEADER_ADDRESS) &&
+                    (m_cartridge_header->init < CARTRIDGE_LAST_ADDRESS));
+        cart_statement = ((m_cartridge_header->statement) && (m_cartridge_header->statement > CARTRIDGE_HEADER_ADDRESS) &&
+                        (m_cartridge_header->statement < CARTRIDGE_LAST_ADDRESS));
+        cart_device = ((m_cartridge_header->device) && (m_cartridge_header->device > CARTRIDGE_HEADER_ADDRESS) &&
+                    (m_cartridge_header->device < CARTRIDGE_LAST_ADDRESS));
+        cart_text = ((m_cartridge_header->text) && (m_cartridge_header->text > CARTRIDGE_HEADER_ADDRESS) &&
+                    (m_cartridge_header->text < CARTRIDGE_LAST_ADDRESS));
 
 		is_cartridge = cart_init || cart_statement || cart_device || cart_text;
 	}
 
     if (!is_cartridge)
     {
-        delete cartridge_header_;
-        cartridge_header_ = 0;
+        delete m_cartridge_header;
+        m_cartridge_header = 0;
     }
 
 
@@ -93,21 +91,20 @@ bool CartridgeRomFile::ValidateCartridge(void *source)
 
 
 
-
-bool CartridgeRomFile::GetEntries(SortedIntArray &entrylist)
+bool CartridgeRomFile::GetEntries(IntArray &entrylist)
 {
     bool success = false;
 
     entrylist.clear();
 
-    if (cartridge_header_)
+    if (m_cartridge_header)
     {
-        if (cartridge_header_->init)
-            entrylist.push_back(cartridge_header_->init);
-        if (cartridge_header_->statement)
-            entrylist.push_back(cartridge_header_->statement);
-        if (cartridge_header_->device)
-            entrylist.push_back(cartridge_header_->device);
+        if (m_cartridge_header->init)
+            entrylist.push_back(m_cartridge_header->init);
+        if (m_cartridge_header->statement)
+            entrylist.push_back(m_cartridge_header->statement);
+        if (m_cartridge_header->device)
+            entrylist.push_back(m_cartridge_header->device);
     }
 
     if (entrylist.size() > 0)
@@ -118,37 +115,31 @@ bool CartridgeRomFile::GetEntries(SortedIntArray &entrylist)
 
 
 
-
 const CartHeader *CartridgeRomFile::GetCartridgeHeader()
 {
-    return cartridge_header_;
+    return m_cartridge_header;
 }
-
 
 
 
 bool CartridgeRomFile::HasBasic()
 {
-    return (cartridge_header_ && cartridge_header_->text);
+    return (m_cartridge_header && m_cartridge_header->text);
 }
-
 
 
 
 bool CartridgeRomFile::PureBasic()
 {
-    return (cartridge_header_ && !cartridge_header_->device && !cartridge_header_->init &&
-            !cartridge_header_->statement && cartridge_header_->text);
+    return (m_cartridge_header && !m_cartridge_header->device && !m_cartridge_header->init &&
+            !m_cartridge_header->statement && m_cartridge_header->text);
 }
-
 
 
 
 bool CartridgeRomFile::isCartridge()
 {
-    return (cartridge_header_);
+    return (m_cartridge_header);
 }
-
-
 
 

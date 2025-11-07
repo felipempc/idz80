@@ -13,15 +13,13 @@
 
 #include <vector>
 
-// OBSOLETE: #include <wx/dynarray.h>
-
 typedef unsigned char byte;
 typedef unsigned short int word;
 typedef unsigned int uint;
 
-/// @brief Normal vector, must be manually sorted. Include <algorithm> for sort.
-typedef std::vector<uint> SortedIntArray;
-// OBSOLETE: WX_DEFINE_SORTED_ARRAY_INT(int, SortedIntArray);
+/// @brief Normal unsigned int vector, must be sorted manually. Include <algorithm> for sort.
+typedef std::vector<uint> IntArray;
+
 #endif // IDZ80BASICTYPES_H
 
 

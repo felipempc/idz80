@@ -12,9 +12,8 @@
 #ifndef CARTRIDGEROMFILE_H
 #define CARTRIDGEROMFILE_H
 
-#include <wx/dynarray.h>
-
 #include "idz80_basic_types.h"
+
 
 struct stCartHeader
 {
@@ -36,7 +35,7 @@ class CartridgeRomFile
         virtual ~CartridgeRomFile();
 
         const CartHeader *GetCartridgeHeader();
-        bool GetEntries(SortedIntArray &entrylist);
+        bool GetEntries(IntArray &entrylist);
         void ClearCartridgeInfo();
         bool HasBasic();
         bool PureBasic();
@@ -53,7 +52,7 @@ class CartridgeRomFile
 		static const word ID_CARTRIDGE_ROM = 0x4142;
 		static const word ID_CARTRIDGE_SUBROM = 0x4344;
 
-        CartHeader		*cartridge_header_;
+        CartHeader		*m_cartridge_header;
 
 };
 
