@@ -31,21 +31,21 @@ class NewProjectDialog: public wxDialog, public LogBase
             idGRID_LEFT_DCLICK
         };
     private:
-        IDZ80MainBase *main_dialog_;
-        wxBoxSizer *main_sizer_;
+        IDZ80MainBase   *m_main_dialog;
+        wxBoxSizer      *m_main_sizer;
 
-        wxGrid  *filegrid_;
-        wxButton *Cancel_button_, *OK_button_, *Add_button_, *Edit_button_, *Remove_button_;
-        int actualrow_;
-        bool program_loaded;
+        wxGrid  *m_filegrid;
+        wxButton    *m_cancel_button, *m_OK_button, *m_add_button, *m_edit_button, *m_remove_button;
+        int     m_actualrow;
+        bool    m_program_loaded;
 
         void BuildDialog();
-        bool DialogLoadProgramFile(wxArrayString &file_list_str);
+        bool DialogGetFileToList(wxArrayString &file_list_str);
 
         bool AddFileToGrid(wxString& filestr);
         void FillRow(RawData *program);
-        void UpdateAddressCells(int line, RawData *program);
-        void DialogEditRow(int line);
+        void UpdateGridRow(unsigned int line, RawData *program);
+        void DialogEditRow(unsigned int line);
 
         void OnResize(wxSizeEvent &event);
         void OnAddButton(wxCommandEvent &event);

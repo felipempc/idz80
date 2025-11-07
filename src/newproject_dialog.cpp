@@ -19,11 +19,11 @@
 
 NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 {
-    main_dialog_ = parent;
+    m_main_dialog = parent;
     ModuleName = "NPDialog";
-    SetTextLog(main_dialog_->GetTextLog());
+    SetTextLog(m_main_dialog->GetTextLog());
 
-    actualrow_ = -1;
+    m_actualrow = -1;
 
     BuildDialog();
     Bind(wxEVT_SIZE, &NewProjectDialog::OnResize, this);
@@ -35,19 +35,19 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
     Bind(wxEVT_GRID_SELECT_CELL, &NewProjectDialog::OnGridSelectedRow, this);
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
-    if (main_dialog_->Programs_->Count() != 0) {
-        for(int j = 0; j < main_dialog_->Programs_->Count(); j++){
-            FillRow(main_dialog_->Programs_->Index(j));
+    if (m_main_dialog->Programs_->Count() != 0) {
+        for(unsigned int j = 0; j < m_main_dialog->Programs_->Count(); j++){
+            FillRow(m_main_dialog->Programs_->Index(j));
         }
-        program_loaded = true;
+        m_program_loaded = true;
     }
     else {
-        OK_button_->Disable();
-        program_loaded = false;
+        m_OK_button->Disable();
+        m_program_loaded = false;
     }
 
-    Edit_button_->Disable();
-    Remove_button_->Disable();
+    m_edit_button->Disable();
+    m_remove_button->Disable();
 }
 
 
@@ -55,11 +55,7 @@ NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
 
 NewProjectDialog::~NewProjectDialog()
 {
-    #ifdef IDZ80_NPRJD_DEBUG
-    LogIt("Destroyed.");
-    #endif
-
-    delete filegrid_;
+    delete m_filegrid;
 }
 
 
@@ -69,44 +65,44 @@ void NewProjectDialog::BuildDialog()
 {
     Create(0, wxID_ANY, "Project", wxPoint(100, 100), wxSize(500, 500), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "NewProject");
     wxPanel *main_panel = new wxPanel(this);
-    main_sizer_ = new wxBoxSizer(wxHORIZONTAL);
+    m_main_sizer = new wxBoxSizer(wxHORIZONTAL);
 
     wxPanel *buttons_panel = new wxPanel(main_panel);
     wxBoxSizer *buttons_sizer = new wxBoxSizer(wxVERTICAL);
 
     // Grid 
-    filegrid_ = new wxGrid(main_panel, wxID_ANY, wxPoint(0, 0), wxSize(500, 300));
-    filegrid_->CreateGrid(0, 5);
-    filegrid_->SetSelectionMode(wxGrid::wxGridSelectRows);
-    filegrid_->SetColLabelValue(0, "Name");
-    filegrid_->SetColMinimalWidth(0, 90);
-    filegrid_->SetColLabelValue(1, "Type");
-    filegrid_->SetColMinimalWidth(1, 40);
-    filegrid_->SetColLabelValue(2, "Start");
-    filegrid_->SetColMinimalWidth(2, 55);
-    filegrid_->SetColLabelValue(3, "Execution");
-    filegrid_->SetColMinimalWidth(3, 65);
-    filegrid_->SetColLabelValue(4, "End");
-    filegrid_->SetColMinimalWidth(4, 55);
-    main_sizer_->Add(filegrid_, wxSizerFlags(0).Border(wxALL, 10));
-    filegrid_->EnableEditing(false);
+    m_filegrid = new wxGrid(main_panel, wxID_ANY, wxPoint(0, 0), wxSize(500, 300));
+    m_filegrid->CreateGrid(0, 5);
+    m_filegrid->SetSelectionMode(wxGrid::wxGridSelectRows);
+    m_filegrid->SetColLabelValue(0, "Name");
+    m_filegrid->SetColMinimalWidth(0, 90);
+    m_filegrid->SetColLabelValue(1, "Type");
+    m_filegrid->SetColMinimalWidth(1, 40);
+    m_filegrid->SetColLabelValue(2, "Start");
+    m_filegrid->SetColMinimalWidth(2, 55);
+    m_filegrid->SetColLabelValue(3, "Execution");
+    m_filegrid->SetColMinimalWidth(3, 65);
+    m_filegrid->SetColLabelValue(4, "End");
+    m_filegrid->SetColMinimalWidth(4, 55);
+    m_main_sizer->Add(m_filegrid, wxSizerFlags(0).Border(wxALL, 10));
+    m_filegrid->EnableEditing(false);
 
     // Buttons_panel
-    OK_button_ = new wxButton(buttons_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
-    buttons_sizer->Add(OK_button_, wxSizerFlags(0).Border(wxALL, 10));
-    Edit_button_ = new wxButton(buttons_panel, wxID_EDIT, "Edit", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_EDIT");
-    buttons_sizer->Add(Edit_button_, wxSizerFlags(0).Border(wxALL, 10));
-    Add_button_ = new wxButton(buttons_panel, idADD_FILE_BUTTON, "Add", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "AddButton");
-    buttons_sizer->Add(Add_button_, wxSizerFlags(0).Border(wxALL, 10));
-    Remove_button_ = new wxButton(buttons_panel, idREMOVE_FILE_BUTTON, "Remove", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "RemoveButton");
-    buttons_sizer->Add(Remove_button_, wxSizerFlags(0).Border(wxALL, 10));
-    Cancel_button_ = new wxButton(buttons_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
-    buttons_sizer->Add(Cancel_button_, wxSizerFlags(0).Border(wxALL, 10));
+    m_OK_button = new wxButton(buttons_panel, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_OK");
+    buttons_sizer->Add(m_OK_button, wxSizerFlags(0).Border(wxALL, 10));
+    m_edit_button = new wxButton(buttons_panel, wxID_EDIT, "Edit", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_EDIT");
+    buttons_sizer->Add(m_edit_button, wxSizerFlags(0).Border(wxALL, 10));
+    m_add_button = new wxButton(buttons_panel, idADD_FILE_BUTTON, "Add", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "AddButton");
+    buttons_sizer->Add(m_add_button, wxSizerFlags(0).Border(wxALL, 10));
+    m_remove_button = new wxButton(buttons_panel, idREMOVE_FILE_BUTTON, "Remove", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "RemoveButton");
+    buttons_sizer->Add(m_remove_button, wxSizerFlags(0).Border(wxALL, 10));
+    m_cancel_button = new wxButton(buttons_panel, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, "wxID_CANCEL");
+    buttons_sizer->Add(m_cancel_button, wxSizerFlags(0).Border(wxALL, 10));
     buttons_panel->SetSizer(buttons_sizer);
-    main_sizer_->Add(buttons_panel, wxSizerFlags(0).Border(wxALL, 10));
+    m_main_sizer->Add(buttons_panel, wxSizerFlags(0).Border(wxALL, 10));
 
-    main_panel->SetSizer(main_sizer_);
-    main_sizer_->Fit(this);
+    main_panel->SetSizer(m_main_sizer);
+    m_main_sizer->Fit(this);
 }
 
 
@@ -115,18 +111,18 @@ void NewProjectDialog::BuildDialog()
 /// @brief Open a file picker dialog and return an array of string with the full name of the selected file(s). Save current directory in main_.
 /// @param file_list_str list with full name of the selected file(s)
 /// @return true if success
-bool NewProjectDialog::DialogLoadProgramFile(wxArrayString &file_list_str)
+bool NewProjectDialog::DialogGetFileToList(wxArrayString &file_list_str)
 {
     wxString caption = "Choose a file";
     wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, main_dialog_->fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
+    wxFileDialog dialog(this, caption, m_main_dialog->fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
     bool ret = false;
 
     if (dialog.ShowModal() == wxID_OK)
     {
         ret = true;
         dialog.GetPaths(file_list_str);
-        main_dialog_->fileopen_last_dir_ = dialog.GetDirectory();
+        m_main_dialog->fileopen_last_dir_ = dialog.GetDirectory();
     }
 
     return ret;
@@ -138,7 +134,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
     RawData *program = 0;
 
-    program = main_dialog_->Programs_->AddFile(filestr);
+    program = m_main_dialog->Programs_->AddFile(filestr);
     if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
         return false;
@@ -151,46 +147,46 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 
 void NewProjectDialog::FillRow(RawData *program)
 {
-    filegrid_->AppendRows();
-    actualrow_++;
+    m_filegrid->AppendRows();
+    m_actualrow++;
 
-    filegrid_->SetCellValue(actualrow_, 0, program->GetFileName());
-    filegrid_->SetCellValue(actualrow_, 1, program->GetFileTypeStr());
-    filegrid_->SetCellAlignment(actualrow_, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
-    filegrid_->SetCellValue(actualrow_, 2, wxString::Format("0x%.4X", program->StartAddress));
-    filegrid_->SetCellAlignment(actualrow_, 2, wxALIGN_CENTRE, wxALIGN_CENTRE);
-    filegrid_->SetCellValue(actualrow_, 3, wxString::Format("0x%.4X", program->ExecAddress));
-    filegrid_->SetCellAlignment(actualrow_, 3, wxALIGN_CENTRE, wxALIGN_CENTRE);
-    filegrid_->SetCellValue(actualrow_, 4, wxString::Format("0x%.4X", program->EndAddress));
-    filegrid_->SetCellAlignment(actualrow_, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
-    filegrid_->AutoSizeColumns();
+    m_filegrid->SetCellValue(m_actualrow, 0, program->GetFileName());
+    m_filegrid->SetCellValue(m_actualrow, 1, program->GetFileTypeStr());
+    m_filegrid->SetCellAlignment(m_actualrow, 1, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    m_filegrid->SetCellValue(m_actualrow, 2, wxString::Format("0x%.4X", program->StartAddress));
+    m_filegrid->SetCellAlignment(m_actualrow, 2, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    m_filegrid->SetCellValue(m_actualrow, 3, wxString::Format("0x%.4X", program->ExecAddress));
+    m_filegrid->SetCellAlignment(m_actualrow, 3, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    m_filegrid->SetCellValue(m_actualrow, 4, wxString::Format("0x%.4X", program->EndAddress));
+    m_filegrid->SetCellAlignment(m_actualrow, 4, wxALIGN_CENTRE, wxALIGN_CENTRE);
+    m_filegrid->AutoSizeColumns();
 }
 
 
 
-void NewProjectDialog::UpdateAddressCells(int line, RawData *program)
+void NewProjectDialog::UpdateGridRow(unsigned int line, RawData *program)
 {
-    filegrid_->SetCellValue(line, 1, program->GetFileTypeStr());
-    filegrid_->SetCellValue(line, 2, wxString::Format("0x%.4X", program->StartAddress));
-    filegrid_->SetCellValue(line, 3, wxString::Format("0x%.4X", program->ExecAddress));
-    filegrid_->SetCellValue(line, 4, wxString::Format("0x%.4X", program->EndAddress));
-    filegrid_->AutoSizeColumns();
+    m_filegrid->SetCellValue(line, 1, program->GetFileTypeStr());
+    m_filegrid->SetCellValue(line, 2, wxString::Format("0x%.4X", program->StartAddress));
+    m_filegrid->SetCellValue(line, 3, wxString::Format("0x%.4X", program->ExecAddress));
+    m_filegrid->SetCellValue(line, 4, wxString::Format("0x%.4X", program->EndAddress));
+    m_filegrid->AutoSizeColumns();
 }
 
 
 
-void NewProjectDialog::DialogEditRow(int line)
+void NewProjectDialog::DialogEditRow(unsigned int line)
 {
     RawData *program;
 
-    if ((line >= 0) || (line < main_dialog_->Programs_->Count())) {
-        program = main_dialog_->Programs_->Index(line);
+    if (line < m_main_dialog->Programs_->Count()) {
+        program = m_main_dialog->Programs_->Index(line);
         if (program == 0)
             return;
         
-        FileSettingsDialog config(main_dialog_);
+        FileSettingsDialog config(m_main_dialog);
         if (config.ShowModal() == wxID_OK)
-            UpdateAddressCells(line, program);
+            UpdateGridRow(line, program);
     }
 }
 
@@ -198,7 +194,7 @@ void NewProjectDialog::DialogEditRow(int line)
 
 void NewProjectDialog::OnResize(wxSizeEvent &event)
 {
-    main_sizer_->Fit(this);
+    m_main_sizer->Fit(this);
 }
 
 
@@ -208,21 +204,21 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 {
     wxArrayString file_list;
 
-    if(!DialogLoadProgramFile(file_list))
+    if(!DialogGetFileToList(file_list))
         return;
 
-    for(int idx = 0; idx < file_list.GetCount(); idx++)
+    for(unsigned int idx = 0; idx < file_list.GetCount(); idx++)
         AddFileToGrid(file_list[idx]);
     
-    OK_button_->Enable();
+    m_OK_button->Enable();
     
     #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Size of the Columns:");
-    LogIt(wxString::Format("Name = %d", filegrid_->GetColSize(0)));
-    LogIt(wxString::Format("Type = %d", filegrid_->GetColSize(1)));
-    LogIt(wxString::Format("Start = %d", filegrid_->GetColSize(2)));
-    LogIt(wxString::Format("Execution = %d", filegrid_->GetColSize(3)));
-    LogIt(wxString::Format("End = %d", filegrid_->GetColSize(4)));
+    LogIt(wxString::Format("Name = %d", m_filegrid->GetColSize(0)));
+    LogIt(wxString::Format("Type = %d", m_filegrid->GetColSize(1)));
+    LogIt(wxString::Format("Start = %d", m_filegrid->GetColSize(2)));
+    LogIt(wxString::Format("Execution = %d", m_filegrid->GetColSize(3)));
+    LogIt(wxString::Format("End = %d", m_filegrid->GetColSize(4)));
     #endif
 
 }
@@ -231,11 +227,11 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 
 void NewProjectDialog::OnEditButton(wxCommandEvent &event)
 {
-    if(filegrid_->GetSelectedRows().Count() != 1) {
+    if(m_filegrid->GetSelectedRows().Count() != 1) {
         LogIt("Cannot edit multiple lines!");
         return;
     }
-    int line = filegrid_->GetSelectedRows().front();
+    int line = m_filegrid->GetSelectedRows().front();
     DialogEditRow(line);
 }
 
@@ -243,7 +239,7 @@ void NewProjectDialog::OnEditButton(wxCommandEvent &event)
 
 void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
 {
-    wxArrayInt selected_rows = filegrid_->GetSelectedRows();
+    wxArrayInt selected_rows = m_filegrid->GetSelectedRows();
     int row_delete = -1;
     int item_count = selected_rows.GetCount();
     int deleted_amount = 0;
@@ -266,25 +262,25 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     for(int kill_row = 0; kill_row < item_count; kill_row++)
     {
         row_delete = selected_rows[kill_row] - deleted_amount;
-        if ((row_delete >= 0) || (row_delete < filegrid_->GetNumberRows()))
+        if ((row_delete >= 0) || (row_delete < m_filegrid->GetNumberRows()))
         {
-            filegrid_->DeleteRows(row_delete, 1);
-            main_dialog_->Programs_->Remove(row_delete);
+            m_filegrid->DeleteRows(row_delete, 1);
+            m_main_dialog->Programs_->Remove(row_delete);
             deleted_amount++;
         }
         #ifdef IDZ80_NPRJD_DEBUG
         LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
         #endif
     }
-    actualrow_ = filegrid_->GetNumberRows() - 1;
+    m_actualrow = m_filegrid->GetNumberRows() - 1;
 
-    if(filegrid_->GetNumberRows() == 0) {
-        OK_button_->Disable();
-        Remove_button_->Disable();
-        Edit_button_->Disable();
+    if(m_filegrid->GetNumberRows() == 0) {
+        m_OK_button->Disable();
+        m_remove_button->Disable();
+        m_edit_button->Disable();
     }
 
-    filegrid_->ForceRefresh();
+    m_filegrid->ForceRefresh();
 }
 
 
@@ -298,8 +294,8 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
-    if (!program_loaded)
-        main_dialog_->Programs_->Clear();
+    if (!m_program_loaded)
+        m_main_dialog->Programs_->Clear();
 
     EndModal(wxID_CANCEL);
 }
@@ -309,10 +305,10 @@ void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 void NewProjectDialog::OnGridSelectedRow(wxGridEvent &event)
 {
     int line = event.GetRow();
-    if(filegrid_->GetGridCursorRow() >= 0) {
-        Edit_button_->Enable();
-        Remove_button_->Enable();
-        main_dialog_->Programs_->Index(line);
+    if(m_filegrid->GetGridCursorRow() >= 0) {
+        m_edit_button->Enable();
+        m_remove_button->Enable();
+        m_main_dialog->Programs_->Index(line);
     }
 }
 
