@@ -30,16 +30,10 @@ class FileSettingsDialog: public wxDialog, public LogBase
 		FileSettingsDialog(IDZ80MainBase *parent);
 
 	protected:
-
-		static const long ID_TXT_START;
 		static const long ID_TXTCTRL_START;
-		static const long ID_TXT_EXECUTION;
 		static const long ID_TXTCTRL_EXECUTION;
-		static const long ID_TXT_END;
 		static const long ID_TXTCTRL_END;
-		static const long ID_RADIOBOX1;
-		static const long ID_PANEL1;
-		static const long ID_PANEL2;
+
 
 	private:
 		wxPanel 	*m_main_panel;

@@ -19,16 +19,9 @@
 #include <wx/msgdlg.h>
 
 
-const long FileSettingsDialog::ID_TXT_START = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_START = wxNewId();
-const long FileSettingsDialog::ID_TXT_EXECUTION = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_EXECUTION = wxNewId();
-const long FileSettingsDialog::ID_TXT_END = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_END = wxNewId();
-const long FileSettingsDialog::ID_RADIOBOX1 = wxNewId();
-const long FileSettingsDialog::ID_PANEL1 = wxNewId();
-const long FileSettingsDialog::ID_PANEL2 = wxNewId();
-
 
 
 FileSettingsDialog::FileSettingsDialog(IDZ80MainBase *parent)
@@ -41,7 +34,7 @@ FileSettingsDialog::FileSettingsDialog(IDZ80MainBase *parent)
 
     BuildDialog();
 
-	Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this, ID_RADIOBOX1);
+	Bind(wxEVT_RADIOBOX, &FileSettingsDialog::OnRadioBoxSelect, this);
     Bind(wxEVT_BUTTON, &FileSettingsDialog::OnOKPressed, this, wxID_OK);
     Bind(wxEVT_BUTTON, &FileSettingsDialog::OnCancelPressed, this, wxID_CANCEL);
     Bind(wxEVT_BUTTON, &FileSettingsDialog::OnResetPressed, this, wxID_RESET);
@@ -93,7 +86,7 @@ void FileSettingsDialog::BuildDialog()
 
 void FileSettingsDialog::SetupRadioTypeChooser(wxPanel *panel)
 {
-    wxPanel *panel_radio = new wxPanel(panel, ID_PANEL1, wxDefaultPosition, wxSize(115,115), wxTAB_TRAVERSAL, "ID_PANEL1");
+    wxPanel *panel_radio = new wxPanel(panel, wxID_ANY, wxDefaultPosition, wxSize(115,115), wxTAB_TRAVERSAL, "ID_PANEL1");
     wxBoxSizer *radio_sizer = new wxBoxSizer(wxHORIZONTAL);
     panel_radio->SetSizer(radio_sizer);
 
@@ -104,7 +97,7 @@ void FileSettingsDialog::SetupRadioTypeChooser(wxPanel *panel)
 		"COM",
 		"BIN"
 	};
-	m_radio_filetype_box = new wxRadioBox(panel_radio, ID_RADIOBOX1, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
+	m_radio_filetype_box = new wxRadioBox(panel_radio, wxID_ANY, "File type", wxPoint(8,8), wxDefaultSize, 4, file_type_list, 1, 0, wxDefaultValidator, "ID_RADIOBOX1");
     radio_sizer->Add(m_radio_filetype_box);
     radio_sizer->Fit(panel_radio);
     panel->GetSizer()->Add(panel_radio);
@@ -132,7 +125,7 @@ void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
     panel_address = new wxPanel(panel);
     panel_address_start = new wxPanel(panel_address);
     address_start_sizer = new wxBoxSizer(wxVERTICAL);
-    text = new wxStaticText(panel_address_start, ID_TXT_START, "Start", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_START");
+    text = new wxStaticText(panel_address_start, wxID_ANY, "Start", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_START");
     address_start_sizer->Add(text, wxSizerFlags(0).Left());
     m_txtctrl_start_address = new wxTextCtrl(panel_address_start, ID_TXTCTRL_START, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "START_ADDRESS");
     address_start_sizer->Add(m_txtctrl_start_address, wxSizerFlags(0).Left().Expand());
@@ -140,7 +133,7 @@ void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
 
     panel_address_exec = new wxPanel(panel_address);
     address_exec_sizer = new wxBoxSizer(wxVERTICAL);
-    text = new wxStaticText(panel_address_exec, ID_TXT_EXECUTION, "Execution", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_EXECUTION");
+    text = new wxStaticText(panel_address_exec, wxID_ANY, "Execution", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_EXECUTION");
     address_exec_sizer->Add(text, wxSizerFlags(0).Left());
     m_txtctrl_exec_address = new wxTextCtrl(panel_address_exec, ID_TXTCTRL_EXECUTION, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "EXECUTION_ADDRESS");
     address_exec_sizer->Add(m_txtctrl_exec_address, wxSizerFlags(0).Left());
@@ -148,7 +141,7 @@ void FileSettingsDialog::SetupAddressBox(wxPanel *panel)
 
     panel_address_end = new wxPanel(panel_address);
     address_end_sizer = new wxBoxSizer(wxVERTICAL);
-    text = new wxStaticText(panel_address_end, ID_TXT_END, "End", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_END");
+    text = new wxStaticText(panel_address_end, wxID_ANY, "End", wxDefaultPosition, wxDefaultSize, 0, "ID_TXT_END");
     address_end_sizer->Add(text, wxSizerFlags(0).Left());
     m_txtctrl_end_address = new wxTextCtrl(panel_address_end, ID_TXTCTRL_END, wxEmptyString, wxDefaultPosition, wxSize(80,20), wxTE_PROCESS_ENTER, wxDefaultValidator, "END_ADDRESS");
     address_end_sizer->Add(m_txtctrl_end_address, wxSizerFlags(0).Left());
@@ -272,6 +265,10 @@ bool FileSettingsDialog::CheckHexadecimal(wxString &str_number, long &convert)
 
 
 
+/// @brief Verify if address is greater than 0xFFFF
+/// FIXME: Permit files greater, like MegaROM.
+/// @param number 
+/// @return 
 bool FileSettingsDialog::CheckIfZ80Addressable(long &number)
 {
     bool is_addressable = number <= 0xFFFF;
