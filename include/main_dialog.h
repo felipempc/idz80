@@ -16,8 +16,7 @@
 #include <wx/textctrl.h>
 #include <wx/aui/aui.h>
 #include <wx/statusbr.h>
-//#include <wx/arrstr.h>    // Remove
-
+#include <wx/config.h>
 
 #include "main_dialog_base.h"
 //#include "mnemonic_container.h"
@@ -30,7 +29,7 @@
 //#include "codegenerator.h"
 #include "logwindow.h"
 
-#include <wx/config.h>
+
 
 
 class IDZ80: public IDZ80MainBase
@@ -43,7 +42,7 @@ class IDZ80: public IDZ80MainBase
 
 	protected:
 
-		static const long ID_TEXTCTRL1;
+//		static const long ID_TEXTCTRL1;
 		static const long idMenuFileOpenProject;
 		static const long idMenuFileOpenArchive;
 		static const long idMenuFileOpen;
@@ -68,24 +67,24 @@ class IDZ80: public IDZ80MainBase
 		static const long idMenuHelpContents;
 		static const long IdMenuHelpAbout;
 		static const long IdMenuMnemonicXML;
-		static const long ID_STATUSBAR1;
-		static const long ID_VARLABELPANE;
+//		static const long ID_STATUSBAR1;
+//		static const long ID_VARLABELPANE;
 
 
 	private:
-		wxAuiManager    *aui_mgr_;
-		wxTextCtrl      *panel_log_;
-		wxStatusBar     *status_bar_;
-        LogWindow       *log_window_;
+		wxAuiManager    *m_aui_mgr;
+		wxTextCtrl      *m_panel_log;
+		wxStatusBar     *m_status_bar;
+        LogWindow       *m_log_window;
 
 //        ProcessData     *process_;
 //        CodeView        *codeview_;
 
-        wxConfig        *config_;
+        wxConfig        *m_config;
 //        ProjectManagerXML
 //                        *project_;
         //wxArrayString	m_commandline;
-		bool            maximize_main_window_;
+		bool            m_maximize_main_window;
 
         bool LoadMnemonicsDB();
         bool SaveAs();

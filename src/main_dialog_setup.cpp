@@ -17,11 +17,12 @@
 /// @brief Create objects to each type of labels
 void IDZ80::SetupLabels()
 {
-    Labels_->io_labels = new LabelListCtrl(this, IO_LIST,"PORT", log_window_);
-    Labels_->var_labels = new LabelListCtrl(this, VAR_LIST,"VAR", log_window_);
-    Labels_->prog_labels = new LabelListCtrl(this, PRG_LIST,"PROGRAM", log_window_);
-    Labels_->constant_labels = new LabelListCtrl(this, CONST_LIST,"CONST", log_window_);
+    Labels_->io_labels = new LabelListCtrl(this, IO_LIST,"PORT", m_log_window);
+    Labels_->var_labels = new LabelListCtrl(this, VAR_LIST,"VAR", m_log_window);
+    Labels_->prog_labels = new LabelListCtrl(this, PRG_LIST,"PROGRAM", m_log_window);
+    Labels_->constant_labels = new LabelListCtrl(this, CONST_LIST,"CONST", m_log_window);
 }
+
 
 
 void IDZ80::SetupMenuItemStatus()
@@ -37,26 +38,27 @@ void IDZ80::SetupMenuItemStatus()
     mb->Enable(idMenuFileClose, false);
     mb->Enable(idMenuToolsGenCode, false);
 
-    if (aui_mgr_->GetPane("VarLabels").IsShown())
+    if (m_aui_mgr->GetPane("VarLabels").IsShown())
         mb->Check(idMenuViewVarLabels, true);
     else
         mb->Check(idMenuViewVarLabels, false);
 
-    if (aui_mgr_->GetPane("ProgLabels").IsShown())
+    if (m_aui_mgr->GetPane("ProgLabels").IsShown())
         mb->Check(idMenuViewProgLabels, true);
     else
         mb->Check(idMenuViewProgLabels, false);
 
-    if (aui_mgr_->GetPane("IOLabels").IsShown())
+    if (m_aui_mgr->GetPane("IOLabels").IsShown())
         mb->Check(idMenuViewIOLabels, true);
     else
         mb->Check(idMenuViewIOLabels, false);
 
-    if (aui_mgr_->GetPane("ConstLabels").IsShown())
+    if (m_aui_mgr->GetPane("ConstLabels").IsShown())
         mb->Check(idMenuViewConstLabels, true);
     else
         mb->Check(idMenuViewConstLabels, false);
 }
+
 
 
 void IDZ80::SetupIcon()
@@ -75,21 +77,21 @@ void IDZ80::SetupIcon()
 
 void IDZ80::SetupStatusBar()
 {
-	status_bar_ = new wxStatusBar(this, ID_STATUSBAR1, 0, "ID_STATUSBAR");
+	m_status_bar = new wxStatusBar(this, wxID_ANY, 0, "ID_STATUSBAR");
 	int __wxStatusBarWidths_1[1] = { -10 };
 	int __wxStatusBarStyles_1[1] = { wxSB_NORMAL };
-	status_bar_->SetFieldsCount(1,__wxStatusBarWidths_1);
-	status_bar_->SetStatusStyles(1,__wxStatusBarStyles_1);
-	SetStatusBar(status_bar_);
+	m_status_bar->SetFieldsCount(1,__wxStatusBarWidths_1);
+	m_status_bar->SetStatusStyles(1,__wxStatusBarStyles_1);
+	SetStatusBar(m_status_bar);
 }
 
 
 
 void IDZ80::SetupPanelLog()
 {
-	panel_log_ = new wxTextCtrl(this, ID_TEXTCTRL1, "Text", wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH, wxDefaultValidator, "ID_TEXTCTRL1");
+	m_panel_log = new wxTextCtrl(this, wxID_ANY, "Text", wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH, wxDefaultValidator, "ID_TEXTCTRL1");
 	wxFont PanelLogFont(8, wxSWISS, wxFONTSTYLE_NORMAL, wxNORMAL, false, "Courier New", wxFONTENCODING_DEFAULT);
-	panel_log_->SetFont(PanelLogFont);
+	m_panel_log->SetFont(PanelLogFont);
 }
 
 
@@ -99,13 +101,13 @@ void IDZ80::SetupAUIPanes()
 //    if ((codeview_ != 0) && (Labels_ != 0))
     {
 //        aui_mgr_->AddPane(codeview_, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        aui_mgr_->AddPane(Labels_->var_labels,
+        m_aui_mgr->AddPane(Labels_->var_labels,
         wxAuiPaneInfo().Name("VarLabels").Caption("Var Labels").CaptionVisible().Left()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        aui_mgr_->AddPane(Labels_->prog_labels,
+        m_aui_mgr->AddPane(Labels_->prog_labels,
         wxAuiPaneInfo().Name("ProgLabels").Caption("Program Labels").CaptionVisible().Left()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        aui_mgr_->AddPane(Labels_->io_labels,
+        m_aui_mgr->AddPane(Labels_->io_labels,
         wxAuiPaneInfo().Name("IOLabels").Caption("IO Labels").CaptionVisible().Right()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        aui_mgr_->AddPane(Labels_->constant_labels,
+        m_aui_mgr->AddPane(Labels_->constant_labels,
         wxAuiPaneInfo().Name("ConstLabels").Caption("Constant Labels").CaptionVisible().Right()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
 
         SetupAUIStoredConfiguration();
@@ -113,24 +115,25 @@ void IDZ80::SetupAUIPanes()
 }
 
 
+
 void IDZ80::SetupAUIStoredConfiguration()
 {
-    config_ = new wxConfig("IDZ80");
+    m_config = new wxConfig("IDZ80");
 
     wxString cfg;
 
-    config_->SetPath("/AUI");
-    if (config_->Read("Perspective", &cfg))
-        aui_mgr_->LoadPerspective(cfg, true);
+    m_config->SetPath("/AUI");
+    if (m_config->Read("Perspective", &cfg))
+        m_aui_mgr->LoadPerspective(cfg, true);
     else
-        aui_mgr_->Update();
+        m_aui_mgr->Update();
 }
 
 
 
 void IDZ80::SetupMenuEvents()
 {
-	aui_mgr_->Bind(wxEVT_AUI_PANE_CLOSE, &IDZ80::OnAuiPaneClose, this);
+	m_aui_mgr->Bind(wxEVT_AUI_PANE_CLOSE, &IDZ80::OnAuiPaneClose, this);
 	Bind(wxEVT_MENU, &IDZ80::OnMenuFileOpen, this, idMenuFileOpenProject);
 	Bind(wxEVT_MENU, &IDZ80::OnMenuFileOpen, this, idMenuFileOpenArchive);
 	Bind(wxEVT_MENU, &IDZ80::OnMenuFileOpen, this, idMenuFileOpen);
@@ -260,32 +263,32 @@ void IDZ80::SetupMenu()
 
 void IDZ80::StoreConfiguration()
 {
-    config_ = new wxConfig("IDZ80");
+    m_config = new wxConfig("IDZ80");
     wxString cfg;
     int    x, y, width, height;
 
-    cfg = aui_mgr_->SavePerspective();
-    config_->SetPath("/AUI");
-    config_->Write("Perspective", cfg);
+    cfg = m_aui_mgr->SavePerspective();
+    m_config->SetPath("/AUI");
+    m_config->Write("Perspective", cfg);
 
-    config_->SetPath("/Directory");
-    config_->Write("Last", fileopen_last_dir_);
+    m_config->SetPath("/Directory");
+    m_config->Write("Last", fileopen_last_dir_);
 
     GetSize(&width, &height);
     GetPosition(&x, &y);
-    config_->SetPath("/MainWindow");
-    config_->Write("X", x);
-    config_->Write("Y", y);
-    config_->Write("WIDTH", width);
-    config_->Write("HEIGHT", height);
+    m_config->SetPath("/MainWindow");
+    m_config->Write("X", x);
+    m_config->Write("Y", y);
+    m_config->Write("WIDTH", width);
+    m_config->Write("HEIGHT", height);
 
-    log_window_->GetSize(&width, &height);
-    log_window_->GetPosition(&x, &y);
-    config_->SetPath("/LogWindow");
-    config_->Write("X", x);
-    config_->Write("Y", y);
-    config_->Write("WIDTH", width);
-    config_->Write("HEIGHT", height);
+    m_log_window->GetSize(&width, &height);
+    m_log_window->GetPosition(&x, &y);
+    m_config->SetPath("/LogWindow");
+    m_config->Write("X", x);
+    m_config->Write("Y", y);
+    m_config->Write("WIDTH", width);
+    m_config->Write("HEIGHT", height);
 }
 
 
@@ -294,10 +297,10 @@ void IDZ80::ReadStoredConfiguration()
 {
     long x, y, width, height;
 
-    config_ = new wxConfig("IDZ80");
+    m_config = new wxConfig("IDZ80");
 
-    config_->SetPath("/Directory");
-    if (config_->Read("Last", &fileopen_last_dir_))
+    m_config->SetPath("/Directory");
+    if (m_config->Read("Last", &fileopen_last_dir_))
     {
         wxDir dir;
         if (!dir.Exists(fileopen_last_dir_))
@@ -306,25 +309,25 @@ void IDZ80::ReadStoredConfiguration()
     else
         fileopen_last_dir_ = app_root_dir_;
 
-    config_->SetPath("/MainWindow");
-    if (config_->Read("X", &x) &&
-        config_->Read("Y", &y) &&
-        config_->Read("WIDTH", &width) &&
-        config_->Read("HEIGHT", &height))
+    m_config->SetPath("/MainWindow");
+    if (m_config->Read("X", &x) &&
+        m_config->Read("Y", &y) &&
+        m_config->Read("WIDTH", &width) &&
+        m_config->Read("HEIGHT", &height))
     {
         SetPosition(wxPoint(x, y));
         SetSize(width, height);
-        maximize_main_window_ = false;
+        m_maximize_main_window = false;
     }
 
-    config_->SetPath("/LogWindow");
-    if (config_->Read("X", &x) &&
-        config_->Read("Y", &y) &&
-        config_->Read("WIDTH", &width) &&
-        config_->Read("HEIGHT", &height))
+    m_config->SetPath("/LogWindow");
+    if (m_config->Read("X", &x) &&
+        m_config->Read("Y", &y) &&
+        m_config->Read("WIDTH", &width) &&
+        m_config->Read("HEIGHT", &height))
     {
-        log_window_->SetPosition(wxPoint(x, y));
-        log_window_->SetSize(width, height);
+        m_log_window->SetPosition(wxPoint(x, y));
+        m_log_window->SetSize(width, height);
     }
 }
 
