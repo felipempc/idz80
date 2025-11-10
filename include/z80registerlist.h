@@ -11,7 +11,6 @@
 #ifndef Z80REGISTERLIST_H
 #define Z80REGISTERLIST_H
 
-#include "idz80_base.h"
 #include "z80register.h"
 #include "disassembled_item.h"
 

@@ -15,7 +15,6 @@
 #ifndef _IDZ80_PROCESSDATA_H
 #define _IDZ80_PROCESSDATA_H
 
-#include "idz80_base.h"
 #include "process_base.h"
 #include "disassembled_item.h"
 #include "labelslist.h"

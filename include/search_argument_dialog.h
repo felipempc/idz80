@@ -19,7 +19,6 @@
 #include <wx/stattext.h>
 #include <wx/button.h>
 
-#include "idz80_base.h"
 #include "dasmdata.h"
 #include "search_defs.h"
 

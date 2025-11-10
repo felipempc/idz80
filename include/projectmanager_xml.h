@@ -16,7 +16,7 @@
 #include <wx/textctrl.h>
 //#include "process_data.h"
 #include "labelslist.h"
-#include "idz80_main_base.h"
+#include "main_dialog_base.h"
 
 class ProjectManagerXML
 {

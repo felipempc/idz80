@@ -17,7 +17,6 @@
 #include <wx/ListCtrl.h>
 #include <wx/Sizer.h>
 #include <wx/msgdlg.h>
-//#include <wx/dynarray.h>
 
 #include "disassembled_container.h"
 #include "logbase.h"
@@ -96,6 +95,6 @@ class LabelListCtrl : public wxListCtrl, public LogBase
 };
 
 
-//int wxCALLBACK CompareAddress(long long item1, long long item2, long long data);
-//int wxCALLBACK CompareLabelStr(long long item1, long long item2, long long data);
+int wxCALLBACK CompareAddress(wxIntPtr item1, wxIntPtr item2, wxIntPtr data);
+int wxCALLBACK CompareLabelStr(wxIntPtr item1, wxIntPtr item2, wxIntPtr data);
 #endif // LABELSLIST_H

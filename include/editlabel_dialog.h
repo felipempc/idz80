@@ -20,7 +20,7 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 
-#include "idz80_base.h"
+#include "idz80_basic_types.h"
 
 
 class EditLabelDlg: public wxDialog

@@ -11,7 +11,7 @@
 #ifndef Z80REGISTER_H
 #define Z80REGISTER_H
 
-#include "idz80_base.h"
+#include "idz80_basic_types.h"
 
 
 class Z80Register

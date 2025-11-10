@@ -544,7 +544,7 @@ void LabelListCtrl::OnColumnClick(wxListEvent& event)
  *     Call back wxListCtrl implementation
  */
 
-int wxCALLBACK CompareAddress(long long item1, long long item2, long long data)
+int wxCALLBACK CompareAddress(wxIntPtr item1, wxIntPtr item2, wxIntPtr data)
 {
     LabelItem *lbl_1, *lbl_2;
 
@@ -575,7 +575,7 @@ int wxCALLBACK CompareAddress(long long item1, long long item2, long long data)
 }
 
 
-int wxCALLBACK CompareLabelStr(long long item1, long long item2, long long data)
+int wxCALLBACK CompareLabelStr(wxIntPtr item1, wxIntPtr item2, wxIntPtr data)
 {
     LabelItem *lbl_1, *lbl_2;
     int ret = 0;

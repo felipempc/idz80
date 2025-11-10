@@ -14,7 +14,7 @@
 #define SEARCHMANAGER_H
 
 #include <wx/string.h>
-#include "idz80_base.h"
+#include "idz80_basic_types.h"
 #include "search_defs.h"
 
 

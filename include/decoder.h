@@ -19,7 +19,6 @@
 #include <wx/textctrl.h>
 #include <stack>
 
-#include "idz80_base.h"
 #include "process_base.h"
 #include "disassembled_item.h"
 #include "logbase.h"
