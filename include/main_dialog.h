@@ -41,8 +41,6 @@ class IDZ80: public IDZ80MainBase
 		virtual ~IDZ80();
 
 	protected:
-
-//		static const long ID_TEXTCTRL1;
 		static const long idMenuFileOpenProject;
 		static const long idMenuFileOpenArchive;
 		static const long idMenuFileOpen;
@@ -67,8 +65,6 @@ class IDZ80: public IDZ80MainBase
 		static const long idMenuHelpContents;
 		static const long IdMenuHelpAbout;
 		static const long IdMenuMnemonicXML;
-//		static const long ID_STATUSBAR1;
-//		static const long ID_VARLABELPANE;
 
 
 	private:

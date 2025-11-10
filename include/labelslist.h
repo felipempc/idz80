@@ -17,9 +17,8 @@
 #include <wx/ListCtrl.h>
 #include <wx/Sizer.h>
 #include <wx/msgdlg.h>
-#include <wx/dynarray.h>
+//#include <wx/dynarray.h>
 
-#include "idz80_base.h"
 #include "disassembled_container.h"
 #include "logbase.h"
 #include "labelitem.h"
@@ -39,6 +38,7 @@ typedef enum eTypeLabelList
     CONST_LIST
 } TypeLabelList;
 
+typedef unsigned int LabelIndex;
 
 
 class LabelListCtrl : public wxListCtrl, public LogBase
@@ -96,6 +96,6 @@ class LabelListCtrl : public wxListCtrl, public LogBase
 };
 
 
-int wxCALLBACK CompareAddress(long long item1, long long item2, long long data);
-int wxCALLBACK CompareLabelStr(long long item1, long long item2, long long data);
+//int wxCALLBACK CompareAddress(long long item1, long long item2, long long data);
+//int wxCALLBACK CompareLabelStr(long long item1, long long item2, long long data);
 #endif // LABELSLIST_H

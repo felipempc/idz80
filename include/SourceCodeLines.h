@@ -11,7 +11,6 @@
 #ifndef SOURCECODELINES_H
 #define SOURCECODELINES_H
 
-#include "idz80_base.h"
 #include "disassembled_item.h"
 #include "disassembled_container.h"
 #include "sourcecodeaccess.h"

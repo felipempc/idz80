@@ -17,3 +17,4 @@ trash/*
 build_codeblocks/bin/*
 build_codeblocks/obj/*
 *.png
+*.odg#

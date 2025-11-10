@@ -16,7 +16,6 @@
 #include <wx/textfile.h>
 #include <wx/textctrl.h>
 
-#include "idz80_base.h"
 #include "logbase.h"
 #include "rawdata.h"
 

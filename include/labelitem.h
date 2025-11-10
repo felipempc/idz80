@@ -12,9 +12,7 @@
 #ifndef _LABELITEM_H_
 #define _LABELITEM_H_
 
-#include <wx/dynarray.h>
 #include <wx/string.h>
-#include "idz80_base.h"
 #include "rawdata.h"
 
 struct LabelItem
@@ -23,10 +21,4 @@ struct LabelItem
     wxArrayInt *LabelUsers;
     wxString LabelStr;
 };
-
-
-
-
-
-
 #endif // _LABELITEM_H_
