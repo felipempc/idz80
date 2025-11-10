@@ -130,6 +130,9 @@ bool NewProjectDialog::DialogGetFileToList(wxArrayString &file_list_str)
 
 
 
+/// @brief Load the program and put on list (grid). Won't load pure BASIC programs.
+/// @param filestr 
+/// @return true if succeed.
 bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
     RawData *program = 0;
@@ -137,6 +140,10 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
     program = m_main_dialog->Programs_->AddFile(filestr);
     if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
+        return false;
+    }
+    if (program->PureBasic()) {
+        wxMessageBox(wxString::Format("The file [%s] is a pure BASIC program. It's not supported yet!", filestr), "Error opening file !");
         return false;
     }
     FillRow(program);
@@ -203,14 +210,17 @@ void NewProjectDialog::OnResize(wxSizeEvent &event)
 void NewProjectDialog::OnAddButton(wxCommandEvent &event)
 {
     wxArrayString file_list;
+    bool success = false;
 
     if(!DialogGetFileToList(file_list))
         return;
 
     for(unsigned int idx = 0; idx < file_list.GetCount(); idx++)
-        AddFileToGrid(file_list[idx]);
+        if (AddFileToGrid(file_list[idx]))
+            success = true;
     
-    m_OK_button->Enable();
+    if(success)
+        m_OK_button->Enable();
     
     #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Size of the Columns:");
