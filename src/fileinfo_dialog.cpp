@@ -31,7 +31,7 @@ const long ShowFileInfo::ID_STATICTEXT9 = wxNewId();
 const long ShowFileInfo::ID_PANEL1 = wxNewId();
 
 
-ShowFileInfo::ShowFileInfo(IDZ80MainBase *parent, wxWindowID id, const wxPoint& pos, const wxSize& size)
+ShowFileInfo::ShowFileInfo(ProjectBase *parent, wxWindowID id, const wxPoint& pos, const wxSize& size)
 {
 	Create(parent, wxID_ANY, "File Information", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, "wxID_ANY");
 	SetClientSize(wxSize(400,249));

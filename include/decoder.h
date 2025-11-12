@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-  // MUST BE COMPLETELY REWRITED !!!!
+  // MUST BE COMPLETELY REWRITTEN !!!!
 
 
 #ifndef _DECODER_H_
@@ -19,7 +19,7 @@
 #include <wx/textctrl.h>
 #include <stack>
 
-#include "process_base.h"
+#include "project_base.h"
 #include "disassembled_item.h"
 #include "logbase.h"
 #include "z80registerlist.h"

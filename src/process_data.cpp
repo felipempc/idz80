@@ -17,7 +17,7 @@
  */
 
 
- // MUST BE COMPLETELY REWRITED !!!!
+ // MUST BE COMPLETELY REWRITTEN !!!!
 
 ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
 {

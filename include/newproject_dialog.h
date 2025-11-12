@@ -15,12 +15,12 @@
 #include "wx/grid.h"
 #include "wx/button.h"
 
-#include "main_dialog_base.h"
+#include "project_base.h"
 
 class NewProjectDialog: public wxDialog, public LogBase
 {
     public:
-        NewProjectDialog(IDZ80MainBase *parent);
+        NewProjectDialog(ProjectBase *parent);
 
         virtual ~NewProjectDialog();
     protected:
@@ -31,7 +31,7 @@ class NewProjectDialog: public wxDialog, public LogBase
             idGRID_LEFT_DCLICK
         };
     private:
-        IDZ80MainBase   *m_main_dialog;
+        ProjectBase     *m_main_dialog;
         wxBoxSizer      *m_main_sizer;
 
         wxGrid  *m_filegrid;

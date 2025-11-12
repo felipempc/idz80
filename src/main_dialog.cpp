@@ -149,26 +149,23 @@ bool IDZ80::LoadMnemonicsDB()
 void IDZ80::OpenProgramFile(wxString filename)
 {
     NewProjectDialog dialog(this);
-    dialog.ShowModal();
+    
+    if (dialog.ShowModal() == wxID_OK) {
+        wxMenuBar *mb;
+        mb = GetMenuBar();
+        mb->Enable(idMenuToolsDasmAll, true);
+        mb->Enable(idMenuFileInfo, true);
+        mb->Enable(idMenuFileClose, true);
+        mb->Enable(idMenuToolsGenCode, false);
+        mb->Enable(idMenuToolsAutoLabel, false);
+
+    }
+
 
 
     /* ----    OLD     ---------
-	static bool simulateexecution = false;
-	wxString    info,
-				caption;
-	FileSettingsDialog config(process->Program);
-
-    if (filename.IsEmpty())
-        filename = DialogLoadProgramFile();
-
     if ((!filename.IsEmpty()) && process->Program->Open(filename))
     {
-        if (process->Program->HasBasic())
-        {
-            wxMessageBox("This ROM file has a program written in BASIC. IDZ80 don't support it.", "File type unsupported !");
-            process->Program->Close();
-            return;
-        }
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		PanelLog->AppendText("Opened file:\n");
 		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));

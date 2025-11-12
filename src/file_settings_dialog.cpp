@@ -24,7 +24,7 @@ const long FileSettingsDialog::ID_TXTCTRL_EXECUTION = wxNewId();
 const long FileSettingsDialog::ID_TXTCTRL_END = wxNewId();
 
 
-FileSettingsDialog::FileSettingsDialog(IDZ80MainBase *parent)
+FileSettingsDialog::FileSettingsDialog(ProjectBase *parent)
 {
 	Create(0, wxID_ANY, "Configuration", wxPoint(100, 100), wxSize(300, 300), wxDEFAULT_DIALOG_STYLE, "id");
 

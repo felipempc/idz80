@@ -17,7 +17,7 @@
 //#define IDZ80_NPRJD_DEBUG
 
 
-NewProjectDialog::NewProjectDialog(IDZ80MainBase *parent)
+NewProjectDialog::NewProjectDialog(ProjectBase *parent)
 {
     m_main_dialog = parent;
     ModuleName = "NPDialog";

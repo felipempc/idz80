@@ -39,13 +39,12 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 //    codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
     Programs_ = new RawDataManager(m_log_window);
+    Labels_ = new LabelManager();
 
+    SetupLabels();
 
-//    Labels_ = new LabelManager();
-//    SetupLabels();
-
-//    SetupAUIPanes();
-//    ReadStoredConfiguration();
+    SetupAUIPanes();
+    ReadStoredConfiguration();
     LoadMnemonicsDB();
 
 

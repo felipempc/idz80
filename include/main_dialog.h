@@ -17,8 +17,11 @@
 #include <wx/aui/aui.h>
 #include <wx/statusbr.h>
 #include <wx/config.h>
+#include <wx/frame.h>
 
-#include "main_dialog_base.h"
+#include "project_base.h"
+#include "idz80_directories.h"
+// REMOVE #include "main_dialog_base.h"
 //#include "mnemonic_container.h"
 //#include "rawdata.h"
 //#include "disassembled_container.h"
@@ -32,7 +35,7 @@
 
 
 
-class IDZ80: public IDZ80MainBase
+class IDZ80: public ProjectBase, public wxFrame
 {
 	public:
 		const wxString ResourceDir = "resource";

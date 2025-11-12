@@ -9,13 +9,13 @@
  **************************************************************/
 
 
-  // MUST BE COMPLETELY REWRITED !!!!
+  // MUST BE COMPLETELY REWRITTEN !!!!
 
 
 #ifndef _IDZ80_PROCESSDATA_H
 #define _IDZ80_PROCESSDATA_H
 
-#include "process_base.h"
+#include "project_base.h"
 #include "disassembled_item.h"
 #include "labelslist.h"
 #include "systemlabels.h"
@@ -40,7 +40,7 @@ struct stRangeData
 typedef struct stRangeData RangeData;
 
 
-class ProcessData : public LabelManager, public LogBase, public ProcessBase
+class ProcessData : public ProjectBase
 {
     public:
         void DisassembleFirst(bool simulateexecution = false);

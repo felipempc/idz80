@@ -18,14 +18,14 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 
-#include "main_dialog_base.h"
+#include "project_base.h"
 //#include "process_data.h"
 
 class ShowFileInfo: public wxDialog
 {
 	public:
 
-		ShowFileInfo(IDZ80MainBase *parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+		ShowFileInfo(ProjectBase *parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 
 //		void SendInfo(ProcessData *process);
 

@@ -19,7 +19,7 @@
 #include <wx/dialog.h>
 
 
-#include "main_dialog_base.h"
+#include "project_base.h"
 #include "rawdata.h"
 
 
@@ -27,7 +27,7 @@ class FileSettingsDialog: public wxDialog, public LogBase
 {
 	public:
 
-		FileSettingsDialog(IDZ80MainBase *parent);
+		FileSettingsDialog(ProjectBase *parent);
 
 	protected:
 		static const long ID_TXTCTRL_START;
