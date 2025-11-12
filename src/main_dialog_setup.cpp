@@ -89,8 +89,15 @@ void IDZ80::SetupStatusBar()
 
 void IDZ80::SetupPanelLog()
 {
-	m_panel_log = new wxTextCtrl(this, wxID_ANY, "Text", wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH, wxDefaultValidator, "ID_TEXTCTRL1");
-	wxFont PanelLogFont(8, wxSWISS, wxFONTSTYLE_NORMAL, wxNORMAL, false, "Courier New", wxFONTENCODING_DEFAULT);
+	m_panel_log = new wxTextCtrl(this, wxID_ANY, "", wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH, wxDefaultValidator, "MessageLog");
+
+    wxFontInfo fontInfo(8);
+    fontInfo.Family(wxFONTFAMILY_SWISS)
+            .Style(wxFONTSTYLE_NORMAL)
+            .Weight(wxFONTWEIGHT_NORMAL)
+            .FaceName("Courier New");
+    wxFont PanelLogFont(fontInfo);
+
 	m_panel_log->SetFont(PanelLogFont);
 }
 
