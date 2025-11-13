@@ -19,29 +19,21 @@
 
  // MUST BE COMPLETELY REWRITTEN !!!!
 
-ProcessData::ProcessData(wxWindow *parent, LogWindow *logparent)
+ProcessData::ProcessData(ProjectBase *parent)
 {
-    Mnemonics = new MnemonicDataBase(logparent);
-    Program = new RawData(logparent);
-    Disassembled = new DisassembledContainer(logparent);
-    CodeViewLines = new SourceCodeLines(Disassembled, this);
+    m_programs_mgr = parent->m_programs_mgr;
+    Mnemonics_ = parent->Mnemonics_;
+    Labels_ = parent->Labels_;
+
+    m_disassembled_mgr = new DisassembledManager();
+    parent->m_disassembled_mgr = m_disassembled_mgr;
+
+    CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
     search_status_ = new SearchManager();
-    disassembler_ = 0;
     smart_disassembler_ = 0;
 
-    var_labels = new LabelListCtrl(parent, VAR_LIST,"VAR", logparent);
-    prog_labels = new LabelListCtrl(parent, PRG_LIST,"", logparent);
-    io_labels = new LabelListCtrl(parent, IO_LIST,"PORT", logparent);
-    constant_labels = new LabelListCtrl(parent, CONST_LIST,"", logparent);
-
-    sys_calls =  0;
-    sys_vars = 0;
-    sys_io = 0;
-    sys_const = 0;
-
-    gauge_ = NULL;
-    window_log_ = logparent;
-    ModuleName = "PROCESS";
+    ModuleName = "ProcessData";
+    SetTextLog(parent->GetTextLog());
 }
 
 
@@ -85,12 +77,6 @@ void ProcessData::Clear()
     CodeViewLines->Clear();
     if (smart_disassembler_)
         smart_disassembler_->Clear();
-}
-
-
-void ProcessData::SetGauge(wxGauge *g)
-{
-   gauge_ = g;
 }
 
 
@@ -207,6 +193,7 @@ void ProcessData::MakeData(RangeItems &r)
 
 
 //TODO: REmove it
+/*
 void ProcessData::AutoLabel()
 {
     DisassembledItem *dasmtemp;
@@ -266,7 +253,7 @@ void ProcessData::AutoLabel()
         var_labels->SortAddress();
     }
 }
-
+*/
 
 
 void ProcessData::InitData()

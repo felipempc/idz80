@@ -35,9 +35,9 @@ NewProjectDialog::NewProjectDialog(ProjectBase *parent)
     Bind(wxEVT_GRID_SELECT_CELL, &NewProjectDialog::OnGridSelectedRow, this);
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
-    if (m_main_dialog->Programs_->Count() != 0) {
-        for(unsigned int j = 0; j < m_main_dialog->Programs_->Count(); j++){
-            FillRow(m_main_dialog->Programs_->Index(j));
+    if (m_main_dialog->m_programs_mgr->Count() != 0) {
+        for(unsigned int j = 0; j < m_main_dialog->m_programs_mgr->Count(); j++){
+            FillRow(m_main_dialog->m_programs_mgr->Index(j));
         }
         m_program_loaded = true;
     }
@@ -137,7 +137,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
     RawData *program = 0;
 
-    program = m_main_dialog->Programs_->AddFile(filestr);
+    program = m_main_dialog->m_programs_mgr->AddFile(filestr);
     if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
         return false;
@@ -186,8 +186,8 @@ void NewProjectDialog::DialogEditRow(unsigned int line)
 {
     RawData *program;
 
-    if (line < m_main_dialog->Programs_->Count()) {
-        program = m_main_dialog->Programs_->Index(line);
+    if (line < m_main_dialog->m_programs_mgr->Count()) {
+        program = m_main_dialog->m_programs_mgr->Index(line);
         if (program == 0)
             return;
         
@@ -275,7 +275,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
         if ((row_delete >= 0) || (row_delete < m_filegrid->GetNumberRows()))
         {
             m_filegrid->DeleteRows(row_delete, 1);
-            m_main_dialog->Programs_->Remove(row_delete);
+            m_main_dialog->m_programs_mgr->Remove(row_delete);
             deleted_amount++;
         }
         #ifdef IDZ80_NPRJD_DEBUG
@@ -305,7 +305,7 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
     if (!m_program_loaded)
-        m_main_dialog->Programs_->Clear();
+        m_main_dialog->m_programs_mgr->Clear();
 
     EndModal(wxID_CANCEL);
 }
@@ -318,7 +318,7 @@ void NewProjectDialog::OnGridSelectedRow(wxGridEvent &event)
     if(m_filegrid->GetGridCursorRow() >= 0) {
         m_edit_button->Enable();
         m_remove_button->Enable();
-        m_main_dialog->Programs_->Index(line);
+        m_main_dialog->m_programs_mgr->Index(line);
     }
 }
 

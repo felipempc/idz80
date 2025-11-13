@@ -9,21 +9,21 @@
  **************************************************************/
 
 
-#ifndef DISASSEMBLED_CONTAINER_LIST_H_INCLUDED
-#define DISASSEMBLED_CONTAINER_LIST_H_INCLUDED
+#ifndef DISASSEMBLED_MANAGER_H
+#define DISASSEMBLED_MANAGER_H
 
 
 #include <vector>
 #include "disassembled_container.h"
+#include "logbase.h"
 
 
-
-class DisassembledContainerList
+class DisassembledManager: public LogBase
 {
     public:
-    DisassembledContainerList();
+    DisassembledManager(LogBase *parent);
 
-    bool Add(DisassembledContainer *dc);
+    bool Add(DisassembledContainer *disassembled);
     void Delete(int index);
 
     DisassembledContainer *First();
@@ -38,7 +38,7 @@ class DisassembledContainerList
     bool isEnd();
 
     private:
-    std::vector<DisassembledContainer *> disassembled_file_;
+    std::vector<DisassembledContainer *> m_disassembled_files;
 
     DisassembledContainer *current_item_;
     int current_item_index_;
@@ -46,4 +46,4 @@ class DisassembledContainerList
 };
 
 
-#endif // DISASSEMBLED_CONTAINER_LIST_H_INCLUDED
+#endif // DISASSEMBLED_MANAGER_H

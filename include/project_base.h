@@ -15,7 +15,7 @@
 
 #include "mnemonic_container.h"
 #include "rawdatamanager.h"
-#include "disassembled_container.h"
+#include "disassembled_manager.h"
 #include "SourceCodeLines.h"
 #include "labelmanager.h"
 #include "idz80_directories.h"
@@ -25,9 +25,8 @@ class ProjectBase: public IDZ80Directories, public LogBase
 {
     public:
         SourceCodeLines     *CodeViewLines_;
-        DisassembledContainer
-                            *Disassembled_;
-        RawDataManager      *Programs_;
+        DisassembledManager *m_disassembled_mgr;
+        RawDataManager      *m_programs_mgr;
         MnemonicContainer   *Mnemonics_;
         LabelManager        *Labels_;
 };

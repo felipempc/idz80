@@ -64,8 +64,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 //    project_ = 0;
 	m_maximize_main_window = true;
 //	CodeViewLines_ = 0;
-    Disassembled_ = 0;
-    Programs_ = 0;
+    m_disassembled_mgr = 0;
+    m_programs_mgr = 0;
     Mnemonics_ = 0;
     Labels_ = 0;
 

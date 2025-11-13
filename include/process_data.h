@@ -19,16 +19,11 @@
 #include "disassembled_item.h"
 #include "labelslist.h"
 #include "systemlabels.h"
-#include "decoder.h"
 #include "decoder_smart.h"
 #include "logwindow.h"
 #include "labelmanager.h"
 #include "codeview_definitions.h"
 #include "searchmanager.h"
-
-#include <wx/gauge.h>
-#include <wx/dynarray.h>
-
 
 
 // Range of addresses
@@ -62,18 +57,11 @@ class ProcessData : public ProjectBase
         void SearchInstructionArgument(word argument_value, uint search_config);
         bool SearchInstructionArgumentContinue(AbsoluteAddress &address);
 
-
-        void SetGauge(wxGauge *g);
-
-        ProcessData(wxWindow *parent, LogWindow *logparent);
+        ProcessData(ProjectBase *parent);
         ~ProcessData();
 
     private:
-        wxGauge     *gauge_;
-        Decoder     *disassembler_;
         SmartDecoder    *smart_disassembler_;
-        LogWindow   *window_log_;
-
         SearchManager   *search_status_;
 
         void RemoveLabelUsers(wxArrayInt *users);
@@ -83,7 +71,6 @@ class ProcessData : public ProjectBase
         bool FindInArgumentVariables(DisassembledItem *de, word argument);
         bool FindInArgumentLiteral(DisassembledItem *de, word argument);
         bool FindInArgumentJumpsCalls(DisassembledItem *de, word argument);
-
 };
 
 

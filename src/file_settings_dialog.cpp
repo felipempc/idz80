@@ -30,7 +30,7 @@ FileSettingsDialog::FileSettingsDialog(ProjectBase *parent)
 
     ModuleName = "FileSettings";
     SetTextLog(parent->GetTextLog());
-    m_program = parent->Programs_->Current();
+    m_program = parent->m_programs_mgr->Current();
 
     BuildDialog();
 
