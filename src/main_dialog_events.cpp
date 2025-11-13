@@ -82,6 +82,30 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
         mb->Enable(idMenuToolsAutoLabel, false);
     }
 */
+
+    // TEST AREA
+    m_disassembled_mgr = new DisassembledManager(this);
+    m_disassembled_mgr->Add(new DisassembledContainer(this));
+    m_disassembled_mgr->Add(new DisassembledContainer(this));
+    m_disassembled_mgr->Add(new DisassembledContainer(this));
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    m_disassembled_mgr->Next();
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    m_disassembled_mgr->Previous();
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    m_disassembled_mgr->Previous();
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    m_disassembled_mgr->Next();
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    m_disassembled_mgr->Previous();
+    m_disassembled_mgr->Previous();
+    m_disassembled_mgr->Previous();
+    m_disassembled_mgr->Previous();
+    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+
+
+    delete m_disassembled_mgr;
+    m_disassembled_mgr = 0;
 }
 
 

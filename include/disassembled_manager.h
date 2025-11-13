@@ -21,27 +21,30 @@
 class DisassembledManager: public LogBase
 {
     public:
-    DisassembledManager(LogBase *parent);
+        DisassembledManager(LogBase *parent);
+        ~DisassembledManager();
 
-    bool Add(DisassembledContainer *disassembled);
-    void Delete(int index);
+        bool Add(DisassembledContainer *disassembled);
+        void Delete(int index);
+        void Clear();
+        unsigned int Size();
 
-    DisassembledContainer *First();
-    DisassembledContainer *Last();
-    DisassembledContainer *Current();
-    DisassembledContainer *Previous();
-    DisassembledContainer *Next();
-    DisassembledContainer *Index(int index);
+        DisassembledContainer *First();
+        DisassembledContainer *Last();
+        DisassembledContainer *Current();
+        DisassembledContainer *Previous();
+        DisassembledContainer *Next();
+        DisassembledContainer *Index(int index);
 
-    int CurrentIndex();
+        int CurrentIndex();
 
-    bool isEnd();
+        bool isEnd();
 
     private:
     std::vector<DisassembledContainer *> m_disassembled_files;
 
-    DisassembledContainer *current_item_;
-    int current_item_index_;
+    DisassembledContainer *m_current_item;
+    int m_current_item_index;
 
 };
 

@@ -20,11 +20,8 @@
 #include <wx/frame.h>
 
 #include "project_base.h"
-#include "idz80_directories.h"
-// REMOVE #include "main_dialog_base.h"
 //#include "mnemonic_container.h"
 //#include "rawdata.h"
-//#include "disassembled_container.h"
 //#include "process_data.h"
 //#include "codeview.h"
 #include "labelslist.h"

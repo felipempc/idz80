@@ -11,10 +11,10 @@
 #include "disassembled_container.h"
 
 
-DisassembledContainer::DisassembledContainer(LogWindow *logparent)
+DisassembledContainer::DisassembledContainer(LogBase *logparent)
 {
     totalAllocated = 0;
-    SetTextLog(logparent);
+    SetTextLog(logparent->GetTextLog());
     ModuleName = "DisassembledContainer";
 }
 

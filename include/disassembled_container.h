@@ -46,7 +46,7 @@ class DisassembledContainer : public LogBase
         DisassembledIndex FindAddress(AbsoluteAddress address);
 
 
-        DisassembledContainer(LogWindow *logparent);
+        DisassembledContainer(LogBase *logparent);
         ~DisassembledContainer();
 
     private:
@@ -64,4 +64,3 @@ class DisassembledContainer : public LogBase
 
 
 #endif
-
