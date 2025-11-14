@@ -32,21 +32,27 @@ void IDZ80::SetupNotebook()
     m_notebook = new wxAuiNotebook(this, wxID_ANY,
                                     wxPoint(client_size.x, client_size.y),
                                     FromDIP(wxSize(430,200)),
-                                    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_SCROLL_BUTTONS);
-   m_notebook->Freeze();
-   m_notebook->AddPage( /*new wxTextCtrl( m_notebook, wxID_ANY, "Some text",
-                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER)*/ new wxPanel(this), "wxPanel 1", true );
+                                    wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB | wxAUI_NB_MIDDLE_CLICK_CLOSE);
 
-   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 2", true );
+    // Example test area --->
+    m_notebook->Freeze();
+    m_notebook->AddPage( /*new wxTextCtrl( m_notebook, wxID_ANY, "Some text",
+                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER)*/ new wxPanel(this), "wxPanel 1", true );
 
-   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 3" );
+    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 2", true );
 
-   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 4", true );
-   m_notebook->Thaw();
-   m_notebook->Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, IDZ80::OnAuiNotebookChanged, this);
+    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 3" );
+
+    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 4", true );
+    m_notebook->Thaw();
+    // <---- Exemple test area
+
+    //Bind events
+    m_notebook->Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, IDZ80::OnAuiNotebookChanged, this);
+    m_notebook->Bind(wxEVT_AUINOTEBOOK_PAGE_CLOSE, IDZ80::OnAuiNotebookClose, this);
 }
 
 

@@ -252,6 +252,19 @@ void IDZ80::OnAuiNotebookChanged(wxAuiNotebookEvent& event)
 
 
 
+void IDZ80::OnAuiNotebookClose(wxAuiNotebookEvent &event)
+{
+    //LogIt(wxString::Format("Will close page %d.", event.GetSelection()));
+    int res = wxMessageBox("Are you sure you want to close/hide this notebook page?",
+                       "wxAUI",
+                       wxYES_NO,
+                       this);
+        if (res != wxYES)
+            event.Veto();
+}
+
+
+
 void IDZ80::OnMenuViewProgramLabels(wxCommandEvent& event)
 {
     wxMenuBar *mb;

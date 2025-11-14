@@ -117,6 +117,7 @@ class IDZ80: public ProjectBase, public wxFrame
 
 		void OnAuiPaneClose(wxAuiManagerEvent& event);
 		void OnAuiNotebookChanged(wxAuiNotebookEvent& event);
+		void OnAuiNotebookClose(wxAuiNotebookEvent& event);
 
 		void OnMenuViewDisassemblyWindow(wxCommandEvent& event);
 		void OnMenuViewProgramLabels(wxCommandEvent& event);
