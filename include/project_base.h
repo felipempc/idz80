@@ -27,8 +27,8 @@ class ProjectBase: public IDZ80Directories, public LogBase
         SourceCodeLines     *CodeViewLines_;
         DisassembledManager *m_disassembled_mgr;
         RawDataManager      *m_programs_mgr;
-        MnemonicContainer   *Mnemonics_;
-        LabelManager        *Labels_;
+        MnemonicContainer   *m_mnemonics;
+        LabelManager        *m_labels;
 };
 
 #endif // PROJECTBASE_H

@@ -22,8 +22,8 @@
 ProcessData::ProcessData(ProjectBase *parent)
 {
     m_programs_mgr = parent->m_programs_mgr;
-    Mnemonics_ = parent->Mnemonics_;
-    Labels_ = parent->Labels_;
+    m_mnemonics = parent->m_mnemonics;
+    m_labels = parent->m_labels;
 
     m_disassembled_mgr = new DisassembledManager();
     parent->m_disassembled_mgr = m_disassembled_mgr;

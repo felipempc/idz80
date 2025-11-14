@@ -39,7 +39,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 //    codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
     m_programs_mgr = new RawDataManager(m_log_window);
-    Labels_ = new LabelManager();
+    m_labels = new LabelManager();
 
     SetupLabels();
 
@@ -83,29 +83,9 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     }
 */
 
-    // TEST AREA
-    m_disassembled_mgr = new DisassembledManager(this);
-    m_disassembled_mgr->Add(new DisassembledContainer(this));
-    m_disassembled_mgr->Add(new DisassembledContainer(this));
-    m_disassembled_mgr->Add(new DisassembledContainer(this));
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
-    m_disassembled_mgr->Next();
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
-    m_disassembled_mgr->Previous();
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
-    m_disassembled_mgr->Previous();
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
-    m_disassembled_mgr->Next();
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
-    m_disassembled_mgr->Previous();
-    m_disassembled_mgr->Previous();
-    m_disassembled_mgr->Previous();
-    m_disassembled_mgr->Previous();
-    LogIt(wxString::Format("Dsasm current = %d, isEnd = %d", m_disassembled_mgr->CurrentIndex(), m_disassembled_mgr->isEnd()));
+    //  TEST AREA   --------------------->
 
-
-    delete m_disassembled_mgr;
-    m_disassembled_mgr = 0;
+    // <----------------------- TEST AREA
 }
 
 

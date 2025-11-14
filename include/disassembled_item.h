@@ -41,8 +41,8 @@ enum HexadecimalStrStyle
 
 enum DataSeparation
 {
-    SPACE_SEPARATION,
-    COMMA_SEPARATION
+    SPACE_SEPARATED,
+    COMMA_SEPARATED
 };
 
 struct ArgumentStyle
@@ -75,7 +75,7 @@ class DisassembledItem : public DisassembledItemData
 
         void CopyArguments(const ExplicitArguments &arguments);
 
-        wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATION);
+        wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);
         wxString GetAsciiCodeAsString();
 
         ArgumentStyle GetArgumentStyle();
@@ -98,7 +98,7 @@ class DisassembledItem : public DisassembledItemData
 
     protected:
     private:
-        ArgumentStyle   *style_;
+        ArgumentStyle   *m_arg_style;
 
         AbsoluteAddress ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress);
 };

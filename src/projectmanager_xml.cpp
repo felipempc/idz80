@@ -114,10 +114,10 @@ bool ProjectManagerXML::Save()
         writeHeader(xml_doc);
         writeDisassembled(xml_doc);
         writeCodeLine(xml_doc);
-        writeLabel(xml_doc, main_->Labels_->prog_labels, SECTION_PROGRAMLABEL_STR);
-        writeLabel(xml_doc, main_->Labels_->var_labels, SECTION_VARLABEL_STR);
-        writeLabel(xml_doc, main_->Labels_->io_labels, SECTION_IOLABEL_STR);
-        writeLabel(xml_doc, main_->Labels_->constant_labels, SECTION_CONSTANTLABEL_STR);
+        writeLabel(xml_doc, main_->m_labels->prog_labels, SECTION_PROGRAMLABEL_STR);
+        writeLabel(xml_doc, main_->m_labels->var_labels, SECTION_VARLABEL_STR);
+        writeLabel(xml_doc, main_->m_labels->io_labels, SECTION_IOLABEL_STR);
+        writeLabel(xml_doc, main_->m_labels->constant_labels, SECTION_CONSTANTLABEL_STR);
         writeFileProperties(xml_doc);
         LogIt(wxString::Format("It took %dms...\n", sw.Time()));
         LogIt("Now saving...\n");

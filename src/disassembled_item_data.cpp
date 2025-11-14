@@ -1,10 +1,21 @@
+/****************************************************************
+* Name:      IDZ80
+* Purpose:   Interactive Disassembler for Z80 processors
+* Author:    Felipe MPC (idz80a@gmail.com)
+* Created:   09-11-2009 (D-M-Y) / Rewrited 30/06/2015
+* License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
+**************************************************************
+* Represents one data item
+**************************************************************/
+
+
 #include "disassembled_item_data.h"
 
-DisassembledItemData::DisassembledItemData(RawData* program_file)
+DisassembledItemData::DisassembledItemData(RawData *program)
 {
-    is_data_ = true;
-    binary_data_ = program_file;
-    length_ = 0;
+    m_is_data = true;
+    m_program = program;
+    m_length = 0;
 }
 
 
@@ -12,7 +23,7 @@ DisassembledItemData::DisassembledItemData(RawData* program_file)
 
 unsigned int DisassembledItemData::GetLength()
 {
-    return length_;
+    return m_length;
 }
 
 
@@ -20,7 +31,7 @@ unsigned int DisassembledItemData::GetLength()
 
 void DisassembledItemData::SetLength(unsigned int len)
 {
-    length_ = len;
+    m_length = len;
 }
 
 
@@ -28,5 +39,5 @@ void DisassembledItemData::SetLength(unsigned int len)
 
 bool DisassembledItemData::isData()
 {
-    return is_data_;
+    return m_is_data;
 }

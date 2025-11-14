@@ -66,8 +66,8 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 //	CodeViewLines_ = 0;
     m_disassembled_mgr = 0;
     m_programs_mgr = 0;
-    Mnemonics_ = 0;
-    Labels_ = 0;
+    m_mnemonics = 0;
+    m_labels = 0;
 
 	Create(parent, wxID_ANY, "Interactive Disassembler Z80", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, "id");
 
@@ -121,11 +121,11 @@ bool IDZ80::LoadMnemonicsDB()
     m_panel_log->AppendText(s);
     m_panel_log->AppendText("\n");
 
-    if(Mnemonics_ == 0)
-        Mnemonics_ = new MnemonicContainer(m_panel_log);
+    if(m_mnemonics == 0)
+        m_mnemonics = new MnemonicContainer(m_panel_log);
     else
-        Mnemonics_->Clear();
-    MnemonicXMLFile mnemonic(Mnemonics_, m_panel_log);
+        m_mnemonics->Clear();
+    MnemonicXMLFile mnemonic(m_mnemonics, m_panel_log);
 
     ret = mnemonic.Open(s);
 

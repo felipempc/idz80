@@ -47,7 +47,7 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 */
     de = Process->Disassembled->GetData(cvi->Dasmitem);
     str.Printf("DB ");
-    str << de->GetOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATION);
+    str << de->GetOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATED);
     /* OBSOLETE
     for (i = 0; i < de->GetMnemonic()->GetByteCodeSize(); i++)
     {

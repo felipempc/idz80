@@ -10,12 +10,12 @@ typedef unsigned char ExplicitArguments [2];
 class DisassembledItemBase
 {
     protected:
-        RawData     *binary_data_;
-        MnemonicItem    *mnemonic_;
-        unsigned int    mnemonic_signature_;
+        RawData         *m_program;
+        MnemonicItem    *m_mnemonic;
+        unsigned int    m_mnemonic_signature;
 
-        ExplicitArguments   arguments_;
-        FileOffset  offset_in_file_;
+        ExplicitArguments   m_arguments;
+        FileOffset          m_file_offset;
 };
 
 #endif // DISASSEMBLEDITEMBASE_H

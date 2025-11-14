@@ -688,7 +688,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
     {
         case 	siInstructionLabel:
                                 if ((line_info.dasmitem) &&
-                                    (line_info.dasmitem->mnemonic_->IsCall() || line_info.dasmitem->mnemonic_->IsJump()))
+                                    (line_info.dasmitem->m_mnemonic->IsCall() || line_info.dasmitem->m_mnemonic->IsJump()))
                                 {
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();

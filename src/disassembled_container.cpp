@@ -13,7 +13,7 @@
 
 DisassembledContainer::DisassembledContainer(LogBase *logparent)
 {
-    totalAllocated = 0;
+    m_total_allocated = 0;
     SetTextLog(logparent->GetTextLog());
     ModuleName = "DisassembledContainer";
 }
@@ -34,17 +34,17 @@ void DisassembledContainer::Clear()
     DisassembledItem *d_item;
     int size;
 
-    size = disassembled_list_.size();
+    size = m_disassembled_list.size();
 
     for(int i = 0; i < size; i++)
     {
-        d_item = disassembled_list_.back();
+        d_item = m_disassembled_list.back();
         if (d_item)
             delete d_item;
-        disassembled_list_.pop_back();
+        m_disassembled_list.pop_back();
     }
 
-    origin_list_.clear();
+    m_origin_list.clear();
 }
 
 
@@ -52,9 +52,9 @@ void DisassembledContainer::Clear()
 
 DisassembledItem *DisassembledContainer::GetData(DisassembledIndex index)
 {
-    if (index >= disassembled_list_.size())
+    if (index >= m_disassembled_list.size())
         return 0;
-    return disassembled_list_[index];
+    return m_disassembled_list[index];
 }
 
 
@@ -62,7 +62,7 @@ DisassembledItem *DisassembledContainer::GetData(DisassembledIndex index)
 
 uint DisassembledContainer::GetCount()
 {
-    return disassembled_list_.size();
+    return m_disassembled_list.size();
 }
 
 
@@ -82,9 +82,9 @@ int DisassembledContainer::Add(DisassembledItem *d_item)
 
     if (d_item)
     {
-		disassembled_list_.push_back(d_item);
-        ret = disassembled_list_.size() - 1;
-        totalAllocated += sizeof(DisassembledItem);
+		m_disassembled_list.push_back(d_item);
+        ret = m_disassembled_list.size() - 1;
+        m_total_allocated += sizeof(DisassembledItem);
     }
 
     return ret;
@@ -95,7 +95,7 @@ int DisassembledContainer::Add(DisassembledItem *d_item)
 
 uint DisassembledContainer::GetUsedMem()
 {
-    return totalAllocated;
+    return m_total_allocated;
 }
 
 
@@ -106,20 +106,20 @@ void DisassembledContainer::Del(DisassembledIndex position)
 	DisassembledList::iterator it_d_item;
 	DisassembledItem *d_item;
 
-    if (position < disassembled_list_.size())
+    if (position < m_disassembled_list.size())
 	{
-		d_item = disassembled_list_[position];
+		d_item = m_disassembled_list[position];
 
 		if (d_item)
         {
 
             LogIt(wxString::Format("Erase item %d, mnemonic = %s", position, d_item->GetMnemonic()->GetMnemonicStr(0)));
             delete d_item;
-            totalAllocated -= sizeof(DisassembledItem);
+            m_total_allocated -= sizeof(DisassembledItem);
         }
 
-        it_d_item = disassembled_list_.begin() + position;
-        disassembled_list_.erase(it_d_item);
+        it_d_item = m_disassembled_list.begin() + position;
+        m_disassembled_list.erase(it_d_item);
     }
 }
 
@@ -132,11 +132,11 @@ void DisassembledContainer::Del(DisassembledIndex index, uint count)
     DisassembledList::iterator	it_begin,
                                 it_end;
 
-    if (index < disassembled_list_.size())
+    if (index < m_disassembled_list.size())
     {
-		it_begin = disassembled_list_.begin() + index;
+		it_begin = m_disassembled_list.begin() + index;
 		it_end = it_begin + count;
-		disassembled_list_.erase(it_begin, it_end);
+		m_disassembled_list.erase(it_begin, it_end);
     }
 }
 
@@ -153,10 +153,10 @@ int DisassembledContainer::Insert(DisassembledItem *d_item, DisassembledIndex be
         ret = Add(d_item);
     else
     {
-		it_d_item = disassembled_list_.begin() + beforeitem;
-		disassembled_list_.insert(it_d_item, d_item);
+		it_d_item = m_disassembled_list.begin() + beforeitem;
+		m_disassembled_list.insert(it_d_item, d_item);
         ret = beforeitem;
-        totalAllocated += sizeof(DisassembledItem);
+        m_total_allocated += sizeof(DisassembledItem);
     }
     return ret;
 }
@@ -170,7 +170,7 @@ uint DisassembledContainer::GetBaseAddress(DisassembledIndex index)
     AddressList::iterator  it_origin;
     OriginData *origin;
 
-    for(it_origin = origin_list_.begin(); it_origin != origin_list_.end(); ++it_origin)
+    for(it_origin = m_origin_list.begin(); it_origin != m_origin_list.end(); ++it_origin)
 	{
 	    origin = *it_origin;
 		if (index >= origin->index)
@@ -190,9 +190,9 @@ void DisassembledContainer::AddOrigin(DisassembledIndex index, AbsoluteAddress a
     origin->index = 0;
     origin->address = 0;
 
-    if(origin_list_.size() > 0)
+    if(m_origin_list.size() > 0)
     {
-        for(it_origin = origin_list_.begin(); it_origin != origin_list_.end(); ++it_origin)
+        for(it_origin = m_origin_list.begin(); it_origin != m_origin_list.end(); ++it_origin)
         {
             origin = *it_origin;
             if(index == origin->index)
@@ -206,7 +206,7 @@ void DisassembledContainer::AddOrigin(DisassembledIndex index, AbsoluteAddress a
     origin = new OriginData;
     origin->index = index;
     origin->address = address;
-    origin_list_.push_back(origin);
+    m_origin_list.push_back(origin);
 }
 
 
@@ -217,12 +217,12 @@ void DisassembledContainer::DelOrigin(AbsoluteAddress address)
     AddressList::iterator  it_origin;
     OriginData *origin;
 
-    for(it_origin = origin_list_.begin(); it_origin != origin_list_.end(); ++it_origin)
+    for(it_origin = m_origin_list.begin(); it_origin != m_origin_list.end(); ++it_origin)
 	{
 	    origin = *it_origin;
 	    if(address == origin->address)
 		{
-		    origin_list_.erase(it_origin);
+		    m_origin_list.erase(it_origin);
 			return;
 		}
 	}
@@ -246,7 +246,7 @@ DisassembledIndex DisassembledContainer::FindAddress(AbsoluteAddress address)
     AbsoluteAddress  findaddress;
     bool out_of_bound = true;
 
-    for(it_disassembled = disassembled_list_.begin(); it_disassembled != disassembled_list_.end(); ++it_disassembled)
+    for(it_disassembled = m_disassembled_list.begin(); it_disassembled != m_disassembled_list.end(); ++it_disassembled)
     {
         d_item = *it_disassembled;
         findaddress = GetBaseAddress(index) + d_item->GetOffsetInFile();

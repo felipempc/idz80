@@ -52,15 +52,14 @@ class DisassembledContainer : public LogBase
     private:
         struct OriginData
         {
-            DisassembledIndex index;
-            AbsoluteAddress address;
+            DisassembledIndex   index;
+            AbsoluteAddress     address;
         };
         typedef std::vector<OriginData *> AddressList;
 
-        DisassembledList    disassembled_list_;
-        uint    totalAllocated;
-        AddressList     origin_list_;		// keeps Origin Addresses
+        DisassembledList    m_disassembled_list;
+        uint    m_total_allocated;
+        AddressList     m_origin_list;		// keeps Origin Addresses
 };
-
 
 #endif

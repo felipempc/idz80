@@ -17,9 +17,9 @@
 DisassembledItem::DisassembledItem(RawData* program_file)
                 :DisassembledItemData(program_file)
 {
-    binary_data_ = program_file;
-    style_ = 0;
-    is_data_ = false;
+    m_program = program_file;
+    m_arg_style = 0;
+    m_is_data = false;
     Clear();
 }
 
@@ -28,8 +28,8 @@ DisassembledItem::DisassembledItem(RawData* program_file)
 
 DisassembledItem::~DisassembledItem()
 {
-    if (style_)
-        delete style_;
+    if (m_arg_style)
+        delete m_arg_style;
 }
 
 
@@ -37,13 +37,13 @@ DisassembledItem::~DisassembledItem()
 
 void DisassembledItem::Clear()
 {
-    mnemonic_ = 0;
-    memset(&arguments_, 0, sizeof(ExplicitArguments));
-    offset_in_file_ = 0;
-    if(style_)
+    m_mnemonic = 0;
+    memset(&m_arguments, 0, sizeof(ExplicitArguments));
+    m_file_offset = 0;
+    if(m_arg_style)
     {
-        delete style_;
-        style_ = 0;
+        delete m_arg_style;
+        m_arg_style = 0;
     }
 }
 
@@ -52,7 +52,7 @@ void DisassembledItem::Clear()
 
 void DisassembledItem::CopyArguments(const ExplicitArguments &arguments)
 {
-    memcpy(&arguments_, &arguments, sizeof(ExplicitArguments));
+    memcpy(&m_arguments, &arguments, sizeof(ExplicitArguments));
 }
 
 
@@ -67,7 +67,7 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
     byte bytecode;
     unsigned int counter;
 
-    if(mnemonic_)
+    if(m_mnemonic)
     {
         as_string.Clear();
         switch (hex_style) {
@@ -82,14 +82,14 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
                 break;
         }
 
-        if  (separation == COMMA_SEPARATION)
+        if  (separation == COMMA_SEPARATED)
             fmt_string << ",";
         else
             fmt_string << " ";
 
-        for (counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
+        for (counter = 0; counter < m_mnemonic->GetByteCodeSize(); counter++)
         {
-            bytecode = binary_data_->GetData(offset_in_file_ + counter);
+            bytecode = m_program->GetData(m_file_offset + counter);
             as_string << wxString::Format(fmt_string, bytecode);
         }
         counter = as_string.Len() - 1;
@@ -107,12 +107,12 @@ wxString DisassembledItem::GetAsciiCodeAsString()
     wxString as_string;
     byte bytecode;
 
-    if(mnemonic_)
+    if(m_mnemonic)
     {
         as_string.Clear();
-        for (unsigned int counter = 0; counter < mnemonic_->GetByteCodeSize(); counter++)
+        for (unsigned int counter = 0; counter < m_mnemonic->GetByteCodeSize(); counter++)
         {
-            bytecode = binary_data_->GetData(offset_in_file_ + counter);
+            bytecode = m_program->GetData(m_file_offset + counter);
             if ((bytecode < 32) || (bytecode > 126))
                 bytecode = '.';
             as_string << wxString::Format("%c", bytecode);
@@ -131,10 +131,10 @@ ArgumentStyle DisassembledItem::GetArgumentStyle()
     style.first = STYLE_NONE;
     style.second = STYLE_NONE;
 
-    if(style_)
+    if(m_arg_style)
     {
-        style.first = style_->first;
-        style.second = style_->second;
+        style.first = m_arg_style->first;
+        style.second = m_arg_style->second;
     }
 
     return style;
@@ -145,13 +145,13 @@ ArgumentStyle DisassembledItem::GetArgumentStyle()
 
 ArgumentStyleOptions DisassembledItem::GetArgumentStyle(ArgumentIndex index)
 {
-    if(style_)
+    if(m_arg_style)
     {
         if(index == FIRST_ARGUMENT)
-            return style_->first;
+            return m_arg_style->first;
 
         if(index == SECOND_ARGUMENT)
-            return style_->second;
+            return m_arg_style->second;
     }
 
     return STYLE_NONE;
@@ -162,7 +162,7 @@ ArgumentStyleOptions DisassembledItem::GetArgumentStyle(ArgumentIndex index)
 
 FileOffset DisassembledItem::GetOffsetInFile()
 {
-    return offset_in_file_;
+    return m_file_offset;
 }
 
 
@@ -170,8 +170,8 @@ FileOffset DisassembledItem::GetOffsetInFile()
 
 byte DisassembledItem::GetByteOpcode(unsigned int index)
 {
-    if(binary_data_)
-        return binary_data_->GetData(offset_in_file_ + index);
+    if(m_program)
+        return m_program->GetData(m_file_offset + index);
 
     return 0;
 }
@@ -180,7 +180,7 @@ byte DisassembledItem::GetByteOpcode(unsigned int index)
 
 byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
 {
-    return arguments_[index];
+    return m_arguments[index];
 }
 
 
@@ -190,7 +190,7 @@ byte DisassembledItem::GetArgumentValue(unsigned int index)
 {
     if(index > 1)
         index = 1;
-    return arguments_[index];
+    return m_arguments[index];
 }
 
 
@@ -198,7 +198,7 @@ byte DisassembledItem::GetArgumentValue(unsigned int index)
 
 MnemonicItem *DisassembledItem::GetMnemonic()
 {
-    return mnemonic_;
+    return m_mnemonic;
 }
 
 
@@ -206,7 +206,7 @@ MnemonicItem *DisassembledItem::GetMnemonic()
 
 RawData *DisassembledItem::GetProgram()
 {
-    return binary_data_;
+    return m_program;
 }
 
 
@@ -214,8 +214,8 @@ RawData *DisassembledItem::GetProgram()
 
 void DisassembledItem::SetFileOffset(FileOffset _offset)
 {
-    if(_offset < binary_data_->GetSize())
-        offset_in_file_ = _offset;
+    if(_offset < m_program->GetSize())
+        m_file_offset = _offset;
 }
 
 
@@ -223,13 +223,13 @@ void DisassembledItem::SetFileOffset(FileOffset _offset)
 
 void DisassembledItem::SetArgumentStyle(ArgumentIndex index, ArgumentStyleOptions style)
 {
-    if(!style_)
-        style_ = new ArgumentStyle;
+    if(!m_arg_style)
+        m_arg_style = new ArgumentStyle;
 
     if(index == FIRST_ARGUMENT)
-        style_->first = style;
+        m_arg_style->first = style;
     if(index == SECOND_ARGUMENT)
-        style_->second = style;
+        m_arg_style->second = style;
 }
 
 
@@ -237,7 +237,7 @@ void DisassembledItem::SetArgumentStyle(ArgumentIndex index, ArgumentStyleOption
 
 void DisassembledItem::SetMnemonic(MnemonicItem *mnemonic)
 {
-    mnemonic_ = mnemonic;
+    m_mnemonic = mnemonic;
 }
 
 
@@ -245,7 +245,7 @@ void DisassembledItem::SetMnemonic(MnemonicItem *mnemonic)
 
 AbsoluteAddress DisassembledItem::ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress)
 {
-    return static_cast<AbsoluteAddress>(baseaddress + mnemonic_->GetByteCodeSize() + offset_in_file_ + relative);
+    return static_cast<AbsoluteAddress>(baseaddress + m_mnemonic->GetByteCodeSize() + m_file_offset + relative);
 }
 
 

@@ -196,7 +196,7 @@ bool SmartDecoder::ProcessBranch(DisassembledItem *de, bool &processing_status)
 
     address = de->GetArgument(0, process_->Disassembled->GetBaseAddress(0));
 
-    if (de->mnemonic_->IsConditionalJump())
+    if (de->m_mnemonic->IsConditionalJump())
     {
         if (!TestIfOutBoundaries(address))
         {
@@ -343,7 +343,7 @@ bool SmartDecoder::ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_
 {
     bool ret = false;
 
-    if (de->mnemonic_->IsConditionalReturn())
+    if (de->m_mnemonic->IsConditionalReturn())
         sub_routine_->SetConditionalReturn();
     else
     {

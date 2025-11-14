@@ -17,10 +17,10 @@
 /// @brief Create objects to each type of labels
 void IDZ80::SetupLabels()
 {
-    Labels_->io_labels = new LabelListCtrl(this, IO_LIST,"PORT", m_log_window);
-    Labels_->var_labels = new LabelListCtrl(this, VAR_LIST,"VAR", m_log_window);
-    Labels_->prog_labels = new LabelListCtrl(this, PRG_LIST,"PROGRAM", m_log_window);
-    Labels_->constant_labels = new LabelListCtrl(this, CONST_LIST,"CONST", m_log_window);
+    m_labels->io_labels = new LabelListCtrl(this, IO_LIST,"PORT", m_log_window);
+    m_labels->var_labels = new LabelListCtrl(this, VAR_LIST,"VAR", m_log_window);
+    m_labels->prog_labels = new LabelListCtrl(this, PRG_LIST,"PROGRAM", m_log_window);
+    m_labels->constant_labels = new LabelListCtrl(this, CONST_LIST,"CONST", m_log_window);
 }
 
 
@@ -108,13 +108,13 @@ void IDZ80::SetupAUIPanes()
 //    if ((codeview_ != 0) && (Labels_ != 0))
     {
 //        aui_mgr_->AddPane(codeview_, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        m_aui_mgr->AddPane(Labels_->var_labels,
+        m_aui_mgr->AddPane(m_labels->var_labels,
         wxAuiPaneInfo().Name("VarLabels").Caption("Var Labels").CaptionVisible().Left()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        m_aui_mgr->AddPane(Labels_->prog_labels,
+        m_aui_mgr->AddPane(m_labels->prog_labels,
         wxAuiPaneInfo().Name("ProgLabels").Caption("Program Labels").CaptionVisible().Left()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        m_aui_mgr->AddPane(Labels_->io_labels,
+        m_aui_mgr->AddPane(m_labels->io_labels,
         wxAuiPaneInfo().Name("IOLabels").Caption("IO Labels").CaptionVisible().Right()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
-        m_aui_mgr->AddPane(Labels_->constant_labels,
+        m_aui_mgr->AddPane(m_labels->constant_labels,
         wxAuiPaneInfo().Name("ConstLabels").Caption("Constant Labels").CaptionVisible().Right()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
 
         SetupAUIStoredConfiguration();
