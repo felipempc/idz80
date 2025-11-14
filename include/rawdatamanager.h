@@ -38,6 +38,8 @@ class RawDataManager: public LogBase
         void Remove(uint index);
         uint Count();
 
+        bool isLoaded();
+
 
     protected:
     private:

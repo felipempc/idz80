@@ -69,6 +69,7 @@ class IDZ80: public ProjectBase, public wxFrame
 
 	private:
 		wxAuiManager    *m_aui_mgr;
+		wxAuiNotebook	*m_notebook;
 		wxTextCtrl      *m_panel_log;
 		wxStatusBar     *m_status_bar;
         LogWindow       *m_log_window;
@@ -102,6 +103,7 @@ class IDZ80: public ProjectBase, public wxFrame
         void SetupStatusBar();
         void SetupPanelLog();
         void SetupLabels();
+		void SetupNotebook();
 
         //wxString DialogLoadProgramFile();
         wxString DialogLoadProjectFile();
@@ -114,6 +116,7 @@ class IDZ80: public ProjectBase, public wxFrame
 		void OnMenuHelpAbout(wxCommandEvent& event);
 
 		void OnAuiPaneClose(wxAuiManagerEvent& event);
+		void OnAuiNotebookChanged(wxAuiNotebookEvent& event);
 
 		void OnMenuViewDisassemblyWindow(wxCommandEvent& event);
 		void OnMenuViewProgramLabels(wxCommandEvent& event);

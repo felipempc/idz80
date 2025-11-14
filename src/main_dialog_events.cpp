@@ -42,7 +42,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     m_labels = new LabelManager();
 
     SetupLabels();
-
+    SetupNotebook();
     SetupAUIPanes();
     ReadStoredConfiguration();
     LoadMnemonicsDB();
@@ -160,19 +160,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
     simulateexecution = (bool *)event.GetClientData();
 //    codeview_->Enable(false);
-/*
-    psize = GetClientSize();
-    w = psize.GetWidth() / 2;
-    x = w - w / 2 - 5;
-    h = w / 15;
-    y = psize.GetHeight() / 2 - h / 2 - 5;
-    ldsize.Set(w, h);
-    ldpos.x = x;
-    ldpos.y = y;
-    wxGauge *GaugeLd = new wxGauge(this, wxID_ANY, 100, ldpos, ldsize, 0, wxDefaultValidator, "wxID_ANY");
 
-    process->SetGauge(GaugeLd);
-*/
 /*
     process_->DisassembleFirst(*simulateexecution);
     process_->InitData();
@@ -253,6 +241,14 @@ void IDZ80::OnAuiPaneClose(wxAuiManagerEvent& event)
         mb->Check(idMenuViewConstLabels, false);
 }
 
+
+
+void IDZ80::OnAuiNotebookChanged(wxAuiNotebookEvent& event)
+{
+    //wxWindow *object = static_cast<wxWindow *>(event.GetEventObject());
+    //LogIt(object->GetName());
+    LogIt(wxString::Format("Selected %d.", event.GetSelection()));
+}
 
 
 

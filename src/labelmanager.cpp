@@ -29,14 +29,46 @@ LabelManager::LabelManager()
 
 void LabelManager::ClearUserLabels()
 {
-    if (var_labels != 0)
+    if (var_labels != 0) {
         var_labels->Clear();
-    if (prog_labels != 0)
+        var_labels = 0;
+    }
+    if (prog_labels != 0) {
         prog_labels->Clear();
-    if (io_labels != 0)
+        prog_labels = 0;
+    }
+    if (io_labels != 0) {
         io_labels->Clear();
-    if (constant_labels != 0)
+        io_labels = 0;
+    }
+    if (constant_labels != 0) {
         constant_labels->Clear();
+        constant_labels = 0;
+    }
+}
+
+
+
+void LabelManager::DestroyAll()
+{
+    ClearUserLabels();
+
+    if(sys_calls) {
+        sys_calls->Clear();
+        sys_calls = 0;
+    }
+    if(sys_vars) {
+        sys_vars->Clear();
+        sys_vars = 0;
+    }
+    if(sys_io) {
+        sys_io->Clear();
+        sys_io = 0;
+    }
+    if(sys_const) {
+        sys_const->Clear();
+        sys_const = 0;
+    }
 }
 
 

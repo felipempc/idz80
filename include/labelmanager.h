@@ -30,6 +30,7 @@ class LabelManager
         LabelManager();
         bool LoadSystemLabels(wxString filename);
         void ClearUserLabels();
+        void DestroyAll();
 
 };
 

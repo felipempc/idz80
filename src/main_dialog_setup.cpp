@@ -25,6 +25,32 @@ void IDZ80::SetupLabels()
 
 
 
+void IDZ80::SetupNotebook()
+{
+    wxSize client_size = GetClientSize();
+
+    m_notebook = new wxAuiNotebook(this, wxID_ANY,
+                                    wxPoint(client_size.x, client_size.y),
+                                    FromDIP(wxSize(430,200)),
+                                    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_SCROLL_BUTTONS);
+   m_notebook->Freeze();
+   m_notebook->AddPage( /*new wxTextCtrl( m_notebook, wxID_ANY, "Some text",
+                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER)*/ new wxPanel(this), "wxPanel 1", true );
+
+   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 2", true );
+
+   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 3" );
+
+   m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
+                wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 4", true );
+   m_notebook->Thaw();
+   m_notebook->Bind(wxEVT_AUINOTEBOOK_PAGE_CHANGED, IDZ80::OnAuiNotebookChanged, this);
+}
+
+
+
 void IDZ80::SetupMenuItemStatus()
 {
     wxMenuBar *mb;
@@ -107,7 +133,8 @@ void IDZ80::SetupAUIPanes()
 {
 //    if ((codeview_ != 0) && (Labels_ != 0))
     {
-//        aui_mgr_->AddPane(codeview_, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
+//        m_aui_mgr->AddPane(codeview_, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
+        m_aui_mgr->AddPane(m_notebook, wxAuiPaneInfo().Name("MainWindow").Caption("Disassembly Window").CaptionVisible().CenterPane().PaneBorder().MinSize(170,170).FloatingSize(170,170));
         m_aui_mgr->AddPane(m_labels->var_labels,
         wxAuiPaneInfo().Name("VarLabels").Caption("Var Labels").CaptionVisible().Left()/*.TopDockable(false).BottomDockable(false)*/.PaneBorder().MinSize(170,170)/*.DockFixed()*/.FloatingSize(170,170)/*.Fixed()*/);
         m_aui_mgr->AddPane(m_labels->prog_labels,

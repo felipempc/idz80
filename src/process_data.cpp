@@ -30,7 +30,7 @@ ProcessData::ProcessData(ProjectBase *parent)
 
     //CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
     search_status_ = new SearchManager();
-    smart_disassembler_ = 0;
+    m_disassembler = new SmartDecoder(this);
 
     ModuleName = "ProcessData";
     SetTextLog(parent->GetTextLog());
@@ -39,10 +39,12 @@ ProcessData::ProcessData(ProjectBase *parent)
 
 ProcessData::~ProcessData()
 {
-    if (smart_disassembler_)
-        delete smart_disassembler_;
+    if (m_disassembler)
+        delete m_disassembler;
     if (m_disassembled_mgr)
         delete m_disassembled_mgr;
+    
+    m_labels->DestroyAll();
 }
 
 
@@ -51,8 +53,8 @@ void ProcessData::Clear()
     m_labels->ClearUserLabels();
     m_disassembled_mgr->Clear();
     //CodeViewLines->Clear();
-    if (smart_disassembler_)
-        smart_disassembler_->Clear();
+    if (m_disassembler)
+        m_disassembler->Clear();
 }
 
 
@@ -64,22 +66,23 @@ void ProcessData::Clear()
 bool ProcessData::SetupSystemLabels()
 {
     bool ret = false;
+    RawData *program = m_programs_mgr->First();
 
-    if (Program->IsLoaded())
+    if (m_programs_mgr->isLoaded())
     {
         ret = true;
-        sys_io = new SystemLabelList("IOMAP", window_log_);
+        m_labels->sys_io = new SystemLabelList("IOMAP", this);
 
-        if (Program->isCOM())
+        if (program->isCOM())
         {
-            sys_calls =  new SystemLabelList("MSXDOSCALLS", window_log_);
-            sys_vars = new SystemLabelList("MSXDOS1VAR", window_log_);
-            sys_const = new SystemLabelList("BDOSFUNCTIONS", window_log_);
+            m_labels->sys_calls =  new SystemLabelList("MSXDOSCALLS", this);
+            m_labels->sys_vars = new SystemLabelList("MSXDOS1VAR", this);
+            m_labels->sys_const = new SystemLabelList("BDOSFUNCTIONS", this);
         }
         else
         {
-            sys_calls =  new SystemLabelList("BIOSCALLS", window_log_);
-            sys_vars = new SystemLabelList("BIOSVARS", window_log_);
+            m_labels->sys_calls =  new SystemLabelList("BIOSCALLS", this);
+            m_labels->sys_vars = new SystemLabelList("BIOSVARS", this);
         }
     }
 
@@ -96,22 +99,12 @@ void ProcessData::DisassembleFirst(bool simulateexecution)
     Disassembled->Clear();
 
 
-    if (simulateexecution)
-    {
-        if (smart_disassembler_ == 0)
-            smart_disassembler_ = new SmartDecoder(this, window_log_);
+    if (m_disassembler == 0)
+        m_disassembler = new SmartDecoder(this, window_log_);
 
-        LogIt("Disassemble by simulating execution of code.");
-        smart_disassembler_->FullDisassemble(this);
-    }
-    else
-    {
-        if (disassembler_ == 0)
-            disassembler_ = new Decoder(this, window_log_);
+    LogIt("Disassemble by simulating execution of code.");
+    m_disassembler->FullDisassemble(this);
 
-        LogIt("Full disassembling.");
-        disassembler_->FullDisassemble(this);
-    }
 }
 
 
@@ -120,10 +113,8 @@ void ProcessData::DisassembleFirst(bool simulateexecution)
 
 void ProcessData::DisassembleItems(RangeItems &r)
 {
-    if (disassembler_)
-        disassembler_->DisassembleItems(r);
-    if (smart_disassembler_)
-        smart_disassembler_->DisassembleItems(r);
+    if (m_disassembler)
+        m_disassembler->DisassembleItems(r);
 }
 
 

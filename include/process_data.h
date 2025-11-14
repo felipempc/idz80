@@ -43,7 +43,7 @@ class ProcessData : public ProjectBase
         void TransformToData(SelectedItemInfo &selected);
         void DisassembleData(SelectedItemInfo &selected);
         void MakeData(RangeItems &r);
-        void AutoLabel();
+        //void AutoLabel();
         void InitData();
         void InsertLineLabelsInSourceCode();
 
@@ -61,7 +61,7 @@ class ProcessData : public ProjectBase
         ~ProcessData();
 
     private:
-        SmartDecoder    *smart_disassembler_;
+        SmartDecoder    *m_disassembler;
         SearchManager   *search_status_;
 
         void RemoveLabelUsers(wxArrayInt *users);

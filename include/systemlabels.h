@@ -30,7 +30,7 @@ typedef struct st_systemlabel SystemLabelItem;
 class SystemLabelList: public LogBase
 {
 	public:
-		SystemLabelList(const wxString& section, LogWindow *logparent);
+		SystemLabelList(const wxString& section, LogBase *logparent);
 		~SystemLabelList();
 
 		bool Open(const wxString& file);
@@ -38,7 +38,7 @@ class SystemLabelList: public LogBase
 		SystemLabelItem *GetItem(const uint item);
 		wxString &Find(const uint addr);
 		uint GetCount();
-		void SetLog(wxTextCtrl *lg);
+
 
 	private:
 		wxArrayPtrVoid	m_data;

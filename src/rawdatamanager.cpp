@@ -119,6 +119,15 @@ uint RawDataManager::Count()
     return m_data_list.size();
 }
 
+
+
+bool RawDataManager::isLoaded()
+{
+    return (m_data_list.size() > 0);
+}
+
+
+
 RawData *RawDataManager::First()
 {
     if(m_data_list.size() > 0)

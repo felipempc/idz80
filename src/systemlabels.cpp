@@ -10,12 +10,12 @@
 
  #include "systemlabels.h"
 
-SystemLabelList::SystemLabelList(const wxString& section, LogWindow *logparent)
+SystemLabelList::SystemLabelList(const wxString& section, LogBase *logparent)
 {
 	m_section = section;
 	m_file = 0;
     ModuleName = "SystemLabel";
-    SetTextLog(logparent);
+    SetTextLog(logparent->GetTextLog());
 }
 
 
