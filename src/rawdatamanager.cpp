@@ -14,13 +14,12 @@
 // DEFinition for debug = IDZ80_RAWDATAMGR_DEBUG
 //#define IDZ80_RAWDATAMGR_DEBUG
 
-RawDataManager::RawDataManager(LogWindow *logparent)
+RawDataManager::RawDataManager(LogBase *logparent)
 {
-    logwindow = logparent;
-    SetTextLog(logparent);
+    SetTextLog(logparent->GetTextLog());
     ModuleName = "RAWDATAMGR";
-    current_file_index_ = -1;
-    current_file_ = 0;
+    m_current_file_index = -1;
+    m_current_file = 0;
 }
 
 
@@ -30,33 +29,33 @@ RawData *RawDataManager::AddFile(wxString name)
 {
     try
     {
-        current_file_ = new RawData(logwindow);
+        m_current_file = new RawData(this);
     }
     catch (...)
     {
-        current_file_ = 0;
-        current_file_index_ = -1;
+        m_current_file = 0;
+        m_current_file_index = -1;
         LogIt("Error creating rawdata !");
         return 0;
     }
 
-    if (current_file_->Open(name))
+    if (m_current_file->Open(name))
     {
-        data_list_.push_back(current_file_);
+        m_data_list.push_back(m_current_file);
 
         #ifdef IDZ80_RAWDATAMGR_DEBUG
-        LogIt(current_file_->GetFileName() + "   " + current_file_->GetFileTypeStr());
+        LogIt(m_current_file->GetFileName() + "   " + m_current_file->GetFileTypeStr());
         #endif
     }
     else
     {
-        delete current_file_;
-        current_file_ = 0;
+        delete m_current_file;
+        m_current_file = 0;
         LogIt(wxString::Format("Error opening file: %s", name));
     }
-    current_file_index_ = data_list_.size() - 1;
+    m_current_file_index = m_data_list.size() - 1;
 
-    return current_file_;
+    return m_current_file;
 }
 
 
@@ -66,17 +65,17 @@ void RawDataManager::Clear()
     RawData *program_file;
     int size;
 
-    size = data_list_.size();
+    size = m_data_list.size();
 
     for(int i = 0; i < size; i++)
     {
-        program_file = data_list_.back();
+        program_file = m_data_list.back();
         if (program_file)
             delete program_file;
-        data_list_.pop_back();
+        m_data_list.pop_back();
     }
-    current_file_ = 0;
-    current_file_index_ = -1;    
+    m_current_file = 0;
+    m_current_file_index = -1;    
 }
 
 
@@ -91,48 +90,48 @@ RawDataManager::~RawDataManager()
 
 RawData *RawDataManager::Index(uint index)
 {
-    if (index >= data_list_.size())
+    if (index >= m_data_list.size())
         return 0;
-    current_file_ = data_list_[index];
-    current_file_index_ = static_cast<int>(index);
-    return current_file_;
+    m_current_file = m_data_list[index];
+    m_current_file_index = static_cast<int>(index);
+    return m_current_file;
 }
 
 
 
 void RawDataManager::Remove(uint index)
 {
-    if (index >= data_list_.size())
+    if (index >= m_data_list.size())
         return;
     
     if (Index(index) != 0) {
-        delete current_file_;
-        current_file_ = 0;
+        delete m_current_file;
+        m_current_file = 0;
     }
     
-    data_list_.erase(data_list_.begin() + index);
+    m_data_list.erase(m_data_list.begin() + index);
 
     First();    // Don't know where to go, go to First element then.
 }
 
 uint RawDataManager::Count()
 {
-    return data_list_.size();
+    return m_data_list.size();
 }
 
 RawData *RawDataManager::First()
 {
-    if(data_list_.size() > 0)
+    if(m_data_list.size() > 0)
     {
-        current_file_ = data_list_[0];
-        current_file_index_ = 0;
+        m_current_file = m_data_list[0];
+        m_current_file_index = 0;
     }
     else
     {
-        current_file_ = 0;
-        current_file_index_ = -1;
+        m_current_file = 0;
+        m_current_file_index = -1;
     }
-    return current_file_;
+    return m_current_file;
 }
 
 
@@ -140,12 +139,12 @@ RawData *RawDataManager::First()
 
 RawData *RawDataManager::Current()
 {
-    if (data_list_.size() == 0)
+    if (m_data_list.size() == 0)
     {
-        current_file_ = 0;
-        current_file_index_ = -1;
+        m_current_file = 0;
+        m_current_file_index = -1;
     }
-    return current_file_;
+    return m_current_file;
 }
 
 
@@ -153,55 +152,53 @@ RawData *RawDataManager::Current()
 
 RawData *RawDataManager::Last()
 {
-    unsigned int size = data_list_.size();
+    unsigned int size = m_data_list.size();
 
     if (size > 0)
     {
-        current_file_ = data_list_[size - 1];
-        current_file_index_ = size - 1;
+        m_current_file = m_data_list[size - 1];
+        m_current_file_index = size - 1;
     }
     else
     {
-        current_file_ = 0;
-        current_file_index_ = -1;
+        m_current_file = 0;
+        m_current_file_index = -1;
     }
-    return current_file_;
+    return m_current_file;
 }
 
 
 RawData *RawDataManager::Next()
 {
-    unsigned int size = data_list_.size();
+    unsigned int size = m_data_list.size();
 
-    current_file_index_++;
+    m_current_file_index++;
 
-    if (current_file_index_ < size)
+    if (m_current_file_index < size)
     {
-        current_file_ = data_list_[current_file_index_];
+        m_current_file = m_data_list[m_current_file_index];
     }
     else
     {
-        current_file_index_--;
+        m_current_file_index--;
     }
-    return current_file_;
+    return m_current_file;
 
 }
 
 
 RawData *RawDataManager::Previous()
 {
-    unsigned int size = data_list_.size();
+    m_current_file_index--;
 
-    current_file_index_--;
-
-    if (current_file_index_ > 0)
+    if (m_current_file_index > 0)
     {
-        current_file_ = data_list_[current_file_index_];
+        m_current_file = m_data_list[m_current_file_index];
     }
     else
-        current_file_ = First();
+        m_current_file = First();
 
-    return current_file_;
+    return m_current_file;
 
 }
 

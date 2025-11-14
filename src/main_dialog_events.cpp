@@ -38,7 +38,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 //    process_ = new ProcessData(this, m_log_window);
 //    codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
-    m_programs_mgr = new RawDataManager(m_log_window);
+    m_programs_mgr = new RawDataManager(this);
     m_labels = new LabelManager();
 
     SetupLabels();

@@ -20,7 +20,7 @@ typedef std::vector<RawData *> RawDataList;
 class RawDataManager: public LogBase
 {
     public:
-        RawDataManager(LogWindow *logparent);
+        RawDataManager(LogBase *logparent);
         virtual ~RawDataManager();
 
         RawData *AddFile(wxString name);
@@ -41,11 +41,9 @@ class RawDataManager: public LogBase
 
     protected:
     private:
-        RawDataList data_list_;
-        RawData     *current_file_;
-        int         current_file_index_;
-
-        LogWindow *logwindow;
+        RawDataList m_data_list;
+        RawData     *m_current_file;
+        int         m_current_file_index;
 };
 
 #endif // RAWDATAMANAGER_H

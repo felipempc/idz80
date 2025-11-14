@@ -25,10 +25,10 @@ ProcessData::ProcessData(ProjectBase *parent)
     m_mnemonics = parent->m_mnemonics;
     m_labels = parent->m_labels;
 
-    m_disassembled_mgr = new DisassembledManager();
+    m_disassembled_mgr = new DisassembledManager(parent);
     parent->m_disassembled_mgr = m_disassembled_mgr;
 
-    CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
+    //CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
     search_status_ = new SearchManager();
     smart_disassembler_ = 0;
 
@@ -39,42 +39,18 @@ ProcessData::ProcessData(ProjectBase *parent)
 
 ProcessData::~ProcessData()
 {
-    if (disassembler_)
-        delete disassembler_;
     if (smart_disassembler_)
         delete smart_disassembler_;
-    if (sys_const != 0)
-        delete sys_const;
-	delete sys_calls;
-	delete sys_vars;
-	delete sys_io;
-    delete CodeViewLines;
-    delete constant_labels;
-    delete io_labels;
-    delete prog_labels;
-    delete var_labels;
-    delete Mnemonics;
-    delete Program;
-    delete Disassembled;
-    delete search_status_;
+    if (m_disassembled_mgr)
+        delete m_disassembled_mgr;
 }
 
 
 void ProcessData::Clear()
 {
-    ClearUserLabels();
-    delete sys_calls;
-    delete sys_io;
-    delete sys_const;
-    delete sys_vars;
-    sys_calls = 0;
-    sys_io = 0;
-    sys_const = 0;
-    sys_vars = 0;
-
-    Program->Clear();
-    Disassembled->Clear();
-    CodeViewLines->Clear();
+    m_labels->ClearUserLabels();
+    m_disassembled_mgr->Clear();
+    //CodeViewLines->Clear();
     if (smart_disassembler_)
         smart_disassembler_->Clear();
 }

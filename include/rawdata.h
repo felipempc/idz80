@@ -73,14 +73,14 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
                         ExecAddress,
                         EndAddress;
 
-        RawData(LogWindow *logparent);
+        RawData(LogBase *logparent);
         ~RawData(void);
 
     private:
-        wxMemoryBuffer  buffer_;
-        wxFileName      filename_;
-        FileType        filetype_;
-        FileOffset      header_offset_;
+        wxMemoryBuffer  m_memory_buffer;
+        wxFileName      m_filename;
+        FileType        m_filetype;
+        FileOffset      m_header_offset;
 
         bool LoadToBuffer(const wxString filename);
         void SetupFileType();
