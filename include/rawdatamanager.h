@@ -36,10 +36,10 @@ class RawDataManager: public LogBase
         RawData *Index(uint index);
 
         void Remove(uint index);
+        void RemoveCurrent();
         uint Count();
 
         bool isLoaded();
-
 
     protected:
     private:

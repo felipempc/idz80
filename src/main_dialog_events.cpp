@@ -247,7 +247,9 @@ void IDZ80::OnAuiNotebookChanged(wxAuiNotebookEvent& event)
 {
     //wxWindow *object = static_cast<wxWindow *>(event.GetEventObject());
     //LogIt(object->GetName());
-    LogIt(wxString::Format("Selected %d.", event.GetSelection()));
+    int index = event.GetSelection();
+    wxString caption = m_notebook->GetPageText(index);
+    LogIt(wxString::Format("Selected %d [%s].", index, static_cast<const char *>(caption.c_str())));
 }
 
 
@@ -259,8 +261,11 @@ void IDZ80::OnAuiNotebookClose(wxAuiNotebookEvent &event)
                        "wxAUI",
                        wxYES_NO,
                        this);
-        if (res != wxYES)
-            event.Veto();
+    if (res != wxYES)
+        event.Veto();
+    else {
+        m_programs_mgr->Remove(event.GetSelection());
+    }
 }
 
 

@@ -104,15 +104,33 @@ void RawDataManager::Remove(uint index)
     if (index >= m_data_list.size())
         return;
     
-    if (Index(index) != 0) {
+    if (Index(index) != 0)
         delete m_current_file;
-        m_current_file = 0;
-    }
-    
+
     m_data_list.erase(m_data_list.begin() + index);
 
-    First();    // Don't know where to go, go to First element then.
+    if (index == (m_data_list.size() - 1))
+        Last();
+    else
+        m_current_file = m_data_list[index];
 }
+
+
+
+void RawDataManager::RemoveCurrent()
+{
+    if ((m_current_file_index >= 0) && (m_current_file)) {
+        delete m_current_file;
+        m_data_list.erase(m_data_list.begin() + m_current_file_index);
+        m_current_file_index--;
+        if (m_current_file_index < 0)
+            m_current_file = 0;
+        else
+            Index(m_current_file_index);
+    }
+}
+
+
 
 uint RawDataManager::Count()
 {
@@ -179,7 +197,7 @@ RawData *RawDataManager::Last()
 
 RawData *RawDataManager::Next()
 {
-    unsigned int size = m_data_list.size();
+    int size = m_data_list.size();
 
     m_current_file_index++;
 

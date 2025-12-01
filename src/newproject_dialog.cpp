@@ -17,13 +17,19 @@
 //#define IDZ80_NPRJD_DEBUG
 
 
-NewProjectDialog::NewProjectDialog(ProjectBase *parent)
+NewProjectDialog::NewProjectDialog(ProjectBase *parent/*, wxAuiNotebook *notebookctrl*/)
 {
+    unsigned int index;
+
     m_main_dialog = parent;
+    //m_notebook_ctrl = notebookctrl;
     ModuleName = "NPDialog";
     SetTextLog(m_main_dialog->GetTextLog());
 
     m_actualrow = -1;
+    m_modified = false;
+    m_first_modified = 0;
+    m_count_modified = 0;
 
     BuildDialog();
     Bind(wxEVT_SIZE, &NewProjectDialog::OnResize, this);
@@ -36,10 +42,15 @@ NewProjectDialog::NewProjectDialog(ProjectBase *parent)
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
     if (m_main_dialog->m_programs_mgr->Count() != 0) {
-        for(unsigned int j = 0; j < m_main_dialog->m_programs_mgr->Count(); j++){
-            FillRow(m_main_dialog->m_programs_mgr->Index(j));
+        for(index = 0; index < m_main_dialog->m_programs_mgr->Count(); index++){
+            FillRow(m_main_dialog->m_programs_mgr->Index(index));
         }
         m_program_loaded = true;
+        m_first_modified = index;
+
+        #ifdef IDZ80_NPRJD_DEBUG
+        LogIt(wxString::Format("First modified = %d, Count = %d.", m_first_modified, m_count_modified));
+        #endif
     }
     else {
         m_OK_button->Disable();
@@ -58,6 +69,12 @@ NewProjectDialog::~NewProjectDialog()
     delete m_filegrid;
 }
 
+
+
+bool NewProjectDialog::WasModified()
+{
+    return m_modified;
+}
 
 
 
@@ -143,6 +160,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
         return false;
     }
     if (program->PureBasic()) {
+        m_main_dialog->m_programs_mgr->RemoveCurrent();
         wxMessageBox(wxString::Format("The file [%s] is a pure BASIC program. It's not supported yet!", filestr), "Error opening file !");
         return false;
     }
@@ -199,6 +217,16 @@ void NewProjectDialog::DialogEditRow(unsigned int line)
 
 
 
+void NewProjectDialog::CancelNewAdded()
+{
+    if (m_count_modified > 0)
+        do {
+            m_main_dialog->m_programs_mgr->Remove(m_first_modified);
+        } while (--m_count_modified);
+}
+
+
+
 void NewProjectDialog::OnResize(wxSizeEvent &event)
 {
     m_main_sizer->Fit(this);
@@ -216,11 +244,19 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
         return;
 
     for(unsigned int idx = 0; idx < file_list.GetCount(); idx++)
-        if (AddFileToGrid(file_list[idx]))
+        if (AddFileToGrid(file_list[idx])) {
             success = true;
+            m_count_modified++;
+        }
     
-    if(success)
+    if(success) {
         m_OK_button->Enable();
+        m_modified = true;
+
+        #ifdef IDZ80_NPRJD_DEBUG
+        LogIt(wxString::Format("First = %d, Count = %d.", m_first_modified, m_count_modified));
+        #endif
+    }
     
     #ifdef IDZ80_NPRJD_DEBUG
     LogIt("Size of the Columns:");
@@ -253,6 +289,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     int row_delete = -1;
     int item_count = selected_rows.GetCount();
     int deleted_amount = 0;
+    unsigned int actual_modified = m_count_modified - m_first_modified;
 
 
     #ifdef IDZ80_NPRJD_DEBUG
@@ -276,16 +313,20 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
         {
             m_filegrid->DeleteRows(row_delete, 1);
             m_main_dialog->m_programs_mgr->Remove(row_delete);
+            //m_notebook_ctrl->DeletePage(row_delete);
             deleted_amount++;
         }
+        
+
         #ifdef IDZ80_NPRJD_DEBUG
         LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
         #endif
     }
     m_actualrow = m_filegrid->GetNumberRows() - 1;
+    m_modified = true;
 
     if(m_filegrid->GetNumberRows() == 0) {
-        m_OK_button->Disable();
+        //m_OK_button->Disable();
         m_remove_button->Disable();
         m_edit_button->Disable();
     }
@@ -304,9 +345,7 @@ void NewProjectDialog::OnOkButtonPressed(wxCommandEvent &event)
 
 void NewProjectDialog::OnCancelButtonPressed(wxCommandEvent &event)
 {
-    if (!m_program_loaded)
-        m_main_dialog->m_programs_mgr->Clear();
-
+    CancelNewAdded();
     EndModal(wxID_CANCEL);
 }
 
@@ -317,7 +356,10 @@ void NewProjectDialog::OnGridSelectedRow(wxGridEvent &event)
     int line = event.GetRow();
     if(m_filegrid->GetGridCursorRow() >= 0) {
         m_edit_button->Enable();
-        m_remove_button->Enable();
+        if (line >= m_first_modified)
+            m_remove_button->Enable();
+        else
+            m_remove_button->Disable();
         m_main_dialog->m_programs_mgr->Index(line);
     }
 }

@@ -35,19 +35,6 @@ void IDZ80::SetupNotebook()
                                     wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB | wxAUI_NB_MIDDLE_CLICK_CLOSE);
 
     // Example test area --->
-    m_notebook->Freeze();
-    m_notebook->AddPage( /*new wxTextCtrl( m_notebook, wxID_ANY, "Some text",
-                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER)*/ new wxPanel(this), "wxPanel 1", true );
-
-    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 2", true );
-
-    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 3" );
-
-    m_notebook->AddPage( new wxTextCtrl( m_notebook, wxID_ANY, "Some more text",
-                    wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxNO_BORDER) , "wxTextCtrl 4", true );
-    m_notebook->Thaw();
     // <---- Exemple test area
 
     //Bind events

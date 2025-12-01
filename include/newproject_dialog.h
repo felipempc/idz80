@@ -14,15 +14,19 @@
 #include "wx/dialog.h"
 #include "wx/grid.h"
 #include "wx/button.h"
+#include <wx/aui/aui.h>
 
 #include "project_base.h"
+
 
 class NewProjectDialog: public wxDialog, public LogBase
 {
     public:
-        NewProjectDialog(ProjectBase *parent);
-
+        NewProjectDialog(ProjectBase *parent/*, wxAuiNotebook *notebookctrl*/);
         virtual ~NewProjectDialog();
+
+        bool WasModified();
+
     protected:
         enum
         {
@@ -33,11 +37,16 @@ class NewProjectDialog: public wxDialog, public LogBase
     private:
         ProjectBase     *m_main_dialog;
         wxBoxSizer      *m_main_sizer;
+        //wxAuiNotebook   *m_notebook_ctrl;
 
         wxGrid  *m_filegrid;
         wxButton    *m_cancel_button, *m_OK_button, *m_add_button, *m_edit_button, *m_remove_button;
         int     m_actualrow;
         bool    m_program_loaded;
+        bool    m_modified;
+        int     m_first_modified,
+                m_count_modified;
+    
 
         void BuildDialog();
         bool DialogGetFileToList(wxArrayString &file_list_str);
@@ -46,7 +55,9 @@ class NewProjectDialog: public wxDialog, public LogBase
         void FillRow(RawData *program);
         void UpdateGridRow(unsigned int line, RawData *program);
         void DialogEditRow(unsigned int line);
+        void CancelNewAdded();
 
+        //events
         void OnResize(wxSizeEvent &event);
         void OnAddButton(wxCommandEvent &event);
         void OnEditButton(wxCommandEvent &event);

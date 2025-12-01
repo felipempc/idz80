@@ -107,7 +107,6 @@ IDZ80::~IDZ80()
 
 
 
-
 bool IDZ80::LoadMnemonicsDB()
 {
     wxString s;
@@ -148,7 +147,8 @@ bool IDZ80::LoadMnemonicsDB()
 
 void IDZ80::OpenProgramFile(wxString filename)
 {
-    NewProjectDialog dialog(this);
+    NewProjectDialog dialog(this/*, m_notebook*/);
+    bool wasLoaded = m_programs_mgr->isLoaded();
     
     if (dialog.ShowModal() == wxID_OK) {
         wxMenuBar *mb;
@@ -159,8 +159,24 @@ void IDZ80::OpenProgramFile(wxString filename)
         mb->Enable(idMenuToolsGenCode, false);
         mb->Enable(idMenuToolsAutoLabel, false);
 
-    }
+        if(!m_programs_mgr->isLoaded()) {
+            m_notebook->DeleteAllPages();
+            return;
+        }
 
+
+        if (dialog.WasModified()) 
+            if (m_notebook->GetPageCount() > 0) {
+                 PageOrganizer();
+            }
+            else {
+                m_notebook->Freeze();
+                for (int i=0; i < m_programs_mgr->Count(); i++) {
+                    m_notebook->AddPage(new wxPanel(this), m_programs_mgr->Index(i)->GetFileName(), true);
+                }
+                m_notebook->Thaw();
+            }
+    }
 
 
     /* ----    OLD     ---------
@@ -225,6 +241,28 @@ void IDZ80::OpenProgramFile(wxString filename)
 	}
 	*/
 
+}
+
+
+void IDZ80::PageOrganizer()
+{
+    wxString filename, namepage;
+    unsigned int    lastpage = m_notebook->GetPageCount() - 1,
+                    lastfile = m_programs_mgr->Count() - 1;
+
+    m_notebook->Freeze();
+
+    for (unsigned int i = 0; i < (lastfile + 1); i++) {
+        filename = m_programs_mgr->Index(i)->GetFileName();
+        namepage = m_notebook->GetPageText(i);
+        if (!filename.IsSameAs(namepage))
+            if (i <= lastpage)
+                m_notebook->InsertPage(i, new wxPanel(this), filename, true);
+            else
+                m_notebook->AddPage(new wxPanel(this), filename, true);
+    }
+
+    m_notebook->Thaw();
 }
 
 
@@ -331,6 +369,3 @@ void IDZ80::UpdateTitle(const wxString str)
 		info << " - " << str;
 	SetTitle(info);
 }
-
-
-

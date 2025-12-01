@@ -40,6 +40,7 @@ class IDZ80: public ProjectBase, public wxFrame
 		IDZ80(wxWindow* parent, wxArrayString &arraystr);
 		virtual ~IDZ80();
 
+
 	protected:
 		static const long idMenuFileOpenProject;
 		static const long idMenuFileOpenArchive;
@@ -91,6 +92,8 @@ class IDZ80: public ProjectBase, public wxFrame
         //bool OpenProjectFile(const wxString filename);
         void OpenProjectFile();
 
+		void PageOrganizer();
+
         void UpdateTitle(const wxString str);
         void SetupMenuItemStatus();
         void SetupAUIStoredConfiguration();
@@ -141,5 +144,6 @@ class IDZ80: public ProjectBase, public wxFrame
 		void OnFirstIdle(wxIdleEvent &event);
 
 };
+
 
 #endif
