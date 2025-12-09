@@ -23,7 +23,7 @@ class RawDataManager: public LogBase
         RawDataManager(LogBase *logparent);
         virtual ~RawDataManager();
 
-        RawData *AddFile(wxString name);
+        RawData *AddFile(const wxString name);
 
         void Clear();
 
@@ -33,13 +33,14 @@ class RawDataManager: public LogBase
         RawData *Previous();
         RawData *Next();
 
-        RawData *Index(uint index);
+        RawData *Index(const uint index);
 
-        void Remove(uint index);
+        void Remove(const uint index);
         void RemoveCurrent();
         uint Count();
 
         bool isLoaded();
+        bool FileLoaded(const wxString fullpath);
 
     protected:
     private:

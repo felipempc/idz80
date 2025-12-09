@@ -14,8 +14,7 @@
 
 
 // DEFinition for debug = IDZ80_NPRJD_DEBUG
-//#define IDZ80_NPRJD_DEBUG
-
+#define IDZ80_NPRJD_DEBUG
 
 NewProjectDialog::NewProjectDialog(ProjectBase *parent/*, wxAuiNotebook *notebookctrl*/)
 {
@@ -42,7 +41,7 @@ NewProjectDialog::NewProjectDialog(ProjectBase *parent/*, wxAuiNotebook *noteboo
     Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &NewProjectDialog::OnGridLeftDoubleClick, this);
 
     if (m_main_dialog->m_programs_mgr->Count() != 0) {
-        for(index = 0; index < m_main_dialog->m_programs_mgr->Count(); index++){
+        for(index = 0; index < m_main_dialog->m_programs_mgr->Count(); ++index){
             FillRow(m_main_dialog->m_programs_mgr->Index(index));
         }
         m_program_loaded = true;
@@ -154,6 +153,16 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
 {
     RawData *program = 0;
 
+    if (m_main_dialog->m_programs_mgr->FileLoaded(filestr)) {
+
+        #ifdef IDZ80_NPRJD_DEBUG
+        LogIt(wxString::Format("File already open! [%s]", filestr));
+        #endif
+
+        return false;
+    }
+
+
     program = m_main_dialog->m_programs_mgr->AddFile(filestr);
     if (!program) {
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
@@ -243,7 +252,7 @@ void NewProjectDialog::OnAddButton(wxCommandEvent &event)
     if(!DialogGetFileToList(file_list))
         return;
 
-    for(unsigned int idx = 0; idx < file_list.GetCount(); idx++)
+    for(unsigned int idx = 0; idx < file_list.GetCount(); ++idx)
         if (AddFileToGrid(file_list[idx])) {
             success = true;
             m_count_modified++;
@@ -295,7 +304,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     #ifdef IDZ80_NPRJD_DEBUG
     LogIt(wxString::Format("Remove %d row(s).", item_count));
     wxString str_debug = "[";
-    for (int listitem = 0; listitem < item_count; listitem++) {
+    for (int listitem = 0; listitem < item_count; ++listitem) {
         str_debug << wxString::Format("%d ", selected_rows[listitem]);
     }
     str_debug.Trim();
@@ -306,7 +315,7 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     if(item_count == 0)
         return;
     
-    for(int kill_row = 0; kill_row < item_count; kill_row++)
+    for(int kill_row = 0; kill_row < item_count; ++kill_row)
     {
         row_delete = selected_rows[kill_row] - deleted_amount;
         if ((row_delete >= 0) || (row_delete < m_filegrid->GetNumberRows()))
@@ -319,17 +328,15 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
         
 
         #ifdef IDZ80_NPRJD_DEBUG
-        LogIt(wxString::Format("%d -> deleted = %d", row_delete, deleted_amount));
+        LogIt(wxString::Format("%d -> deleted = %d rows.", row_delete, deleted_amount));
         #endif
     }
     m_actualrow = m_filegrid->GetNumberRows() - 1;
     m_modified = true;
 
-    if(m_filegrid->GetNumberRows() == 0) {
-        //m_OK_button->Disable();
-        m_remove_button->Disable();
-        m_edit_button->Disable();
-    }
+    //m_OK_button->Disable();
+    m_remove_button->Disable();
+    m_edit_button->Disable();
 
     m_filegrid->ForceRefresh();
 }

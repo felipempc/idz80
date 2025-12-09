@@ -25,7 +25,7 @@ RawDataManager::RawDataManager(LogBase *logparent)
 
 
 
-RawData *RawDataManager::AddFile(wxString name)
+RawData *RawDataManager::AddFile(const wxString name)
 {
     try
     {
@@ -88,7 +88,7 @@ RawDataManager::~RawDataManager()
 
 
 
-RawData *RawDataManager::Index(uint index)
+RawData *RawDataManager::Index(const uint index)
 {
     if (index >= m_data_list.size())
         return 0;
@@ -99,8 +99,10 @@ RawData *RawDataManager::Index(uint index)
 
 
 
-void RawDataManager::Remove(uint index)
+void RawDataManager::Remove(const uint index)
 {
+    uint last_index = m_data_list.size() - 1;
+
     if (index >= m_data_list.size())
         return;
     
@@ -109,7 +111,7 @@ void RawDataManager::Remove(uint index)
 
     m_data_list.erase(m_data_list.begin() + index);
 
-    if (index == (m_data_list.size() - 1))
+    if (index == last_index)
         Last();
     else
         m_current_file = m_data_list[index];
@@ -142,6 +144,21 @@ uint RawDataManager::Count()
 bool RawDataManager::isLoaded()
 {
     return (m_data_list.size() > 0);
+}
+
+
+
+/// @brief Checks if a file has been opened and in the program list.
+/// @param fullpath 
+/// @return true if it's in the program list
+bool RawDataManager::FileLoaded(const wxString fullpath)
+{
+    for (RawData* program: m_data_list) {
+        if (program->GetFileNameAndPath().IsSameAs(fullpath, false)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
