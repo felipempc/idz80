@@ -12,8 +12,8 @@
 #define IDZ80_H
 
 
-#include <wx/menu.h>
-#include <wx/textctrl.h>
+//#include <wx/menu.h>
+//#include <wx/textctrl.h>
 #include <wx/aui/aui.h>
 #include <wx/statusbr.h>
 #include <wx/config.h>
@@ -24,7 +24,7 @@
 //#include "rawdata.h"
 //#include "process_data.h"
 //#include "codeview.h"
-#include "labelslist.h"
+//#include "labelslist.h"
 //#include "projectmanager_xml.h"
 //#include "codegenerator.h"
 #include "logwindow.h"

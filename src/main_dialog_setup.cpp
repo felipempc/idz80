@@ -11,6 +11,45 @@
 #include <wx/dir.h>
 
 #include "main_dialog.h"
+#include "mnemonicxmlfile.h"
+
+
+
+bool IDZ80::LoadMnemonicsDB()
+{
+    wxString s;
+    bool ret = false;
+
+    s = app_resource_dir_ + "\\z80_instructions.xml";
+
+    m_panel_log->SetDefaultStyle(wxTextAttr(*wxBLACK));
+    m_panel_log->AppendText("Opening mnemonic file:\n");
+    m_panel_log->SetDefaultStyle(wxTextAttr(*wxRED));
+    m_panel_log->AppendText(s);
+    m_panel_log->AppendText("\n");
+
+    if(m_mnemonics == 0)
+        m_mnemonics = new MnemonicContainer(m_panel_log);
+    else
+        m_mnemonics->Clear();
+    MnemonicXMLFile mnemonic(m_mnemonics, m_panel_log);
+
+    ret = mnemonic.Open(s);
+
+    if (ret)
+    {
+        m_panel_log->SetDefaultStyle(wxTextAttr(*wxBLACK));
+        m_panel_log->AppendText("Mnemonics OK !\n");
+        LogIt("Mnemonics OK !\n");
+    }
+    else
+    {
+        m_panel_log->SetDefaultStyle(wxTextAttr(*wxRED));
+        m_panel_log->AppendText("Mnemonics FAILED !\n");
+    }
+
+    return ret;
+}
 
 
 
