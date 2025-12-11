@@ -21,7 +21,7 @@
 #include "idz80_directories.h"
 
 
-class ProjectBase: public IDZ80Directories, public LogBase
+class ProjectBase: public IDZ80Directories, public DebugLogBase
 {
     public:
         SourceCodeLines     *CodeViewLines_;

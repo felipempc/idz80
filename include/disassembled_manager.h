@@ -15,13 +15,13 @@
 
 #include <vector>
 #include "disassembled_container.h"
-#include "logbase.h"
+#include "debug_logbase.h"
 
 
-class DisassembledManager: public LogBase
+class DisassembledManager: public DebugLogBase
 {
     public:
-        DisassembledManager(LogBase *parent);
+        DisassembledManager(DebugLogBase *parent);
         ~DisassembledManager();
 
         bool Add(DisassembledContainer *disassembled);

@@ -27,7 +27,7 @@
 //#include "labelslist.h"
 //#include "projectmanager_xml.h"
 //#include "codegenerator.h"
-#include "logwindow.h"
+#include "debug_logwindow.h"
 
 
 
@@ -73,7 +73,7 @@ class IDZ80: public ProjectBase, public wxFrame
 		wxAuiNotebook	*m_notebook;
 		wxTextCtrl      *m_panel_log;
 		wxStatusBar     *m_status_bar;
-        LogWindow       *m_log_window;
+        DebugLogWindow  *m_log_window;
 
 //        ProcessData     *process_;
 //        CodeView        *codeview_;

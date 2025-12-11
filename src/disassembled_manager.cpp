@@ -12,7 +12,7 @@
 #include "disassembled_manager.h"
 
 
-DisassembledManager::DisassembledManager(LogBase *parent)
+DisassembledManager::DisassembledManager(DebugLogBase *parent)
 {
     ModuleName = "DisassembledMGR";
     SetTextLog(parent->GetTextLog());

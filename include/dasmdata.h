@@ -11,7 +11,7 @@
 #ifndef _IDZ80_DASMDATA_H
 #define _IDZ80_DASMDATA_H
 
-#include "logbase.h"
+#include "debug_logbase.h"
 #include "rawdata.h"
 #include "disassembled_item.h"
 #include <vector>
@@ -26,7 +26,7 @@ struct RangeItems
 
 typedef std::vector<DisassembledItem *> DasmArray;
 
-class DAsmData : public LogBase
+class DAsmData : public DebugLogBase
 {
     public:
         void Clear();

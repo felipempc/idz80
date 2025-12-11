@@ -70,7 +70,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
 
 	Create(parent, wxID_ANY, "Interactive Disassembler Z80", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, "id");
 
-    m_log_window = new LogWindow(this, "IDZ80 - Log Window");
+    m_log_window = new DebugLogWindow(this, "IDZ80 - Log Window");
     SetTextLog(m_log_window);
     ModuleName = "Main";
 
@@ -132,7 +132,7 @@ void IDZ80::OpenProgramFile(wxString filename)
             }
             else {
                 m_notebook->Freeze();
-                for (int i=0; i < m_programs_mgr->Count(); i++) {
+                for (uint i = 0; i < m_programs_mgr->Count(); ++i) {
                     m_notebook->AddPage(new wxPanel(this), m_programs_mgr->Index(i)->GetFileName(), true);
                 }
                 m_notebook->Thaw();

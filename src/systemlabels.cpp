@@ -10,7 +10,7 @@
 
  #include "systemlabels.h"
 
-SystemLabelList::SystemLabelList(const wxString& section, LogBase *logparent)
+SystemLabelList::SystemLabelList(const wxString& section, DebugLogBase *logparent)
 {
 	m_section = section;
 	m_file = 0;

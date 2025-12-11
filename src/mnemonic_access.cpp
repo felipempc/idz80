@@ -162,7 +162,8 @@ MnemonicItem *MnemonicAccess::Previous()
 
 MnemonicItem *MnemonicAccess::Next()
 {
-    if((current_index_ >= 0) && (current_index_ < (mnlist_.size() - 1)))
+    int lastitem = mnlist_.size() - 1;
+    if((current_index_ >= 0) && (current_index_ < lastitem))
     {
         current_index_++;
         current_item_ = mnlist_[current_index_];
@@ -176,7 +177,8 @@ MnemonicItem *MnemonicAccess::Next()
 
 MnemonicItem *MnemonicAccess::Item(MnemonicIndex index)
 {
-    if((index >= 0) && (index < mnlist_.size()))
+    int listsize = mnlist_.size();
+    if((index >= 0) && (index < listsize))
     {
         current_index_ = index;
         current_item_ = mnlist_[index];
@@ -187,8 +189,6 @@ MnemonicItem *MnemonicAccess::Item(MnemonicIndex index)
 
 
 
-
-
 MnemonicIndex MnemonicAccess::CurrentIndex()
 {
     return current_index_;
@@ -196,12 +196,11 @@ MnemonicIndex MnemonicAccess::CurrentIndex()
 
 
 
-
 bool MnemonicAccess::isEnd()
 {
-    if(mnlist_.size() > 0)
-        return (current_index_ == (mnlist_.size() - 1));
+    if(mnlist_.size() > 0) {
+        int lastitem = mnlist_.size() - 1;
+        return (current_index_ == lastitem);
+    }
     return true;
 }
-
-

@@ -8,27 +8,34 @@
  * Log window
  **************************************************************/
 
-#include "logwindow.h"
+#include "debug_logwindow.h"
 #include <wx/font.h>
 #include <wx/datetime.h>
 
 
-LogWindow::LogWindow(wxWindow *parent, const wxString &title)
+DebugLogWindow::DebugLogWindow(wxWindow *parent, const wxString &title)
         :wxFrame(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE)
 {
     TextLog = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxPoint(114,460), wxDefaultSize, wxTE_MULTILINE|wxTE_RICH);
-    wxFont PanelLogFont(8, wxSWISS, wxFONTSTYLE_NORMAL, wxNORMAL, false, "Courier New", wxFONTENCODING_DEFAULT);
+
+    wxFontInfo fontInfo(8);
+    fontInfo.Family(wxFONTFAMILY_SWISS)
+            .Style(wxFONTSTYLE_NORMAL)
+            .Weight(wxFONTWEIGHT_NORMAL)
+            .FaceName("Courier New");
+    wxFont PanelLogFont(fontInfo);
+
     TextLog->SetFont(PanelLogFont);
 }
 
 
-wxTextCtrl *LogWindow::GetTextLog()
+wxTextCtrl *DebugLogWindow::GetTextLog()
 {
     return TextLog;
 }
 
 
-void LogWindow::Print(const wxString &logstring)
+void DebugLogWindow::Print(const wxString &logstring)
 {
     wxString str;
     wxDateTime now_time;

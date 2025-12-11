@@ -298,7 +298,6 @@ void NewProjectDialog::OnRemoveButton(wxCommandEvent &event)
     int row_delete = -1;
     int item_count = selected_rows.GetCount();
     int deleted_amount = 0;
-    unsigned int actual_modified = m_count_modified - m_first_modified;
 
 
     #ifdef IDZ80_NPRJD_DEBUG

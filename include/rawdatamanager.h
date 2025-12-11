@@ -13,14 +13,14 @@
 
 #include <vector>
 #include "rawdata.h"
-#include "logbase.h"
+#include "debug_logbase.h"
 
 typedef std::vector<RawData *> RawDataList;
 
-class RawDataManager: public LogBase
+class RawDataManager: public DebugLogBase
 {
     public:
-        RawDataManager(LogBase *logparent);
+        RawDataManager(DebugLogBase *logparent);
         virtual ~RawDataManager();
 
         RawData *AddFile(const wxString name);

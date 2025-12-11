@@ -8,26 +8,26 @@
  * Base class for logging
  **************************************************************/
 
-#include "logbase.h"
+#include "debug_logbase.h"
 
 
-LogBase::LogBase()
+DebugLogBase::DebugLogBase()
 {
     ModuleName = "BASE:";
     TextLog = 0;
 }
 
-void LogBase::SetTextLog(LogWindow *textlog)
+void DebugLogBase::SetTextLog(DebugLogWindow *textlog)
 {
     TextLog = textlog;
 }
 
-LogWindow *LogBase::GetTextLog()
+DebugLogWindow *DebugLogBase::GetTextLog()
 {
     return TextLog;
 }
 
-void LogBase::LogIt(const wxString &logstring)
+void DebugLogBase::LogIt(const wxString &logstring)
 {
     if (TextLog)
     {

@@ -19,7 +19,7 @@
 #include <wx/msgdlg.h>
 
 #include "disassembled_container.h"
-#include "logbase.h"
+#include "debug_logbase.h"
 #include "labelitem.h"
 
 enum
@@ -40,10 +40,10 @@ typedef enum eTypeLabelList
 typedef unsigned int LabelIndex;
 
 
-class LabelListCtrl : public wxListCtrl, public LogBase
+class LabelListCtrl : public wxListCtrl, public DebugLogBase
 {
     public:
-        LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, LogWindow *logparent);
+        LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, DebugLogWindow *logparent);
         ~LabelListCtrl();
 
         int AddLabel(AbsoluteAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);

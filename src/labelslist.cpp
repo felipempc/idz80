@@ -20,7 +20,7 @@ const DisassembledIndex LabelListCtrl::NO_DASM_ITEM;
 /*
  *      Label List Control Contructor/Destructor
  */
-LabelListCtrl::LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, LogWindow *logparent)
+LabelListCtrl::LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, DebugLogWindow *logparent)
                     : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL)
 {
     selected_item_ = -1;

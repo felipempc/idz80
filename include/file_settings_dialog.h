@@ -23,7 +23,7 @@
 #include "rawdata.h"
 
 
-class FileSettingsDialog: public wxDialog, public LogBase
+class FileSettingsDialog: public wxDialog, public DebugLogBase
 {
 	public:
 

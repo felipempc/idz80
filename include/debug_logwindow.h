@@ -2,35 +2,34 @@
  * Name:      IDZ80
  * Purpose:   Interactive Disassembler for Z80 processors
  * Author:    Felipe MPC (idz80a@gmail.com)
- * Created:   01-10-2012 (D-M-Y)
+ * Created:   09-11-2009 (D-M-Y)
  * License:   GPLv3 (http://www.gnu.org/licenses/gpl-3.0.html)
  **************************************************************
- * Base class for logging
+ * Log window
  **************************************************************/
 
 
+#ifndef _DEBUGLOGWINDOW_H_
+#define _DEBUGLOGWINDOW_H_
 
-#ifndef _LOGBASE_H_
-#define _LOGBASE_H_
-
-#include <wx/string.h>
-#include "logwindow.h"
+#include <wx/frame.h>
+#include <wx/textctrl.h>
 
 
-class LogBase
+
+class DebugLogWindow : public wxFrame
 {
     public:
-        LogBase();
+        DebugLogWindow(wxWindow *parent, const wxString &title);
 
-        void LogIt(const wxString &logstring);
-        void SetTextLog(LogWindow *textlog);
-        LogWindow *GetTextLog();
-
-        wxString    ModuleName;
+        wxTextCtrl *GetTextLog();
+        void Print(const wxString &logstring);
 
     private:
-        LogWindow   *TextLog;
+        bool        SaveOnExit;
+        wxTextCtrl  *TextLog;
 };
 
 
-#endif
+
+#endif // _DEBUGLOGWINDOW_H_

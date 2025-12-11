@@ -14,7 +14,7 @@
 
 // RawData implementation
 
-RawData::RawData(LogBase *logparent)
+RawData::RawData(DebugLogBase *logparent)
 {
     Clear();
     SetFileType(UNKNOWN);
@@ -294,7 +294,7 @@ void RawData::SetFileType(FileType filetype)
 void RawData::SetNewAddresses(AbsoluteAddress start_addr, AbsoluteAddress exec_addr, AbsoluteAddress end_addr)
 {
     AbsoluteAddress difference = end_addr - start_addr;
-    if ((difference <= GetSize()) && (start_addr >= exec_addr < end_addr))
+    if ((difference <= GetSize()) && (start_addr >= exec_addr) && (start_addr < end_addr) && (exec_addr < end_addr))
     {
         EndAddress = end_addr;
         StartAddress = start_addr;

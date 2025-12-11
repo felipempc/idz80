@@ -11,7 +11,7 @@
 #include "subroutine.h"
 
 
-SubRoutineCtrl::SubRoutineCtrl(LogWindow *logparent)
+SubRoutineCtrl::SubRoutineCtrl(DebugLogWindow *logparent)
 {
     StackPointer = 0;
     ActualSubRoutine = 0;

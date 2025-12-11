@@ -11,7 +11,7 @@
 #ifndef _DISASSEMBLED_CONTAINER_H
 #define _DISASSEMBLED_CONTAINER_H
 
-#include "logbase.h"
+#include "debug_logbase.h"
 
 #include "disassembled_item.h"
 
@@ -28,7 +28,7 @@ struct RangeItems
 typedef std::vector<DisassembledItem *> DisassembledList;
 typedef unsigned int DisassembledIndex;
 
-class DisassembledContainer : public LogBase
+class DisassembledContainer : public DebugLogBase
 {
     public:
         void Clear();
@@ -46,7 +46,7 @@ class DisassembledContainer : public LogBase
         DisassembledIndex FindAddress(AbsoluteAddress address);
 
 
-        DisassembledContainer(LogBase *logparent);
+        DisassembledContainer(DebugLogBase *logparent);
         ~DisassembledContainer();
 
     private:

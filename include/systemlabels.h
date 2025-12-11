@@ -16,7 +16,7 @@
 #include <wx/textfile.h>
 #include <wx/textctrl.h>
 
-#include "logbase.h"
+#include "debug_logbase.h"
 #include "rawdata.h"
 
 struct st_systemlabel
@@ -27,10 +27,10 @@ struct st_systemlabel
 
 typedef struct st_systemlabel SystemLabelItem;
 
-class SystemLabelList: public LogBase
+class SystemLabelList: public DebugLogBase
 {
 	public:
-		SystemLabelList(const wxString& section, LogBase *logparent);
+		SystemLabelList(const wxString& section, DebugLogBase *logparent);
 		~SystemLabelList();
 
 		bool Open(const wxString& file);
@@ -49,9 +49,6 @@ class SystemLabelList: public LogBase
 		bool readData();
 		void ParseString(wxString& source_string, wxArrayString& string_list);
 };
-
-
-
 
  #endif
 

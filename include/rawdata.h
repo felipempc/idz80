@@ -18,7 +18,7 @@
 #include <wx/buffer.h>
 #include <wx/filename.h>
 
-#include "logbase.h"
+#include "debug_logbase.h"
 
 #include "binfile.h"
 #include "cartridge_rom_file.h"
@@ -37,7 +37,7 @@ typedef unsigned int FileOffset;
 typedef unsigned int AbsoluteAddress;
 
 
-class RawData : public CartridgeRomFile, public BinFile, public LogBase
+class RawData : public CartridgeRomFile, public BinFile, public DebugLogBase
 {
     public:
         bool Open(wxString filename);
@@ -73,7 +73,7 @@ class RawData : public CartridgeRomFile, public BinFile, public LogBase
                         ExecAddress,
                         EndAddress;
 
-        RawData(LogBase *logparent);
+        RawData(DebugLogBase *logparent);
         ~RawData(void);
 
     private:

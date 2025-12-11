@@ -19,7 +19,7 @@
 #include "project_base.h"
 
 
-class NewProjectDialog: public wxDialog, public LogBase
+class NewProjectDialog: public wxDialog, public DebugLogBase
 {
     public:
         NewProjectDialog(ProjectBase *parent/*, wxAuiNotebook *notebookctrl*/);

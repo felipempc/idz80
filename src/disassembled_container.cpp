@@ -11,7 +11,7 @@
 #include "disassembled_container.h"
 
 
-DisassembledContainer::DisassembledContainer(LogBase *logparent)
+DisassembledContainer::DisassembledContainer(DebugLogBase *logparent)
 {
     m_total_allocated = 0;
     SetTextLog(logparent->GetTextLog());

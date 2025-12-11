@@ -14,7 +14,7 @@
 // DEFinition for debug = IDZ80_RAWDATAMGR_DEBUG
 //#define IDZ80_RAWDATAMGR_DEBUG
 
-RawDataManager::RawDataManager(LogBase *logparent)
+RawDataManager::RawDataManager(DebugLogBase *logparent)
 {
     SetTextLog(logparent->GetTextLog());
     ModuleName = "RAWDATAMGR";
