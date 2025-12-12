@@ -16,10 +16,14 @@
 
 const uint Decoder::OPCODE_NOT_FOUND;
 
-Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
+Decoder::Decoder(ProjectBase *parent, const unsigned int program_index)
 {
-    process_ = parent;
-    SetTextLog(logparent);
+    m_disassembled_list = parent->m_disassembled_mgr->Index(program_index);
+    m_program = parent->m_programs_mgr->Index(program_index);
+    m_labels = parent->m_labels;
+    m_mnemonic = parent->m_mnemonics;
+
+    SetTextLog(parent->GetTextLog());
     ModuleName = "DECODER";
 
 }
@@ -31,6 +35,7 @@ Decoder::Decoder(ProcessBase *parent, LogWindow *logparent)
 /*
  * Search for an opcode pattern (from Program)
  * in mndb.
+ * TODO: WHY NOT RETURN DisassembledItem* ?
  */
 uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
 {
@@ -48,9 +53,9 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
 
     while (offset < maxitems)
     {
-        scan = process_->Program->GetData(prg_index + offset);
-        process_->Mnemonics_->Find(foundItems, scan, offset);
-        offset++;
+        scan = m_program->GetData(prg_index + offset);
+        m_mnemonic->Find(foundItems, scan, offset);
+        ++offset;
         if (foundItems.GetCount() < 2)
 			break;
     }
@@ -58,7 +63,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     if (nitems == 1)
     {
         ret = foundItems.Last();
-        mnemonic = process_->Mnemonics_->Item(ret); // TODO: remove -->>   GetData(ret);
+        mnemonic = m_mnemonic->Item(ret); // TODO: remove -->>   GetData(ret); ???
         if (mnemonic->GetByteCodeSize() > maxitems)
             ret = OPCODE_NOT_FOUND;
     }
@@ -77,7 +82,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
  *            prg_index - of program file to disassemble
  *            position - of item to be inserted in the list
  * Return = index of the item inserted in the list
- */
+  */
 uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position)
 {
     uint     mnc_item,
@@ -88,29 +93,35 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
 
 
     // ensure it won't overwrite existing dasmitems
-    next_de = process_->Disassembled->GetData(dasm_position);
+    next_de = m_disassembled_list->GetData(dasm_position);
     if (next_de == 0)
-        scan_limit = process_->Program->GetSize();
+        scan_limit = m_program->GetSize();
     else
-        scan_limit = next_de->GetOffset() - prg_index;
+        scan_limit = next_de->GetOffsetInFile() - prg_index;
 
     mnc_item = Fetch(prg_index, scan_limit);
 
     if (mnc_item == OPCODE_NOT_FOUND)
     {
         de->SetLength(1);
-        de->SetOffset(prg_index);
+        de->SetFileOffset(prg_index);
         de->SetMnemonic(0);
-        de->SetType(et_Data);
-        ret = process_->Disassembled->InsertDasm(de, dasm_position);
+        de->MarkAsData();
+        ret = m_disassembled_list->Insert(de, dasm_position);
     }
     else
     {
-        de->SetMnemonic(process_->Mnemonics->GetData(mnc_item));
-        de->SetLength();
-        de->SetType(et_Instruction);
-        de->SetOffset(prg_index);
-        if (de->CopyArguments())
+        de->SetMnemonic(m_mnemonic->Item(mnc_item));
+        de->SetLength(m_mnemonic->GetCount());
+        de->MarkAsData(false);
+        de->SetFileOffset(prg_index);
+        if (de->GetMnemonic()->HasExplicitArguments()) {
+            if (de->GetMnemonic()->GetArgumentCount() == 1) {
+
+            }
+
+        }
+        if (de->CopyArguments(m_mnemonic))
 			ret = process_->Disassembled->InsertDasm(de, dasm_position);
     }
 
@@ -133,21 +144,21 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
 	{
 		case ARG_VARIABLE:
                             argument = de->GetArgument(0, 0);
-							str = labels_->sys_vars->Find(argument);
-							labels_->var_labels->AddLabel(argument, str, index);
+							str = m_labels->sys_vars->Find(argument);
+							m_labels->var_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_ABS_ADDR:
 		case ARG_REL_ADDR:
                             argument = de->GetArgument(0, process_->Disassembled->GetBaseAddress(index));
-							str = labels_->sys_calls->Find(argument);
-							labels_->prog_labels->AddLabel(argument, str, index);
+							str = m_labels->sys_calls->Find(argument);
+							m_labels->prog_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
 		case ARG_IO_ADDR:
                             argument = de->GetArgument(0, 0);
-							str = labels_->sys_io->Find(argument);
-							labels_->io_labels->AddLabel(argument, str, index);
+							str = m_labels->sys_io->Find(argument);
+							m_labels->io_labels->AddLabel(argument, str, index);
 							de->SetArgLabel();
 							break;
         case ARG_NONE:
@@ -170,11 +181,11 @@ void Decoder::MSXCheckFunctionRegisters(DisassembledItem *de)
     switch(de->GetArgument(0, 0))
     {
     case 5:
-        if (registers_.C->isLoaded())
+        if (m_registers.C->isLoaded())
         {
-            wxString str = labels_->sys_const->Find(registers_.C->GetValue());
+            wxString str = m_labels->sys_const->Find(m_registers.C->GetValue());
             if (!str.IsEmpty())
-                labels_->constant_labels->AddLabel(registers_.C->GetValue(), str);
+                m_labels->constant_labels->AddLabel(m_registers.C->GetValue(), str);
         }
 
         break;
@@ -234,19 +245,19 @@ void Decoder::SetCartridgeLabels()
 
 	address = process_->Program->GetCartridgeHeader()->init;
 	if (address != 0)
-		labels_->prog_labels->AddLabel(address, "INIT");
+		m_labels->prog_labels->AddLabel(address, "INIT");
 
 	address = process_->Program->GetCartridgeHeader()->statement;
 	if (address != 0)
-		labels_->prog_labels->AddLabel(address, "STATEMENT");
+		m_labels->prog_labels->AddLabel(address, "STATEMENT");
 
 	address = process_->Program->GetCartridgeHeader()->device;
 	if (address != 0)
-		labels_->prog_labels->AddLabel(address, "DEVICE");
+		m_labels->prog_labels->AddLabel(address, "DEVICE");
 
 	address = process_->Program->GetCartridgeHeader()->text;
 	if (address != 0)
-		labels_->prog_labels->AddLabel(address, "TEXT");
+		m_labels->prog_labels->AddLabel(address, "TEXT");
 }
 
 
@@ -261,8 +272,8 @@ void Decoder::FullDisassemble(LabelManager *parent)
     uint i, f, item;
     DisassembledItem *de;
 
-    labels_ = parent;
-    labels_->ClearUserLabels();
+    m_labels = parent;
+    m_labels->ClearUserLabels();
 
     if (process_->Program->isCartridge())
         SetCartridgeLabels();
@@ -273,7 +284,7 @@ void Decoder::FullDisassemble(LabelManager *parent)
         de = new DisassembledItem(process_->Program);
         item = Decode(de, i);
         SetupArgumentLabels(de, item);
-        registers_.LoadRegister(de);
+        m_registers.LoadRegister(de);
         i += MSXWeirdRST(de, f);
         i += (de->GetLength() - 1);
     }

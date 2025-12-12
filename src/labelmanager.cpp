@@ -73,21 +73,22 @@ void LabelManager::DestroyAll()
 
 
 
-bool LabelManager::LoadSystemLabels(wxString filename)
+bool LabelManager::LoadSystemLabels(const wxString &filename)
 {
-    bool ret = false;
+    int ret = 0;
     if ((sys_calls != 0)  && (sys_vars != 0) &&
         (sys_io != 0) && (sys_const != 0))
     {
-        ret = sys_calls->Open(filename);
-        if (ret)
-            ret = sys_vars->Open(filename);
-        if (ret)
-            ret = sys_io->Open(filename);
-        if (ret)
-            ret = sys_const->Open(filename);
+        if(sys_calls->Open(filename))
+            ++ret;
+        if (sys_vars->Open(filename))
+            ++ret;
+        if (sys_io->Open(filename))
+            ++ret;
+        if (sys_const->Open(filename))
+            ++ret;
     }
-    return ret;
+    return (ret > 0);
 }
 
 

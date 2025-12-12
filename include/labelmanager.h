@@ -28,7 +28,7 @@ class LabelManager
 							*sys_io,
 							*sys_const;
         LabelManager();
-        bool LoadSystemLabels(wxString filename);
+        bool LoadSystemLabels(const wxString &filename);
         void ClearUserLabels();
         void DestroyAll();
 

@@ -20,7 +20,7 @@ bool IDZ80::LoadMnemonicsDB()
     wxString s;
     bool ret = false;
 
-    s = app_resource_dir_ + "\\z80_instructions.xml";
+    s = m_app_resource_dir + "\\z80_instructions.xml";
 
     m_panel_log->SetDefaultStyle(wxTextAttr(*wxBLACK));
     m_panel_log->AppendText("Opening mnemonic file:\n");
@@ -338,7 +338,7 @@ void IDZ80::StoreConfiguration()
     m_config->Write("Perspective", cfg);
 
     m_config->SetPath("/Directory");
-    m_config->Write("Last", fileopen_last_dir_);
+    m_config->Write("Last", m_fileopen_last_dir);
 
     GetSize(&width, &height);
     GetPosition(&x, &y);
@@ -366,14 +366,14 @@ void IDZ80::ReadStoredConfiguration()
     m_config = new wxConfig("IDZ80");
 
     m_config->SetPath("/Directory");
-    if (m_config->Read("Last", &fileopen_last_dir_))
+    if (m_config->Read("Last", &m_fileopen_last_dir))
     {
         wxDir dir;
-        if (!dir.Exists(fileopen_last_dir_))
-            fileopen_last_dir_ = app_root_dir_;
+        if (!dir.Exists(m_fileopen_last_dir))
+            m_fileopen_last_dir = m_app_root_dir;
     }
     else
-        fileopen_last_dir_ = app_root_dir_;
+        m_fileopen_last_dir = m_app_root_dir;
 
     m_config->SetPath("/MainWindow");
     if (m_config->Read("X", &x) &&

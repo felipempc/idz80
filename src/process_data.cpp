@@ -29,7 +29,7 @@ ProcessData::ProcessData(ProjectBase *parent)
     parent->m_disassembled_mgr = m_disassembled_mgr;
 
     //CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
-    search_status_ = new SearchManager();
+    //search_status_ = new SearchManager();
     m_disassembler = new SmartDecoder(this);
 
     ModuleName = "ProcessData";
@@ -94,9 +94,11 @@ bool ProcessData::SetupSystemLabels()
 
 
 
-void ProcessData::DisassembleFirst(bool simulateexecution)
+void ProcessData::DisassembleFirst(const unsigned int index)
 {
-    Disassembled->Clear();
+    RawData *program = m_programs_mgr->Index(index);
+    DisassembledContainer *disassembled = m_disassembled_mgr->Index(index);
+    disassembled->Clear();
 
 
     if (m_disassembler == 0)

@@ -131,14 +131,14 @@ bool NewProjectDialog::DialogGetFileToList(wxArrayString &file_list_str)
 {
     wxString caption = "Choose a file";
     wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, m_main_dialog->fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
+    wxFileDialog dialog(this, caption, m_main_dialog->m_fileopen_last_dir, wxEmptyString, wildcard, wxFD_OPEN | wxFD_MULTIPLE);
     bool ret = false;
 
     if (dialog.ShowModal() == wxID_OK)
     {
         ret = true;
         dialog.GetPaths(file_list_str);
-        m_main_dialog->fileopen_last_dir_ = dialog.GetDirectory();
+        m_main_dialog->m_fileopen_last_dir = dialog.GetDirectory();
     }
 
     return ret;

@@ -29,9 +29,9 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 		m_panel_log->AppendText("*** First Idle Event failed to unbind !\n\n");
 	#endif
 
-    app_root_dir_ = wxGetCwd();
-    app_resource_dir_ = app_root_dir_ + "\\" + ResourceDir;
-    fileopen_last_dir_ = "";
+    m_app_root_dir = wxGetCwd();
+    m_app_resource_dir = m_app_root_dir + "\\" + ResourceDir;
+    m_fileopen_last_dir = "";
 
     SetupMenuItemStatus();
 
@@ -48,7 +48,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     LoadMnemonicsDB();
 
 
-    m_status_bar->SetStatusText(app_root_dir_);
+    m_status_bar->SetStatusText(m_app_root_dir);
 
     /*
 	if (m_commandline.GetCount() > 1)
@@ -466,7 +466,7 @@ void IDZ80::OnMenuToolsGenCode(wxCommandEvent& event)
 
     caption = "Save source code as";
     wildcard = "Source code files (*.mac)|*.mac|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, fileopen_last_dir_, defaultFilename,wildcard,
+    wxFileDialog dialog(this, caption, m_fileopen_last_dir, defaultFilename,wildcard,
                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (dialog.ShowModal() == wxID_OK)
     {

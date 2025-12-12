@@ -8,6 +8,7 @@
 * Represents one data item
 **************************************************************/
 
+// DELETE THIS FILE
 
 #include "disassembled_item_data.h"
 
@@ -40,4 +41,9 @@ void DisassembledItemData::SetLength(unsigned int len)
 bool DisassembledItemData::isData()
 {
     return m_is_data;
+}
+
+void DisassembledItemData::MarkAsData(const bool isdata)
+{
+    m_is_data = isdata;
 }

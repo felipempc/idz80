@@ -20,7 +20,7 @@
 #include "labelslist.h"
 #include "systemlabels.h"
 #include "decoder_smart.h"
-#include "logwindow.h"
+#include "debug_logwindow.h"
 #include "labelmanager.h"
 #include "codeview_definitions.h"
 #include "searchmanager.h"
@@ -38,8 +38,8 @@ typedef struct stRangeData RangeData;
 class ProcessData : public ProjectBase
 {
     public:
-        void DisassembleFirst(bool simulateexecution = false);
-        void DisassembleItems(RangeItems &r);
+        void DisassembleFirst(const unsigned int index);
+        void DisassembleItems(const unsigned int index, RangeItems &r);
         void TransformToData(SelectedItemInfo &selected);
         void DisassembleData(SelectedItemInfo &selected);
         void MakeData(RangeItems &r);

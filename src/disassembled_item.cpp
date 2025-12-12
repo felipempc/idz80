@@ -15,11 +15,8 @@
 
 
 DisassembledItem::DisassembledItem(RawData* program_file)
-                :DisassembledItemData(program_file)
 {
     m_program = program_file;
-    m_arg_style = 0;
-    m_is_data = false;
     Clear();
 }
 
@@ -35,26 +32,32 @@ DisassembledItem::~DisassembledItem()
 
 
 
+/// @brief Init all data
 void DisassembledItem::Clear()
 {
     m_mnemonic = 0;
-    memset(&m_arguments, 0, sizeof(ExplicitArguments));
+    m_arg_style = 0;
+    m_is_data = false;
     m_file_offset = 0;
-    if(m_arg_style)
-    {
-        delete m_arg_style;
-        m_arg_style = 0;
-    }
+    m_length = 0;
+    m_mnemonic_signature = 0;
+    m_arguments.signed_value = 0;
+    m_arguments.unsigned_16bit = 0;
+    m_arguments.unsigned_8bit_high = 0;
+    m_arguments.unsigned_8bit_low = 0;
+    memset(&m_real_bytecode, 0, sizeof(ByteCode));
 }
 
 
 
 
-void DisassembledItem::CopyArguments(const ExplicitArguments &arguments)
+/// @brief Release allocated memory and init all data
+void DisassembledItem::Destroy()
 {
-    memcpy(&m_arguments, &arguments, sizeof(ExplicitArguments));
+    if(m_arg_style)
+        delete m_arg_style;
+    Clear();
 }
-
 
 
 
@@ -110,7 +113,7 @@ wxString DisassembledItem::GetAsciiCodeAsString()
     if(m_mnemonic)
     {
         as_string.Clear();
-        for (unsigned int counter = 0; counter < m_mnemonic->GetByteCodeSize(); counter++)
+        for (unsigned int counter = 0; counter < m_mnemonic->GetByteCodeSize(); ++counter)
         {
             bytecode = m_program->GetData(m_file_offset + counter);
             if ((bytecode < 32) || (bytecode > 126))
@@ -167,6 +170,33 @@ FileOffset DisassembledItem::GetOffsetInFile()
 
 
 
+unsigned int DisassembledItem::GetLength()
+{
+    return m_length;
+}
+
+
+
+void DisassembledItem::SetLength(unsigned int len)
+{
+    m_length = len;
+}
+
+
+
+bool DisassembledItem::isData()
+{
+    return m_is_data;
+}
+
+
+
+void DisassembledItem::MarkAsData(const bool isdata)
+{
+    m_is_data = isdata;
+}
+
+
 
 byte DisassembledItem::GetByteOpcode(unsigned int index)
 {
@@ -211,13 +241,13 @@ RawData *DisassembledItem::GetProgram()
 
 
 
-
+/* DEPRECATED
 void DisassembledItem::SetFileOffset(FileOffset _offset)
 {
     if(_offset < m_program->GetSize())
         m_file_offset = _offset;
 }
-
+*/
 
 
 
@@ -234,12 +264,49 @@ void DisassembledItem::SetArgumentStyle(ArgumentIndex index, ArgumentStyleOption
 
 
 
-
+/* DEPRECATED
 void DisassembledItem::SetMnemonic(MnemonicItem *mnemonic)
 {
     m_mnemonic = mnemonic;
 }
+*/
 
+
+bool DisassembledItem::SetupDisassembledItem(MnemonicItem *mnemonic, const FileOffset offset)
+{
+    m_mnemonic = mnemonic;
+    m_file_offset = offset;
+    m_is_data = false;
+    m_length = mnemonic->GetByteCodeSize();
+    m_mnemonic_signature = mnemonic->GetMnemonicSignature();
+
+    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {  // One 8bit argument
+            m_arguments.unsigned_16bit = m_program->GetData();
+    }
+    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 2)) {  // One 16bit argument
+            
+    }
+    if ((m_mnemonic->GetArgumentCount() == 2) && (m_mnemonic->GetArgumentSize() == 1)) {  // Two 8bit arguments
+            
+    }
+
+
+
+    return false;
+}
+
+
+
+/// @brief Copy the bytecode from program file
+/// @brief Position -> 0  1  2  3
+/// @brief             aa bb cc dd
+void DisassembledItem::CopyRealBytecode()
+{
+    if (m_program && m_mnemonic) {
+        for(int offset = 0; offset < m_length; ++offset)
+            m_real_bytecode[offset] = m_program->GetData(m_file_offset + offset);
+    }
+}
 
 
 

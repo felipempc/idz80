@@ -63,17 +63,18 @@ enum ArgumentIndex
 
 typedef signed int RelativeAddress;
 
-
-
-class DisassembledItem : public DisassembledItemData
+// Inheritance: DisassembledItem > DisassembledItemData > DisassembledItemBase
+// TODO: Think about why we need all this inheritance.
+class DisassembledItem : public DisassembledItemBase
 {
     public:
         DisassembledItem(RawData* program_file);
         ~DisassembledItem();
 
         void Clear();
+        void Destroy();
 
-        void CopyArguments(const ExplicitArguments &arguments);
+        //void CopyArguments(const ExplicitArguments &arguments);
 
         wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);
         wxString GetAsciiCodeAsString();
@@ -83,6 +84,12 @@ class DisassembledItem : public DisassembledItemData
 
         FileOffset GetOffsetInFile();
 
+        unsigned int GetLength();
+        void SetLength(unsigned int len);
+        bool isData();
+        void MarkAsData(const bool isdata = true);
+
+
         byte GetByteOpcode(unsigned int index);
         byte GetArgumentValue(ArgumentIndex index);
         byte GetArgumentValue(unsigned int index);
@@ -91,14 +98,17 @@ class DisassembledItem : public DisassembledItemData
 
         RawData *GetProgram();
 
-        void SetFileOffset(FileOffset _offset);
+        //void SetFileOffset(FileOffset _offset); // REMOVE IT
         void SetArgumentStyle(ArgumentIndex index, ArgumentStyleOptions style);
 
-        void SetMnemonic(MnemonicItem *mnemonic);
+        //void SetMnemonic(MnemonicItem *mnemonic); // REMOVE IT
+        bool SetupDisassembledItem(MnemonicItem *mnemonic, const FileOffset offset);
 
     protected:
     private:
         ArgumentStyle   *m_arg_style;
+
+        void CopyRealBytecode();
 
         AbsoluteAddress ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress);
 };

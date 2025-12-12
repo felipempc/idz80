@@ -100,6 +100,8 @@ IDZ80::~IDZ80()
     m_aui_mgr->UnInit();
 //    delete project_;
     delete m_config;
+    delete m_labels;
+    delete m_programs_mgr;
 //    delete codeview_;
 //    delete process_;
 }
@@ -125,7 +127,6 @@ void IDZ80::OpenProgramFile(wxString filename)
             return;
         }
 
-
         if (dialog.WasModified()) 
             if (m_notebook->GetPageCount() > 0) {
                  PageOrganizer();
@@ -137,6 +138,19 @@ void IDZ80::OpenProgramFile(wxString filename)
                 }
                 m_notebook->Thaw();
             }
+        
+            if (m_labels)
+            {
+                wxString labelspath = m_app_resource_dir + "\\Labels.txt";
+                if (!m_labels->LoadSystemLabels(labelspath))
+                    LogIt(wxString::Format("System labels failed to load. [%s]", labelspath));
+                else
+                    LogIt("System labels loaded sucessfully.");
+            }
+
+    }
+    else {
+        m_status_bar->SetStatusText("Cancelled by user !");
     }
 
 
@@ -232,13 +246,13 @@ wxString IDZ80::DialogLoadProgramFile()
 {
     wxString caption = "Choose a file";
     wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN);
+    wxFileDialog dialog(this, caption, m_fileopen_last_dir, wxEmptyString, wildcard, wxFD_OPEN);
     wxString ret = "";
 
     if (dialog.ShowModal() == wxID_OK)
     {
         ret = dialog.GetPath();
-        fileopen_last_dir_ = dialog.GetDirectory();
+        m_fileopen_last_dir = dialog.GetDirectory();
     }
 
     return ret;
@@ -254,7 +268,7 @@ void IDZ80::OpenProjectFile()
 	wxString filename;
 
 	filename = DialogLoadProjectFile();
-	if ((!filename.IsEmpty()) && project_->Open(filename, app_resource_dir_ + "Labels.txt"))
+	if ((!filename.IsEmpty()) && project_->Open(filename, m_app_resource_dir + "Labels.txt"))
     {
 //		codeview_->Enable(true);
 //		codeview_->Plot();
@@ -277,13 +291,13 @@ wxString IDZ80::DialogLoadProjectFile()
 {
     wxString caption = "Choose a project";
     wxString wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
-//    wxFileDialog dialog(this, caption, fileopen_last_dir_, wxEmptyString, wildcard, wxFD_OPEN);
+//    wxFileDialog dialog(this, caption, m_fileopen_last_dir, wxEmptyString, wildcard, wxFD_OPEN);
     wxString ret = "";
 
 /*    if (dialog.ShowModal() == wxID_OK)
     {
         ret = dialog.GetPath();
-        fileopen_last_dir_ = dialog.GetDirectory();
+        m_fileopen_last_dir = dialog.GetDirectory();
     } */
     return ret;
 }
@@ -299,7 +313,7 @@ bool IDZ80::SaveAs()
     ret = false;
     caption = "Save project as";
     wildcard = "Project files (*.dap)|*.dap|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, fileopen_last_dir_, defaultFilename,wildcard,
+    wxFileDialog dialog(this, caption, m_fileopen_last_dir, defaultFilename,wildcard,
                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (dialog.ShowModal() == wxID_OK)
     {

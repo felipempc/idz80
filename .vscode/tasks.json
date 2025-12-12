@@ -4,27 +4,78 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build with Make",
+            "label": "Rebuilt all",
             "type": "shell",
             "command": "mingw32-make",
-            "args":[
-                    "-f",
-                    "build/Makefile"
+            "args": [
+                "-f",
+                "build/Makefile",
+                "rebuild"
             ],
             "group": {
-            "kind": "build",
-            "isDefault": true
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Run Make to clean objects and rebuild the project."
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "-f",
+                "build/Makefile"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
             },
             "problemMatcher": [
                 "$gcc"
             ],
             "detail": "Run Gnu Make to build the project."
         },
-
         {
-        "label": "Teste de Task",
-        "type": "shell",
-        "command": "pwd"
+            "label": "DEBUG Rebuilt all",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "-f",
+                "build/Makefile",
+                "DEBUG=1",
+                "rebuild"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "DEBUG mode: Run Gnu Make to rebuild the project."
+        },
+        {
+            "label": "DEBUG Build",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "-f",
+                "build/Makefile",
+                "DEBUG=1"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "DEBUG mode: Run Gnu Make to build the project."
         }
+
+
     ]
 }

@@ -15,9 +15,9 @@
 class IDZ80Directories
 {
     public:
-        wxString app_root_dir_,
-                 app_resource_dir_,
-                 fileopen_last_dir_;
+        wxString m_app_root_dir,
+                 m_app_resource_dir,
+                 m_fileopen_last_dir;
 };
 
 

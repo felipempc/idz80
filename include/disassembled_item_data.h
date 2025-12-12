@@ -8,24 +8,13 @@
 * Represents one data item
 **************************************************************/
 
+// DELETE THIS FILE
+
 #ifndef DISASSEMBLEDITEMDATA_H
 #define DISASSEMBLEDITEMDATA_H
 
 #include "disassembled_item_base.h"
 
 
-class DisassembledItemData : public DisassembledItemBase
-{
-    public:
-        DisassembledItemData(RawData *program);
-        unsigned int GetLength();
-        void SetLength(unsigned int len);
-        bool isData();
-
-    protected:
-        bool m_is_data;
-        unsigned int m_length;
-    private:
-};
 
 #endif // DISASSEMBLEDITEMDATA_H

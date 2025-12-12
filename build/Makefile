@@ -104,10 +104,13 @@ OBJECTS := $(SOURCES_TEMP:.cpp=.o)
 # Executable file name / Nome do arquivo executável
 TARGET := idz80_make.exe
 
-.PHONY: all clean print
+.PHONY: all clean print rebuild
 
 # Rule for all / Regra para todos
 all: $(BINDIR)/$(TARGET)
+
+# Clear files then build
+rebuild: clean all
 
 #Rule to linkeditor / Regra Linkar $(OBJECTS)
 $(BINDIR)/$(TARGET): $(OBJETOS_FULL) | $(BINDIR)

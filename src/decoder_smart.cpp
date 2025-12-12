@@ -55,8 +55,8 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
     SortedIntArray  CartridgeCalls(CompareSortedInt);
 
 
-    labels_ = parent;
-    labels_->ClearUserLabels();
+    m_labels = parent;
+    m_labels->ClearUserLabels();
     sub_routine_->Clear();
     UpdateBoundaries();
 
@@ -73,7 +73,7 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
 	else
     {
         next_address_ = process_->Program->ExecAddress;
-        labels_->prog_labels->AddLabel(next_address_, "START");
+        m_labels->prog_labels->AddLabel(next_address_, "START");
     }
     program_size = process_->Program->GetSize();
     dsm_item = program_size;
@@ -130,7 +130,7 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
             break;
 
         case IT_LOAD:
-            registers_.LoadRegister(de);
+            m_registers.LoadRegister(de);
             break;
 
         case IT_RST:

@@ -21,16 +21,16 @@
 
 #include "project_base.h"
 #include "disassembled_item.h"
-#include "logbase.h"
+#include "debug_logbase.h"
 #include "z80registerlist.h"
 #include "labelmanager.h"
 #include "subroutine.h"
 
 
-class Decoder: public LogBase
+class Decoder: public DebugLogBase
 {
     public:
-        Decoder(ProcessBase *parent, LogWindow *logparent);
+        Decoder(ProjectBase *parent, const unsigned int program_index);
 
         void FullDisassemble(LabelManager *parent);
         void DisassembleItems(RangeItems &dasm_range);
@@ -39,10 +39,12 @@ class Decoder: public LogBase
     protected:
         static const uint OPCODE_NOT_FOUND = 0xFFFFFFFF;
 
-        ProcessBase         *process_;
+        RawData             *m_program;
+        MnemonicContainer   *m_mnemonic;
+        LabelManager        *m_labels;
+        DisassembledContainer   *m_disassembled_list;
 
-        LabelManager        *labels_;
-        Z80RegisterList     registers_;
+        Z80RegisterList     m_registers;
 
 
         uint Fetch(const FileOffset startpoint, uint maxitems);

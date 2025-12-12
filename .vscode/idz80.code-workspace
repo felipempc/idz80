@@ -24,6 +24,8 @@
         "ranges": "cpp",
         "span": "cpp"
     },
+    "terminal.explorerKind": "external",
+    "terminal.integrated.defaultProfile.windows": "MSYS2",
 
 	}
 }
