@@ -8,8 +8,6 @@
  * Stores a mnemonic item
  **************************************************************/
 
-
-
 #include "mnemonic_item.h"
 
 
@@ -22,7 +20,6 @@ MnemonicItem::MnemonicItem()
 
 
 
-
 MnemonicItem::~MnemonicItem()
 {
     if (mnemonic_string_)
@@ -32,7 +29,6 @@ MnemonicItem::~MnemonicItem()
         delete mnemonic_string_;
     }
 }
-
 
 
 
@@ -55,12 +51,10 @@ void MnemonicItem::Reset()
 
 
 
-
 unsigned int MnemonicItem::GetMnemonicSignature()
 {
     return mnemonic_signature_;
 }
-
 
 
 
@@ -71,12 +65,10 @@ Groups MnemonicItem::GetGroup()
 
 
 
-
 Arguments MnemonicItem::GetSourceArgument()
 {
     return source_;
 }
-
 
 
 
@@ -87,12 +79,22 @@ Arguments MnemonicItem::GetDestinationArgument()
 
 
 
+Arguments MnemonicItem::GetArgument(const unsigned int index)
+{
+    if (index == 0)
+        return source_;
+    if (index == 1)
+        return destination_;
+
+    return ARGUMENT_NONE;
+}
+
+
 
 ByteCode &MnemonicItem::GetByteCode()
 {
     return bytecode_;
 }
-
 
 
 
@@ -106,12 +108,10 @@ byte MnemonicItem::GetByteCode(byte index)
 
 
 
-
 unsigned int MnemonicItem::GetByteCodeSize()
 {
     return (static_cast<unsigned int>(opcode_size_) & 0x000000FF);
 }
-
 
 
 
@@ -122,12 +122,10 @@ unsigned int MnemonicItem::GetArgumentCount()
 
 
 
-
 unsigned int MnemonicItem::GetArgumentSize()
 {
     return (static_cast<unsigned int>(argument_size_)) & 0x000000FF;
 }
-
 
 
 
@@ -138,7 +136,6 @@ unsigned int MnemonicItem::GetArgumentPosition()
 
 
 
-
 bool MnemonicItem::GetConditionalBranch()
 {
     return conditional_;
@@ -146,12 +143,10 @@ bool MnemonicItem::GetConditionalBranch()
 
 
 
-
 bool MnemonicItem::HasExplicitArguments()
 {
     return explicit_arguments_;
 }
-
 
 
 
@@ -164,16 +159,13 @@ unsigned int MnemonicItem::GetMnemonicStrCount()
 
 
 
-
 wxString MnemonicItem::GetMnemonicStr(unsigned int index)
 {
     if ((mnemonic_string_) && (mnemonic_string_->GetCount() > index))
-    {
         return mnemonic_string_->Item(index);
-    }
+
     return wxEmptyString;
 }
-
 
 
 
@@ -181,7 +173,6 @@ void MnemonicItem::SetGroup(Groups group)
 {
     group_ = group;
 }
-
 
 
 
@@ -193,7 +184,6 @@ void MnemonicItem::SetSourceArgument(OperandType type, Operands operand)
 
 
 
-
 void MnemonicItem::SetDestinationArgument(OperandType type, Operands operand)
 {
     destination_.operand = operand;
@@ -202,13 +192,11 @@ void MnemonicItem::SetDestinationArgument(OperandType type, Operands operand)
 
 
 
-
 void MnemonicItem::SetByteCode(ByteCode &bytecode, byte opcodesize)
 {
     memcpy(&bytecode_, &bytecode, opcodesize);
     opcode_size_ = opcodesize;
 }
-
 
 
 
@@ -221,12 +209,10 @@ void MnemonicItem::ConfigArguments(byte argcount, byte argsize, byte argposition
 
 
 
-
 void MnemonicItem::SetConditionalBranch(bool isconditional)
 {
     conditional_ = isconditional;
 }
-
 
 
 
@@ -237,16 +223,13 @@ void MnemonicItem::SetExplicitArguments(bool isexplicit)
 
 
 
-
 void MnemonicItem::SetMnemonicString(const wxArrayString &mnemonicstring)
 {
     if (mnemonic_string_)
-    {
         delete mnemonic_string_;
-    }
+
     mnemonic_string_ = new wxArrayString(mnemonicstring);
 }
-
 
 
 

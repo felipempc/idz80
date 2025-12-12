@@ -90,9 +90,9 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
         else
             fmt_string << " ";
 
-        for (counter = 0; counter < m_mnemonic->GetByteCodeSize(); counter++)
+        for (counter = 0; counter < m_length; ++counter)
         {
-            bytecode = m_program->GetData(m_file_offset + counter);
+            bytecode = GetByteOpcode(counter);
             as_string << wxString::Format(fmt_string, bytecode);
         }
         counter = as_string.Len() - 1;
@@ -113,9 +113,9 @@ wxString DisassembledItem::GetAsciiCodeAsString()
     if(m_mnemonic)
     {
         as_string.Clear();
-        for (unsigned int counter = 0; counter < m_mnemonic->GetByteCodeSize(); ++counter)
+        for (unsigned int counter = 0; counter < m_length; ++counter)
         {
-            bytecode = m_program->GetData(m_file_offset + counter);
+            bytecode = GetByteOpcode(counter);
             if ((bytecode < 32) || (bytecode > 126))
                 bytecode = '.';
             as_string << wxString::Format("%c", bytecode);
@@ -124,7 +124,6 @@ wxString DisassembledItem::GetAsciiCodeAsString()
 
     return as_string;
 }
-
 
 
 
@@ -145,21 +144,19 @@ ArgumentStyle DisassembledItem::GetArgumentStyle()
 
 
 
-
-ArgumentStyleOptions DisassembledItem::GetArgumentStyle(ArgumentIndex index)
+ArgumentStyleOptions DisassembledItem::GetArgumentStyle(unsigned int index)
 {
     if(m_arg_style)
     {
-        if(index == FIRST_ARGUMENT)
+        if(index == 0)
             return m_arg_style->first;
 
-        if(index == SECOND_ARGUMENT)
+        if(index == 1)
             return m_arg_style->second;
     }
 
     return STYLE_NONE;
 }
-
 
 
 
@@ -200,29 +197,44 @@ void DisassembledItem::MarkAsData(const bool isdata)
 
 byte DisassembledItem::GetByteOpcode(unsigned int index)
 {
-    if(m_program)
-        return m_program->GetData(m_file_offset + index);
+    if (index >= MAX_OPCODE_SIZE)
+        return 0;
+
+    return m_real_bytecode[index];
+}
+
+
+/* DO WE REALLY NEED THIS?? 
+byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
+{
+    if(index == FIRST_ARGUMENT)
+        return m_arguments.unsigned_8bit_low;
+    if(index == SECOND_ARGUMENT)
+        return m_arguments.unsigned_8bit_high;
 
     return 0;
 }
+*/
 
 
-
-byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
+int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_address)
 {
-    return m_arguments[index];
+    if (m_mnemonic->GetArgumentSize() == 2)
+        return static_cast<int>(m_arguments.unsigned_16bit);
+    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {
+        if (m_mnemonic->GetArgument(index).type == OT_RELATIVE_ADDRESS)
+            return ConvertRelativeToAbsolute(m_arguments.signed_value, base_address);
+    }
+        return static_cast<int>(m_arguments.unsigned_8bit_low);
+    if ((m_mnemonic->GetArgumentCount() == 2) && (m_mnemonic->GetArgumentSize() == 1)) {
+        if (index == 0)
+            return static_cast<int>(m_arguments.unsigned_8bit_low);
+        if (index == 1)
+            return static_cast<int>(m_arguments.unsigned_8bit_high);
+    }
+
+    return 0;
 }
-
-
-
-
-byte DisassembledItem::GetArgumentValue(unsigned int index)
-{
-    if(index > 1)
-        index = 1;
-    return m_arguments[index];
-}
-
 
 
 
@@ -233,7 +245,6 @@ MnemonicItem *DisassembledItem::GetMnemonic()
 
 
 
-
 RawData *DisassembledItem::GetProgram()
 {
     return m_program;
@@ -241,70 +252,72 @@ RawData *DisassembledItem::GetProgram()
 
 
 
-/* DEPRECATED
-void DisassembledItem::SetFileOffset(FileOffset _offset)
-{
-    if(_offset < m_program->GetSize())
-        m_file_offset = _offset;
-}
-*/
-
-
-
-void DisassembledItem::SetArgumentStyle(ArgumentIndex index, ArgumentStyleOptions style)
+void DisassembledItem::SetArgumentStyle(unsigned int index, ArgumentStyleOptions style)
 {
     if(!m_arg_style)
         m_arg_style = new ArgumentStyle;
 
-    if(index == FIRST_ARGUMENT)
+    if(index == 0)
         m_arg_style->first = style;
-    if(index == SECOND_ARGUMENT)
+    if(index == 1)
         m_arg_style->second = style;
 }
 
 
 
-/* DEPRECATED
-void DisassembledItem::SetMnemonic(MnemonicItem *mnemonic)
-{
-    m_mnemonic = mnemonic;
-}
-*/
-
-
-bool DisassembledItem::SetupDisassembledItem(MnemonicItem *mnemonic, const FileOffset offset)
+bool DisassembledItem::SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset)
 {
     m_mnemonic = mnemonic;
     m_file_offset = offset;
     m_is_data = false;
     m_length = mnemonic->GetByteCodeSize();
     m_mnemonic_signature = mnemonic->GetMnemonicSignature();
-
-    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {  // One 8bit argument
-            m_arguments.unsigned_16bit = m_program->GetData();
-    }
-    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 2)) {  // One 16bit argument
-            
-    }
-    if ((m_mnemonic->GetArgumentCount() == 2) && (m_mnemonic->GetArgumentSize() == 1)) {  // Two 8bit arguments
-            
-    }
-
-
+    FillArgument();
 
     return false;
 }
 
 
 
-/// @brief Copy the bytecode from program file
-/// @brief Position -> 0  1  2  3
-/// @brief             aa bb cc dd
+void DisassembledItem::SetupDataItem(const FileOffset offset)
+{
+    Clear();
+    m_file_offset = offset;
+    m_is_data = true;
+    m_length = 1;
+
+
+}
+
+
+
+/// @brief Copy the bytecode from program file \
+/// @brief 0  1  2  3   <- Position          \
+/// @brief aa bb cc dd
 void DisassembledItem::CopyRealBytecode()
 {
     if (m_program && m_mnemonic) {
         for(int offset = 0; offset < m_length; ++offset)
             m_real_bytecode[offset] = m_program->GetData(m_file_offset + offset);
+    }
+}
+
+
+
+/// @brief Calculate and fill arguments fields
+void DisassembledItem::FillArgument()
+{
+    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {  // One 8bit argument
+        m_arguments.unsigned_8bit_low = GetByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
+        m_arguments.unsigned_8bit_high = 0;
+        m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low;
+        m_arguments.signed_value = static_cast<int>(GetByteOpcode(m_mnemonic->GetArgumentPosition()));
+    }
+    else {  //Two of 8bit or 1 of 16bit
+        m_arguments.unsigned_8bit_low = GetByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
+        m_arguments.unsigned_8bit_high = GetByteOpcode(m_mnemonic->GetArgumentPosition() + 1) & 0xFF;
+        m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low + m_arguments.unsigned_8bit_high * 0x100;
+        m_arguments.signed_value = static_cast<int>(m_arguments.unsigned_16bit);
     }
 }
 

@@ -23,6 +23,8 @@ class MnemonicItem : public MnemonicItemBase
             MAX_BYTECODE_REACHED
         };
 
+        const Arguments ARGUMENT_NONE = {OP_NONE, OT_NONE};
+
         MnemonicItem();
         ~MnemonicItem();
 
@@ -34,6 +36,7 @@ class MnemonicItem : public MnemonicItemBase
 
         Arguments GetSourceArgument();
         Arguments GetDestinationArgument();
+        Arguments GetArgument(const unsigned int index);
 
         ByteCode &GetByteCode();
         byte GetByteCode(byte index);

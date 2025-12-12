@@ -118,6 +118,7 @@ class MnemonicItemBase
         ~MnemonicItemBase();
         void Reset();
 
+
     protected:
         unsigned int mnemonic_signature_;
         Groups		group_;

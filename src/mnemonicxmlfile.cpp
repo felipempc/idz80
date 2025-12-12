@@ -100,6 +100,14 @@ const wxString MnemonicXMLFile::ATTRIBUTE_REGISTER_IX = "IX";
 const wxString MnemonicXMLFile::ATTRIBUTE_REGISTER_IY = "IY";
 const wxString MnemonicXMLFile::ATTRIBUTE_REGISTER_SP = "SP";
 const wxString MnemonicXMLFile::ATTRIBUTE_VALUE_LITERAL = "LITERAL";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_00 = "0";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_08 = "0x8";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_10 = "0x10";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_18 = "0x18";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_20 = "0x20";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_28 = "0x28";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_30 = "0x30";
+const wxString MnemonicXMLFile::ATTRIBUTE_RST_38 = "0x38";
 
 // Mnemonic argument mark
 const wxUniChar MnemonicXMLFile::ARGUMENT_MARK = '$';
@@ -359,6 +367,10 @@ void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem
         if (instruction_node->GetAttribute(ATTRIBUTE_ARGUMENT_SOURCE_OPERAND, &value_str))
             instruction->SetSourceArgument(operand_type, GetOperandFromStr(value_str));
     }
+
+    if (instruction_node->GetAttribute(ATTRIBUTE_RST_VALUE, &value_str))
+        instruction->SetSourceArgument(OT_ABSOLUTE_ADDRESS, GetOperandFromStr(value_str));
+
 }
 
 
@@ -545,9 +557,24 @@ Operands MnemonicXMLFile::GetOperandFromStr(const wxString &op_str)
         return OP_IY;
     if (op_str.IsSameAs(ATTRIBUTE_REGISTER_SP))
         return OP_SP;
-
     if (op_str.IsSameAs(ATTRIBUTE_VALUE_LITERAL))
         return OP_LITERAL;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_00))
+        return OP_00;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_08))
+        return OP_08;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_10))
+        return OP_10;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_18))
+        return OP_18;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_20))
+        return OP_20;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_28))
+        return OP_28;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_30))
+        return OP_30;
+    if (op_str.IsSameAs(ATTRIBUTE_RST_38))
+        return OP_38;
 
     return OP_NONE;
 }

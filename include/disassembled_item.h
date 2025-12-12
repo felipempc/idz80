@@ -12,7 +12,7 @@
 #ifndef DISASSEMBLEDITEM_H
 #define DISASSEMBLEDITEM_H
 
-#include "disassembled_item_data.h"
+#include "disassembled_item_base.h"
 
 
 enum ArgumentStyleOptions
@@ -52,18 +52,18 @@ struct ArgumentStyle
 };
 
 
-
+/*
 enum ArgumentIndex
 {
     FIRST_ARGUMENT = 0,
     SECOND_ARGUMENT
 };
-
+*/
 
 
 typedef signed int RelativeAddress;
 
-// Inheritance: DisassembledItem > DisassembledItemData > DisassembledItemBase
+// Inheritance: DisassembledItem > DisassembledItemBase
 // TODO: Think about why we need all this inheritance.
 class DisassembledItem : public DisassembledItemBase
 {
@@ -73,42 +73,38 @@ class DisassembledItem : public DisassembledItemBase
 
         void Clear();
         void Destroy();
-
-        //void CopyArguments(const ExplicitArguments &arguments);
+        bool SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset);
+        void SetupDataItem(const FileOffset offset);
 
         wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);
         wxString GetAsciiCodeAsString();
-
-        ArgumentStyle GetArgumentStyle();
-        ArgumentStyleOptions GetArgumentStyle(ArgumentIndex index);
 
         FileOffset GetOffsetInFile();
 
         unsigned int GetLength();
         void SetLength(unsigned int len);
+
         bool isData();
         void MarkAsData(const bool isdata = true);
 
-
         byte GetByteOpcode(unsigned int index);
-        byte GetArgumentValue(ArgumentIndex index);
-        byte GetArgumentValue(unsigned int index);
+
+        // Arguments
+        ArgumentStyle GetArgumentStyle();
+        ArgumentStyleOptions GetArgumentStyle(unsigned int index);
+        //byte GetArgumentValue(ArgumentIndex index);
+        int GetArgumentValue(unsigned int index, unsigned int base_address = 0);
+        void SetArgumentStyle(unsigned int index, ArgumentStyleOptions style);
 
         MnemonicItem *GetMnemonic();
-
         RawData *GetProgram();
-
-        //void SetFileOffset(FileOffset _offset); // REMOVE IT
-        void SetArgumentStyle(ArgumentIndex index, ArgumentStyleOptions style);
-
-        //void SetMnemonic(MnemonicItem *mnemonic); // REMOVE IT
-        bool SetupDisassembledItem(MnemonicItem *mnemonic, const FileOffset offset);
 
     protected:
     private:
         ArgumentStyle   *m_arg_style;
 
         void CopyRealBytecode();
+        void FillArgument();
 
         AbsoluteAddress ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress);
 };

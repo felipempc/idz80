@@ -125,7 +125,14 @@ class MnemonicXMLFile
         static const wxString ATTRIBUTE_REGISTER_IY;
         static const wxString ATTRIBUTE_REGISTER_SP;
         static const wxString ATTRIBUTE_VALUE_LITERAL;
-
+        static const wxString ATTRIBUTE_RST_00;
+        static const wxString ATTRIBUTE_RST_08;
+        static const wxString ATTRIBUTE_RST_10;
+        static const wxString ATTRIBUTE_RST_18;
+        static const wxString ATTRIBUTE_RST_20;
+        static const wxString ATTRIBUTE_RST_28;
+        static const wxString ATTRIBUTE_RST_30;
+        static const wxString ATTRIBUTE_RST_38;
 
         static const wxUniChar ARGUMENT_MARK;
 
