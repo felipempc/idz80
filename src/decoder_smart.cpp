@@ -10,36 +10,29 @@
 
 #include "decoder_smart.h"
 
- // MUST BE COMPLETELY REWRITED !!!!
+ // REWRITE: Work in progress
 
-SmartDecoder::SmartDecoder(ProcessBase *parent, LogWindow *logparent)
-                : Decoder(parent, logparent)
+SmartDecoder::SmartDecoder(ProjectBase *t_parent)
+                : Decoder(t_parent)
 {
-    start_address_ = 0;
-    end_address_ = 0;
-    exec_address_ = 0;
+    m_start_address = 0;
+    m_end_address = 0;
+    m_exec_address = 0;
 
-
-    address_list_ = new SortedIntArray(CompareSortedInt);
-    address_list_processed_ = new SortedIntArray(CompareSortedInt);
-    sub_routine_ = new SubRoutineCtrl(logparent);
-
+    m_sub_routine = new SubRoutineCtrl(t_parent->GetTextLog());
+    ModuleName = "DECODER SMART";
 }
+
+
 
 SmartDecoder::~SmartDecoder()
 {
-    delete sub_routine_;
-
-    if (address_list_)
-        delete address_list_;
-    if (address_list_processed_)
-        delete address_list_processed_;
+    delete m_sub_routine;
 }
 
 
 
-
-bool SmartDecoder::FullDisassemble(LabelManager *parent)
+bool SmartDecoder::FullDisassemble()
 {
     bool    ret = false,
             processing = true,
@@ -51,117 +44,119 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
             counter = 0,
             address;
 
-    DisassembledItem     *de;
-    SortedIntArray  CartridgeCalls(CompareSortedInt);
+    DisassembledItem    *de;
+    IntArray            CartridgeCalls;
 
+    if ((!m_program) || (!m_disassembled_list))
+    return;
 
-    m_labels = parent;
     m_labels->ClearUserLabels();
-    sub_routine_->Clear();
+    m_sub_routine->Clear();
     UpdateBoundaries();
 
-    address_list_->Clear();
-    address_list_processed_->Clear();
+    m_address_list.clear();
+    m_address_list_processed.clear();
 
 
-	if (process_->Program->isCartridge())
+	if (m_program->isCartridge())
 	{
 		SetCartridgeLabels();
-	    process_->Program->GetEntries(CartridgeCalls);
-	    next_address_ = CartridgeCalls.Index(0);
+	    m_program->GetEntries(CartridgeCalls);
+	    m_next_address = CartridgeCalls.at(0);
 	}
 	else
     {
-        next_address_ = process_->Program->ExecAddress;
-        m_labels->prog_labels->AddLabel(next_address_, "START");
+        m_next_address = m_program->ExecAddress;
+        m_labels->prog_labels->AddLabel(m_next_address, "START");
     }
-    program_size = process_->Program->GetSize();
+    program_size = m_program->GetSize();
     dsm_item = program_size;
     while (processing)
     {
-        last_prg_counter_ = next_address_ - process_->Disassembled->GetBaseAddress(0);
-        actual_address_ = next_address_;
+        m_last_prg_counter = m_next_address - m_disassembled_list->GetBaseAddress(0);
+        m_actual_address = m_next_address;
 
-        if (address_list_->Index(actual_address_) != wxNOT_FOUND)
-        {
-            address_list_->Remove(actual_address_);
-            #ifdef IDZ80_DECODER
-            LogIt(wxString::Format("[0x%.4X] Removed this address from list !", actual_address_));
-            #endif
-        }
 
-        if (address_list_processed_->Index(next_address_) == wxNOT_FOUND)
-            address_list_processed_->Add(actual_address_);
+#ifdef IDZ80_DEBUG_DECODER
+        if (RemoveAddressFrom(m_actual_address, m_address_list))
+            LogIt(wxString::Format("[0x%.4X] Removed this address from list !", m_actual_address));
+#else
+        RemoveAddressFrom(m_actual_address, m_address_list);
+#endif
 
-        de = new DisassembledItem(process_->Program);
-        dsm_item = Decode(de, last_prg_counter_, dsm_item);
-        next_address_ += de->GetLength();
+        if (!FindAddressIn(m_next_address, m_address_list_processed))
+            m_address_list_processed.push_back(m_actual_address);
+
+        de = new DisassembledItem(m_program);
+        dsm_item = Decode(de, m_last_prg_counter, dsm_item);
+        m_next_address += de->GetLength();
         counter += de->GetLength();
-        prg_counter_ = last_prg_counter_ + de->GetLength();
+        m_prg_counter = m_last_prg_counter + de->GetLength();
 
-        address = de->GetArgument(0, process_->Disassembled->GetBaseAddress(0));
+        address = de->GetArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
 
         SetupArgumentLabels(de, dsm_item);
 
-        switch (de->GetInstructionType())
+        switch (de->GetMnemonic()->GetGroup())
         {
-        case IT_CALL:
+        case GRP_CALL:
             update_item = CallSubroutine(de);
-            #ifdef IDZ80_DECODER
+#ifdef IDZ80_DEBUG_DECODER
             if (update_item)
             {
-                LogIt(wxString::Format("[0x%.4X] Entering subroutine No. %d  [0x%.4X].", actual_address_, sub_routine_->GetCounter(), address));
+                LogIt(wxString::Format("[0x%.4X] Entering subroutine No. %d  [0x%.4X].", m_actual_address, m_sub_routine->GetCounter(), address));
             }
-            #endif
+#endif
             break;
 
-        case IT_RET:
-            update_item = ReturnSubroutine(de, next_address_);
-            #ifdef IDZ80_DECODER
+        case GRP_RETURN:
+            update_item = ReturnSubroutine(de, m_next_address);
+#ifdef IDZ80_DEBUG_DECODER
             if (update_item)
             {
-                LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.", actual_address_, (sub_routine_->GetCounter() + 1)));
+                LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.", m_actual_address, (m_sub_routine->GetCounter() + 1)));
             }
-            #endif
+#endif
             break;
 
-        case IT_JUMP:
+        case GRP_JUMP:
             update_item = ProcessBranch(de, processing);
             break;
 
-        case IT_LOAD:
+        case GRP_LOAD_16BIT:
+        case GRP_LOAD_8BIT:
             m_registers.LoadRegister(de);
             break;
 
-        case IT_RST:
+        case GRP_RST:
             if (MSXWeirdRST(de, (dsm_item + 1)))
             {
                 update_item = true;
-                next_address_ += 3;
+                m_next_address += 3;
             }
             break;
-        case IT_ERROR:
-            LogIt(wxString::Format("[0x%.4X] Error: opcode = %s, dasmitem = %d", actual_address_, de->GetCodeStr(), dsm_item));
-            break;
+//        case GRP_ERROR:
+//            LogIt(wxString::Format("[0x%.4X] Error: opcode = %s, dasmitem = %d", m_actual_address, de->GetCodeStr(), dsm_item));
+//            break;
         }
 
-        if ((!processing) && (CartridgeCalls.GetCount() != 0))
+        if ((!processing) && (CartridgeCalls.size() != 0))
         {
-            #ifdef IDZ80_DECODER
+#ifdef IDZ80_DEBUG_DECODER
             LogIt("Process remaining calls...");
-            DebugShowJmpList("CALL", &CartridgeCalls);
-            #endif
+            DebugShowList("CALL", CartridgeCalls);
+#endif
 
-            next_address_ = CartridgeCalls.Item(0);
-            CartridgeCalls.Remove(next_address_);
+            m_next_address = CartridgeCalls.at(0);
+            RemoveAddressFrom(m_next_address, CartridgeCalls);
             update_item = true;
             processing = true;
         }
 
         if (update_item)
         {
-            dsm_item = process_->Disassembled->FindAddress(next_address_);
-            if (dsm_item == -1)
+            dsm_item = m_disassembled_list->FindAddress(m_next_address);
+            if (dsm_item == -1) // will never be -1
                 processing = false;
             update_item = false;
         }
@@ -181,153 +176,149 @@ bool SmartDecoder::FullDisassemble(LabelManager *parent)
 
 
 
-
-
-
 /*
  *  Process CALLs and JUMPS, return
  * true if dsm_item (FirstDisassemble) should be updated
  */
-bool SmartDecoder::ProcessBranch(DisassembledItem *de, bool &processing_status)
+bool SmartDecoder::ProcessBranch(DisassembledItem *t_de, bool &t_processing_status)
 {
     uint    address,
             tempaddress;
     bool    update_dasm_item = false;
 
-    address = de->GetArgument(0, process_->Disassembled->GetBaseAddress(0));
+    address = t_de->GetArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
 
-    if (de->m_mnemonic->IsConditionalJump())
+    if (t_de->GetMnemonic()->GetConditionalBranch())
     {
         if (!TestIfOutBoundaries(address))
         {
-            if ((address_list_->Index(address) == wxNOT_FOUND) &&
-                (address > actual_address_))
-                address_list_->Add(address);
+            if (!FindAddressIn(address, m_address_list) && (address > m_actual_address))
+                m_address_list.push_back(address);
         }
     }
     else
     {
         if (TestIfOutBoundaries(address))
         {
-            if (sub_routine_->IsInside())
+            if (m_sub_routine->IsInside())
             {
-                if (ReturnSubroutine(de, next_address_))
+                if (ReturnSubroutine(t_de, m_next_address))
                 {
                     update_dasm_item = true;
-                    #ifdef IDZ80_DECODER
-                    LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X] inside a sub-routine. Returning to 0x%.4X !", actual_address_, address, next_address_));
-                    #endif
+#ifdef IDZ80_DEBUG_DECODER
+                    LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X] inside a sub-routine. Returning to 0x%.4X !", m_actual_address, address, m_next_address));
+#endif
                 }
             }
             else
             {
-                #ifdef IDZ80_DECODER
-                LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X]. Should finish processing ?", actual_address_, address));
-                #endif
+#ifdef IDZ80_DEBUG_DECODER
+                LogIt(wxString::Format("[0x%.4X] Jump to out of boundary [0x%.4X]. Should finish processing ?", m_actual_address, address));
+#endif
                 if (address == 0)
                 {
-                    processing_status = false;
-                    #ifdef IDZ80_DECODER
+                    t_processing_status = false;
+#ifdef IDZ80_DEBUG_DECODER
                     LogIt("End processing.");
-                    #endif
+#endif
                 }
             }
         }
         else
         {
-            #ifdef IDZ80_DECODER
-            if ((address >= start_address_) && (address < exec_address_))
+#ifdef IDZ80_DEBUG_DECODER
+            if ((address >= m_start_address) && (address < m_exec_address))
             {
-                LogIt(wxString::Format("[0x%.4X] Address between start and execution [0x%.4X].", actual_address_, address));
+                LogIt(wxString::Format("[0x%.4X] Address between start and execution [0x%.4X].", m_actual_address, address));
             }
-            #endif
+#endif
 
-            if ((address >= exec_address_) && (address <= actual_address_))
+            if ((address >= m_exec_address) && (address <= m_actual_address))
             {
-                #ifdef IDZ80_DECODER
-                LogIt(wxString::Format("[0x%.4X] Loop detected to 0x%.4X.", actual_address_, address));
-                DebugShowJmpList("         CONDITIONAL Back Test", address_list_);
-                #endif
+#ifdef IDZ80_DEBUG_DECODER
+                LogIt(wxString::Format("[0x%.4X] Loop detected to 0x%.4X.", m_actual_address, address));
+                DebugShowList("         CONDITIONAL Back Test", m_address_list);
+#endif
 
-                if (GetNextNearJump(address_list_, next_address_, end_address_, next_address_))
+                if (GetNextNearJump(m_address_list, m_next_address, m_end_address, m_next_address))
                 {
                     update_dasm_item = true;
                 }
                 else
                 {
-                    if ((sub_routine_->HasConditionalReturn()) && (sub_routine_->IsInside()) &&
-                        (ReturnSubroutine(de, next_address_)))
+                    if ((m_sub_routine->HasConditionalReturn()) && (m_sub_routine->IsInside()) &&
+                        (ReturnSubroutine(t_de, m_next_address)))
                     {
                         update_dasm_item = true;
-                        #ifdef IDZ80_DECODER
-                        LogIt(wxString::Format("[0x%.4X] Conditional return to 0x%.4X.", actual_address_, next_address_));
-                        #endif
+#ifdef IDZ80_DEBUG_DECODER
+                        LogIt(wxString::Format("[0x%.4X] Conditional return to 0x%.4X.", m_actual_address, m_next_address));
+#endif
                     }
                     else
                     {
-                        processing_status = false;
-                        #ifdef IDZ80_DECODER
+                        t_processing_status = false;
+#ifdef IDZ80_DEBUG_DECODER
                         LogIt("End processing.");
-                        #endif
+#endif
                     }
                 }
 
-                if ((next_address_ > end_address_) && (processing_status))
+                if ((m_next_address > m_end_address) && (t_processing_status))
                 {
-                    #ifdef IDZ80_DECODER
-                    LogIt(wxString::Format("Filtered nextddress [0x%.4X].", next_address_));
+                    #ifdef IDZ80_DEBUG_DECODER
+                    LogIt(wxString::Format("Filtered nextddress [0x%.4X].", m_next_address));
                     #endif
                 }
             }
 
-            if (address > actual_address_)
+            if (address > m_actual_address)
             {
-                #ifdef IDZ80_DECODER
-                LogIt(wxString::Format("[0x%.4X] Jumping forward to 0x%.4X", actual_address_, address));
-                DebugShowJmpList("         CONDITIONAL Forward test", address_list_);
-                #endif
-                if (GetNextNearJump(address_list_, next_address_, address, tempaddress))
+#ifdef IDZ80_DEBUG_DECODER
+                LogIt(wxString::Format("[0x%.4X] Jumping forward to 0x%.4X", m_actual_address, address));
+                DebugShowList("         CONDITIONAL Forward test", m_address_list);
+#endif
+                if (GetNextNearJump(m_address_list, m_next_address, address, tempaddress))
                 {
-                    if (address_list_->Index(address) == wxNOT_FOUND)
-                        address_list_->Add(address);
-                    #ifdef IDZ80_DECODER
-                    LogIt(wxString::Format("[0x%.4X] Save forward address to process later.", actual_address_));
-                    #endif
+                    if (!FindAddressIn(address, m_address_list))
+                        m_address_list.push_back(address);
+#ifdef IDZ80_DEBUG_DECODER
+                    LogIt(wxString::Format("[0x%.4X] Save forward address to process later.", m_actual_address));
+#endif
                 }
                 else
                 {
-                    #ifdef IDZ80_DECODER
-                    DebugShowJmpList("Processed List", address_list_processed_);
-                    #endif
-                    if (address_list_processed_->Index(address) == wxNOT_FOUND)
+#ifdef IDZ80_DEBUG_DECODER
+                    DebugShowList("Processed List", m_address_list_processed);
+#endif
+                    if (!FindAddressIn(address, m_address_list_processed))
                     {
                         tempaddress = address;
                         update_dasm_item = true;
-                        #ifdef IDZ80_DECODER
+#ifdef IDZ80_DEBUG_DECODER
                         LogIt("Proceed forward.");
-                        #endif
+#endif
                     }
                     else
                     {
-                        if (address_list_->IsEmpty())
+                        if (m_address_list.empty())
                         {
-                            processing_status = false;
-                            #ifdef IDZ80_DECODER
+                            t_processing_status = false;
+#ifdef IDZ80_DEBUG_DECODER
                             LogIt("No more entries. End processing.");
-                            #endif
+#endif
                         }
                         else
                         {
-                            tempaddress = address_list_->Item(0);
+                            tempaddress = m_address_list[0];
                             update_dasm_item = true;
-                            #ifdef IDZ80_DECODER
+#ifdef IDZ80_DEBUG_DECODER
                             LogIt(wxString::Format("Address 0x%.4X already processed. Jumping to 0x%.4X.", address, tempaddress));
-                            #endif
+#endif
                         }
                     }
                 }
 
-                next_address_ = tempaddress;
+                m_next_address = tempaddress;
             }
         }
     }
@@ -337,18 +328,20 @@ bool SmartDecoder::ProcessBranch(DisassembledItem *de, bool &processing_status)
 
 
 
-
-
-bool SmartDecoder::ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_address)
+/// @brief Verify if RET instruction has a condition to return (REVISE IT)
+/// @param t_de the disassembled item
+/// @param t_dest_address 
+/// @return 
+bool SmartDecoder::ReturnSubroutine(DisassembledItem *t_de, AbsoluteAddress &t_dest_address)
 {
     bool ret = false;
 
-    if (de->m_mnemonic->IsConditionalReturn())
-        sub_routine_->SetConditionalReturn();
+    if (t_de->GetMnemonic()->GetConditionalBranch())
+        m_sub_routine->SetConditionalReturn();
     else
     {
-        dest_address = sub_routine_->Return(actual_address_);
-        if (dest_address > 0)
+        t_dest_address = m_sub_routine->Return(m_actual_address);
+        if (t_dest_address > 0)
             ret = true;
     }
 
@@ -360,24 +353,28 @@ bool SmartDecoder::ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_
 bool SmartDecoder::CallSubroutine(DisassembledItem *de)
 {
     bool ret = false;
-    uint address = de->GetArgument(0, process_->Disassembled->GetBaseAddress(0));
+    uint address = de->GetArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
 
     if (TestIfOutBoundaries(address))
     {
-        LogIt(wxString::Format("[0x%.4X] Subroutine out of boundaries [0x%.4X].", actual_address_, address));
+#ifdef IDZ80_DEBUG_DECODER
+        LogIt(wxString::Format("[0x%.4X] Subroutine out of boundaries [0x%.4X].", m_actual_address, address));
+#endif
         MSXCheckFunctionRegisters(de);
     }
     else
     {
-        if (sub_routine_->AlreadyCalled(address))
+        if (m_sub_routine->AlreadyCalled(address))
         {
-            LogIt(wxString::Format("[0x%.4X] Subroutine already called [0x%.4X].", actual_address_, address));
+#ifdef IDZ80_DEBUG_DECODER
+            LogIt(wxString::Format("[0x%.4X] Subroutine already called [0x%.4X].", m_actual_address, address));
+#endif
         }
         else
         {
-            ret = sub_routine_->Call(address, next_address_);
+            ret = m_sub_routine->Call(address, m_next_address);
             if (ret)
-                next_address_ = address;
+                m_next_address = address;
         }
     }
     return ret;
@@ -385,41 +382,47 @@ bool SmartDecoder::CallSubroutine(DisassembledItem *de)
 
 
 
-
-
-bool SmartDecoder::GetNextNearJump(SortedIntArray *jmplist, AbsoluteAddress _start, AbsoluteAddress _end, AbsoluteAddress &nextaddr)
+/// @brief Search in t_jmplist for a near jump address (between t_start and t_end). t_nextaddr will contain the found address if succeed.
+/// @param t_jmplist a list of addresses to jump
+/// @param t_start start address
+/// @param t_end end address
+/// @param t_nextaddr the found address in the list
+/// @return true if found a near address to jump
+bool SmartDecoder::GetNextNearJump(IntArray &t_jmplist, AbsoluteAddress t_start, AbsoluteAddress t_end, AbsoluteAddress &t_nextaddr)
 {
     bool    ret = false;
     int     i = 0,
             f;
     AbsoluteAddress  address;
 
-    f = jmplist->GetCount();
-    #ifdef IDZ80_DECODER
-    LogIt(wxString::Format("[0x%.4X] Searching for entries between 0x%.4X and 0x%.4X.", actual_address_, _start, _end));
-    #endif
+    f = t_jmplist.size();
+#ifdef IDZ80_DEBUG_DECODER
+    LogIt(wxString::Format("[0x%.4X] Searching for entries between 0x%.4X and 0x%.4X.", m_actual_address, t_start, t_end));
+#endif
 
     while (i < f)
     {
-        address = jmplist->Item(i);
-        if ((address >= _start) && (address < _end))
-        {
+        address = t_jmplist.at(i);
+        if ((address >= t_start) && (address < t_end)) {
             ret = true;
-            nextaddr = address;
-            if (jmplist->Index(address) != wxNOT_FOUND)
+            t_nextaddr = address;
+
+#ifdef IDZ80_DEBUG_DECODER
+            if (RemoveAddressFrom(address, t_jmplist))
             {
-                jmplist->Remove(address);
-                #ifdef IDZ80_DECODER
+                #ifdef IDZ80_DEBUG_DECODER
                 LogIt(wxString::Format("Removed : 0x%.4X", address));
-                #endif // IDZ80_DECODER
+                #endif // IDZ80_DEBUG_DECODER
             }
-            #ifdef IDZ80_DECODER
-            LogIt(wxString::Format("Chosen : 0x%.4X", nextaddr));
-            #endif
+            LogIt(wxString::Format("Chosen : 0x%.4X", t_nextaddr));
+#else
+            RemoveAddressFrom(address, t_jmplist);
+#endif            
+
             break;
         }
         else
-            i++;
+            ++i;
     }
     return ret;
 }
@@ -427,6 +430,7 @@ bool SmartDecoder::GetNextNearJump(SortedIntArray *jmplist, AbsoluteAddress _sta
 
 
 
+/// @brief Fill DisassembledItem of the processed DATA opcode.
 void SmartDecoder::FillData()
 {
 	uint    i,
@@ -437,105 +441,137 @@ void SmartDecoder::FillData()
                         *de_2;
 	bool    processing;
 
-	processing = (process_->Disassembled->GetCount() > 1);
+	processing = (m_disassembled_list->GetCount() > 1);
 	i = 0;
 
 	while (processing)
 	{
-		de_1 = process_->Disassembled->GetData(i);
-		de_2 = process_->Disassembled->GetData(i + 1);
-		index = (de_1->GetOffset() + de_1->GetLength());
-		delta = de_2->GetOffset() - index;
-		for(count = 0; count < delta; count++)
+		de_1 = m_disassembled_list->GetData(i);
+		de_2 = m_disassembled_list->GetData(i + 1);
+		index = (de_1->GetOffsetInFile() + de_1->GetLength());
+		delta = de_2->GetOffsetInFile() - index;
+		for(count = 0; count < delta; ++count)
 		{
-			de_1 = new DisassembledItem(process_->Program);
-			de_1->SetLength(1);
-			de_1->SetOffset(index + count);
-			de_1->SetMnemonic(0);
-			de_1->SetType(et_Data);
-			process_->Disassembled->InsertDasm(de_1, i + 1);
-			i++;
+			de_1 = new DisassembledItem(m_program);
+            de_1->SetupDataItem(index + count);
+			m_disassembled_list->Insert(de_1, i + 1);
+			++i;
 		}
-		i++;
-		if (i > (process_->Disassembled->GetCount() - 2))
+		++i;
+		if (i > (m_disassembled_list->GetCount() - 2))
 			processing = false;
 	}
 
-	i = de_2->GetOffset() + de_2->GetLength();
+	i = de_2->GetOffsetInFile() + de_2->GetLength();
 
-	for(count = i; count < process_->Program->GetSize(); count++)
+	for(count = i; count < m_program->GetSize(); ++count)
 	{
-		de_1 = new DisassembledItem(process_->Program);
-		de_1->SetLength(1);
-		de_1->SetOffset(count);
-		de_1->SetMnemonic(0);
-		de_1->SetType(et_Data);
-		process_->Disassembled->AddDasm(de_1);
+		de_1 = new DisassembledItem(m_program);
+        de_1->SetupDataItem(count);
+		m_disassembled_list->Add(de_1);
 	}
 }
 
 
 
+/// @brief Search for t_address in t_address_list, return true if found it.
+/// @param t_address address
+/// @param t_address_list address list
+/// @return true if found
+bool SmartDecoder::FindAddressIn(const int &t_address, const IntArray &t_address_list)
+{
+    bool t_ret = false;
 
-//TODO: REwrite it
+    for (int address : t_address_list)
+        if (t_address == address) {
+            t_ret = true;
+            break;
+        }
+    return t_ret;
+}
+
+
+
+/// @brief Remove t_address from t_address_list, if found.
+/// @param t_address 
+/// @param t_address_list 
+bool SmartDecoder::RemoveAddressFrom(const int &t_address, IntArray &t_address_list)
+{
+    bool t_ret = false;
+
+    for (IntArray::iterator it = t_address_list.begin(); it != t_address_list.end();)
+    {
+        if (*it == t_address) {
+            it = t_address_list.erase(it);
+            t_ret = true;
+            break;
+        }
+        else
+            ++it;
+    }
+    return t_ret;
+}
+
+
+
+/// @brief Check sanity of the bounds.
+/// TODO: Revise it.
 void SmartDecoder::UpdateBoundaries()
 {
-    if ((process_->Program->EndAddress > process_->Program->StartAddress) &&
-        (process_->Program->ExecAddress >= process_->Program->StartAddress) &&
-        (process_->Program->ExecAddress < process_->Program->EndAddress))
+    if ((m_program->EndAddress > m_program->StartAddress)
+        && (m_program->ExecAddress >= m_program->StartAddress)
+        && (m_program->ExecAddress < m_program->EndAddress))
     {
-        start_address_ = process_->Program->StartAddress;
-        end_address_ = process_->Program->EndAddress;
-        exec_address_ = process_->Program->ExecAddress;
+        m_start_address = m_program->StartAddress;
+        m_end_address = m_program->EndAddress;
+        m_exec_address = m_program->ExecAddress;
     }
 }
 
 
 
-bool SmartDecoder::TestIfOutBoundaries(AbsoluteAddress addr)
+/// @brief Check if t_address is out of bounds.
+/// @param t_addr 
+/// @return true if it's OK.
+bool SmartDecoder::TestIfOutBoundaries(AbsoluteAddress t_addr)
 {
-    return ((addr > end_address_) || (addr < start_address_));
+    return ((t_addr > m_end_address) || (t_addr < m_start_address));
 }
 
 
 
-
-
-
+/// @brief Clear local lists.
 void SmartDecoder::Clear()
 {
-    address_list_->Clear();
-    address_list_processed_->Clear();
-    sub_routine_->Clear();
+    m_address_list.clear();
+    m_address_list_processed.clear();
+    m_sub_routine->Clear();
 }
 
 
 
-
-
-
-
-void SmartDecoder::DebugShowList(const wxString &listname, SortedIntArray *_list)
+/// @brief Show a string containing space separated int WORD hexadecimal format.
+/// @param t_listname 
+/// @param t_list 
+void SmartDecoder::DebugShowList(const wxString &t_listname, const IntArray &t_list)
 {
     uint i;
     wxString str;
-    if ((_list != 0) && (_list->GetCount() > 0))
+
+    if (t_list.size() > 0)
     {
-        str = "<" + listname + "> [";
-        for(i = 0; i < _list->GetCount(); i++)
-        {
-            str << wxString::Format("%.4X", _list->Item(i));
-            if (i != (_list->GetCount() - 1))
-                str << " ";
-        }
+        str = "<" + t_listname + "> [";
+        for (int i : t_list)
+            str << wxString::Format("%.4X", i) << " ";
+
+        str.Trim();
         str << "]";
         LogIt(str);
     }
 }
 
 
-
-
+/*   IT BECAME REDUNDANT
 void SmartDecoder::DebugShowJmpList(const wxString &listname, SortedIntArray *_list)
 {
     uint i;
@@ -553,6 +589,6 @@ void SmartDecoder::DebugShowJmpList(const wxString &listname, SortedIntArray *_l
         LogIt(str);
     }
 }
-
+*/
 
 

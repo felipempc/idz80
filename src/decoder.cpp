@@ -16,10 +16,11 @@
 
 const uint Decoder::OPCODE_NOT_FOUND;
 
-Decoder::Decoder(ProjectBase *parent, const unsigned int program_index)
+Decoder::Decoder(ProjectBase *parent)
 {
-    m_disassembled_list = parent->m_disassembled_mgr->Index(program_index);
-    m_program = parent->m_programs_mgr->Index(program_index);
+    m_project_base = parent;
+    m_disassembled_list = 0;
+    m_program = 0;
     m_labels = parent->m_labels;
     m_mnemonic = parent->m_mnemonics;
 
@@ -28,6 +29,13 @@ Decoder::Decoder(ProjectBase *parent, const unsigned int program_index)
 
 }
 
+
+
+void Decoder::SetProgramIndex(const unsigned int program_index)
+{
+    m_disassembled_list = m_project_base->m_disassembled_mgr->Index(program_index);
+    m_program = m_project_base->m_programs_mgr->Index(program_index);
+}
 
 
 
@@ -238,12 +246,14 @@ void Decoder::SetCartridgeLabels()
 
 
 
-void Decoder::FullDisassemble(LabelManager *parent)
+void Decoder::FullDisassemble()
 {
     uint i, f, item;
     DisassembledItem *de;
 
-    m_labels = parent;
+    if ((!m_program) || (!m_disassembled_list))
+        return;
+
     m_labels->ClearUserLabels();
 
     if (m_program->isCartridge())
@@ -272,6 +282,8 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
 				program_last;
     DisassembledItem	*de;
 
+    if ((!m_program) || (!m_disassembled_list))
+        return;
 
     dasm_last = dasm_range.Index + dasm_range.Count - 1;
     disassembled_count = m_disassembled_list->GetCount();

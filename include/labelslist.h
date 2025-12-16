@@ -47,7 +47,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         ~LabelListCtrl();
 
         int AddLabel(AbsoluteAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);
-        int AddLabel(AbsoluteAddress addr, wxString name, wxArrayInt &labelusers);
+        int AddLabel(AbsoluteAddress addr, wxString name, IntArray &labelusers);
         bool DelLabel(AbsoluteAddress addr);
         void DelLabelUser(AbsoluteAddress addr, DisassembledIndex dasmitem);
         void EditLabel(LabelIndex listitem, wxString strlabel);
@@ -58,10 +58,10 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         wxString GetAddress(LabelIndex idx);
         LabelItem *GetData(LabelIndex index);
         LabelItem *GetDatabyAddress(AbsoluteAddress addr);
-        wxArrayInt *GetLabelUsers(const LabelIndex index);
+        IntArray *GetLabelUsers(const LabelIndex index);
         TypeLabelList GetTypeList();
 
-        void GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, wxArrayInt *address_list);
+        void GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, IntArray *address_list);
         uint GetCount();
         bool IsEmpty();
         void Clear();

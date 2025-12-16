@@ -58,7 +58,7 @@ LabelListCtrl::~LabelListCtrl()
 void LabelListCtrl::Clear()
 {
     LabelIndex i;
-    for (i = 0; i < static_cast<LabelIndex>(GetItemCount()); i++)
+    for (i = 0; i < static_cast<LabelIndex>(GetItemCount()); ++i)
         DeleteLabelData(GetData(i));
     label_index_ = -1;
     DeleteAllItems();
@@ -90,8 +90,8 @@ int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, DisassembledInd
 
 		if (dasmitem >= 0)
 		{
-			lbl->LabelUsers = new wxArrayInt();
-			lbl->LabelUsers->Add(dasmitem);
+			lbl->LabelUsers = new IntArray;
+			lbl->LabelUsers->push_back(dasmitem);
 		}
 		else
 			lbl->LabelUsers = 0;
@@ -117,7 +117,7 @@ int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, DisassembledInd
 
 
 
-int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, wxArrayInt &labelusers)
+int LabelListCtrl::AddLabel(AbsoluteAddress addr, wxString name, IntArray &labelusers)
 {
     wxString	buf;
     wxListItem	li;
@@ -469,7 +469,7 @@ void LabelListCtrl::EditLabel(uint listitem, wxString strlabel)
 
 
 
-void LabelListCtrl::GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, wxArrayInt *address_list)
+void LabelListCtrl::GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, IntArray *address_list)
 {
     LabelItem   *lbl;
     uint    loopcount;
@@ -480,7 +480,7 @@ void LabelListCtrl::GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, 
         {
             lbl = GetData(loopcount);
             if (lbl && (lbl->Address >= first_address) && (lbl->Address <= last_address))
-                address_list->Add(lbl->Address);
+                address_list->push_back(lbl->Address);
         }
     }
 }

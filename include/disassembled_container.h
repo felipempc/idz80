@@ -43,7 +43,7 @@ class DisassembledContainer : public DebugLogBase
         uint GetBaseAddress(DisassembledIndex index);
         void AddOrigin(DisassembledIndex index, AbsoluteAddress address);
         void DelOrigin(AbsoluteAddress address);
-        DisassembledIndex FindAddress(AbsoluteAddress address);
+        DisassembledIndex FindAddress(const AbsoluteAddress t_address);
 
 
         DisassembledContainer(DebugLogBase *logparent);
@@ -63,3 +63,4 @@ class DisassembledContainer : public DebugLogBase
 };
 
 #endif
+

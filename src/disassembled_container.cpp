@@ -230,47 +230,31 @@ void DisassembledContainer::DelOrigin(AbsoluteAddress address)
 
 
 
-
-/*
- * Find a item which address >= given address
- * if there is no item, throws exception ?
- * if not found, return last item plus 1 ?
- *
- */
-DisassembledIndex DisassembledContainer::FindAddress(AbsoluteAddress address)
+/// @brief Search for an item address >= t_address. Return the DissassembledIndex
+/// @param t_address 
+/// @return The last item address of the DisassembledList, or the item of the above comparison.
+DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_address)
 {
-    DisassembledList::iterator it_disassembled;
-    DisassembledItem *d_item;
+    DisassembledIndex   item_index = 0,
+                        ret_index = 0;
+    AbsoluteAddress     item_address;
 
-    DisassembledIndex     index = 0, ret_index = 0;
-    AbsoluteAddress  findaddress;
-    bool out_of_bound = true;
-
-    for(it_disassembled = m_disassembled_list.begin(); it_disassembled != m_disassembled_list.end(); ++it_disassembled)
+    for (DisassembledList::iterator it = m_disassembled_list.begin(); it != m_disassembled_list.end();)
     {
-        d_item = *it_disassembled;
-        findaddress = GetBaseAddress(index) + d_item->GetOffsetInFile();
-        if (findaddress >= address)
-        {
-            ret_index = index;
-            out_of_bound = false;
+        item_address = GetBaseAddress(item_index) + static_cast<DisassembledItem *>(*it)->GetOffsetInFile();
+        if (item_address >= t_address) {
+            ret_index = item_index;
             break;
         }
-        index++;
+        else
+            ret_index = item_address;
+        ++it;
+        ++item_index;
     }
 
-    if(out_of_bound)
-    {
-        //if out of bound, return last address
-        ret_index = findaddress;
-
-        // or, if out of bound, throws exception
-        // throw SearchAddressOutOfBounds
-    }
-
-    #ifdef IDZ80_DASMED
-    LogIt(wxString::Format("Returning item: %d.   Address to find near: %.4X.  Address found: %.4X", ret_index, address, findaddress));
-    #endif
+#ifdef IDZ80_DASMED
+    LogIt(wxString::Format("Returning item: %d.   Address to find near: %.4X.  Address found: %.4X", ret_index, t_address, item_address));
+#endif
 
     return ret_index;
 }

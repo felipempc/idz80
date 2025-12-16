@@ -8,7 +8,7 @@
  * This module disassembles a program in smart mode.
  **************************************************************/
 
-  // MUST BE COMPLETELY REWRITED !!!!
+  // REWRITE: Work in progress
 
 
 #ifndef _DECODER_SMART_H_
@@ -16,46 +16,48 @@
 
 #include "decoder.h"
 
+// DEBUG DEFINITION
+#define IDZ80_DEBUG_DECODER
 
 class SmartDecoder: public Decoder
 {
 public:
-    SmartDecoder(ProcessBase *parent, LogWindow *logparent);
+    SmartDecoder(ProjectBase *t_parent);
     ~SmartDecoder();
-    bool FullDisassemble(LabelManager *parent);
+    bool FullDisassemble();
     void Clear();
-
-
 
 protected:
 
 private:
     void ProcessCallSubrotine();
     void ProcessReturnSubrotine();
-    bool GetNextNearJump(SortedIntArray *jmplist, AbsoluteAddress _start, AbsoluteAddress _end, AbsoluteAddress &nextaddr);
-    bool GetNextFarJump(SortedIntArray *jmplist, AbsoluteAddress &nextaddr);
-    bool TestIfOutBoundaries(AbsoluteAddress addr);
+    bool GetNextNearJump(IntArray &t_jmplist, AbsoluteAddress t_start, AbsoluteAddress t_end, AbsoluteAddress &t_nextaddr);
+    bool GetNextFarJump(IntArray &t_jmplist, AbsoluteAddress &t_nextaddr);
+    bool TestIfOutBoundaries(AbsoluteAddress t_addr);
     void UpdateBoundaries();
-    bool CallSubroutine(DisassembledItem *de);
-    bool ReturnSubroutine(DisassembledItem *de, AbsoluteAddress &dest_address);
-    bool ProcessBranch(DisassembledItem *de, bool &processing_status);
+    bool CallSubroutine(DisassembledItem *t_de);
+    bool ReturnSubroutine(DisassembledItem *t_de, AbsoluteAddress &t_dest_address);
+    bool ProcessBranch(DisassembledItem *t_de, bool &t_processing_status);
     void FillData();
+    bool FindAddressIn(const int &t_address, const IntArray &t_address_list);
+    bool RemoveAddressFrom(const int &t_address, IntArray &t_address_list);
 
-    void DebugShowList(const wxString &listname, SortedIntArray *_list);
-    void DebugShowJmpList(const wxString &listname, SortedIntArray *_list);
+    void DebugShowList(const wxString &t_listname, const IntArray &t_list);
+    //void DebugShowJmpList(const wxString &t_listname, const IntArray &t_list);  IT BECAME REDUNDANT
 
-    SortedIntArray      *address_list_,
-                        *address_list_processed_;
+    IntArray    m_address_list,
+                m_address_list_processed;
 
-    SubRoutineCtrl      *sub_routine_;
+    SubRoutineCtrl      *m_sub_routine;
 
-    uint    start_address_,
-            end_address_,
-            exec_address_,
-            prg_counter_,
-            last_prg_counter_,
-            next_address_,
-            actual_address_;
+    uint    m_start_address,
+            m_end_address,
+            m_exec_address,
+            m_prg_counter,
+            m_last_prg_counter,
+            m_next_address,
+            m_actual_address;
 };
 
 

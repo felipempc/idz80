@@ -38,41 +38,40 @@ typedef struct stRangeData RangeData;
 class ProcessData : public ProjectBase
 {
     public:
-        void DisassembleFirst(const unsigned int index);
-        void DisassembleItems(const unsigned int index, RangeItems &r);
-        void TransformToData(SelectedItemInfo &selected);
-        void DisassembleData(SelectedItemInfo &selected);
-        void MakeData(RangeItems &r);
+        void DisassembleFirst(const unsigned int t_index);
+        void DisassembleItems(const unsigned int t_index, RangeItems &t_range);
+        void TransformToData(const unsigned int t_index, SelectedItemInfo &t_selected);
+        void DisassembleData(const unsigned int t_index, SelectedItemInfo &t_selected);
+        void MakeData(const unsigned int t_index, RangeItems &t_range);
         //void AutoLabel();
-        void InitData();
+        void InitData(const unsigned int t_index);
         void InsertLineLabelsInSourceCode();
 
         bool SetupSystemLabels();
         void Clear();
 
-        void RemoveFromLabelUserList(DisassembledItem *de, const uint dasmitem);
-        bool RemoveLineAndVarLabels(const int index);
-        bool RemoveLineAndProgLabels(const int index);
+        void RemoveFromLabelUserList(DisassembledItem *t_de, const uint t_dasmitem);
+        bool RemoveLineAndVarLabels(const int t_line);
+        bool RemoveLineAndProgLabels(const int t_line);
 
-        void SearchInstructionArgument(word argument_value, uint search_config);
-        bool SearchInstructionArgumentContinue(AbsoluteAddress &address);
+        void SearchInstructionArgument(word t_argument_value, uint t_search_config);
+        bool SearchInstructionArgumentContinue(AbsoluteAddress &t_address);
 
-        ProcessData(ProjectBase *parent);
+        ProcessData(ProjectBase *t_parent);
         ~ProcessData();
 
     private:
         SmartDecoder    *m_disassembler;
         SearchManager   *search_status_;
 
-        void RemoveLabelUsers(wxArrayInt *users);
-        bool FilterInstructions(wxArrayInt &range, SelectedItemInfo &selected);
-        void ProcessLabel(LabelListCtrl *label);
+        void RemoveLabelUsers(const unsigned int t_index, IntArray *t_users);
+        bool FilterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected);
+        void ProcessLabel(LabelListCtrl *t_label);
 
-        bool FindInArgumentVariables(DisassembledItem *de, word argument);
-        bool FindInArgumentLiteral(DisassembledItem *de, word argument);
-        bool FindInArgumentJumpsCalls(DisassembledItem *de, word argument);
+        bool FindInArgumentVariables(DisassembledItem *t_de, word t_argument);
+        bool FindInArgumentLiteral(DisassembledItem *t_de, word t_argument);
+        bool FindInArgumentJumpsCalls(DisassembledItem *t_de, word t_argument);
 };
 
 
 #endif
-

@@ -30,15 +30,18 @@
 class Decoder: public DebugLogBase
 {
     public:
-        Decoder(ProjectBase *parent, const unsigned int program_index);
+        Decoder(ProjectBase *parent);
 
-        void FullDisassemble(LabelManager *parent);
+        void SetProgramIndex(const unsigned int program_index);
+
+        void FullDisassemble();
         void DisassembleItems(RangeItems &dasm_range);
 
 
     protected:
         static const uint OPCODE_NOT_FOUND = 0xFFFFFFFF;
 
+        ProjectBase         *m_project_base;
         RawData             *m_program;
         MnemonicContainer   *m_mnemonic;
         LabelManager        *m_labels;

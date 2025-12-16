@@ -18,7 +18,8 @@ typedef unsigned short int word;
 typedef unsigned int uint;
 
 /// @brief Normal unsigned int vector, must be sorted manually. Include <algorithm> for sort.
-typedef std::vector<uint> IntArray;
+typedef std::vector<uint> UintArray;
+typedef std::vector<int> IntArray;
 
 #endif // IDZ80BASICTYPES_H
 
