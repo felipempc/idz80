@@ -26,7 +26,7 @@ struct RangeItems
 
 
 typedef std::vector<DisassembledItem *> DisassembledList;
-typedef unsigned int DisassembledIndex;
+typedef int DisassembledIndex;
 
 class DisassembledContainer : public DebugLogBase
 {

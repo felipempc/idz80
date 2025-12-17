@@ -18,7 +18,7 @@
 struct LabelItem
 {
     AbsoluteAddress Address;
-    IntArray *LabelUsers;
+    IndexVector *LabelUsers;
     wxString LabelStr;
 };
 #endif // _LABELITEM_H_

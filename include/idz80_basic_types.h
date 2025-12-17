@@ -20,6 +20,8 @@ typedef unsigned int uint;
 /// @brief Normal unsigned int vector, must be sorted manually. Include <algorithm> for sort.
 typedef std::vector<uint> UintArray;
 typedef std::vector<int> IntArray;
+typedef std::vector<unsigned int> AddressVector;
+typedef std::vector<int> IndexVector;
 
 #endif // IDZ80BASICTYPES_H
 

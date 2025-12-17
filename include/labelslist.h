@@ -22,6 +22,10 @@
 #include "debug_logbase.h"
 #include "labelitem.h"
 
+
+// DEBUG DEFINITION
+#define IDZ80_DEBUG_LBL_LIST
+
 enum
 {
     idMENU_POPUP_ADD = 100,
@@ -37,64 +41,67 @@ typedef enum eTypeLabelList
     CONST_LIST
 } TypeLabelList;
 
-typedef unsigned int LabelIndex;
+typedef int LabelIndex;
 
 
 class LabelListCtrl : public wxListCtrl, public DebugLogBase
 {
     public:
-        LabelListCtrl(wxWindow* parent, TypeLabelList label_type, const wxString default_name, DebugLogWindow *logparent);
+        LabelListCtrl(wxWindow* t_parent, const TypeLabelList t_label_type, const wxString &t_default_name, DebugLogWindow *t_logparent);
         ~LabelListCtrl();
 
-        int AddLabel(AbsoluteAddress addr, wxString name, DisassembledIndex dasmitem = NO_DASM_ITEM);
-        int AddLabel(AbsoluteAddress addr, wxString name, IntArray &labelusers);
-        bool DelLabel(AbsoluteAddress addr);
-        void DelLabelUser(AbsoluteAddress addr, DisassembledIndex dasmitem);
-        void EditLabel(LabelIndex listitem, wxString strlabel);
-		bool EditLabelDialog(AbsoluteAddress addr);
-        int GetLabel(AbsoluteAddress addr, wxString& str);
-        int GetLabelIndex(AbsoluteAddress addr);
-        wxString GetLabel(LabelIndex idx);
-        wxString GetAddress(LabelIndex idx);
-        LabelItem *GetData(LabelIndex index);
-        LabelItem *GetDatabyAddress(AbsoluteAddress addr);
-        IntArray *GetLabelUsers(const LabelIndex index);
-        TypeLabelList GetTypeList();
+        int addLabel(const AbsoluteAddress t_address, const wxString &t_name, DisassembledIndex t_dasmitem = NO_DASM_ITEM);
+        int addLabel(const AbsoluteAddress t_address, const wxString &t_name, const IndexVector &t_labelusers);
+        bool delLabel(const AbsoluteAddress t_address);
+        void delLabelUser(const AbsoluteAddress t_address, const DisassembledIndex t_dasmitem);
+        void editLabel(const LabelIndex t_listitem, const wxString &t_strlabel);
+		bool editLabelDialog(const AbsoluteAddress t_address);
+        int getLabel(const AbsoluteAddress t_address, const wxString& str);
+        LabelIndex getLabelIndex(const AbsoluteAddress t_address);
+        wxString getLabel(const LabelIndex t_index);
+        wxString getAddress(const LabelIndex t_index);
+        LabelItem *getData(const LabelIndex t_index);
+        LabelItem *getDatabyAddress(const AbsoluteAddress t_address);
+        IntArray *getLabelUsers(const LabelIndex t_index);
+        TypeLabelList getTypeList();
 
-        void GetLabelsBetweenRangeAddress(AbsoluteAddress first_address, AbsoluteAddress last_address, IntArray *address_list);
-        uint GetCount();
-        bool IsEmpty();
-        void Clear();
+        void getLabelsBetweenRangeAddress(const AbsoluteAddress t_first_address, const AbsoluteAddress t_last_address, AddressVector *t_address_list);
+        uint getCount();
+        bool isEmpty();
+        void clear();
 
+        // Tools
+        bool findDataIn(const int t_data, const IndexVector *t_data_list);
+        int findDataIndex(const int t_data, const IndexVector *t_data_list);
 
-        void SortAddress(bool crescent = true);
+        void sortAddress(const bool t_crescent = true);
         // TODO: improve sorting Strings
-        void SortLabelStr(bool crescent = true);
+        void sortLabelStr(const bool t_crescent = true);
 
 
     protected:
     private:
         static const DisassembledIndex NO_DASM_ITEM = 0xFFFFFFFF;
-        volatile int selected_item_;
-        wxString default_label_name_;
-        volatile int label_index_;
-        wxWindow *main_window_;
-        TypeLabelList type_label_list_;
+        volatile LabelIndex m_selected_item;
+        volatile LabelIndex m_label_index;
+        wxString m_default_label_name;
+        wxWindow *m_main_window;
+        TypeLabelList m_type_label_list;
 
 
-        LabelItem *FindByAddress(AbsoluteAddress addr, LabelIndex &label_index);
-        wxString CreateDefaultName(const AbsoluteAddress addr);
-        void DeleteLabelData(LabelItem *label);
+        LabelItem *findByAddress(const AbsoluteAddress t_address, const LabelIndex t_label_index);
+        wxString createDefaultName(const AbsoluteAddress t_address);
+        void deleteLabelData(LabelItem *t_label);
 
-        void OnMouseRightDown(wxListEvent& event);
-        void OnMouseDblLeft(wxListEvent& event);
-        void OnMenuPopUpAdd(wxCommandEvent& event);
-        void OnMenuPopUpDel(wxCommandEvent& event);
-        void OnMenuPopUpEdit(wxCommandEvent& event);
-        void OnColumnClick(wxListEvent& event);
+        void onMouseRightDown(wxListEvent& t_event);
+        void onMouseDblLeft(wxListEvent& t_event);
+        void onMenuPopUpAdd(wxCommandEvent& t_event);
+        void onMenuPopUpDel(wxCommandEvent& t_event);
+        void onMenuPopUpEdit(wxCommandEvent& t_event);
+        void onColumnClick(wxListEvent& t_event);
 };
 
 
-int wxCALLBACK CompareAddress(wxIntPtr item1, wxIntPtr item2, wxIntPtr data);
-int wxCALLBACK CompareLabelStr(wxIntPtr item1, wxIntPtr item2, wxIntPtr data);
+int wxCALLBACK CompareAddress(wxIntPtr t_item1, wxIntPtr t_item2, wxIntPtr t_data);
+int wxCALLBACK CompareLabelStr(wxIntPtr t_item1, wxIntPtr t_item2, wxIntPtr t_data);
 #endif // LABELSLIST_H

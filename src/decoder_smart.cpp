@@ -67,7 +67,7 @@ bool SmartDecoder::FullDisassemble()
 	else
     {
         m_next_address = m_program->ExecAddress;
-        m_labels->prog_labels->AddLabel(m_next_address, "START");
+        m_labels->prog_labels->addLabel(m_next_address, "START");
     }
     program_size = m_program->GetSize();
     dsm_item = program_size;
