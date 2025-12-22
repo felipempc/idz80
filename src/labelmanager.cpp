@@ -30,19 +30,19 @@ LabelManager::LabelManager()
 void LabelManager::clearUserLabels()
 {
     if (var_labels != 0) {
-        var_labels->Clear();
+        var_labels->clear();
         var_labels = 0;
     }
     if (prog_labels != 0) {
-        prog_labels->Clear();
+        prog_labels->clear();
         prog_labels = 0;
     }
     if (io_labels != 0) {
-        io_labels->Clear();
+        io_labels->clear();
         io_labels = 0;
     }
     if (constant_labels != 0) {
-        constant_labels->Clear();
+        constant_labels->clear();
         constant_labels = 0;
     }
 }
@@ -54,19 +54,19 @@ void LabelManager::destroyAll()
     clearUserLabels();
 
     if(sys_calls) {
-        sys_calls->Clear();
+        sys_calls->clear();
         sys_calls = 0;
     }
     if(sys_vars) {
-        sys_vars->Clear();
+        sys_vars->clear();
         sys_vars = 0;
     }
     if(sys_io) {
-        sys_io->Clear();
+        sys_io->clear();
         sys_io = 0;
     }
     if(sys_const) {
-        sys_const->Clear();
+        sys_const->clear();
         sys_const = 0;
     }
 }
@@ -79,13 +79,13 @@ bool LabelManager::loadSystemLabels(const wxString &filename)
     if ((sys_calls != 0)  && (sys_vars != 0) &&
         (sys_io != 0) && (sys_const != 0))
     {
-        if(sys_calls->Open(filename))
+        if(sys_calls->open(filename))
             ++ret;
-        if (sys_vars->Open(filename))
+        if (sys_vars->open(filename))
             ++ret;
-        if (sys_io->Open(filename))
+        if (sys_io->open(filename))
             ++ret;
-        if (sys_const->Open(filename))
+        if (sys_const->open(filename))
             ++ret;
     }
     return (ret > 0);

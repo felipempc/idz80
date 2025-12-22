@@ -11,7 +11,7 @@
 #ifndef SYSTEMLABELS_H
 #define SYSTEMLABELS_H
 
-#include <wx/dynarray.h>
+#include <vector>
 #include <wx/string.h>
 #include <wx/textfile.h>
 #include <wx/textctrl.h>
@@ -19,10 +19,15 @@
 #include "debug_logbase.hpp"
 #include "rawdata.hpp"
 
+// DEFINE DEBUG STRING
+#define IDZ80_SYSLABELS_DEBUG
+
+
+
 struct st_systemlabel
 {
     AbsoluteAddress address;
-    wxString Label;
+    wxString label;
 };
 
 typedef struct st_systemlabel SystemLabelItem;
@@ -30,24 +35,24 @@ typedef struct st_systemlabel SystemLabelItem;
 class SystemLabelList: public DebugLogBase
 {
 	public:
-		SystemLabelList(const wxString& section, DebugLogBase *logparent);
+		SystemLabelList(const wxString& t_section, DebugLogBase *t_logparent);
 		~SystemLabelList();
 
-		bool Open(const wxString& file);
-		void Clear();
-		SystemLabelItem *GetItem(const uint item);
-		wxString &Find(const uint addr);
-		uint GetCount();
+		bool open(const wxString& t_file);
+		void clear();
+		SystemLabelItem *index(const unsigned int t_index);
+		wxString &find(const AbsoluteAddress t_addr);
+		uint getCount();
 
 
 	private:
-		wxArrayPtrVoid	m_data;
+		std::vector<SystemLabelItem *> m_data;
 		wxString		m_section;
 		wxTextFile		*m_file;
 		wxTextCtrl		*m_log;
 
 		bool readData();
-		void ParseString(wxString& source_string, wxArrayString& string_list);
+		void ParseString(wxString& t_source_string, wxArrayString& t_string_list);
 };
 
  #endif

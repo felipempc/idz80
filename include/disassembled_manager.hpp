@@ -47,6 +47,5 @@ class DisassembledManager: public DebugLogBase
     int m_current_item_index;
 
 };
-
-
 #endif // DISASSEMBLED_MANAGER_H
+

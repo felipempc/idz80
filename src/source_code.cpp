@@ -12,7 +12,7 @@
 #include "source_code.hpp"
 
 
-SourceCode::SourceCode(ProjectBase *t_parent)
+SourceCode::SourceCode(const ProjectBase *t_parent)
 {
     m_itemcount = -1;
     m_first_instruction_line = -1;
@@ -23,12 +23,10 @@ SourceCode::SourceCode(ProjectBase *t_parent)
 
 
 
-
 SourceCode::~SourceCode()
 {
     SourceCode::clear();
 }
-
 
 
 
@@ -392,8 +390,8 @@ int SourceCode::insertNewItem(const int dasmitem, const int labelprogaddr, const
 
 
     cvi->dasmedItem = dasmitem;
-    cvi->labelProgAddress = m_labels->prog_labels->GetDatabyAddress(labelprogaddr);
-    cvi->labelVarAddress = m_labels->var_labels->GetDatabyAddress(labelvaraddr);
+    cvi->labelProgAddress = m_labels->prog_labels->getDatabyAddress(labelprogaddr);
+    cvi->labelVarAddress = m_labels->var_labels->getDatabyAddress(labelvaraddr);
     cvi->originAddress = org;
     cvi->rectArg1 = 0;
     cvi->rectArg2 = 0;

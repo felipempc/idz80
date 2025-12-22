@@ -10,56 +10,52 @@
 
  #include "systemlabels.hpp"
 
-SystemLabelList::SystemLabelList(const wxString& section, DebugLogBase *logparent)
+
+
+SystemLabelList::SystemLabelList(const wxString& t_section, DebugLogBase *t_logparent)
 {
-	m_section = section;
+	m_section = t_section;
 	m_file = 0;
     ModuleName = "SystemLabel";
-    SetTextLog(logparent->GetTextLog());
+    SetTextLog(t_logparent->GetTextLog());
 }
+
 
 
 SystemLabelList::~SystemLabelList()
 {
-	Clear();
+	clear();
 	if (m_file != 0)
 		delete m_file;
 }
 
 
-void SystemLabelList::Clear()
-{
-	uint i;
-	SystemLabelItem *sli;
 
-	for(i = 0; i < m_data.GetCount(); i++)
-	{
-		sli = (SystemLabelItem *)m_data[i];
-		if (sli != 0)
-		{
+/// @brief Delete item objects and clear the list
+void SystemLabelList::clear()
+{
+	for (SystemLabelItem *sli : m_data)
+		if (sli) {
 			delete sli;
 			sli = 0;
 		}
-	}
-	m_data.Clear();
+
+	m_data.clear();
 }
 
 
 
-
-bool SystemLabelList::Open(const wxString& file)
+/// @brief Opens a text file containing System Labels
+/// @param t_file Name of text file
+/// @return true if succeed
+bool SystemLabelList::open(const wxString& t_file)
 {
 	bool ret = false;
 
-	m_file = new wxTextFile(file);
+	m_file = new wxTextFile(t_file);
 	if (m_file->Exists())
 	{
-/*
-		m_file->Open();
-		ret = readData();
-		m_file->Close();
-*/
-
+#ifdef IDZ80_SYSLABELS_DEBUG
 		if (!m_file->Open())
 			LogIt(m_section + "-> Cannot open file !");
 		ret = readData();
@@ -67,13 +63,17 @@ bool SystemLabelList::Open(const wxString& file)
 			LogIt(m_section + "-> Error reading data !");
 		if (!m_file->Close())
 			LogIt(m_section + "-> Error closing file !");
-
+#else
+		m_file->Open();
+		ret = readData();
+		m_file->Close();
+#endif
 	}
 	else
 	{
-		#ifdef IDZ80DEBUG
+#ifdef IDZ80_SYSLABELS_DEBUG
 		LogIt(m_section + "-> File not found !");
-		#endif
+#endif
 
 		delete m_file;
 		m_file = 0;
@@ -83,6 +83,8 @@ bool SystemLabelList::Open(const wxString& file)
 
 
 
+/// @brief Reads the text file containing system labels
+/// @return 
 bool SystemLabelList::readData()
 {
     wxString		str;
@@ -91,7 +93,7 @@ bool SystemLabelList::readData()
     bool			foundHeader;
     wxString		begin_section, end_section;
     SystemLabelItem	*sli;
-    uint			line;
+    unsigned int	line;
 
 
     begin_section << "[" << m_section << "]";
@@ -104,14 +106,14 @@ bool SystemLabelList::readData()
     {
         str = m_file->GetNextLine();
         foundHeader = str.IsSameAs(begin_section);
-        line++;
+        ++line;
     }
     if (foundHeader)
     {
         str = m_file->GetNextLine();
         while ((!m_file->Eof()) && (str != end_section))
         {
-			line++;
+			++line;
             str = str.BeforeFirst('#');
             str = str.Trim();
 
@@ -122,108 +124,97 @@ bool SystemLabelList::readData()
 				if (str.ToLong(&conv, 16))
 				{
 					sli = new SystemLabelItem;
-					sli->Address = (uint)conv;
-					sli->Label = arrstr[1];
-					m_data.Add(sli);
+					sli->address = static_cast<AbsoluteAddress>(conv);
+					sli->label = arrstr[1];
+					m_data.push_back(sli);
 				}
-				#ifdef IDZ80DEBUG
+#ifdef IDZ80_SYSLABELS_DEBUG
 				else
 					LogIt(wxString::Format("%s [%d] -> Cant convert number !", m_section, line));
-				#endif
+#endif
 			}
-			#ifdef IDZ80DEBUG
+#ifdef IDZ80_SYSLABELS_DEBUG
 			else
 			{
 				str.Clear();
 				str << m_section << wxString::Format("[%d] -> Cant find 2 columms ! (columms = %d)", line, arrstr.GetCount());
 				LogIt(str);
 			}
-			#endif
+#endif
             str = m_file->GetNextLine();
         } //endwhile
     }
-    #ifdef IDZ80DEBUG
+#ifdef IDZ80_SYSLABELS_DEBUG
     if (!foundHeader)
 		LogIt(m_section + "-> Header not found !");
-	#endif
-    return (m_data.GetCount() > 0);
+#endif
+    return (m_data.size() > 0);
 }
 
 
 
-SystemLabelItem *SystemLabelList::GetItem(const uint item)
+/// @brief Get the object SystemLabelItem at position t_index from the list
+/// @param t_index 
+/// @return 
+SystemLabelItem *SystemLabelList::index(const unsigned int t_index)
 {
-	uint i = m_data.GetCount();
+	if (t_index > m_data.size())
+		return 0;
 
-	if (i > 0)
-	{
-		if (item < i)
-			return ((SystemLabelItem *)m_data[item]);
-	}
-	return 0;
+	return m_data.at(t_index);
 }
 
 
 
-wxString &SystemLabelList::Find(const uint addr)
+/// @brief Find label of t_addr
+/// @param t_addr 
+/// @return the label of t_addr
+wxString &SystemLabelList::find(const AbsoluteAddress t_addr)
 {
-	int		i, f;
-	bool	endloop = false;
-	static wxString	str;
+	static wxString str = "";
 
-	SystemLabelItem *sli;
-
-	i = 0;
-	f = m_data.GetCount();
-	sli = 0;
-	str = "";
-
-	if (f == 0)
-		return str;
-
-	while (!endloop)
-	{
-		sli = GetItem(i);
-		if ((sli != 0) && (sli->Address == addr))
-		{
-			str = sli->Label;
-			endloop = true;
-		}
-		i++;
-		if (i >= f)
-			endloop = true;
-	}
+	if (!m_data.empty())
+		for (SystemLabelItem *item : m_data)
+			if(item->address == t_addr) {
+				str = item->label;
+				break;
+			}
 
 	return str;
 }
 
 
-uint SystemLabelList::GetCount()
+
+/// @brief Get the number of system labels loaded
+/// @return 
+uint SystemLabelList::getCount()
 {
-	return (m_data.GetCount());
+	return (m_data.size());
 }
 
 
 
-
-void SystemLabelList::ParseString(wxString& source_string, wxArrayString& string_list)
+/// @brief Process the line (t_source_string) of System Label file
+/// @param t_source_string 
+/// @param t_string_list 
+void SystemLabelList::ParseString(wxString& t_source_string, wxArrayString& t_string_list)
 {
     int			str_len, str_index;
     wxString	stemp;
     bool		found_string = true;
 
-    string_list.Clear();
-    str_index = source_string.Find('"');
+    t_string_list.Clear();
+    str_index = t_source_string.Find('"');
     found_string = (str_index > 0);
     if (found_string)
-		stemp = source_string.Left(str_index);
+		stemp = t_source_string.Left(str_index);
 	else
-		stemp = source_string;
+		stemp = t_source_string;
     str_len = stemp.Len();
     str_index = stemp.First(' ');
     while (str_len > 0)
     {
-        string_list.Add(stemp.Left(str_index));
+        t_string_list.Add(stemp.Left(str_index));
         stemp = stemp.AfterFirst(' ');
         str_len = stemp.Len();
         str_index = stemp.Find(' ');
@@ -232,9 +223,9 @@ void SystemLabelList::ParseString(wxString& source_string, wxArrayString& string
     }
     if (found_string)
 	{
-		stemp = source_string.AfterFirst('"');
+		stemp = t_source_string.AfterFirst('"');
 		stemp = stemp.BeforeLast('"');
-		string_list.Add(stemp);
+		t_string_list.Add(stemp);
 	}
 }
 

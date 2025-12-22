@@ -8,8 +8,8 @@
  * This module stores the source code
  **************************************************************/
 
-#ifndef SOURCE_CODE_HPP
-#define SOURCE_CODE_HPP
+#ifndef _SOURCE_CODE_HPP_
+#define _SOURCE_CODE_HPP_
 
 #include "project_base.hpp"
 #include "disassembled_item.hpp"
@@ -17,11 +17,11 @@
 #include "source_code_access.hpp"
 #include "labelmanager.hpp"
 
-/// @brief The "text" source code
+// @brief The "text" source code
 class SourceCode: public SourceCodeAccess
 {
     public:
-        SourceCode(ProjectBase *t_parent);
+        SourceCode(const ProjectBase *t_parent);
         virtual ~SourceCode();
 
         void clear();
