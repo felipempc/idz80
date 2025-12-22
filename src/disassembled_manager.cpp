@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-#include "disassembled_manager.h"
+#include "disassembled_manager.hpp"
 
 
 DisassembledManager::DisassembledManager(DebugLogBase *parent)

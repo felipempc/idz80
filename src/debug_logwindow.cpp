@@ -8,7 +8,7 @@
  * Log window
  **************************************************************/
 
-#include "debug_logwindow.h"
+#include "debug_logwindow.hpp"
 #include <wx/font.h>
 #include <wx/datetime.h>
 

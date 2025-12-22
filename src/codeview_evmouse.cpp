@@ -12,8 +12,8 @@
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include <wx/mousestate.h>
-#include "codeview.h"
-#include "disassembled_item.h"
+#include "codeview.hpp"
+#include "disassembled_item.hpp"
 
 
 
@@ -194,8 +194,8 @@ void CodeView::OnMouseWheel(wxMouseEvent& event)
     else
     {
         position = GetFirstLine() + motion_step;
-        if (position > static_cast<int>(m_CodeViewLine->GetCount() - m_linesShown))
-            position = m_CodeViewLine->GetCount() - m_linesShown;
+        if (position > static_cast<int>(m_CodeViewLine->getCount() - m_linesShown))
+            position = m_CodeViewLine->getCount() - m_linesShown;
         Scroll(-1,position);
     }
 }

@@ -8,7 +8,7 @@
  * Process all data
  **************************************************************/
 
-#include "process_data.h"
+#include "process_data.hpp"
 #include <stack>
 
 
@@ -28,8 +28,8 @@ ProcessData::ProcessData(ProjectBase *t_parent)
     m_disassembled_mgr = new DisassembledManager(t_parent);
     t_parent->m_disassembled_mgr = m_disassembled_mgr;
 
-    //CodeViewLines = new SourceCodeLines(m_disassembled_mgr, this);
-    //search_status_ = new SearchManager();
+    //CodeViewLines = new SourceCode(m_disassembled_mgr, this);
+    //m_search_status = new SearchManager();
     m_disassembler = new SmartDecoder(t_parent);
 
     ModuleName = "ProcessData";
@@ -44,13 +44,13 @@ ProcessData::~ProcessData()
     if (m_disassembled_mgr)
         delete m_disassembled_mgr;
     
-    m_labels->DestroyAll();
+    m_labels->destroyAll();
 }
 
 
-void ProcessData::Clear()
+void ProcessData::clear()
 {
-    m_labels->ClearUserLabels();
+    m_labels->clearUserLabels();
     m_disassembled_mgr->Clear();
     //CodeViewLines->Clear();
     if (m_disassembler)
@@ -63,7 +63,7 @@ void ProcessData::Clear()
  * system calls, etc) after program
  * has been loaded.
  */
-bool ProcessData::SetupSystemLabels()
+bool ProcessData::setupSystemLabels()
 {
     bool ret = false;
     RawData *program = m_programs_mgr->First();
@@ -91,7 +91,7 @@ bool ProcessData::SetupSystemLabels()
 
 
 
-void ProcessData::DisassembleFirst(const unsigned int t_index)
+void ProcessData::disassembleFirst(const unsigned int t_index)
 {
     DisassembledContainer *disassembled = m_disassembled_mgr->Index(t_index);
     disassembled->Clear();
@@ -105,7 +105,7 @@ void ProcessData::DisassembleFirst(const unsigned int t_index)
 
 
 
-void ProcessData::DisassembleItems(const unsigned int t_index, RangeItems &t_range)
+void ProcessData::disassembleItems(const unsigned int t_index, RangeItems &t_range)
 {
     m_disassembler->SetProgramIndex(t_index);
     m_disassembler->DisassembleItems(t_range);
@@ -113,7 +113,7 @@ void ProcessData::DisassembleItems(const unsigned int t_index, RangeItems &t_ran
 
 
 
-void ProcessData::MakeData(const unsigned int t_index, RangeItems &t_range)
+void ProcessData::makeData(const unsigned int t_index, RangeItems &t_range)
 {
     uint		i, j, k, f, offset, length;
     DisassembledItem	*de;
@@ -133,7 +133,7 @@ void ProcessData::MakeData(const unsigned int t_index, RangeItems &t_range)
         de = Disassembled->GetData(i);
         offset = de->GetOffsetInFile();
         length = de->GetLength();
-        RemoveFromLabelUserList(de, i);
+        removeFromLabelUserList(de, i);
         Disassembled->Del(i);
         for (j = 0; j < length; ++j)
         {
@@ -149,7 +149,7 @@ void ProcessData::MakeData(const unsigned int t_index, RangeItems &t_range)
 
 
 
-void ProcessData::InitData(const unsigned int t_index)
+void ProcessData::initData(const unsigned int t_index)
 {
     uint                    i, fstil;
     wxArrayString           m_Comments;
@@ -167,15 +167,15 @@ void ProcessData::InitData(const unsigned int t_index)
 
     i = 0;
     while (i < m_Comments.GetCount())
-        CodeViewLines->AddComment(m_Comments[i++]);
+        CodeViewLines->addComment(m_Comments[i++]);
 
-    CodeViewLines->AddOrg(Disassembled->GetBaseAddress(0), "");
+    CodeViewLines->addOrigin(Disassembled->GetBaseAddress(0), "");
     i = 0;
     fstil = CodeViewLines->GetCount();
     while (i < Disassembled->GetCount())
         CodeViewLines->AddDasm(i++, "");
 
-    CodeViewLines->SetFirstInstructionLine(fstil);
+    CodeViewLines->setFirstInstructionLine(fstil);
 }
 
 
@@ -183,27 +183,27 @@ void ProcessData::InitData(const unsigned int t_index)
 /*
  * Insert Labels of LabelListCtrl in the sourcecode
  */
-void ProcessData::ProcessLabel(LabelListCtrl *label)
+void ProcessData::processLabel(LabelListCtrl *label)
 {
     LabelItem *lbl;
     int line_index = -1;
     LabelIndex counter = 0;
-    CodeViewItem    *cvi;
+    SourceCodeLine    *cvi;
 
-    while (counter < label->GetCount())
+    while (counter < label->getCount())
     {
-        lbl = label->GetData(counter);
+        lbl = label->getData(counter);
         if (lbl)
         {
-            line_index = CodeViewLines->getLineOfAddress(lbl->Address);
-            cvi = CodeViewLines->Line(line_index - 1);
-            if (cvi && !(cvi->LabelProgAddr || cvi->LabelVarAddr) && (line_index >= 0))
+            line_index = CodeViewLines->getLineOfAddress(lbl->address);
+            cvi = CodeViewLines->line(line_index - 1);
+            if (cvi && !(cvi->labelProgAddress || cvi->labelVarAddress) && (line_index >= 0))
             {
-                if (label->GetTypeList() == PRG_LIST)
-                    CodeViewLines->InsertProgLabel(lbl->Address, "", line_index);
+                if (label->getTypeList() == PRG_LIST)
+                    CodeViewLines->insertProgramLabel(lbl->address, "", line_index);
                 else
-                    if (label->GetTypeList() == VAR_LIST)
-                        CodeViewLines->InsertVarLabel(lbl->Address, "", line_index);
+                    if (label->getTypeList() == VAR_LIST)
+                        CodeViewLines->insertVarLabel(lbl->address, "", line_index);
             }
         }
         counter++;
@@ -211,29 +211,28 @@ void ProcessData::ProcessLabel(LabelListCtrl *label)
 }
 
 
-void ProcessData::InsertLineLabelsInSourceCode()
+void ProcessData::insertLineLabelsInSourceCode()
 {
-    ProcessLabel(m_labels->prog_labels);
-    ProcessLabel(m_labels->var_labels);
+    processLabel(m_labels->prog_labels);
+    processLabel(m_labels->var_labels);
 }
 
 
 
-void ProcessData::RemoveFromLabelUserList(DisassembledItem *t_de, const uint t_dasmitem)
+void ProcessData::removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmitem)
 {
     if (t_de->GetMnemonic()->GetArgumentCount() > 0)
         switch(t_de->GetMnemonic()->GetArgument(0).type)
         {
             case OT_VARIABLE:
-                m_labels->var_labels->DelLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
+                m_labels->var_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
             case OT_IO_ADDRESS:
-                m_labels->io_labels->DelLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
+                m_labels->io_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
             case OT_RELATIVE_ADDRESS:
             case OT_ABSOLUTE_ADDRESS:
-                m_labels->prog_labels->DelLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
+                m_labels->prog_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmitem);
         }
 }
-
 
 
 
@@ -245,10 +244,10 @@ void ProcessData::RemoveFromLabelUserList(DisassembledItem *t_de, const uint t_d
  * Keeps comments;
  * keeps org directives;
  */
-void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &t_selected)
+void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &t_selected)
 {
     RangeItems		dasmed_items;
-    CodeViewItem	*cvi;
+    SourceCodeLine	*cvi;
     int 			newLineCount, lineIndex, oldLineCount, varindex,
                     varitem;
     uint            i, line_count, deleted_labels;
@@ -260,7 +259,7 @@ void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &
         (t_selected.lastInstruction < static_cast<int>(Disassembled->GetCount())))
     {
         if (t_selected.firstLine > 0)
-            cvi = CodeViewLines->Line(t_selected.firstLine - 1);
+            cvi = CodeViewLines->line(t_selected.firstLine - 1);
 
         deleted_labels = 0;
         lineIndex = t_selected.firstLine;
@@ -270,12 +269,12 @@ void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &
         dasmed_items.Count = t_selected.lastInstruction - t_selected.firstInstruction + 1;
         oldLineCount = dasmed_items.Count;
 
-        m_labels->var_labels->GetLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, &varlabels);
+        m_labels->var_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, &varlabels);
 
-        MakeData(t_index, dasmed_items);
+        makeData(t_index, dasmed_items);
 
         for (i = 0; i < line_count; ++i)
-            if (RemoveLineAndProgLabels(lineIndex))
+            if (removeLineAndProgLabels(lineIndex))
                 deleted_labels++;
 
 //* TODO:REWRITE THIS
@@ -283,7 +282,7 @@ void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &
 
         newLineCount = dasmed_items.Count - oldLineCount;
 
-        CodeViewLines->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
+        CodeViewLines->updateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
         if (cvi)
         {
@@ -291,10 +290,10 @@ void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &
             {
                 varitem = varlabels[i];
                 varindex = CodeViewLines->getLineOfAddress(lineIndex, (line_count + newLineCount), varitem);
-                if (!(cvi->LabelVarAddr) || (cvi->LabelVarAddr->Address != static_cast<AbsoluteAddress>(varitem)))
+                if (!(cvi->labelVarAddress) || (cvi->labelVarAddress->address != static_cast<AbsoluteAddress>(varitem)))
                 {
                     LogIt(wxString::Format("Found var address 0x%X, line %d\n", varitem, varindex));
-                    CodeViewLines->InsertVarLabel(varitem, "", varindex);
+                    CodeViewLines->insertVarLabel(varitem, "", varindex);
                 }
             }
         }
@@ -307,10 +306,10 @@ void ProcessData::TransformToData(const unsigned int t_index, SelectedItemInfo &
 
 
 
-void ProcessData::DisassembleData(const unsigned int t_index, SelectedItemInfo &t_selected)
+void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &t_selected)
 {
     RangeItems		dasmed_items;
-    CodeViewItem	*cvi;
+    SourceCodeLine	*cvi;
     int				newLineCount, oldLineCount,
                     progindex, progitem;
 
@@ -319,7 +318,7 @@ void ProcessData::DisassembleData(const unsigned int t_index, SelectedItemInfo &
     IntArray		cvlines, proglabels;
     uint            i;
 
-	if (!FilterInstructions(t_index, cvlines, t_selected))
+	if (!filterInstructions(t_index, cvlines, t_selected))
 		return;
 
     deleted_labels = 0;
@@ -332,29 +331,29 @@ void ProcessData::DisassembleData(const unsigned int t_index, SelectedItemInfo &
         if (lineCount < 0)
             return;
 
-		cvi = CodeViewLines->Line(lineIndex);
-		dasmed_items.Index = cvi->Dasmitem;
-		cvi = CodeViewLines->Line(lineLast);
-		dasmed_items.Count = cvi->Dasmitem - dasmed_items.Index + 1;
+		cvi = CodeViewLines->line(lineIndex);
+		dasmed_items.Index = cvi->dasmedItem;
+		cvi = CodeViewLines->line(lineLast);
+		dasmed_items.Count = cvi->dasmedItem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
         m_labels->prog_labels->GetLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, &proglabels);
 
 		for (i = 0; i < static_cast<uint>(lineCount); ++i)
-            if (RemoveLineAndVarLabels(lineIndex))
+            if (removeLineAndVarLabels(lineIndex))
                 deleted_labels++;
 
 
-		DisassembleItems(t_index, dasmed_items);
+		disassembleItems(t_index, dasmed_items);
 
 		CodeViewLines->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
 
 		newLineCount = dasmed_items.Count - oldLineCount;
 
-		CodeViewLines->UpdateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
+		CodeViewLines->updateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
 
         if (lineIndex > 0)
-            cvi = CodeViewLines->Line(lineIndex - 1);
+            cvi = CodeViewLines->line(lineIndex - 1);
 
         if (cvi)
         {
@@ -362,10 +361,10 @@ void ProcessData::DisassembleData(const unsigned int t_index, SelectedItemInfo &
             {
                 progitem = proglabels[i];
                 progindex = CodeViewLines->getLineOfAddress(lineIndex, (lineCount + newLineCount), progitem);
-                if (!(cvi->LabelProgAddr) || (cvi->LabelProgAddr->Address != static_cast<AbsoluteAddress>(progitem)))
+                if (!(cvi->labelProgAddress) || (cvi->labelProgAddress->address != static_cast<AbsoluteAddress>(progitem)))
                 {
                     LogIt(wxString::Format("Found program address 0x%X, line %d\n", progitem, progindex));
-                    CodeViewLines->InsertProgLabel(progitem, "", progindex);
+                    CodeViewLines->insertProgramLabel(progitem, "", progindex);
                 }
             }
         }
@@ -380,11 +379,11 @@ void ProcessData::DisassembleData(const unsigned int t_index, SelectedItemInfo &
 /* Returns the first and the last line of instruction / data
  * Returns program labels
  */
-bool ProcessData::FilterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected)
+bool ProcessData::filterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected)
 {
     bool	foundindex;
     int		i, last_i;
-    CodeViewItem
+    SourceCodeLine
 			*cvi;
     DisassembledItem
 			*de;
@@ -395,10 +394,10 @@ bool ProcessData::FilterInstructions(const unsigned int t_index, IntArray &t_ran
     last_i = 0;
     for (i = t_selected.firstLine; i <= t_selected.lastLine; i++)
     {
-        cvi = CodeViewLines->Line(i);
-        if (cvi->Dasmitem >= 0)
+        cvi = CodeViewLines->line(i);
+        if (cvi->dasmedItem >= 0)
         {
-            de = Disassembled->GetData(cvi->Dasmitem);
+            de = Disassembled->GetData(cvi->dasmedItem);
 
             if (!foundindex)
             {
@@ -420,45 +419,45 @@ bool ProcessData::FilterInstructions(const unsigned int t_index, IntArray &t_ran
 
 
 // Return true if a prog label was found
-bool ProcessData::RemoveLineAndProgLabels(const int t_line)
+bool ProcessData::removeLineAndProgLabels(const int t_line)
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     bool ret = false;
 
-    cvi = CodeViewLines->Line(t_line);
-    if (cvi && cvi->LabelProgAddr)
+    cvi = CodeViewLines->line(t_line);
+    if (cvi && cvi->labelProgAddress)
     {
-        RemoveLabelUsers(cvi->Dasmitem, cvi->LabelProgAddr->LabelUsers);
-        m_labels->prog_labels->DelLabel(cvi->LabelProgAddr->Address);
+        removeLabelUsers(cvi->dasmedItem, cvi->labelProgAddress->labelUsers);
+        m_labels->prog_labels->DelLabel(cvi->labelProgAddress->address);
         ret = true;
     }
-    CodeViewLines->Del(t_line);
+    CodeViewLines->delLine(t_line);
     return ret;
 }
 
 
 
 // Return true if a var label was found
-bool ProcessData::RemoveLineAndVarLabels(const int t_line)
+bool ProcessData::removeLineAndVarLabels(const int t_line)
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     bool ret = false;
 
-    cvi = CodeViewLines->Line(t_line);
-    if (cvi && cvi->LabelVarAddr)
+    cvi = CodeViewLines->line(t_line);
+    if (cvi && cvi->labelVarAddress)
     {
-        RemoveLabelUsers(cvi->Dasmitem, cvi->LabelVarAddr->LabelUsers);
-        m_labels->var_labels->DelLabel(cvi->LabelVarAddr->Address);
+        removeLabelUsers(cvi->dasmedItem, cvi->labelVarAddress->labelUsers);
+        m_labels->var_labels->DelLabel(cvi->labelVarAddress->address);
         ret = true;
     }
-    CodeViewLines->Del(t_line);
+    CodeViewLines->delLine(t_line);
     return ret;
 }
 
 
 
 
-void ProcessData::RemoveLabelUsers(const unsigned int t_index, IntArray *users)
+void ProcessData::removeLabelUsers(const unsigned int t_index, IntArray *users)
 {
     uint        i;
     DisassembledItem        *de;
@@ -483,14 +482,14 @@ void ProcessData::RemoveLabelUsers(const unsigned int t_index, IntArray *users)
 
 
 
-void ProcessData::SearchInstructionArgument(word t_argument_value, uint t_search_config)
+void ProcessData::searchInstructionArgument(word t_argument_value, uint t_search_config)
 {
-//    search_status_->Setup(0, Disassembled->GetCount() - 1, search_config, argument_value);
+//    m_search_status->Setup(0, Disassembled->GetCount() - 1, search_config, argument_value);
 }
 
 
 
-bool ProcessData::SearchInstructionArgumentContinue(AbsoluteAddress &t_address)
+bool ProcessData::searchInstructionArgumentContinue(AbsoluteAddress &t_address)
 {
     DisassembledItem *de;
     DisassembledIndex dasm_count;
@@ -502,7 +501,7 @@ bool ProcessData::SearchInstructionArgumentContinue(AbsoluteAddress &t_address)
     {
         try
         {
-            dasm_count = search_status_->Next();
+            dasm_count = m_search_status->Next();
         }
         catch (SearchException &e)
         {
@@ -512,19 +511,19 @@ bool ProcessData::SearchInstructionArgumentContinue(AbsoluteAddress &t_address)
 
         de = Disassembled->GetData(dasm_count);
         t_address = Disassembled->GetBaseAddress(0) + de->GetOffsetInFile();
-        if (search_status_->SearchLiteral() && FindInArgumentLiteral(de, search_status_->Target()))
+        if (m_search_status->SearchLiteral() && findInArgumentLiteral(de, m_search_status->Target()))
         {
             found = true;
             break;
         }
 
-        if (search_status_->SearchVariable() && FindInArgumentVariables(de, search_status_->Target()))
+        if (m_search_status->SearchVariable() && findInArgumentVariables(de, m_search_status->Target()))
         {
             found = true;
             break;
         }
 
-        if (search_status_->SearchJumpsCalls() && FindInArgumentJumpsCalls(de, search_status_->Target()))
+        if (m_search_status->SearchJumpsCalls() && findInArgumentJumpsCalls(de, m_search_status->Target()))
         {
             found = true;
             break;
@@ -536,7 +535,7 @@ bool ProcessData::SearchInstructionArgumentContinue(AbsoluteAddress &t_address)
 
 
 
-bool ProcessData::FindInArgumentVariables(DisassembledItem *de, word argument)
+bool ProcessData::findInArgumentVariables(DisassembledItem *de, word argument)
 {
     if ((de->GetMnemonic()->GetArgument(0).type == OT_VARIABLE) && (de->GetArgumentValue(0, 0) == argument))
         return true;
@@ -546,7 +545,7 @@ bool ProcessData::FindInArgumentVariables(DisassembledItem *de, word argument)
 
 
 
-bool ProcessData::FindInArgumentLiteral(DisassembledItem *de, word argument)
+bool ProcessData::findInArgumentLiteral(DisassembledItem *de, word argument)
 {
     uint argument_index = 0;
 
@@ -562,7 +561,7 @@ bool ProcessData::FindInArgumentLiteral(DisassembledItem *de, word argument)
 }
 
 
-bool ProcessData::FindInArgumentJumpsCalls(DisassembledItem *de, word argument)
+bool ProcessData::findInArgumentJumpsCalls(DisassembledItem *de, word argument)
 {
     if ((de->GetMnemonic()->GetArgument(0).type == OT_ABSOLUTE_ADDRESS) && (de->GetArgumentValue(0, 0) == argument))
         return true;

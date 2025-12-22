@@ -8,7 +8,7 @@
  * This module stores / manages disassembled code
  **************************************************************/
 
-#include "disassembled_container.h"
+#include "disassembled_container.hpp"
 
 
 DisassembledContainer::DisassembledContainer(DebugLogBase *logparent)

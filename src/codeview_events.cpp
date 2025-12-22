@@ -11,13 +11,13 @@
 
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
-#include "codeview.h"
-#include "search_argument_dialog.h"
+#include "codeview.hpp"
+#include "search_argument_dialog.hpp"
 
 
 void CodeView::OnScrollLineDown(wxScrollWinEvent& event)
 {
-    if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->GetCount() - 1))
+    if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->getCount() - 1))
     {
         if (!MultiSelection)
             line_info.cursorLastPosition = line_info.cursorPosition;
@@ -80,7 +80,7 @@ void CodeView::OnScrollPageDown(wxScrollWinEvent& event)
 {
     int page;
 
-    if (GetFirstLine() < static_cast<int>(m_CodeViewLine->GetCount() - m_linesShown))
+    if (GetFirstLine() < static_cast<int>(m_CodeViewLine->getCount() - m_linesShown))
     {
         page = line_info.cursorPosition;
         Scroll(-1, GetFirstLine() + m_linesShown);
@@ -198,7 +198,7 @@ void CodeView::OnSearchContinue(wxCommandEvent& event)
 {
     AbsoluteAddress address;
 
-    if (Process->SearchInstructionArgumentContinue(address))
+    if (Process->searchInstructionArgumentContinue(address))
     {
         CenterAddress(address);
     }
@@ -247,13 +247,13 @@ void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
 {
-    CodeViewItem	*cvi;
+    SourceCodeLine	*cvi;
     DisassembledItem		*de;
     uint 			address;
 
-    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
-    de = Process->Disassembled->GetData(cvi->Dasmitem);
-    address = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+    de = Process->Disassembled->GetData(cvi->dasmedItem);
+    address = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->dasmedItem));
     CenterAddress(address);
 
 }
@@ -287,7 +287,7 @@ void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
  */
 void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 {
-        Process->TransformToData(line_info);
+        Process->transformToData(line_info);
         UpdateSelectedRect();
 		Refresh();
 }
@@ -295,7 +295,7 @@ void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 {
-        Process->DisassembleData(line_info);
+        Process->disassembleData(line_info);
 		UpdateSelectedRect();
 		Refresh();
 }
@@ -304,14 +304,14 @@ void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
 
 void CodeView::OnPopUpAddComment(wxCommandEvent& event)
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
+    cvi = m_CodeViewLine->line(line_info.cursorPosition);
 
     if (cvi)
     {
-        if (cvi->Comment == 0)
+        if (cvi->comment == 0)
         {
             comment = ::wxGetTextFromUser("Add Comment", "Add");
             if (!comment.IsEmpty())
@@ -319,7 +319,7 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
                 comment = comment.Trim(false);
                 if (comment.Left(1) != ";")
                     comment.Prepend("; ");
-                m_CodeViewLine->AppendComment(comment, line_info.cursorPosition);
+                m_CodeViewLine->appendComment(comment, line_info.cursorPosition);
                 Refresh();
             }
         }
@@ -328,32 +328,32 @@ void CodeView::OnPopUpAddComment(wxCommandEvent& event)
 
 void CodeView::OnPopUpEditComment(wxCommandEvent& event)
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
-	if ((cvi) && (cvi->Comment))
-		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->Comment->c_str());
+    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+	if ((cvi) && (cvi->comment))
+		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->comment->c_str());
 	if (!comment.IsEmpty())
 	{
 		comment = comment.Trim(false);
 		if (comment.Left(1) != ";")
 			comment.Prepend("; ");
-		m_CodeViewLine->EditComment(comment, line_info.cursorPosition);
+		m_CodeViewLine->editComment(comment, line_info.cursorPosition);
 		Refresh();
 	}
 }
 
 void CodeView::OnPopUpDelComment(wxCommandEvent& event)
 {
-    CodeViewItem *cvi;
-    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
+    SourceCodeLine *cvi;
+    cvi = m_CodeViewLine->line(line_info.cursorPosition);
     if (cvi != 0)
     {
-        if ((cvi->Dasmitem == -1) && (cvi->LabelProgAddr) && (cvi->LabelVarAddr) && (cvi->Org == -1))
-            m_CodeViewLine->DelItem(cvi);
+        if ((cvi->dasmedItem == -1) && (cvi->labelProgAddress) && (cvi->labelVarAddress) && (cvi->originAddress == -1))
+            m_CodeViewLine->delSCItem(cvi);
         else
-            m_CodeViewLine->DelComment(cvi);
+            m_CodeViewLine->delComment(cvi);
         Refresh();
     }
 }
@@ -376,21 +376,21 @@ void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
 
 void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     DisassembledItem *de;
-    cvi = m_CodeViewLine->Line(line_info.cursorPosition);
+    cvi = m_CodeViewLine->line(line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi)
 	{
 	    de = line_info.dasmitem;
 
-		if (cvi->LabelProgAddr)
-			Process->prog_labels->EditLabelDialog(cvi->LabelProgAddr->Address);
+		if (cvi->labelProgAddress)
+			Process->prog_labels->EditLabelDialog(cvi->labelProgAddress->address);
         else
             if (de && (de->IsArgumentProgramAddress()))
                 Process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
-		if (cvi->LabelVarAddr)
-			Process->var_labels->EditLabelDialog(cvi->LabelVarAddr->Address);
+		if (cvi->labelVarAddress)
+			Process->var_labels->EditLabelDialog(cvi->labelVarAddress->address);
         else
             if (de && (de->IsArgumentVariableAddress()))
                 Process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
@@ -403,20 +403,20 @@ void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
 {
     if (line_info.type == siLineLabelProg)
     {
-        Process->RemoveLineAndProgLabels(line_info.firstLine);
+        Process->removeLineAndProgLabels(line_info.firstLine);
         Refresh();
     }
 
     if (line_info.type == siLineLabelVar)
     {
-        Process->RemoveLineAndVarLabels(line_info.firstLine);
+        Process->removeLineAndVarLabels(line_info.firstLine);
         Refresh();
     }
 
 
     if (line_info.type == siInstructionLabel)
     {
-        Process->RemoveFromLabelUserList(line_info.dasmitem, line_info.firstInstruction);
+        Process->removeFromLabelUserList(line_info.dasmitem, line_info.firstInstruction);
         line_info.dasmitem->SetArgLabel(false);
         RefreshRect(CalcCursorRfshRect());
     }
@@ -476,9 +476,9 @@ void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
 
     if (search_dialog->ShowModal() == wxID_OK)
     {
-        Process->SearchInstructionArgument(search_dialog->getValue(), search_dialog->getSearchConfig());
+        Process->searchInstructionArgument(search_dialog->getValue(), search_dialog->getSearchConfig());
 
-        if (Process->SearchInstructionArgumentContinue(address))
+        if (Process->searchInstructionArgumentContinue(address))
         {
             CenterAddress(address);
         }

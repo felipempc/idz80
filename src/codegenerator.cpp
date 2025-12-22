@@ -9,7 +9,7 @@
  * disassembled program
  **************************************************************/
 
-#include "codegenerator.h"
+#include "codegenerator.hpp"
 
 // OBSOLETE: MUST BE COMPLETELY REWRITED
 
@@ -33,7 +33,7 @@ bool codeGenerator::isNumber(wxChar firstchar)
 }
 
 
-wxString codeGenerator::generateTextData(CodeViewItem *cvi)
+wxString codeGenerator::generateTextData(SourceCodeLine *cvi)
 {
     uint i;
     DisassembledItem *de;
@@ -45,7 +45,7 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
     else
         str_number_format = "0x%.2X";
 */
-    de = Process->Disassembled->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->dasmedItem);
     str.Printf("DB ");
     str << de->GetOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATED);
     /* OBSOLETE
@@ -61,7 +61,7 @@ wxString codeGenerator::generateTextData(CodeViewItem *cvi)
 
 
 
-wxString codeGenerator::generateLabels(CodeViewItem *cvi)
+wxString codeGenerator::generateLabels(SourceCodeLine *cvi)
 {
     wxString str_ret, str;
     uint i;
@@ -86,7 +86,7 @@ wxString codeGenerator::generateLabels(CodeViewItem *cvi)
 }
 
 
-wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
+wxString codeGenerator::generateInstruction(SourceCodeLine *cvi)
 {
     int		nargs;
     uint	argument, strparts;
@@ -97,7 +97,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     DisassembledItem *de;
 
     usedlabel = false;
-    de = Process->Disassembled->GetData(cvi->Dasmitem);
+    de = Process->Disassembled->GetData(cvi->dasmedItem);
     nargs = de->GetMnemonic()->GetArgumentCount();
 
     str_ret = de->GetMnemonic()->GetMnemonicStr(0);
@@ -107,7 +107,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
     str_2.Clear();
 
     //Rewrite
-    argument = 0; //de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->Dasmitem));
+    argument = 0; //de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->dasmedItem));
 
     if (m_cflags == cfM80)
         str_number_format = "%XH";
@@ -168,7 +168,7 @@ wxString codeGenerator::generateInstruction(CodeViewItem *cvi)
 wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 {
     wxTextFile  file_o_code;
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     wxString str, str_number_format;
 
     int     count, i;
@@ -205,12 +205,12 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
     while (i < count)
     {
-        cvi = Process->CodeViewLines->Line(i);
+        cvi = Process->CodeViewLines->line(i);
 
         /* -------------------------------------------------
          *  Render Origin
          * -------------------------------------------------*/
-        if (cvi->Org >= 0)
+        if (cvi->originAddress >= 0)
         {
             if (!first_instruction)
             {
@@ -225,16 +225,16 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
 
             str = "ORG ";
             str << str_number_format;
-            textCode << "\t" << wxString::Format(str, cvi->Org);
+            textCode << "\t" << wxString::Format(str, cvi->originAddress);
         }
         else
         {
             /* -------------------------------------------------
              *  Render Instructions
              * -------------------------------------------------*/
-            if (cvi->Dasmitem >= 0)    // is It data/code ?
+            if (cvi->dasmedItem >= 0)    // is It data/code ?
             {
-                de = Process->Disassembled->GetData(cvi->Dasmitem);
+                de = Process->Disassembled->GetData(cvi->dasmedItem);
 
                 first_instruction = true;
 /*
@@ -257,15 +257,15 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
              *  Render Labels
              * -------------------------------------------------*/
 
-             if (cvi->LabelProgAddr)
+             if (cvi->labelProgAddress)
             {
                 first_instruction = true;
-                textCode << cvi->LabelProgAddr->LabelStr << ":";
+                textCode << cvi->labelProgAddress->labelString << ":";
             }
-            if (cvi->LabelVarAddr)
+            if (cvi->labelVarAddress)
             {
                 first_instruction = true;
-                textCode << cvi->LabelVarAddr->LabelStr << ":";
+                textCode << cvi->labelVarAddress->labelString << ":";
             }
 
         }
@@ -274,9 +274,9 @@ wxString codeGenerator::GenerateCode(wxString file, const CompilerFlag cflags)
         /* -------------------------------------------------
          *  Render Comments
          * -------------------------------------------------*/
-        if (cvi->Comment)   // has comments ?
+        if (cvi->comment)   // has comments ?
         {
-            str = cvi->Comment->c_str(); //->CommentStr;
+            str = cvi->comment->c_str(); //->CommentStr;
             if (first_instruction)
                 textCode << "\t";
 

@@ -8,9 +8,9 @@
  * Load programs to disassemble
  **************************************************************/
 
-#include "newproject_dialog.h"
-#include "wx/filedlg.h"
-#include "file_settings_dialog.h"
+#include <wx/filedlg.h>
+ #include "newproject_dialog.hpp"
+#include "file_settings_dialog.hpp"
 
 
 // DEFinition for debug = IDZ80_NPRJD_DEBUG

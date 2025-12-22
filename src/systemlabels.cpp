@@ -8,7 +8,7 @@
  * Shows and controls system labels
  **************************************************************/
 
- #include "systemlabels.h"
+ #include "systemlabels.hpp"
 
 SystemLabelList::SystemLabelList(const wxString& section, DebugLogBase *logparent)
 {

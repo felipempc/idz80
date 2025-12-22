@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-#include "editlabel_dialog.h"
+#include "editlabel_dialog.hpp"
 #include <wx/msgdlg.h>
 
 

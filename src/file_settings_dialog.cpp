@@ -10,7 +10,7 @@
 
 
 
-#include "file_settings_dialog.h"
+#include "file_settings_dialog.hpp"
 
 
 #include <wx/intl.h>

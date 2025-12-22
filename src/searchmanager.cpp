@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-#include "searchmanager.h"
+#include "searchmanager.hpp"
 
 
 /*

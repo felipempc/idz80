@@ -8,7 +8,7 @@
  * Base class for logging
  **************************************************************/
 
-#include "debug_logbase.h"
+#include "debug_logbase.hpp"
 
 
 DebugLogBase::DebugLogBase()

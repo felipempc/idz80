@@ -8,7 +8,7 @@
  * Access mnemonics in the container
  **************************************************************/
 
-#include "mnemonic_access.h"
+#include "mnemonic_access.hpp"
 
 MnemonicAccess::MnemonicAccess()
 {

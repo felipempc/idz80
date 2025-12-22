@@ -8,7 +8,7 @@
  * This module disassembles a program
  **************************************************************/
 
-#include "decoder.h"
+#include "decoder.hpp"
 #include <wx/string.h>
 
  // WORK IN PROGRESS
@@ -254,7 +254,7 @@ void Decoder::FullDisassemble()
     if ((!m_program) || (!m_disassembled_list))
         return;
 
-    m_labels->ClearUserLabels();
+    m_labels->clearUserLabels();
 
     if (m_program->isCartridge())
         SetCartridgeLabels();

@@ -8,7 +8,7 @@
  * Open and fill the mnemonics database
  **************************************************************/
 
-#include "mnemonic_container.h"
+#include "mnemonic_container.hpp"
 
 MnemonicContainer::MnemonicContainer(wxTextCtrl *log)
 {

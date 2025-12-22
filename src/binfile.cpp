@@ -8,7 +8,7 @@
  * Binary file controls
  **************************************************************/
 
-#include "binfile.h"
+#include "binfile.hpp"
 
 
 const byte BinFile::BIN_ID;

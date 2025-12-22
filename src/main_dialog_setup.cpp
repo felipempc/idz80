@@ -10,8 +10,8 @@
 
 #include <wx/dir.h>
 
-#include "main_dialog.h"
-#include "mnemonicxmlfile.h"
+#include "main_dialog.hpp"
+#include "mnemonicxmlfile.hpp"
 
 
 

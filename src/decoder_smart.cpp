@@ -8,7 +8,7 @@
  * This module disassembles a program in smart mode.
  **************************************************************/
 
-#include "decoder_smart.h"
+#include "decoder_smart.hpp"
 
  // REWRITE: Work in progress
 
@@ -50,7 +50,7 @@ bool SmartDecoder::FullDisassemble()
     if ((!m_program) || (!m_disassembled_list))
     return;
 
-    m_labels->ClearUserLabels();
+    m_labels->clearUserLabels();
     m_sub_routine->Clear();
     UpdateBoundaries();
 

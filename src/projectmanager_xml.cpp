@@ -12,10 +12,10 @@
 #include <wx/stopwatch.h>
 #include <wx/filefn.h>
 
-#include "projectmanager_xml.h"
-#include "mnemonic_item.h"
-#include "mnemonic_container.h"
-#include "labelmanager.h"
+#include "projectmanager_xml.hpp"
+#include "mnemonic_item.hpp"
+#include "mnemonic_container.hpp"
+#include "labelmanager.hpp"
 
 const wxString ProjectManagerXML::PROJECT_EXTENSION = ".dap";
 const unsigned int ProjectManagerXML::PROJECT_FILE_VERSION = 0;
@@ -236,13 +236,13 @@ void ProjectManagerXML::writeLabel(wxXmlDocument &doc, LabelListCtrl *current_la
             if (label)
             {
                 items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_LABEL_STR, i));
-                items->AddAttribute(label->LabelStr, wxString::Format("%X", label->Address));
+                items->AddAttribute(label->labelString, wxString::Format("%X", label->address));
 
-                if (label->LabelUsers)
+                if (label->labelUsers)
                 {
                     str.Clear();
-                    for (j = 0; j < label->LabelUsers->GetCount(); j++)
-                        str << wxString::Format(" %d",label->LabelUsers->Item(j));
+                    for (j = 0; j < label->labelUsers->GetCount(); j++)
+                        str << wxString::Format(" %d",label->labelUsers->Item(j));
                     str.Trim(false);
                     items->AddAttribute(ATTRIBUTE_LABELUSERS_STR, str);
                 }
@@ -299,34 +299,34 @@ void ProjectManagerXML::writeCodeLine(wxXmlDocument &doc)
 {
     wxXmlNode *section, *item;
     int countdown;
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     uint    total_lines;
 
 
-    if (main_->CodeViewLines_->GetCount() > 0)
+    if (main_->m_source_code->GetCount() > 0)
     {
         section = new wxXmlNode(doc.GetRoot(), wxXML_ELEMENT_NODE, SECTION_CODEVIEWLINE_STR);
-        total_lines = main_->CodeViewLines_->GetCount();
+        total_lines = main_->m_source_code->GetCount();
         section->AddAttribute(ATTRIBUTE_TOTALLINES_STR, wxString::Format("%d", total_lines));
 
         for (countdown = (total_lines - 1); countdown > -1; countdown--)
         {
-            cvi = main_->CodeViewLines_->Line(countdown);
+            cvi = main_->m_source_code->line(countdown);
             item = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_LINE_STR, countdown));
-            if (cvi->Org >= 0)
-                item->AddAttribute(ATTRIBUTE_ORG_STR, wxString::Format("%d", cvi->Org));
+            if (cvi->originAddress >= 0)
+                item->AddAttribute(ATTRIBUTE_ORG_STR, wxString::Format("%d", cvi->originAddress));
 
-            if (cvi->Dasmitem >= 0)
-                item->AddAttribute(ATTRIBUTE_DASMITEM_STR, wxString::Format("%d", cvi->Dasmitem));
+            if (cvi->dasmedItem >= 0)
+                item->AddAttribute(ATTRIBUTE_DASMITEM_STR, wxString::Format("%d", cvi->dasmedItem));
 
-            if (cvi->LabelProgAddr > 0)
-                item->AddAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR, wxString::Format("%d", cvi->LabelProgAddr->Address));
+            if (cvi->labelProgAddress > 0)
+                item->AddAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR, wxString::Format("%d", cvi->labelProgAddress->Address));
 
-            if (cvi->LabelVarAddr > 0)
-                item->AddAttribute(ATTRIBUTE_LINEVARLABEL_STR, wxString::Format("%d", cvi->LabelVarAddr->Address));
+            if (cvi->labelVarAddress > 0)
+                item->AddAttribute(ATTRIBUTE_LINEVARLABEL_STR, wxString::Format("%d", cvi->labelVarAddress->Address));
 
-            if (cvi->Comment)
-                item->AddAttribute(ATTRIBUTE_COMMENT_STR, cvi->Comment->utf8_str());
+            if (cvi->comment)
+                item->AddAttribute(ATTRIBUTE_COMMENT_STR, cvi->comment->utf8_str());
         }
     }
 }
@@ -421,9 +421,9 @@ bool ProjectManagerXML::Open(const wxString &filename, const wxString &syslabels
         readHeader(xml_doc);
         readFileProperties(xml_doc);
 /*
-        if (process->SetupSystemLabels())
+        if (process->setupSystemLabels())
         {
-            process->LoadSystemLabels(syslabels_path);
+            process->loadSystemLabels(syslabels_path);
         }
         readDasmData(xml_doc);
         readCodeLine(xml_doc);
@@ -808,7 +808,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
 
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-//        CodeViewLines->AddOrg(static_cast<int>(conv), str_comment);
+//        CodeViewLines->addOrigin(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -824,7 +824,7 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEPROGRAMLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-//        CodeViewLines->AddProgLabel(static_cast<int>(conv), str_comment);
+//        CodeViewLines->addProgramLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
@@ -832,21 +832,21 @@ bool ProjectManagerXML::fillCodeViewLine(wxXmlNode *datanode)
     str = datanode->GetAttribute(ATTRIBUTE_LINEVARLABEL_STR);
     if (!str.IsEmpty() && str.ToLong(&conv))
     {
-//        CodeViewLines->AddVarLabel(static_cast<int>(conv), str_comment);
+//        CodeViewLines->addVarLabel(static_cast<int>(conv), str_comment);
         commentary_line = false;
         health++;
     }
 
     if (commentary_line)
     {
-//        CodeViewLines->AddComment(str_comment);
+//        CodeViewLines->addComment(str_comment);
         health++;
     }
 
     // Empty line
     if (health == 0)
     {
-//        CodeViewLines->AddComment("");
+//        CodeViewLines->addComment("");
 
         #ifdef IDZ80DEBUG
         LogIt(wxString::Format("Empty line: %d\n", datanode->GetLineNumber()));

@@ -10,8 +10,8 @@
 
 #include <wx/filedlg.h>
 
-#include "main_dialog.h"
-#include "version.h"
+#include "main_dialog.hpp"
+#include "version.hpp"
 
 
 
@@ -162,9 +162,9 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 //    codeview_->Enable(false);
 
 /*
-    process_->DisassembleFirst(*simulateexecution);
-    process_->InitData();
-    process_->InsertLineLabelsInSourceCode();
+    process_->disassembleFirst(*simulateexecution);
+    process_->initData();
+    process_->insertLineLabelsInSourceCode();
     process_->prog_labels->SortAddress(true);
     process_->io_labels->SortAddress(true);
     process_->var_labels->SortAddress(true);
@@ -362,7 +362,7 @@ void IDZ80::OnMenuToolAutoLabel(wxCommandEvent& event)
 {
     /*
     process_->AutoLabel();
-    process_->InsertLineLabelsInSourceCode();
+    process_->insertLineLabelsInSourceCode();
     codeview_->ClearSelection();
     codeview_->Refresh();
     */

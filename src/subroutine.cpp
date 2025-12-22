@@ -8,7 +8,7 @@
  * Controls subroutines
  **************************************************************/
 
-#include "subroutine.h"
+#include "subroutine.hpp"
 
 
 SubRoutineCtrl::SubRoutineCtrl(DebugLogWindow *logparent)

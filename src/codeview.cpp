@@ -15,8 +15,8 @@
 #include <wx/textdlg.h>
 #include <wx/dcclient.h>
 #include <wx/accel.h>
-#include "codeview.h"
-#include "disassembled_item.h"
+#include "codeview.hpp"
+#include "disassembled_item.hpp"
 
 
 
@@ -178,7 +178,7 @@ void CodeView::SetupEvents()
 
 int CodeView::GetCount()
 {
-    return m_CodeViewLine->GetCount();
+    return m_CodeViewLine->getCount();
 }
 
 
@@ -338,8 +338,8 @@ bool CodeView::Enable(bool enable)
     if (enable)
     {
         wxScrolledCanvas::Enable(true);
-        SetVirtualSize(wxDefaultCoord, m_CodeViewLine->GetCount() * m_fontHeight);
-        IsEmpty = m_CodeViewLine->IsEmpty();
+        SetVirtualSize(wxDefaultCoord, m_CodeViewLine->getCount() * m_fontHeight);
+        IsEmpty = m_CodeViewLine->isEmpty();
         ret = true;
     }
     else
@@ -562,7 +562,7 @@ void CodeView::UpdateVirtualSize(void)
 	if (IsEnabled())
 	{
 		wxSize sz = GetVirtualSize();
-		sz.y = m_CodeViewLine->GetCount() * m_fontHeight;
+		sz.y = m_CodeViewLine->getCount() * m_fontHeight;
 		SetVirtualSize(sz);
 	}
 }
@@ -596,7 +596,7 @@ void CodeView::ClearCursor()
 ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
 {
-    CodeViewItem *cvi;
+    SourceCodeLine *cvi;
     DisassembledItem *de;
     int i;
     bool homogeneous = false;
@@ -605,13 +605,13 @@ ElementType CodeView::GetTypeMultiselection(bool &hcomment)
 
     for (i = line_info.firstLine; i < line_info.lastLine; i++)
     {
-        cvi = m_CodeViewLine->Line(i);
-        if (cvi->Dasmitem >= 0)
+        cvi = m_CodeViewLine->line(i);
+        if (cvi->dasmedItem >= 0)
         {
-			if (cvi->Comment)
+			if (cvi->comment)
 				hcomment = true;
 
-            de = Process->Disassembled->GetData(cvi->Dasmitem);
+            de = Process->Disassembled->GetData(cvi->dasmedItem);
             if (de->IsInstruction())
             {
                 if ((lastitem == et_None) || (lastitem == et_Instruction))
@@ -800,16 +800,16 @@ void CodeView::IdentifyArgumentSelected(const wxPoint &mouse_cursor)
 {
     if (line_info.lineitem)
     {
-        if (line_info.lineitem->RectArg1)
+        if (line_info.lineitem->rectArg1)
         {
-            if (line_info.lineitem->RectArg1->Contains(mouse_cursor))
+            if (line_info.lineitem->rectArg1->Contains(mouse_cursor))
                 line_info.argSelected = 1;
             else
                 line_info.argSelected = 0;
         }
 
-        if (line_info.lineitem->RectArg2)
-            if (line_info.lineitem->RectArg2->Contains(mouse_cursor))
+        if (line_info.lineitem->rectArg2)
+            if (line_info.lineitem->rectArg2->Contains(mouse_cursor))
                 line_info.argSelected = 2;
     }
 }
@@ -822,24 +822,24 @@ void CodeView::TreatSingleSelection()
 {
 	bool    testcomment = false;
 
-	line_info.lineitem = m_CodeViewLine->Line(line_info.cursorPosition);
+	line_info.lineitem = m_CodeViewLine->line(line_info.cursorPosition);
 	if (line_info.lineitem)
 	{
 		// Does the line have comment ?
-		if (line_info.lineitem->Comment)
+		if (line_info.lineitem->comment)
 			line_info.hasComment = true;
 		else
 			line_info.hasComment = false;
 
 		// If line is a program label or a var label
-		if (line_info.lineitem->LabelProgAddr >= 0)
+		if (line_info.lineitem->labelProgAddress >= 0)
 			line_info.type = siLineLabelProg;
 
-		if (line_info.lineitem->LabelVarAddr >= 0)
+		if (line_info.lineitem->labelVarAddress >= 0)
 			line_info.type = siLineLabelVar;
 
 		// check if line has instruction
-        line_info.dasmitem = Process->Disassembled->GetData(line_info.lineitem->Dasmitem);
+        line_info.dasmitem = Process->Disassembled->GetData(line_info.lineitem->dasmedItem);
         if (line_info.dasmitem)
         {
             if (line_info.dasmitem->HasArgumentLabel())
@@ -849,7 +849,7 @@ void CodeView::TreatSingleSelection()
 
             if (line_info.dasmitem->IsData())
                 line_info.type = siData;
-            line_info.firstInstruction = line_info.lineitem->Dasmitem;
+            line_info.firstInstruction = line_info.lineitem->dasmedItem;
             line_info.lastInstruction = line_info.firstInstruction;
             line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();
             line_info.lastAddress = line_info.firstAddress;
@@ -857,7 +857,7 @@ void CodeView::TreatSingleSelection()
 
 
 		// Test if line has only comments
-		testcomment = ((line_info.lineitem->Org + line_info.lineitem->Dasmitem) == -2) && !line_info.lineitem->LabelProgAddr && !line_info.lineitem->LabelVarAddr;
+		testcomment = ((line_info.lineitem->originAddress + line_info.lineitem->dasmedItem) == -2) && !line_info.lineitem->labelProgAddress && !line_info.lineitem->labelVarAddress;
 		if (testcomment)
 			line_info.type = siComments;
 	}
@@ -869,7 +869,7 @@ void CodeView::TreatSingleSelection()
 void CodeView::TreatMultiSelection()
 {
     DisassembledItem *last_disassembled;
-    CodeViewItem *last_line;
+    SourceCodeLine *last_line;
     int first_instruction, last_instruction;
     bool    first_found,
             last_found;
@@ -877,24 +877,24 @@ void CodeView::TreatMultiSelection()
 
     for (first_instruction = line_info.firstLine; first_instruction <= line_info.lastLine; first_instruction++)
     {
-        line_info.lineitem = m_CodeViewLine->Line(first_instruction);
-        first_found = (line_info.lineitem && (line_info.lineitem->Dasmitem >= 0));
+        line_info.lineitem = m_CodeViewLine->line(first_instruction);
+        first_found = (line_info.lineitem && (line_info.lineitem->dasmedItem >= 0));
         if (first_found)
             break;
     }
 
     for (last_instruction = line_info.lastLine; last_instruction > first_instruction; last_instruction--)
     {
-        last_line = m_CodeViewLine->Line(last_instruction);
-        last_found = (last_line && (last_line->Dasmitem >= 0));
+        last_line = m_CodeViewLine->line(last_instruction);
+        last_found = (last_line && (last_line->dasmedItem >= 0));
         if (last_found)
             break;
     }
 
     if (first_found && last_found)
     {
-        line_info.firstInstruction = line_info.lineitem->Dasmitem;
-        line_info.lastInstruction = last_line->Dasmitem;
+        line_info.firstInstruction = line_info.lineitem->dasmedItem;
+        line_info.lastInstruction = last_line->dasmedItem;
         line_info.dasmitem = Process->Disassembled->GetData(line_info.firstInstruction);
         last_disassembled = Process->Disassembled->GetData(line_info.lastInstruction);
         line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();

@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-#include "labelmanager.h"
+#include "labelmanager.hpp"
 
 
 LabelManager::LabelManager()
@@ -27,7 +27,7 @@ LabelManager::LabelManager()
 
 
 
-void LabelManager::ClearUserLabels()
+void LabelManager::clearUserLabels()
 {
     if (var_labels != 0) {
         var_labels->Clear();
@@ -49,9 +49,9 @@ void LabelManager::ClearUserLabels()
 
 
 
-void LabelManager::DestroyAll()
+void LabelManager::destroyAll()
 {
-    ClearUserLabels();
+    clearUserLabels();
 
     if(sys_calls) {
         sys_calls->Clear();
@@ -73,7 +73,7 @@ void LabelManager::DestroyAll()
 
 
 
-bool LabelManager::LoadSystemLabels(const wxString &filename)
+bool LabelManager::loadSystemLabels(const wxString &filename)
 {
     int ret = 0;
     if ((sys_calls != 0)  && (sys_vars != 0) &&

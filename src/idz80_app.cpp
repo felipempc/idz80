@@ -9,9 +9,9 @@
  **************************************************************/
 
 
-#include "idz80_app.h"
+#include "idz80_app.hpp"
 
-#include "main_dialog.h"
+#include "main_dialog.hpp"
 
 #include <wx/image.h>
 

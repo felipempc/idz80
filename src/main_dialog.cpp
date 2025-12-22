@@ -18,11 +18,11 @@
 //#include <wx/string.h>
 //#include <wx/msgdlg.h>
 
-#include "main_dialog.h"
+#include "main_dialog.hpp"
 //#include "fileinfo_dialog.h"
 //#include "systemlabels.h"
 //#include "file_settings_dialog.h"
-#include "newproject_dialog.h"
+#include "newproject_dialog.hpp"
 
 const long IDZ80::idMenuFileOpenProject = wxNewId();
 const long IDZ80::idMenuFileOpenArchive = wxNewId();
@@ -62,7 +62,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
     m_config = 0;
 //    project_ = 0;
 	m_maximize_main_window = true;
-//	CodeViewLines_ = 0;
+//	m_source_code = 0;
     m_disassembled_mgr = 0;
     m_programs_mgr = 0;
     m_mnemonics = 0;
@@ -142,7 +142,7 @@ void IDZ80::OpenProgramFile(wxString filename)
             if (m_labels)
             {
                 wxString labelspath = m_app_resource_dir + "\\Labels.txt";
-                if (!m_labels->LoadSystemLabels(labelspath))
+                if (!m_labels->loadSystemLabels(labelspath))
                     LogIt(wxString::Format("System labels failed to load. [%s]", labelspath));
                 else
                     LogIt("System labels loaded sucessfully.");
@@ -182,9 +182,9 @@ void IDZ80::OpenProgramFile(wxString filename)
             wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
             UpdateTitle(caption);
 
-            if (process->SetupSystemLabels())
+            if (process->setupSystemLabels())
             {
-                process->LoadSystemLabels(m_currentDir + "/resource/Labels.txt");
+                process->loadSystemLabels(m_currentDir + "/resource/Labels.txt");
             }
 
             process->Program->StartAddress = config.GetStartAddress();

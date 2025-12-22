@@ -11,7 +11,7 @@
 
 
 
-#include "search_argument_dialog.h"
+#include "search_argument_dialog.hpp"
 #include <wx/sizer.h>
 #include <wx/panel.h>
 

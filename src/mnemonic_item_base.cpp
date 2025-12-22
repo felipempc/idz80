@@ -8,7 +8,7 @@
  * Stores a mnemonic item (base)
  **************************************************************/
 
-#include "mnemonic_item_base.h"
+#include "mnemonic_item_base.hpp"
 
 MnemonicItemBase::MnemonicItemBase()
 {

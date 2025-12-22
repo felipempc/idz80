@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-#include "rawdatamanager.h"
+#include "rawdatamanager.hpp"
 
 // DEFinition for debug = IDZ80_RAWDATAMGR_DEBUG
 //#define IDZ80_RAWDATAMGR_DEBUG
