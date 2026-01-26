@@ -11,11 +11,11 @@
 #ifndef _SOURCE_CODE_HPP_
 #define _SOURCE_CODE_HPP_
 
-#include "project_base.hpp"
 #include "disassembled_item.hpp"
 #include "disassembled_container.hpp"
 #include "source_code_access.hpp"
 #include "labelmanager.hpp"
+#include "project_base.hpp"
 
 // @brief The "text" source code
 class SourceCode: public SourceCodeAccess

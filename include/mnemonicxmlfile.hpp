@@ -48,8 +48,7 @@ typedef std::vector<wxXmlNode *> NodeGroupList;
 class MnemonicXMLFile
 {
     public:
-        MnemonicXMLFile(MnemonicContainer *mnm, wxTextCtrl *_log);
-        ~MnemonicXMLFile();
+        MnemonicXMLFile(MnemonicContainer *t_mnemonics, wxTextCtrl *t_log);
 
         bool Open(const wxString &mnemonicfile);
 
@@ -137,31 +136,28 @@ class MnemonicXMLFile
         static const wxUniChar ARGUMENT_MARK;
 
     private:
-        wxXmlDocument *xml_mnemonic_;
-        MnemonicContainer *mnemonics_;
-        wxTextCtrl *log_;
-        Statistics statistics_;
+        wxXmlDocument *m_xml_mnemonic;
+        MnemonicContainer *m_mnemonics;
+        wxTextCtrl *m_log_text;
+        Statistics m_statistics;
 
         void ProcessFile();
-        void ProcessGroup(const wxXmlNode *groupitem);
+        void ProcessGroup(const wxXmlNode *t_groupitem);
         bool FindGroups(NodeGroupList &grouplist);
-        bool hasExplicitArguments(wxXmlNode *instruction_node);
         void ProcessInstruction(wxXmlNode *instruction_node, MnemonicItem * const instruction);
         void ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *instruction);
         void ProcessCharacteristcs(wxXmlNode *instruction_node, MnemonicItem *instruction);
         Groups GetGroupFromStr(const wxString &groupstr);
         OperandType GetOperandTypeFromStr(const wxString &ot_str);
         Operands GetOperandFromStr(const wxString &op_str);
-        void ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr);
+        void ParseMnemonicString(const wxString &rawstr, StringVector &liststr);
         void ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr);
         unsigned int CalculateSignature(const ByteCode &bytecode);
         wxXmlNode *GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str);
-        void PrintErrorMessages(XMLF_Exceptions e, int line);
+        void PrintErrorMessages(XMLF_Exceptions t_exception, int t_line);
 
         void LogIt(const wxString textout);
 
 };
-
-//TODO: Evoluir MnemonicXMLFile para preencher todo Mnemonics
 
 #endif // MNEMONICXMLFILE_H

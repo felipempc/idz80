@@ -10,39 +10,28 @@
 
 #include "mnemonic_item_base.hpp"
 
+/** TODO Remove mnemonic_item_base.cpp/hpp */
+
 MnemonicItemBase::MnemonicItemBase()
 {
     Reset();
-    mnemonic_string_ = 0;
 }
-
-
-
-
-MnemonicItemBase::~MnemonicItemBase()
-{
-    if (mnemonic_string_)
-    {
-        mnemonic_string_->Clear();
-        mnemonic_string_->Shrink();
-    }
-}
-
 
 
 
 void MnemonicItemBase::Reset()
 {
-    group_= GRP_NONE;
-    source_.operand = OP_NONE;
-    source_.type = OT_NONE;
-    destination_.operand = OP_NONE;
-    destination_.type = OT_NONE;
-    memset(bytecode_, 0, sizeof(ByteCode));
-    opcode_size_ = 0;
-    argument_count_ = 0;
-    argument_size_ = 0;
-    argument_opcode_position_ = 0;
-    conditional_ = false;
-    explicit_arguments_ = false;
+    m_group= GRP_NONE;
+    m_source.operand = OP_NONE;
+    m_source.type = OT_NONE;
+    m_destination.operand = OP_NONE;
+    m_destination.type = OT_NONE;
+    memset(m_bytecode, 0, sizeof(ByteCode));
+    m_opcode_size = 0;
+    m_argument_count = 0;
+    m_argument_size = 0;
+    m_argument_opcode_position = 0;
+    m_conditional = false;
+    m_explicit_arguments = false;
+    m_mnemonic_string.clear();
 }

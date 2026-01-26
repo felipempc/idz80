@@ -2,7 +2,7 @@
 
 
 --->Futuro
-- Permitir abrir programas que contenham mais de um arquivo
+- Permitir abrir programas que contenham mais de um arquivo (em  progresso)
 
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
@@ -14,4 +14,8 @@
   ------
 
   12/2025 - main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
-
+            mnemonic_access.hpp - Remover #include <wx/dynarray.h>
+  01/2026 - Resolver dependencias ciclicas: ProjectBase <-> SourceCode
+            Remover mnemonic_item_base.hpp/cpp
+            Verificar se mnemonicxmlfile está contemplando todos os atributos das instruções.
+            

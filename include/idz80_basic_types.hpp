@@ -12,6 +12,7 @@
 #define IDZ80BASICTYPES_H
 
 #include <vector>
+#include <wx/string.h>
 
 typedef unsigned char byte;
 typedef unsigned short int word;
@@ -22,6 +23,7 @@ typedef std::vector<unsigned int> UintArray;
 typedef std::vector<int> IntArray;
 typedef std::vector<unsigned int> AddressVector;
 typedef std::vector<int> IndexVector;
+typedef std::vector<wxString> StringVector;
 
 #endif // IDZ80BASICTYPES_H
 

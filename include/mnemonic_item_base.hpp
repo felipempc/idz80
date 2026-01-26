@@ -11,7 +11,6 @@
 #ifndef MNEMONICITEMBASE_H
 #define MNEMONICITEMBASE_H
 
-#include <wx/arrstr.h>    // wxArrayString
 #include "idz80_basic_types.hpp"
 
 #define MAX_OPCODE_SIZE     4
@@ -115,23 +114,22 @@ class MnemonicItemBase
 {
     public:
         MnemonicItemBase();
-        ~MnemonicItemBase();
         void Reset();
 
 
     protected:
-        unsigned int mnemonic_signature_;
-        Groups		group_;
-        Arguments   source_,
-                    destination_;
-		ByteCode	bytecode_;
-        byte		opcode_size_;
-        byte        argument_count_;
-        byte        argument_size_;
-        byte        argument_opcode_position_;
-        bool        conditional_;
-        bool        explicit_arguments_;
-		wxArrayString	*mnemonic_string_;
+        unsigned int m_mnemonic_signature;
+        Groups		m_group;
+        Arguments   m_source,
+                    m_destination;
+		ByteCode	m_bytecode;
+        unsigned int    m_opcode_size;
+        unsigned int    m_argument_count;
+        unsigned int    m_argument_size;
+        unsigned int    m_argument_opcode_position;
+        bool        m_conditional;
+        bool        m_explicit_arguments;
+        StringVector m_mnemonic_string;
 };
 
 

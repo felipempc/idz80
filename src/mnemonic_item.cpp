@@ -9,72 +9,60 @@
  **************************************************************/
 
 #include "mnemonic_item.hpp"
+#include <stdexcept>
 
 
 
 MnemonicItem::MnemonicItem()
 {
     Reset();
-    mnemonic_string_ = 0;
-}
-
-
-
-MnemonicItem::~MnemonicItem()
-{
-    if (mnemonic_string_)
-    {
-        mnemonic_string_->Clear();
-        mnemonic_string_->Shrink();
-        delete mnemonic_string_;
-    }
 }
 
 
 
 void MnemonicItem::Reset()
 {
-    group_= GRP_NONE;
-    source_.operand = OP_NONE;
-    source_.type = OT_NONE;
-    destination_.operand = OP_NONE;
-    destination_.type = OT_NONE;
-    memset(bytecode_, 0, sizeof(ByteCode));
-    opcode_size_ = 0;
-    argument_count_ = 0;
-    argument_size_ = 0;
-    argument_opcode_position_ = 0;
-    conditional_ = false;
-    explicit_arguments_ = false;
-    mnemonic_signature_ = 0;
+    m_group= GRP_NONE;
+    m_source.operand = OP_NONE;
+    m_source.type = OT_NONE;
+    m_destination.operand = OP_NONE;
+    m_destination.type = OT_NONE;
+    memset(m_bytecode, 0, sizeof(ByteCode));
+    m_opcode_size = 0;
+    m_argument_count = 0;
+    m_argument_size = 0;
+    m_argument_opcode_position = 0;
+    m_conditional = false;
+    m_explicit_arguments = false;
+    m_mnemonic_signature = 0;
 }
 
 
 
 unsigned int MnemonicItem::GetMnemonicSignature()
 {
-    return mnemonic_signature_;
+    return m_mnemonic_signature;
 }
 
 
 
 Groups MnemonicItem::GetGroup()
 {
-    return group_;
+    return m_group;
 }
 
 
 
 Arguments MnemonicItem::GetSourceArgument()
 {
-    return source_;
+    return m_source;
 }
 
 
 
 Arguments MnemonicItem::GetDestinationArgument()
 {
-    return destination_;
+    return m_destination;
 }
 
 
@@ -82,9 +70,9 @@ Arguments MnemonicItem::GetDestinationArgument()
 Arguments MnemonicItem::GetArgument(const unsigned int index)
 {
     if (index == 0)
-        return source_;
+        return m_source;
     if (index == 1)
-        return destination_;
+        return m_destination;
 
     return ARGUMENT_NONE;
 }
@@ -93,7 +81,7 @@ Arguments MnemonicItem::GetArgument(const unsigned int index)
 
 ByteCode &MnemonicItem::GetByteCode()
 {
-    return bytecode_;
+    return m_bytecode;
 }
 
 
@@ -103,137 +91,138 @@ byte MnemonicItem::GetByteCode(byte index)
     if (index >= MAX_OPCODE_SIZE)
         throw MAX_BYTECODE_REACHED;
     else
-        return bytecode_[index];
+        return m_bytecode[index];
 }
 
 
 
 unsigned int MnemonicItem::GetByteCodeSize()
 {
-    return (static_cast<unsigned int>(opcode_size_) & 0x000000FF);
+    return m_opcode_size;
 }
 
 
 
 unsigned int MnemonicItem::GetArgumentCount()
 {
-    return (static_cast<unsigned int>(argument_count_)) & 0x000000FF;
+    return m_argument_count;
 }
 
 
 
 unsigned int MnemonicItem::GetArgumentSize()
 {
-    return (static_cast<unsigned int>(argument_size_)) & 0x000000FF;
+    return m_argument_size;
 }
 
 
 
 unsigned int MnemonicItem::GetArgumentPosition()
 {
-    return (static_cast<unsigned int>(argument_opcode_position_)) & 0x000000FF;
+    return m_argument_opcode_position;
 }
 
 
 
 bool MnemonicItem::GetConditionalBranch()
 {
-    return conditional_;
+    return m_conditional;
 }
 
 
 
 bool MnemonicItem::HasExplicitArguments()
 {
-    return explicit_arguments_;
+    return m_explicit_arguments;
 }
 
 
 
 unsigned int MnemonicItem::GetMnemonicStrCount()
 {
-    if (mnemonic_string_)
-        return mnemonic_string_->GetCount();
-    return 0;
+    return m_mnemonic_string.size();
 }
 
 
 
 wxString MnemonicItem::GetMnemonicStr(unsigned int index)
 {
-    if ((mnemonic_string_) && (mnemonic_string_->GetCount() > index))
-        return mnemonic_string_->Item(index);
-
-    return wxEmptyString;
+    try
+    {
+        return m_mnemonic_string.at(index);
+    }
+    catch(const std::out_of_range& e)
+    {
+        return wxEmptyString;
+    }
 }
 
 
 
 void MnemonicItem::SetGroup(Groups group)
 {
-    group_ = group;
+    m_group = group;
 }
 
 
 
 void MnemonicItem::SetSourceArgument(OperandType type, Operands operand)
 {
-    source_.operand = operand;
-    source_.type = type;
+    m_source.operand = operand;
+    m_source.type = type;
 }
 
 
 
 void MnemonicItem::SetDestinationArgument(OperandType type, Operands operand)
 {
-    destination_.operand = operand;
-    destination_.type = type;
+    m_destination.operand = operand;
+    m_destination.type = type;
 }
 
 
 
 void MnemonicItem::SetByteCode(ByteCode &bytecode, byte opcodesize)
 {
-    memcpy(&bytecode_, &bytecode, opcodesize);
-    opcode_size_ = opcodesize;
+    memcpy(&m_bytecode, &bytecode, opcodesize);
+    m_opcode_size = opcodesize;
 }
 
 
 
 void MnemonicItem::ConfigArguments(byte argcount, byte argsize, byte argposition)
 {
-    argument_count_ = argcount;
-    argument_size_ = argsize;
-    argument_opcode_position_ = argposition;
+    m_argument_count = argcount;
+    m_argument_size = argsize;
+    m_argument_opcode_position = argposition;
 }
 
 
 
 void MnemonicItem::SetConditionalBranch(bool isconditional)
 {
-    conditional_ = isconditional;
+    m_conditional = isconditional;
 }
 
 
 
 void MnemonicItem::SetExplicitArguments(bool isexplicit)
 {
-    explicit_arguments_ = isexplicit;
-}
-
-
-
-void MnemonicItem::SetMnemonicString(const wxArrayString &mnemonicstring)
-{
-    if (mnemonic_string_)
-        delete mnemonic_string_;
-
-    mnemonic_string_ = new wxArrayString(mnemonicstring);
+    m_explicit_arguments = isexplicit;
 }
 
 
 
 void MnemonicItem::SetMnemonicSignature(unsigned int signature)
 {
-    mnemonic_signature_ = signature;
+    m_mnemonic_signature = signature;
+}
+
+
+
+/// @brief Copy mnemonic string slices from t_strings
+/// @param t_strings mnemonic string slices
+void MnemonicItem::SetMnemonicStrings(const StringVector &t_strings)
+{
+    m_mnemonic_string = t_strings;
 }

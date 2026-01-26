@@ -114,85 +114,75 @@ const wxUniChar MnemonicXMLFile::ARGUMENT_MARK = '$';
 
 
 
-MnemonicXMLFile::MnemonicXMLFile(MnemonicContainer *mnm, wxTextCtrl *_log)
+MnemonicXMLFile::MnemonicXMLFile(MnemonicContainer *t_mnemonics, wxTextCtrl *t_log)
 {
-    xml_mnemonic_ = 0;
-    mnemonics_ = mnm;
-    log_ = _log;
-    statistics_.numgroups = 0;
-    statistics_.numinstructions = 0;
+    m_xml_mnemonic = 0;
+    m_mnemonics = t_mnemonics;
+    m_log_text = t_log;
+    m_statistics.numgroups = 0;
+    m_statistics.numinstructions = 0;
 }
 
 
 
-
-MnemonicXMLFile::~MnemonicXMLFile()
-{
-    //dtor
-}
-
-
-
-
+/// @brief Opens the XML file and start the processing.
+/// @param mnemonicfile The name of the XML file.
+/// @return True if the file was opened.
 bool MnemonicXMLFile::Open(const wxString &mnemonicfile)
 {
-    xml_mnemonic_ = new wxXmlDocument(mnemonicfile);
+    m_xml_mnemonic = new wxXmlDocument(mnemonicfile);
     bool ret;
 
-    ret = xml_mnemonic_->IsOk();
+    ret = m_xml_mnemonic->IsOk();
     if(ret)
     {
         ProcessFile();
-        mnemonics_->SetStatistics(statistics_);
+        m_mnemonics->SetStatistics(m_statistics);
 
         #ifdef _IDZ80_DEBUG_
-        LogIt(wxString::Format("Number of instructions: %d\n", statistics_.numinstructions));
-        LogIt(wxString::Format("Number of groups: %d\n", statistics_.numgroups));
+        LogIt(wxString::Format("Number of instructions: %d\n", m_statistics.numinstructions));
+        LogIt(wxString::Format("Number of groups: %d\n", m_statistics.numgroups));
         LogIt("Mnemonics loaded!\n");
         #endif // _IDZ80_DEBUG_
 
     }
     else
     {
-        log_->AppendText("XML file failed to load !\n\n");
+        m_log_text->AppendText("XML file failed to load !\n\n");
     }
 
-
-
-    delete xml_mnemonic_;
-    xml_mnemonic_ = 0;
+    delete m_xml_mnemonic;
+    m_xml_mnemonic = 0;
     return ret;
 }
 
 
 
 
+/// @brief Processes the XML file.
 void MnemonicXMLFile::ProcessFile()
 {
     NodeGroupList   group_list;
-    wxXmlNode *group_item;
-    uint index;
+    //uint index;
 
     if (!FindGroups(group_list))
         return;
 
-
-    for(index = 0; index < group_list.size(); index++)
+    for(wxXmlNode *group_item : group_list)
     {
-        group_item = group_list[index];
-
+        ProcessGroup(group_item);
         //#ifdef _IDZ80_DEBUG_
         //LogToFile(wxString::Format("<<< %d >>>  Processing group '%s'.", index, group_item->GetName()));
         //#endif // _IDZ80_DEBUG_
-
-        ProcessGroup(group_item);
     }
 }
 
 
 
 
-void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
+/// @brief Processes each group of instruction
+/// @param t_groupitem 
+void MnemonicXMLFile::ProcessGroup(const wxXmlNode *t_groupitem)
 {
     wxXmlNode *nextitem;
     Groups current_group;
@@ -202,10 +192,10 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
     unsigned int group_instructions = 0;
 
 
-    current_group = GetGroupFromStr(groupitem->GetName());
+    current_group = GetGroupFromStr(t_groupitem->GetName());
     if (current_group == GRP_NONE)
         return;
-    nextitem = groupitem->GetChildren();
+    nextitem = t_groupitem->GetChildren();
 
     while (nextitem)
     {
@@ -220,8 +210,8 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
             ProcessInstruction(nextitem, new_instruction);
             ProcessCharacteristcs(nextitem, new_instruction);
             ProcessArguments(nextitem, new_instruction);
-            mnemonics_->AddInstruction(new_instruction);
-            statistics_.numinstructions++;
+            m_mnemonics->AddInstruction(new_instruction);
+            m_statistics.numinstructions++;
             group_instructions++;
             allocate_new = true;
         }
@@ -246,6 +236,9 @@ void MnemonicXMLFile::ProcessGroup(const wxXmlNode *groupitem)
 
 
 
+/// @brief Processes an instruction.
+/// @param instruction_node node of instructions section in XML file.
+/// @param instruction pointer of MnemonicItem of the instruction.
 void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicItem * const instruction)
 {
     #ifdef _IDZ80_DEBUG_
@@ -253,16 +246,16 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
     int counter_debug;
     #endif // _IDZ80_DEBUG_
 
-    wxString opcode_str, temp_str;
-    wxArrayString mnemonicslices;
-    wxXmlNode *instruction_detail;
+    wxString        opcode_str, temp_str;
+    StringVector    mnemonicslices;
+    wxXmlNode       *instruction_detail;
 
 
     if (!instruction_node->GetAttribute(ATTRIBUTE_MNMONIC_STR, &opcode_str))
         throw XMLFE_ATTR_MNMONIC_STR_NOT_FOUND;
 
     ParseMnemonicString(opcode_str, mnemonicslices);
-    instruction->SetMnemonicString(mnemonicslices);
+    instruction->SetMnemonicStrings(mnemonicslices);
 /*
     #ifdef _IDZ80_DEBUG_
     str_debug.Clear();
@@ -272,7 +265,7 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
         if (counter_debug != (mnemonicslices.GetCount() - 1))
             str_debug << "*";
     }
-    LogIt(wxString::Format("[%.3d] Item '%s' = [%s].", statistics_.numinstructions, opcode_str, str_debug));
+    LogIt(wxString::Format("[%.3d] Item '%s' = [%s].", m_statistics.numinstructions, opcode_str, str_debug));
     #endif // _IDZ80_DEBUG_
 */
 
@@ -298,8 +291,8 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
     }
     str_debug = str_debug.Trim();
 
-    LogIt(wxString::Format("[%.3d] Bytecode<%d> = [%s].", statistics_.numinstructions, instruction->GetByteCodeSize(), str_debug));
-    LogIt(wxString::Format("[%.3d] Signature = [%X].", statistics_.numinstructions, instruction->GetMnemonicSignature()));
+    LogIt(wxString::Format("[%.3d] Bytecode<%d> = [%s].", m_statistics.numinstructions, instruction->GetByteCodeSize(), str_debug));
+    LogIt(wxString::Format("[%.3d] Signature = [%X].", m_statistics.numinstructions, instruction->GetMnemonicSignature()));
     #endif // _IDZ80_DEBUG_
 */
 
@@ -308,6 +301,9 @@ void MnemonicXMLFile::ProcessInstruction(wxXmlNode *instruction_node, MnemonicIt
 
 
 
+/// @brief Fills instructions' explicit arguments and its attributes, if it has.
+/// @param instruction_node node of instructions section in XML file.
+/// @param instruction pointer of MnemonicItem of the instruction.
 void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem *instruction)
 {
     wxString value_str;
@@ -376,6 +372,9 @@ void MnemonicXMLFile::ProcessArguments(wxXmlNode *instruction_node, MnemonicItem
 
 
 
+/// @brief Sets characteristics of the instruction, like if it has explicit arguments or it's a conditional branch.
+/// @param instruction_node node of instructions section in XML file.
+/// @param instruction pointer of MnemonicItem of the instruction.
 void MnemonicXMLFile::ProcessCharacteristcs(wxXmlNode *instruction_node, MnemonicItem *instruction)
 {
     wxXmlNode *instnode = 0;
@@ -396,34 +395,39 @@ void MnemonicXMLFile::ProcessCharacteristcs(wxXmlNode *instruction_node, Mnemoni
 
 
 
+/// @brief Scans all the XML file to find the groups of instructions
+/// @param grouplist stores the nodes of the found groups.
+/// @return true if it founds the groups.
 bool MnemonicXMLFile::FindGroups(NodeGroupList &grouplist)
 {
     wxXmlNode *group_item;
 
-    statistics_.numgroups = 0;
+    m_statistics.numgroups = 0;
     grouplist.clear();
 
-    group_item = xml_mnemonic_->GetRoot()->GetChildren();
+    group_item = m_xml_mnemonic->GetRoot()->GetChildren();
     group_item = group_item->GetChildren();
 
     while (group_item)
     {
         grouplist.push_back(group_item);
-        statistics_.numgroups++;
+        m_statistics.numgroups++;
 
         group_item = group_item->GetNext();
     }
 
     #ifdef _IDZ80_DEBUG_
-    LogIt(wxString::Format("Total groups = %d.\n", statistics_.numgroups));
+    LogIt(wxString::Format("Total groups = %d.\n", m_statistics.numgroups));
     #endif
 
-    return (statistics_.numgroups > 0);
+    return (m_statistics.numgroups > 0);
 }
 
 
 
-
+/// @brief Takes groupstr string and return the group code
+/// @param groupstr the string name of the group.
+/// @return the group code. GRP_NONE if not found.
 Groups MnemonicXMLFile::GetGroupFromStr(const wxString &groupstr)
 {
     if (groupstr.IsSameAs(MNEMONIC_GROUP_JUMP_STR))
@@ -495,6 +499,9 @@ Groups MnemonicXMLFile::GetGroupFromStr(const wxString &groupstr)
 
 
 
+/// @brief Takes ot_str string and return the operand type code
+/// @param ot_str the string name of the operand type.
+/// @return the operand type code. OT_NONE if not found.
 OperandType MnemonicXMLFile::GetOperandTypeFromStr(const wxString &ot_str)
 {
     if (ot_str.IsSameAs(ATTRIBUTE_ARGUMENT_OPERAND_ABSOLUTE))
@@ -522,6 +529,9 @@ OperandType MnemonicXMLFile::GetOperandTypeFromStr(const wxString &ot_str)
 
 
 
+/// @brief Takes op_str string and return the operand code
+/// @param op_str the string name of the operand.
+/// @return the operand code. OP_NONE if not found.
 Operands MnemonicXMLFile::GetOperandFromStr(const wxString &op_str)
 {
     if (op_str.IsSameAs(ATTRIBUTE_REGISTER_A))
@@ -581,8 +591,10 @@ Operands MnemonicXMLFile::GetOperandFromStr(const wxString &op_str)
 
 
 
-
-void MnemonicXMLFile::ParseMnemonicString(const wxString &rawstr, wxArrayString &liststr)
+/// @brief Separates the string of mnemonics into a string array.
+/// @param rawstr The mnemonic string
+/// @param liststr A vector of strings with the sliced mnemonic.
+void MnemonicXMLFile::ParseMnemonicString(const wxString &rawstr, StringVector &liststr)
 {
     int first_arg_pos, last_arg_pos;
     wxString strtemp;
@@ -591,26 +603,30 @@ void MnemonicXMLFile::ParseMnemonicString(const wxString &rawstr, wxArrayString 
     last_arg_pos = rawstr.Find(ARGUMENT_MARK, true);
     if ((first_arg_pos == last_arg_pos) && (first_arg_pos != wxNOT_FOUND))
     {
-        liststr.Add(rawstr.Left(first_arg_pos));
+        liststr.push_back(rawstr.Left(first_arg_pos));
         strtemp = rawstr.Right(rawstr.Len() - first_arg_pos - 1);
-        liststr.Add(strtemp);
+        liststr.push_back(strtemp);
     }
     else
         if ((first_arg_pos != wxNOT_FOUND) || (last_arg_pos != wxNOT_FOUND))
         {
-            liststr.Add(rawstr.Left(first_arg_pos));
+            liststr.push_back(rawstr.Left(first_arg_pos));
             strtemp = rawstr.Mid(first_arg_pos + 1, (last_arg_pos - first_arg_pos - 1));
             if (!strtemp.IsEmpty())
-                liststr.Add(strtemp);
+                liststr.push_back(strtemp);
         }
         else
-            liststr.Add(rawstr);
+            liststr.push_back(rawstr);
 
 }
 
 
 
 
+/// @brief Read the OPCODE field and convert to bytecode
+/// @param instruction pointer to MnemonicItem.
+/// @param bytecodestr the OPCODE field from XML file.
+/// @param sizestr the size of the OPCODE.
 void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxString &bytecodestr, const wxString &sizestr)
 {
     long converted;
@@ -631,10 +647,10 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
         throw XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR;
 
     //#ifdef _IDZ80_DEBUG_
-    //LogToFile(wxString::Format("[%.3d] Size validated [%d].", statistics_.numinstructions, informed_size));
+    //LogToFile(wxString::Format("[%.3d] Size validated [%d].", m_statistics.numinstructions, informed_size));
     //#endif // _IDZ80_DEBUG_
 
-    for(uint counter = 0; counter < informed_size; counter++)
+    for(uint counter = 0; counter < informed_size; ++counter)
     {
         hex_str = bytecodestr.Mid(counter * 3, 2);
         if (!hex_str.ToLong(&converted, 16))
@@ -646,13 +662,15 @@ void MnemonicXMLFile::ParseOpcodeString(MnemonicItem *instruction, const wxStrin
 
 
     //#ifdef _IDZ80_DEBUG_
-    //LogToFile(wxString::Format("[%.3d] Bytecode size = %d [%d].", statistics_.numinstructions, informed_size, instruction->GetByteCodeSize()));
+    //LogToFile(wxString::Format("[%.3d] Bytecode size = %d [%d].", m_statistics.numinstructions, informed_size, instruction->GetByteCodeSize()));
     //#endif // _IDZ80_DEBUG_
 }
 
 
 
-
+/// @brief Converts a vector of bytes called ByteCode into a value, now called signature, to be faster and easy to compare.
+/// @param bytecode The vector of bytes.
+/// @return the signature
 unsigned int MnemonicXMLFile::CalculateSignature(const ByteCode &bytecode)
 {
     unsigned int signature = 0;
@@ -670,6 +688,10 @@ unsigned int MnemonicXMLFile::CalculateSignature(const ByteCode &bytecode)
 
 
 
+/// @brief Searches for an attribute "node_str" in an instruction_node
+/// @param instruction_node The instruction node
+/// @param node_str The attribute
+/// @return The node. Zero if not found.
 wxXmlNode *MnemonicXMLFile::GetInInstructionNode(wxXmlNode *instruction_node, const wxString &node_str)
 {
     wxXmlNode *actual_param;
@@ -686,56 +708,59 @@ wxXmlNode *MnemonicXMLFile::GetInInstructionNode(wxXmlNode *instruction_node, co
 
 
 
-void MnemonicXMLFile::PrintErrorMessages(XMLF_Exceptions e, int line)
+/// @brief Prints the error messages of exceptions.
+/// @param t_exception The exception
+/// @param t_line The line of the error.
+void MnemonicXMLFile::PrintErrorMessages(XMLF_Exceptions t_exception, int t_line)
 {
-    switch(e)
+    switch(t_exception)
     {
         case XMLFE_ITEM_OPCODE_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find item OPCODE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find item OPCODE !\n", t_line));
             break;
 
         case XMLFE_ATTR_OPCODE_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute OPCODE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute OPCODE !\n", t_line));
             break;
 
         case XMLFE_ATTR_OPCODE_SIZE_ERROR_CONV:
-            LogIt(wxString::Format("[%d] Can't convert opcode SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't convert opcode SIZE !\n", t_line));
             break;
 
         case XMLFE_ATTR_OPCODE_SIZE_VALIDATE_ERROR:
-            LogIt(wxString::Format("[%d] Opcode size validation error !\n", line));
+            LogIt(wxString::Format("[%d] Opcode size validation error !\n", t_line));
             break;
 
         case XMLFE_ATTR_OPCODE_CONVERSION_ERROR:
-            LogIt(wxString::Format("[%d] Error while converting OPCODE sequence !\n", line));
+            LogIt(wxString::Format("[%d] Error while converting OPCODE sequence !\n", t_line));
             break;
 
         case XMLFE_ATTR_SIZE_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute SIZE !\n", t_line));
             break;
 
         case XMLFE_ATTR_MNMONIC_STR_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute mnemonic STRING !\n", t_line));
             break;
 
         case XMLFE_ARG_BASIC_SIZE_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute argument SIZE !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument SIZE !\n", t_line));
             break;
 
         case XMLFE_ARG_BASIC_COUNT_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute argument COUNT !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument COUNT !\n", t_line));
             break;
 
         case XMLFE_ARG_BASIC_POSITION_NOT_FOUND:
-            LogIt(wxString::Format("[%d] Can't find attribute argument POSITION !\n", line));
+            LogIt(wxString::Format("[%d] Can't find attribute argument POSITION !\n", t_line));
             break;
 
         case XMLFE_ARG_BASIC_LOAD_FAILED:
-            LogIt(wxString::Format("[%d] Argument basic attributes failed to load !\n", line));
+            LogIt(wxString::Format("[%d] Argument basic attributes failed to load !\n", t_line));
             break;
 
         default:
-            LogIt(wxString::Format("[%d] Unknow error !\n", line));
+            LogIt(wxString::Format("[%d] Unknow error !\n", t_line));
     }
 }
 
@@ -751,5 +776,5 @@ void MnemonicXMLFile::LogToFile(const wxString textout)
 
 void MnemonicXMLFile::LogIt(const wxString textout)
 {
-    log_->AppendText(textout);
+    m_log_text->AppendText(textout);
 }
