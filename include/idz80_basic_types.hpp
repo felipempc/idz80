@@ -23,6 +23,8 @@ typedef std::vector<int> IntArray;
 typedef std::vector<unsigned int> AddressVector;
 typedef std::vector<int> IndexVector;
 
+typedef int DisassembledIndex;
+
 #endif // IDZ80BASICTYPES_H
 
 

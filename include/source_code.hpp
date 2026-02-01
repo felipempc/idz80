@@ -11,7 +11,6 @@
 #ifndef _SOURCE_CODE_HPP_
 #define _SOURCE_CODE_HPP_
 
-#include "project_base.hpp"
 #include "disassembled_item.hpp"
 #include "disassembled_container.hpp"
 #include "source_code_access.hpp"
@@ -21,7 +20,7 @@
 class SourceCode: public SourceCodeAccess
 {
     public:
-        SourceCode(const ProjectBase *t_parent);
+        SourceCode(DisassembledContainer *t_disassembled, LabelManager *t_labels);
         virtual ~SourceCode();
 
         void clear();

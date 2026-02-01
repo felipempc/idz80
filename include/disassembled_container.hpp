@@ -14,6 +14,7 @@
 #include "debug_logbase.hpp"
 
 #include "disassembled_item.hpp"
+#include "idz80_basic_types.hpp"
 
 #include <vector>
 
@@ -26,7 +27,7 @@ struct RangeItems
 
 
 typedef std::vector<DisassembledItem *> DisassembledList;
-typedef int DisassembledIndex;
+//DisassembledIndex transferred to idz80_basic_types.hpp
 
 class DisassembledContainer : public DebugLogBase
 {

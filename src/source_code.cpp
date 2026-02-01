@@ -12,13 +12,12 @@
 #include "source_code.hpp"
 
 
-SourceCode::SourceCode(const ProjectBase *t_parent)
+SourceCode::SourceCode(DisassembledContainer *t_disassembled, LabelManager *t_labels)
 {
     m_itemcount = -1;
     m_first_instruction_line = -1;
-    //TODO: Determine the source code object
-    //m_disassembled = t_parent->m_disassembled_mgr->Index();
-    m_labels = t_parent->m_labels;
+    m_disassembled = t_disassembled;
+    m_labels = t_labels;
 }
 
 

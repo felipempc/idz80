@@ -14,6 +14,7 @@
 
 #include <wx/gdicmn.h>
 #include <wx/string.h>
+#include "idz80_basic_types.hpp"
 #include "labelitem.hpp"
 
 /// @brief Represents a line of source code
