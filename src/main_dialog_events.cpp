@@ -89,6 +89,35 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 }
 
 
+/// @brief Opens a message box to decide if the file will be closed or not.
+/// @return true if it is to be closed.
+bool IDZ80::closeFileDialog(const wxString t_title_str)
+{
+    wxString ask_str = wxString::Format("Are you sure you want to close %s?", t_title_str);
+    int res = wxMessageBox(ask_str,
+                       "wxAUI",
+                       wxYES_NO,
+                       this);
+    
+    return (res == wxYES);
+}
+
+
+
+/// @brief Disables items on menus when there is no file opened.
+void IDZ80::disableMenuForNoFile()
+{
+    wxMenuBar *mb;
+    mb = GetMenuBar();
+    mb->Enable(idMenuToolsDasmAll, false);
+    mb->Enable(idMenuFileInfo, false);
+    mb->Enable(idMenuFileSave, false);
+    mb->Enable(idMenuFileSaveAs, false);
+    mb->Enable(idMenuFileClose, false);
+    mb->Enable(idMenuToolsGenCode, false);
+}
+
+
 
 void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 {
@@ -106,7 +135,6 @@ void IDZ80::OnMenuFileQuit(wxCommandEvent& event)
 {
     Close();
 }
-
 
 
 
@@ -256,16 +284,18 @@ void IDZ80::OnAuiNotebookChanged(wxAuiNotebookEvent& event)
 
 void IDZ80::OnAuiNotebookClose(wxAuiNotebookEvent &event)
 {
-    //LogIt(wxString::Format("Will close page %d.", event.GetSelection()));
-    int res = wxMessageBox("Are you sure you want to close/hide this notebook page?",
-                       "wxAUI",
-                       wxYES_NO,
-                       this);
-    if (res != wxYES)
-        event.Veto();
-    else {
+    int i = m_notebook->GetSelection();
+    if (closeFileDialog(m_notebook->GetPageText(i))) {
         m_programs_mgr->Remove(event.GetSelection());
+        if (m_programs_mgr->Count() == 0)
+        {
+            disableMenuForNoFile();
+            UpdateTitle("");
+            Clear_all();
+        }
     }
+    else    
+        event.Veto();
 }
 
 
@@ -431,18 +461,18 @@ void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 
 void IDZ80::OnMenuFileClose(wxCommandEvent& event)
 {
-    wxMenuBar *mb;
-    mb = GetMenuBar();
-    mb->Enable(idMenuToolsDasmAll, false);
-    mb->Enable(idMenuFileInfo, false);
-    mb->Enable(idMenuFileSave, false);
-    mb->Enable(idMenuFileSaveAs, false);
-    mb->Enable(idMenuFileClose, false);
-    mb->Enable(idMenuToolsGenCode, false);
-
-    UpdateTitle("");
-
-    Clear_all();
+    int i = m_notebook->GetSelection();
+    if (closeFileDialog(m_notebook->GetPageText(i)))
+    {
+        m_notebook->DeletePage(i);
+        m_programs_mgr->Remove(i);
+        if(m_notebook->GetPageCount() == 0)
+        {
+            disableMenuForNoFile();
+            UpdateTitle("");
+            Clear_all();
+        }
+    }
 }
 
 

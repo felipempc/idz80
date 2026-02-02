@@ -88,11 +88,13 @@ class IDZ80: public ProjectBase, public wxFrame
         bool SaveAs();
         void Clear_all();
         //bool OpenProgramFile(const wxString filename);
-        void OpenProgramFile(wxString filename = "");
+        void OpenProgramFile();
         //bool OpenProjectFile(const wxString filename);
         void OpenProjectFile();
 
 		void PageOrganizer();
+		bool closeFileDialog(const wxString t_title_str);
+		void disableMenuForNoFile();
 
         void UpdateTitle(const wxString str);
         void SetupMenuItemStatus();

@@ -108,7 +108,7 @@ IDZ80::~IDZ80()
 
 
 
-void IDZ80::OpenProgramFile(wxString filename)
+void IDZ80::OpenProgramFile()
 {
     NewProjectDialog dialog(this/*, m_notebook*/);
     bool wasLoaded = m_programs_mgr->isLoaded();
@@ -127,7 +127,7 @@ void IDZ80::OpenProgramFile(wxString filename)
             return;
         }
 
-        if (dialog.WasModified()) 
+        if (dialog.WasModified()) {
             if (m_notebook->GetPageCount() > 0) {
                  PageOrganizer();
             }
@@ -138,6 +138,7 @@ void IDZ80::OpenProgramFile(wxString filename)
                 }
                 m_notebook->Thaw();
             }
+        }
         
             if (m_labels)
             {
