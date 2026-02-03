@@ -129,7 +129,7 @@ void IDZ80::OpenProgramFile()
 
         if (dialog.WasModified()) {
             if (m_notebook->GetPageCount() > 0) {
-                 PageOrganizer();
+                 updateNotebookPages();
             }
             else {
                 m_notebook->Freeze();
@@ -220,7 +220,8 @@ void IDZ80::OpenProgramFile()
 }
 
 
-void IDZ80::PageOrganizer()
+/// @brief Updates pages in the notebook.
+void IDZ80::updateNotebookPages()
 {
     wxString filename, namepage;
     unsigned int    lastpage = m_notebook->GetPageCount() - 1,
@@ -242,27 +243,7 @@ void IDZ80::PageOrganizer()
 }
 
 
-/*
-wxString IDZ80::DialogLoadProgramFile()
-{
-    wxString caption = "Choose a file";
-    wxString wildcard = "Program files (*.ROM, *.COM, *.BIN)|*.rom;*.com;*.bin|All files (*.*)|*.*";
-    wxFileDialog dialog(this, caption, m_fileopen_last_dir, wxEmptyString, wildcard, wxFD_OPEN);
-    wxString ret = "";
 
-    if (dialog.ShowModal() == wxID_OK)
-    {
-        ret = dialog.GetPath();
-        m_fileopen_last_dir = dialog.GetDirectory();
-    }
-
-    return ret;
-}
-*/
-
-
-
-//bool IDZ80::OpenProjectFile(const wxString filename)
 void IDZ80::OpenProjectFile()
 {
 /*

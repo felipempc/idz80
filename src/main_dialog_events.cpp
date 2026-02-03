@@ -184,9 +184,6 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     int     w,h,x,y;
     */
     //SortedIntArray  entries(CompareSortedInt);
-    bool *simulateexecution;
-
-    simulateexecution = (bool *)event.GetClientData();
 //    codeview_->Enable(false);
 
 /*
@@ -209,7 +206,6 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
                                           process_->prog_labels->GetCount(), process_->var_labels->GetCount(), process_->io_labels->GetCount()));
     #endif
 
-//    delete GaugeLd;
 //    codeview_->Plot();
 
     wxMenuBar *mb;
@@ -224,9 +220,6 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 //    if (!entries.IsEmpty())
 //        codeview_->CenterAddress(entries[0]);
 }
-
-
-
 
 
 
@@ -251,8 +244,6 @@ void IDZ80::OnMenuViewDisassemblyWindow(wxCommandEvent& event)
 
 
 
-
-
 void IDZ80::OnAuiPaneClose(wxAuiManagerEvent& event)
 {
     wxMenuBar *mb;
@@ -273,11 +264,9 @@ void IDZ80::OnAuiPaneClose(wxAuiManagerEvent& event)
 
 void IDZ80::OnAuiNotebookChanged(wxAuiNotebookEvent& event)
 {
-    //wxWindow *object = static_cast<wxWindow *>(event.GetEventObject());
-    //LogIt(object->GetName());
     int index = event.GetSelection();
     wxString caption = m_notebook->GetPageText(index);
-    LogIt(wxString::Format("Selected %d [%s].", index, static_cast<const char *>(caption.c_str())));
+    LogIt(wxString::Format("Selected %d [%s].", index, caption));
 }
 
 
