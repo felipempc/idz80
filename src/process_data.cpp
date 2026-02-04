@@ -17,18 +17,16 @@
  */
 
 
- // MUST BE COMPLETELY REWRITTEN !!!!
+ // REWRITE IS WORK IN PROGRESS...
 
 ProcessData::ProcessData(ProjectBase *t_parent)
 {
+    m_sourcecode_mgr = t_parent->m_sourcecode_mgr;
+    m_disassembled_mgr = t_parent->m_disassembled_mgr;
     m_programs_mgr = t_parent->m_programs_mgr;
     m_mnemonics = t_parent->m_mnemonics;
     m_labels = t_parent->m_labels;
 
-    m_disassembled_mgr = new DisassembledManager(t_parent);
-    t_parent->m_disassembled_mgr = m_disassembled_mgr;
-
-    //CodeViewLines = new SourceCode(m_disassembled_mgr, this);
     //m_search_status = new SearchManager();
     m_disassembler = new SmartDecoder(t_parent);
 
@@ -55,6 +53,22 @@ void ProcessData::clear()
     //CodeViewLines->Clear();
     if (m_disassembler)
         m_disassembler->Clear();
+}
+
+
+
+/// @brief Creates the objects of Disassembled and SourceCode for each "file" opened.
+void ProcessData::setupDisassembledAndSourceCode()
+{
+    unsigned int file_count = m_programs_mgr->Count();
+
+    if (file_count > 0) {
+        for (unsigned int x = 0; x < file_count; ++x) {
+            DisassembledContainer *disassembled = new DisassembledContainer(this);
+            m_disassembled_mgr->Add(disassembled);
+            m_sourcecode_mgr->addSourceCode(new SourceCode(disassembled, m_labels));
+        }
+    }
 }
 
 
@@ -153,11 +167,17 @@ void ProcessData::initData(const unsigned int t_index)
 {
     uint                    i, fstil;
     wxArrayString           m_Comments;
-    DisassembledContainer   *Disassembled;
+    DisassembledContainer   *Disassembled = 0;
+    SourceCode  *source_code = 0;
 
-    Disassembled = Disassembled = m_disassembled_mgr->Index(t_index);
-    if (!CodeViewLines->IsEmpty())
-         CodeViewLines->Clear();
+    Disassembled = m_disassembled_mgr->Index(t_index);
+    source_code = m_sourcecode_mgr->index(t_index);
+    if (!source_code) {
+        source_code = new SourceCode(Disassembled, m_labels);
+        m_sourcecode_mgr->addSourceCode(source_code);
+    }
+    else
+        source_code->clear();
 
     m_Comments.Add("; ------------------------");
     m_Comments.Add("; Disassembled with IDZ80");
@@ -167,15 +187,15 @@ void ProcessData::initData(const unsigned int t_index)
 
     i = 0;
     while (i < m_Comments.GetCount())
-        CodeViewLines->addComment(m_Comments[i++]);
+        source_code->addComment(m_Comments[i++]);
 
-    CodeViewLines->addOrigin(Disassembled->GetBaseAddress(0), "");
+    source_code->addOrigin(Disassembled->GetBaseAddress(0), "");
     i = 0;
-    fstil = CodeViewLines->GetCount();
+    fstil = source_code->GetCount();
     while (i < Disassembled->GetCount())
-        CodeViewLines->AddDasm(i++, "");
+        source_code->AddDasm(i++, "");
 
-    CodeViewLines->setFirstInstructionLine(fstil);
+    source_code->setFirstInstructionLine(fstil);
 }
 
 

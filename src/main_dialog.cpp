@@ -57,7 +57,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
     m_panel_log = 0;
     m_status_bar = 0;
     m_log_window = 0;
-//    process_ = 0;
+//    m_processdata = 0;
 //    codeview_ = 0;
     m_config = 0;
 //    project_ = 0;
@@ -114,6 +114,13 @@ void IDZ80::OpenProgramFile()
     bool wasLoaded = m_programs_mgr->isLoaded();
     
     if (dialog.ShowModal() == wxID_OK) {
+        if(!m_programs_mgr->isLoaded()) {
+            m_notebook->DeleteAllPages();
+            SetupMenuItemStatus();
+            return;
+        }
+
+
         wxMenuBar *mb;
         mb = GetMenuBar();
         mb->Enable(idMenuToolsDasmAll, true);
@@ -122,33 +129,17 @@ void IDZ80::OpenProgramFile()
         mb->Enable(idMenuToolsGenCode, false);
         mb->Enable(idMenuToolsAutoLabel, false);
 
-        if(!m_programs_mgr->isLoaded()) {
-            m_notebook->DeleteAllPages();
-            return;
-        }
-
-        if (dialog.WasModified()) {
-            if (m_notebook->GetPageCount() > 0) {
-                 updateNotebookPages();
-            }
-            else {
-                m_notebook->Freeze();
-                for (uint i = 0; i < m_programs_mgr->Count(); ++i) {
-                    m_notebook->AddPage(new wxPanel(this), m_programs_mgr->Index(i)->GetFileName(), true);
-                }
-                m_notebook->Thaw();
-            }
-        }
+        if (dialog.WasModified())
+            updateNotebookPages();
         
-            if (m_labels)
-            {
-                wxString labelspath = m_app_resource_dir + "\\Labels.txt";
-                if (!m_labels->loadSystemLabels(labelspath))
-                    LogIt(wxString::Format("System labels failed to load. [%s]", labelspath));
-                else
-                    LogIt("System labels loaded sucessfully.");
-            }
-
+        if (m_labels)
+        {
+            wxString labelspath = m_app_resource_dir + "\\Labels.txt";
+            if (!m_labels->loadSystemLabels(labelspath))
+                LogIt(wxString::Format("System labels failed to load. [%s]", labelspath));
+            else
+                LogIt("System labels loaded sucessfully.");
+        }
     }
     else {
         m_status_bar->SetStatusText("Cancelled by user !");
@@ -224,16 +215,16 @@ void IDZ80::OpenProgramFile()
 void IDZ80::updateNotebookPages()
 {
     wxString filename, namepage;
-    unsigned int    lastpage = m_notebook->GetPageCount() - 1,
-                    lastfile = m_programs_mgr->Count() - 1;
+    unsigned int    num_files = m_programs_mgr->Count(),
+                    num_pages = m_notebook->GetPageCount();
 
     m_notebook->Freeze();
 
-    for (unsigned int i = 0; i < (lastfile + 1); i++) {
+    for (unsigned int i = 0; i < num_files; ++i) {
         filename = m_programs_mgr->Index(i)->GetFileName();
         namepage = m_notebook->GetPageText(i);
         if (!filename.IsSameAs(namepage))
-            if (i <= lastpage)
+            if ((num_pages > 0) && (i < num_pages))
                 m_notebook->InsertPage(i, new wxPanel(this), filename, true);
             else
                 m_notebook->AddPage(new wxPanel(this), filename, true);

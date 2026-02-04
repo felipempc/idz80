@@ -141,21 +141,21 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
         {
             case OT_VARIABLE:
                                 argument_value = de->GetArgumentValue(i, 0);
-                                str = m_labels->sys_vars->Find(argument_value);
-                                m_labels->var_labels->AddLabel(argument_value, str, index);
+                                str = m_labels->sys_vars->find(argument_value);
+                                m_labels->var_labels->addLabel(argument_value, str, index);
                                 de->SetArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_ABSOLUTE_ADDRESS:
             case OT_RELATIVE_ADDRESS:
                                 argument_value = de->GetArgumentValue(i, m_disassembled_list->GetBaseAddress(index));
-                                str = m_labels->sys_calls->Find(argument_value);
-                                m_labels->prog_labels->AddLabel(argument_value, str, index);
+                                str = m_labels->sys_calls->find(argument_value);
+                                m_labels->prog_labels->addLabel(argument_value, str, index);
                                 de->SetArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_IO_ADDRESS:
                                 argument_value = de->GetArgumentValue(i, 0);
-                                str = m_labels->sys_io->Find(argument_value);
-                                m_labels->io_labels->AddLabel(argument_value, str, index);
+                                str = m_labels->sys_io->find(argument_value);
+                                m_labels->io_labels->addLabel(argument_value, str, index);
                                 de->SetArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_NONE:
@@ -175,9 +175,9 @@ void Decoder::MSXCheckFunctionRegisters(DisassembledItem *de)
     case 5:
         if (m_registers.C->isLoaded())
         {
-            wxString str = m_labels->sys_const->Find(m_registers.C->GetValue());
+            wxString str = m_labels->sys_const->find(m_registers.C->GetValue());
             if (!str.IsEmpty())
-                m_labels->constant_labels->AddLabel(m_registers.C->GetValue(), str);
+                m_labels->constant_labels->addLabel(m_registers.C->GetValue(), str);
         }
 
         break;
@@ -229,19 +229,19 @@ void Decoder::SetCartridgeLabels()
 
 	address = m_program->GetCartridgeHeader()->init;
 	if (address != 0)
-		m_labels->prog_labels->AddLabel(address, "INIT");
+		m_labels->prog_labels->addLabel(address, "INIT");
 
 	address = m_program->GetCartridgeHeader()->statement;
 	if (address != 0)
-		m_labels->prog_labels->AddLabel(address, "STATEMENT");
+		m_labels->prog_labels->addLabel(address, "STATEMENT");
 
 	address = m_program->GetCartridgeHeader()->device;
 	if (address != 0)
-		m_labels->prog_labels->AddLabel(address, "DEVICE");
+		m_labels->prog_labels->addLabel(address, "DEVICE");
 
 	address = m_program->GetCartridgeHeader()->text;
 	if (address != 0)
-		m_labels->prog_labels->AddLabel(address, "TEXT");
+		m_labels->prog_labels->addLabel(address, "TEXT");
 }
 
 

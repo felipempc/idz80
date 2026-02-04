@@ -22,7 +22,7 @@
 #include "project_base.hpp"
 //#include "mnemonic_container.h"
 //#include "rawdata.h"
-//#include "process_data.h"
+//#include "process_data.hpp"
 //#include "codeview.h"
 //#include "labelslist.h"
 //#include "projectmanager_xml.h"
@@ -75,7 +75,7 @@ class IDZ80: public ProjectBase, public wxFrame
 		wxStatusBar     *m_status_bar;
         DebugLogWindow  *m_log_window;
 
-//        ProcessData     *process_;
+ //       ProcessData     *m_processdata;
 //        CodeView        *codeview_;
 
         wxConfig        *m_config;

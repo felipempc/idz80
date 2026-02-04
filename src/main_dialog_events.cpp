@@ -35,11 +35,14 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     SetupMenuItemStatus();
 
-//    process_ = new ProcessData(this, m_log_window);
+//    m_processdata = new ProcessData(this);
 //    codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
+
     m_programs_mgr = new RawDataManager(this);
     m_labels = new LabelManager();
+    m_disassembled_mgr = new DisassembledManager(this);
+    m_sourcecode_mgr = new SourceCodeManager(this);
 
     SetupLabels();
     SetupNotebook();
@@ -185,10 +188,11 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     */
     //SortedIntArray  entries(CompareSortedInt);
 //    codeview_->Enable(false);
+    unsigned int file_selected = m_notebook->GetSelection();
 
+//    m_processdata->disassembleFirst(file_selected);
+//    m_processdata->initData(file_selected);
 /*
-    process_->disassembleFirst(*simulateexecution);
-    process_->initData();
     process_->insertLineLabelsInSourceCode();
     process_->prog_labels->SortAddress(true);
     process_->io_labels->SortAddress(true);

@@ -47,6 +47,7 @@ class ProcessData : public ProjectBase
         void initData(const unsigned int t_index);
         void insertLineLabelsInSourceCode();
 
+        void setupDisassembledAndSourceCode();
         bool setupSystemLabels();
         void clear();
 
