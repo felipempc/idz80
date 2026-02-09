@@ -35,21 +35,19 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     SetupMenuItemStatus();
 
+    m_programs_mgr = new RawDataManager(this);
+    m_disassembled_mgr = new DisassembledManager(this);
+    m_sourcecode_mgr = new SourceCodeManager(this);
+    m_labels = new LabelManager();
 //    m_processdata = new ProcessData(this);
 //    codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
-
-    m_programs_mgr = new RawDataManager(this);
-    m_labels = new LabelManager();
-    m_disassembled_mgr = new DisassembledManager(this);
-    m_sourcecode_mgr = new SourceCodeManager(this);
 
     SetupLabels();
     SetupNotebook();
     SetupAUIPanes();
     ReadStoredConfiguration();
     LoadMnemonicsDB();
-
 
     m_status_bar->SetStatusText(m_app_root_dir);
 
@@ -68,7 +66,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 	//project_->SetLog(m_panel_log);
 
 	SetupMenuEvents();
-
 
     if (m_maximize_main_window)
         Maximize();

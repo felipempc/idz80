@@ -101,6 +101,11 @@ IDZ80::~IDZ80()
 //    delete project_;
     delete m_config;
     delete m_labels;
+//    delete m_processdata;
+
+    delete m_sourcecode_mgr;
+    delete m_disassembled_mgr;
+
     delete m_programs_mgr;
 //    delete codeview_;
 //    delete process_;
@@ -147,31 +152,6 @@ void IDZ80::OpenProgramFile()
 
 
     /* ----    OLD     ---------
-    if ((!filename.IsEmpty()) && process->Program->Open(filename))
-    {
-		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-		PanelLog->AppendText("Opened file:\n");
-		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
-		PanelLog->AppendText(filename);
-		PanelLog->AppendText("\n");
-		PanelLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-		PanelLog->AppendText("File size: ");
-		PanelLog->SetDefaultStyle(wxTextAttr(*wxRED));
-		info.Printf("%d bytes\n",process->Program->GetSize());
-		PanelLog->AppendText(info);
-
-		config.SetData();
-		if (config.ShowModal() == wxID_OK)
-        {
-            wxMenuBar *mb;
-            mb = GetMenuBar();
-            mb->Enable(idMenuToolsDasmAll, true);
-            mb->Enable(idMenuFileInfo, true);
-            mb->Enable(idMenuFileClose, true);
-            mb->Enable(idMenuToolsGenCode, false);
-            mb->Enable(idMenuToolsAutoLabel, false);
-
-            wxFileName::SplitPath(filename, 0, 0, &caption, 0, 0);
             UpdateTitle(caption);
 
             if (process->setupSystemLabels())
@@ -195,17 +175,7 @@ void IDZ80::OpenProgramFile()
                 AddPendingEvent(ev_dasm);
             }
         }
-        else
-        {
-            process->Program->Close();
-            StatusBar1->SetStatusText("Cancelled by user !");
-        }
-    }
-	else
-	{
-		caption.Printf("Could not open '%s' !", filename.c_str());
-		wxMessageBox(caption, "Error...");
-	}
+
 	*/
 
 }
@@ -224,10 +194,9 @@ void IDZ80::updateNotebookPages()
         filename = m_programs_mgr->Index(i)->GetFileName();
         namepage = m_notebook->GetPageText(i);
         if (!filename.IsSameAs(namepage))
-            if ((num_pages > 0) && (i < num_pages))
-                m_notebook->InsertPage(i, new wxPanel(this), filename, true);
-            else
-                m_notebook->AddPage(new wxPanel(this), filename, true);
+        {
+            m_notebook->AddPage(new wxPanel(this), filename, true);
+        }
     }
 
     m_notebook->Thaw();

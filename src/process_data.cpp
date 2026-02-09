@@ -38,10 +38,7 @@ ProcessData::ProcessData(ProjectBase *t_parent)
 ProcessData::~ProcessData()
 {
     if (m_disassembler)
-        delete m_disassembler;
-    if (m_disassembled_mgr)
-        delete m_disassembled_mgr;
-    
+        delete m_disassembler;    
     m_labels->destroyAll();
 }
 
