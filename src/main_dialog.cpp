@@ -102,13 +102,17 @@ IDZ80::~IDZ80()
     delete m_config;
     delete m_labels;
 //    delete m_processdata;
-
     delete m_sourcecode_mgr;
     delete m_disassembled_mgr;
 
     delete m_programs_mgr;
+    delete m_notebook;
 //    delete codeview_;
 //    delete process_;
+    delete m_aui_mgr;
+    delete m_status_bar;
+    delete m_panel_log;
+    delete m_log_window;
 }
 
 
@@ -181,7 +185,8 @@ void IDZ80::OpenProgramFile()
 }
 
 
-/// @brief Updates pages in the notebook.
+/// @brief Updates pages in the notebook.\
+/// @brief Creates DisassembledContainer and SourceCode.
 void IDZ80::updateNotebookPages()
 {
     wxString filename, namepage;
@@ -195,6 +200,9 @@ void IDZ80::updateNotebookPages()
         namepage = m_notebook->GetPageText(i);
         if (!filename.IsSameAs(namepage))
         {
+            DisassembledContainer *disassembled = new DisassembledContainer(this);
+            m_disassembled_mgr->Add(disassembled);
+            m_sourcecode_mgr->addSourceCode(new SourceCode(disassembled, m_labels));
             m_notebook->AddPage(new wxPanel(this), filename, true);
         }
     }

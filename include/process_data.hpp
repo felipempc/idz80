@@ -45,13 +45,12 @@ class ProcessData : public ProjectBase
         void makeData(const unsigned int t_index, RangeItems &t_range);
         //void AutoLabel();
         void initData(const unsigned int t_index);
-        void insertLineLabelsInSourceCode();
+        void insertLineLabelsInSourceCode(const unsigned int t_index);
 
-        void setupDisassembledAndSourceCode();
         bool setupSystemLabels();
         void clear();
 
-        void removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmitem);
+        void removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmindex);
         bool removeLineAndVarLabels(const int t_line);
         bool removeLineAndProgLabels(const int t_line);
 
@@ -67,7 +66,7 @@ class ProcessData : public ProjectBase
 
         void removeLabelUsers(const unsigned int t_index, IntArray *t_users);
         bool filterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected);
-        void processLabel(LabelListCtrl *t_label);
+        void processLabel(const unsigned int t_index, LabelListCtrl *t_label);
 
         bool findInArgumentVariables(DisassembledItem *t_de, word t_argument);
         bool findInArgumentLiteral(DisassembledItem *t_de, word t_argument);

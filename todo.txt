@@ -14,7 +14,5 @@
   ------
 
   12/2025 - main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
-  02/02/26 - process_data.cpp - Estou em initData. Em progresso
-  03/02/26 - main_dialog.cpp - Reescrito updateNotebookpages. Deverá acompanhar criando Disassembled e SourceCode. Se houver remoção
-                               de arquivo, destruirá e se houver adição de arquivo os criará. Será retirada essa tarefa de ProcessData.
+  10/02/26 - process_data.cpp - Estou em removeFromLabelUserList. Em progresso
 
