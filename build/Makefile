@@ -96,8 +96,8 @@ SOURCE_FILES_FULL := $(wildcard $(SRCDIR)/*.cpp)
 SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/main_dialog.cpp src/main_dialog_setup.cpp src/main_dialog_events.cpp src/debug_logbase.cpp \
 				src/debug_logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp \
 				src/mnemonic_access.cpp src/mnemonic_container.cpp src/mnemonic_item_base.cpp src/mnemonic_item.cpp src/mnemonicxmlfile.cpp src/file_settings_dialog.cpp \
-				src/disassembled_manager.cpp src/disassembled_container.cpp src/disassembled_item.cpp src/source_code_manager.cpp \
-				src/source_code_container.cpp src/source_code_access.cpp src/source_code.cpp
+				src/disassembled_manager.cpp src/disassembled_container.cpp src/disassembled_item.cpp
+#				src/source_code_manager.cpp src/source_code_container.cpp src/source_code_access.cpp src/source_code.cpp
 OBJETOS_FULL := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES_TEMP))
 OBJETOS_FULL += $(OBJDIR)/$(RESOURCE_FILE:.rc=.o)    # Add the compiled resource
 #SOURCES_TEMP := $(notdir $(SOURCE_FILES_FULL))     #remove o diretorio antes do arquivo

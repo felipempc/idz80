@@ -26,7 +26,6 @@ class MnemonicItem : public MnemonicItemBase
         const Arguments ARGUMENT_NONE = {OP_NONE, OT_NONE};
 
         MnemonicItem();
-        ~MnemonicItem();
 
         void Reset();
 
@@ -45,7 +44,6 @@ class MnemonicItem : public MnemonicItemBase
         unsigned int GetArgumentCount();
         unsigned int GetArgumentSize();
         unsigned int GetArgumentPosition();
-
         bool GetConditionalBranch();
 
         bool HasExplicitArguments();
@@ -54,21 +52,16 @@ class MnemonicItem : public MnemonicItemBase
         wxString GetMnemonicStr(unsigned int index);
 
         void SetGroup(Groups group);
-
         void SetSourceArgument(OperandType type, Operands operand);
         void SetDestinationArgument(OperandType type, Operands operand);
-
         void SetByteCode(ByteCode &bytecode, byte opcodesize);
 
         void ConfigArguments(byte argcount, byte argsize, byte argposition);
 
         void SetConditionalBranch(bool isconditional = false);
-
         void SetExplicitArguments(bool isexplicit = true);
-
-        void SetMnemonicString(const wxArrayString &mnemonicstring);
-
         void SetMnemonicSignature(unsigned int signature);
+        void SetMnemonicStrings(const StringVector &t_strings);
 
     protected:
     private:

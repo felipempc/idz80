@@ -41,18 +41,18 @@ MnemonicContainer::~MnemonicContainer()
 void MnemonicContainer::Clear()
 {
     MnemonicItem    *mnemonic = 0;
-    unsigned int    to_delete = mnlist_.size();
+    unsigned int    to_delete = m_the_mnemonic_list.size();
 
     num_groups_ = 0;
     num_instructions_ = 0;
 
     while(to_delete--)
     {
-        mnemonic = mnlist_.back();
-        mnlist_.pop_back();
+        mnemonic = m_the_mnemonic_list.back();
+        m_the_mnemonic_list.pop_back();
         delete mnemonic;
     }
-    mnlist_.clear();
+    m_the_mnemonic_list.clear();
 }
 
 
@@ -61,14 +61,14 @@ void MnemonicContainer::Clear()
 void MnemonicContainer::AddInstruction(MnemonicItem *mnemonicitem)
 {
     if (mnemonicitem)
-        mnlist_.push_back(mnemonicitem);
+        m_the_mnemonic_list.push_back(mnemonicitem);
 }
 
 
 
 unsigned int MnemonicContainer::GetCount()
 {
-    return mnlist_.size();
+    return m_the_mnemonic_list.size();
 }
 
 

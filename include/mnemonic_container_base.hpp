@@ -24,7 +24,7 @@ class MnemonicContainerBase
 {
     public:
     protected:
-        MnemonicList mnlist_;
+        MnemonicList m_the_mnemonic_list;
     private:
 };
 

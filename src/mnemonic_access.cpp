@@ -12,31 +12,38 @@
 
 MnemonicAccess::MnemonicAccess()
 {
-    current_item_ = 0;
-    current_index_ = -1;
+    m_current_item = 0;
+    m_current_index = -1;
 }
 
 
-void MnemonicAccess::Find(wxArrayInt& mnemonics_found_list, byte opcode, uint scanoffset)
+/// @brief Looks for an opcode within a bytecode at scanoffset position.\
+/// @brief 00 | 11 | 22 | 33 (bytecode of 4 bytes (opcodes) in this example)\
+/// @brief ww | xx | yy | zz\
+/// @brief ^- scanoffset
+/// @param mnemonics_found_list list of bytecode found based on opcode and scanoffset
+/// @param opcode a byte part of a bytecode.
+/// @param scanoffset position part of the bytecode that is being searched.
+void MnemonicAccess::Find(UintArray& mnemonics_found_list, byte opcode, uint scanoffset)
 {
     uint			item_count, remaining_items, index;
-    wxArrayInt		temporary_found;
+    UintArray		temporary_found;
     bool			arg_detected;
     byte			opcodetest;
 
     if (scanoffset == 0)
     {
-        mnemonics_found_list.Clear();
-        remaining_items = mnlist_.size();
+        mnemonics_found_list.clear();
+        remaining_items = m_the_mnemonic_list.size();
     }
     else
-        remaining_items = mnemonics_found_list.GetCount();
+        remaining_items = mnemonics_found_list.size();
 
     arg_detected = true;
     if (remaining_items > 1)
     {
-        temporary_found.Clear();
-        for (item_count = 0; item_count < remaining_items; item_count++)
+        temporary_found.clear();
+        for (item_count = 0; item_count < remaining_items; ++item_count)
         {
 
             if (scanoffset == 0)
@@ -58,15 +65,15 @@ void MnemonicAccess::Find(wxArrayInt& mnemonics_found_list, byte opcode, uint sc
                 if (opcode == opcodetest)
                 {
                     if (scanoffset == 0)
-                        mnemonics_found_list.Add(item_count);
+                        mnemonics_found_list.push_back(item_count);
                     else
-                        temporary_found.Add(index);
+                        temporary_found.push_back(index);
                 }
             }
         }
         if ((scanoffset > 0) && (!arg_detected))
         {
-            mnemonics_found_list.Clear();
+            mnemonics_found_list.clear();
             mnemonics_found_list = temporary_found;
         }
     }
@@ -74,7 +81,9 @@ void MnemonicAccess::Find(wxArrayInt& mnemonics_found_list, byte opcode, uint sc
 
 
 
-
+/// @brief Searches for item of the given ByteCode
+/// @param code to be searched in the list 
+/// @return pointer to MnemonicItem found or 0, if not found.
 MnemonicItem *MnemonicAccess::FindByOpCode(const ByteCode& code)
 {
     if (First() != 0)
@@ -91,7 +100,9 @@ MnemonicItem *MnemonicAccess::FindByOpCode(const ByteCode& code)
 
 
 
-
+/// @brief Searches for item of the given signature
+/// @param signature to be searched in the list 
+/// @return pointer to MnemonicItem found or 0, if not found.
 MnemonicItem *MnemonicAccess::FindBySignature(const unsigned int &signature)
 {
     if(First() != 0)
@@ -108,99 +119,111 @@ MnemonicItem *MnemonicAccess::FindBySignature(const unsigned int &signature)
 
 
 
-
+/// @brief Selects first item from MnemonicList and makes it current item
+/// @return pointer to the selected MnemonicItem
 MnemonicItem *MnemonicAccess::First()
 {
-    if(mnlist_.size() > 0)
+    if(m_the_mnemonic_list.size() > 0)
     {
-        current_index_ = 0;
-        current_item_ = mnlist_[current_index_];
-        return current_item_;
+        m_current_index = 0;
+        m_current_item = m_the_mnemonic_list[m_current_index];
+        return m_current_item;
     }
     return static_cast<MnemonicItem *>(0);
 }
 
 
 
-
+/// @brief Selects last item from MnemonicList and makes it current item
+/// @return pointer to the selected MnemonicItem
 MnemonicItem *MnemonicAccess::Last()
 {
-    uint last = mnlist_.size();
+    uint last = m_the_mnemonic_list.size();
     if(last > 0)
     {
-        current_index_ = last - 1;
-        current_item_ = mnlist_[current_index_];
-        return current_item_;
+        m_current_index = last - 1;
+        m_current_item = m_the_mnemonic_list[m_current_index];
+        return m_current_item;
     }
     return static_cast<MnemonicItem *>(0);
 }
 
 
 
-
+/// @brief Current pointer of MnemonicItem
+/// @return Current pointer of MnemonicItem
 MnemonicItem *MnemonicAccess::CurrentItem()
 {
-    return current_item_;
+    return m_current_item;
 }
 
 
 
-
+/// @brief Selects previous item from MnemonicList and makes it current item
+/// @return pointer to the selected MnemonicItem
 MnemonicItem *MnemonicAccess::Previous()
 {
-    if(current_index_ > 0)
+    if(m_current_index > 0)
     {
-        current_index_--;
-        current_item_ = mnlist_[current_index_];
-        return current_item_;
+        --m_current_index;
+        m_current_item = m_the_mnemonic_list[m_current_index];
+        return m_current_item;
     }
     return static_cast<MnemonicItem *>(0);
 }
 
 
 
-
+/// @brief Selects next item from MnemonicList and makes it current item
+/// @return pointer to the selected MnemonicItem
 MnemonicItem *MnemonicAccess::Next()
 {
-    int lastitem = mnlist_.size() - 1;
-    if((current_index_ >= 0) && (current_index_ < lastitem))
+    int lastitem = m_the_mnemonic_list.size() - 1;
+    if((m_current_index >= 0) && (m_current_index < lastitem))
     {
-        current_index_++;
-        current_item_ = mnlist_[current_index_];
-        return current_item_;
+        ++m_current_index;
+        m_current_item = m_the_mnemonic_list[m_current_index];
+        return m_current_item;
     }
     return static_cast<MnemonicItem *>(0);
 }
 
 
 
-
+/// @brief Selects an item from the mnemonic list
+/// @param index to the mnemonic list
+/// @return pointer to MnemonicItem
 MnemonicItem *MnemonicAccess::Item(MnemonicIndex index)
 {
-    int listsize = mnlist_.size();
+    int listsize = m_the_mnemonic_list.size();
     if((index >= 0) && (index < listsize))
     {
-        current_index_ = index;
-        current_item_ = mnlist_[index];
-        return current_item_;
+        m_current_index = index;
+        m_current_item = m_the_mnemonic_list[index];
+        return m_current_item;
     }
     return static_cast<MnemonicItem *>(0);
 }
 
 
 
+/// @brief Current index of the list
+/// @return Current index of the list
 MnemonicIndex MnemonicAccess::CurrentIndex()
 {
-    return current_index_;
+    return m_current_index;
 }
 
 
 
+/// @brief Verify if m_current_index points to last item of the list
+/// @return true if m_current_index points to last item.
 bool MnemonicAccess::isEnd()
 {
-    if(mnlist_.size() > 0) {
-        int lastitem = mnlist_.size() - 1;
-        return (current_index_ == lastitem);
+    if(m_the_mnemonic_list.size() > 0) {
+        int lastitem = m_the_mnemonic_list.size() - 1;
+        return (m_current_index == lastitem);
     }
     return true;
 }
+

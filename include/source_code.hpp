@@ -15,6 +15,7 @@
 #include "disassembled_container.hpp"
 #include "source_code_access.hpp"
 #include "labelmanager.hpp"
+#include "project_base.hpp"
 
 // @brief The "text" source code
 class SourceCode: public SourceCodeAccess

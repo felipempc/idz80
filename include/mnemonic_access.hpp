@@ -12,7 +12,6 @@
 #ifndef MNEMONICACCESS_H
 #define MNEMONICACCESS_H
 
-#include <wx/dynarray.h>
 
 #include "mnemonic_container_base.hpp"
 #include "idz80_basic_types.hpp"
@@ -24,7 +23,7 @@ class MnemonicAccess : public MnemonicContainerBase
     public:
         MnemonicAccess();
 
-        void Find(wxArrayInt& mnemonics_found_list, byte opcode, uint scanoffset);
+        void Find(UintArray& mnemonics_found_list, byte opcode, uint scanoffset);
         MnemonicItem *FindByOpCode(const ByteCode& code);
         MnemonicItem *FindBySignature(const unsigned int &signature);
 
@@ -42,8 +41,8 @@ class MnemonicAccess : public MnemonicContainerBase
 
     protected:
     private:
-        MnemonicItem    *current_item_;
-        MnemonicIndex  current_index_;
+        MnemonicItem    *m_current_item;
+        MnemonicIndex   m_current_index;
 };
 
 #endif // MNEMONICACCESS_H
