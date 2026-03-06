@@ -406,19 +406,16 @@ TypeLabelList LabelListCtrl::getTypeList()
 /// @param t_first_address First address
 /// @param t_last_address Last address
 /// @param address_list list to be filled by addresses found
-void LabelListCtrl::getLabelsBetweenRangeAddress(const AbsoluteAddress t_first_address, const AbsoluteAddress t_last_address, AddressVector *t_address_list)
+void LabelListCtrl::getLabelsBetweenRangeAddress(const AbsoluteAddress t_first_address, const AbsoluteAddress t_last_address, AddressVector &t_address_list)
 {
     LabelItem   *lbl;
     LabelIndex  loopcount;
 
-    if (t_address_list)
+    for(loopcount = 0; loopcount < getCount(); loopcount++)
     {
-        for(loopcount = 0; loopcount < getCount(); loopcount++)
-        {
-            lbl = getData(loopcount);
-            if (lbl && (lbl->address >= t_first_address) && (lbl->address <= t_last_address))
-                t_address_list->push_back(lbl->address);
-        }
+        lbl = getData(loopcount);
+        if (lbl && (lbl->address >= t_first_address) && (lbl->address <= t_last_address))
+            t_address_list.push_back(lbl->address);
     }
 }
 

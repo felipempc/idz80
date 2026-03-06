@@ -263,15 +263,18 @@ void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &
 {
     RangeItems		dasmed_items;
     SourceCodeLine	*sc_line;
+    SourceCode      *source_code = 0;
     int 			newLineCount, lineIndex, oldLineCount, varindex,
                     varitem;
     uint            i, line_count, deleted_labels;
-    IntArray		cvlines, proglabels, varlabels;
-    DisassembledContainer *Disassembled;
+    IntArray		cvlines, proglabels;
+    AddressVector   varlabels;
+    DisassembledContainer *disassembled;
 
-    Disassembled = m_disassembled_mgr->Index(t_index);
+    disassembled = m_disassembled_mgr->Index(t_index);
+    source_code = m_sourcecode_mgr->index(t_index);
     if ((t_selected.firstInstruction <= t_selected.lastInstruction) &&
-        (t_selected.lastInstruction < static_cast<int>(Disassembled->GetCount())))
+        (t_selected.lastInstruction < static_cast<int>(disassembled->GetCount())))
     {
         if (t_selected.firstLine > 0)
             sc_line = source_code->line(t_selected.firstLine - 1);
@@ -284,7 +287,7 @@ void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &
         dasmed_items.Count = t_selected.lastInstruction - t_selected.firstInstruction + 1;
         oldLineCount = dasmed_items.Count;
 
-        m_labels->var_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, &varlabels);
+        m_labels->var_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, varlabels);
 
         makeData(t_index, dasmed_items);
 

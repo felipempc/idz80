@@ -65,7 +65,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         IntArray *getLabelUsers(const LabelIndex t_index);
         TypeLabelList getTypeList();
 
-        void getLabelsBetweenRangeAddress(const AbsoluteAddress t_first_address, const AbsoluteAddress t_last_address, AddressVector *t_address_list);
+        void getLabelsBetweenRangeAddress(const AbsoluteAddress t_first_address, const AbsoluteAddress t_last_address, AddressVector &t_address_list);
         uint getCount();
         bool isEmpty();
         void clear();
