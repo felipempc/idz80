@@ -259,15 +259,20 @@ void ProcessData::removeFromLabelUserList(DisassembledItem *t_de, const uint t_d
  * Keeps comments;
  * keeps org directives;
  */
+
+
+/// @brief Take selected lines of code and convert to lines of data\
+/// @brief Delete program labels; Keeps var labels, comments and org directives.
+/// @param t_index Selects the source code to be processed.
+/// @param t_selected 
 void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &t_selected)
 {
     RangeItems		dasmed_items;
-    SourceCodeLine	*sc_line;
+    SourceCodeLine	*sc_line = 0;
     SourceCode      *source_code = 0;
-    int 			newLineCount, lineIndex, oldLineCount, varindex,
-                    varitem;
-    uint            i, line_count, deleted_labels;
-    IntArray		cvlines, proglabels;
+    int 			line_index, new_line_count, old_line_count,
+                    address_line;
+    unsigned int    counter, line_count, deleted_labels;
     AddressVector   varlabels;
     DisassembledContainer *disassembled;
 
@@ -280,73 +285,80 @@ void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &
             sc_line = source_code->line(t_selected.firstLine - 1);
 
         deleted_labels = 0;
-        lineIndex = t_selected.firstLine;
-        line_count = t_selected.lastLine - lineIndex + 1;
+        line_index = t_selected.firstLine;
+        line_count = t_selected.lastLine - line_index + 1;
 
         dasmed_items.Index = t_selected.firstInstruction;
         dasmed_items.Count = t_selected.lastInstruction - t_selected.firstInstruction + 1;
-        oldLineCount = dasmed_items.Count;
+        old_line_count = dasmed_items.Count;
 
+        //maps existing variables in this range.
         m_labels->var_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, varlabels);
 
+        //Delete disassembled instruction and transform to data
         makeData(t_index, dasmed_items);
-
-        for (i = 0; i < line_count; ++i)
-            if (removeLineAndProgLabels(lineIndex))
-                deleted_labels++;
+        //Deletes lines of code from sourcecode and program label, if exists in this range
+        for (counter = 0; counter < line_count; ++counter)
+            if (removeLineAndProgLabels(line_index))
+                ++deleted_labels;
 
 //* TODO:REWRITE THIS
-        source_code->linkData(dasmed_items.Index, lineIndex, dasmed_items.Count);
+        //Fills source code with data
+        source_code->linkData(dasmed_items.Index, line_index, dasmed_items.Count);
 
-        newLineCount = dasmed_items.Count - oldLineCount;
+        new_line_count = dasmed_items.Count - old_line_count;
 
-        source_code->updateDasmIndex((lineIndex + dasmed_items.Count), newLineCount);
+        source_code->updateDasmIndex((line_index + dasmed_items.Count), new_line_count);
 
         if (sc_line)
         {
-            for (i = 0; i < varlabels.size(); ++i)
+            for(auto &address : varlabels)
             {
-                varitem = varlabels[i];
-                varindex = source_code->getLineOfAddress(lineIndex, (line_count + newLineCount), varitem);
-                if (!(sc_line->labelVarAddress) || (sc_line->labelVarAddress->address != static_cast<AbsoluteAddress>(varitem)))
+                address_line = source_code->getLineOfAddress(line_index, (line_count + new_line_count), address);
+                if (!(sc_line->labelVarAddress) || (sc_line->labelVarAddress->address != static_cast<AbsoluteAddress>(address)))
                 {
-                    LogIt(wxString::Format("Found var address 0x%X, line %d\n", varitem, varindex));
-                    source_code->insertVarLabel(varitem, "", varindex);
+                    LogIt(wxString::Format("Found var address 0x%X, line %d\n", address, address_line));
+                    source_code->insertVarLabel(address, "", address_line);
                 }
             }
         }
 //*/
-        t_selected.cursorLastPosition = lineIndex;
-        t_selected.cursorPosition = lineIndex + line_count - deleted_labels + newLineCount - 1;
+        t_selected.cursorLastPosition = line_index;
+        t_selected.cursorPosition = line_index + line_count - deleted_labels + new_line_count - 1;
     }
 }
- 
 
 
 
+/// @brief Disassembles data into instructions in range.
+/// @param t_index Selects the source code to be processed.
+/// @param t_selected Lines in range of the source code
 void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &t_selected)
 {
     RangeItems		dasmed_items;
     SourceCodeLine	*sc_line;
+    SourceCode      *source_code = 0;
     int				newLineCount, oldLineCount,
-                    progindex, progitem;
+                    address_line;
 
-    int				lineIndex, lineLast, lineCount,
-                    deleted_labels;
-    IntArray		cvlines, proglabels;
-    uint            i;
+    int				lineIndex, lineLast, deleted_labels;
+    unsigned int    lineCount;
+    IntArray		instruction_lines;
+    AddressVector   proglabels;
 
-	if (!filterInstructions(t_index, cvlines, t_selected))
+	if (!filterInstructions(t_index, instruction_lines, t_selected)) {
 		return;
+    }   
 
+    source_code = m_sourcecode_mgr->index(t_index);
     deleted_labels = 0;
 
-	if (cvlines.size() > 0)
+	if (instruction_lines.size() > 0)
 	{
-        lineIndex = cvlines[0];
-        lineLast = cvlines[1];
+        lineIndex = instruction_lines[0];
+        lineLast = instruction_lines[1];
         lineCount = lineLast - lineIndex + 1;
-        if (lineCount < 0)
+        if (lineCount > source_code->getCount())
             return;
 
 		sc_line = source_code->line(lineIndex);
@@ -355,9 +367,9 @@ void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &
 		dasmed_items.Count = sc_line->dasmedItem - dasmed_items.Index + 1;
 		oldLineCount = dasmed_items.Count;
 
-        m_labels->prog_labels->GetLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, &proglabels);
+        m_labels->prog_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, proglabels);
 
-		for (i = 0; i < static_cast<uint>(lineCount); ++i)
+		for (unsigned int i = 0; i < lineCount; ++i)
             if (removeLineAndVarLabels(lineIndex))
                 deleted_labels++;
 
@@ -375,14 +387,14 @@ void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &
 
         if (sc_line)
         {
-            for (i = 0; i < proglabels.size(); ++i)
-            {
-                progitem = proglabels[i];
-                progindex = source_code->getLineOfAddress(lineIndex, (lineCount + newLineCount), progitem);
-                if (!(sc_line->labelProgAddress) || (sc_line->labelProgAddress->address != static_cast<AbsoluteAddress>(progitem)))
+            //for (i = 0; i < proglabels.size(); ++i)
+            for (auto &address : proglabels) {
+                //progitem = proglabels[i];
+                address_line = source_code->getLineOfAddress(lineIndex, (lineCount + newLineCount), address);
+                if (!(sc_line->labelProgAddress) || (sc_line->labelProgAddress->address != static_cast<AbsoluteAddress>(address)))
                 {
-                    LogIt(wxString::Format("Found program address 0x%X, line %d\n", progitem, progindex));
-                    source_code->insertProgramLabel(progitem, "", progindex);
+                    LogIt(wxString::Format("Found program address 0x%X, line %d\n", address, address_line));
+                    source_code->insertProgramLabel(address, "", address_line);
                 }
             }
         }
@@ -428,6 +440,7 @@ bool ProcessData::filterInstructions(const unsigned int t_index, IntArray &t_ran
     if (foundindex)
         t_range.push_back(last_i);
 
+    //if found, t_range will have only two elements, first instruction and last instruction. So we must test if size is equal 2.
 	if (t_range.size() > 0)
 		return true;
 	else
