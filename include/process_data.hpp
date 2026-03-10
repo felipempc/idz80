@@ -51,12 +51,12 @@ class ProcessData : public ProjectBase
         void clear();
 
         void removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmindex);
-        bool removeLineAndVarLabels(const int t_line);
-        bool removeLineAndProgLabels(const int t_line);
-
+        bool removeLineAndVarLabels(const unsigned int t_index,const int t_line);
+        bool removeLineAndProgLabels(const unsigned int t_index,const int t_line);
+/*
         void searchInstructionArgument(word t_argument_value, uint t_search_config);
         bool searchInstructionArgumentContinue(AbsoluteAddress &t_address);
-
+*/
         ProcessData(ProjectBase *t_parent);
         ~ProcessData();
 
@@ -64,13 +64,13 @@ class ProcessData : public ProjectBase
         SmartDecoder    *m_disassembler;
         SearchManager   *m_search_status;
 
-        void removeLabelUsers(const unsigned int t_index, IntArray *t_users);
-        bool filterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected);
+        void resetStyleFromUsers(DisassembledContainer *t_disassembled, IntArray *t_users);
+        bool filterInstructions(const unsigned int t_index,  const SelectedItemInfo &t_selected, IntArray &t_range);
         void processLabel(const unsigned int t_index, LabelListCtrl *t_label);
 
-        bool findInArgumentVariables(DisassembledItem *t_de, word t_argument);
-        bool findInArgumentLiteral(DisassembledItem *t_de, word t_argument);
-        bool findInArgumentJumpsCalls(DisassembledItem *t_de, word t_argument);
+        bool findInArgumentVariables(DisassembledItem *t_di, unsigned int t_argument);
+        bool findInArgumentLiteral(DisassembledItem *t_di, unsigned int t_argument);
+        bool findInArgumentJumpsCalls(DisassembledItem *t_di, unsigned int t_argument);
 };
 
 

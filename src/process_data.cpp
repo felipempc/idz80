@@ -299,7 +299,7 @@ void ProcessData::transformToData(const unsigned int t_index, SelectedItemInfo &
         makeData(t_index, dasmed_items);
         //Deletes lines of code from sourcecode and program label, if exists in this range
         for (counter = 0; counter < line_count; ++counter)
-            if (removeLineAndProgLabels(line_index))
+            if (removeLineAndProgLabels(t_index, line_index))
                 ++deleted_labels;
 
 //* TODO:REWRITE THIS
@@ -346,7 +346,7 @@ void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &
     IntArray		instruction_lines;
     AddressVector   proglabels;
 
-	if (!filterInstructions(t_index, instruction_lines, t_selected)) {
+	if (!filterInstructions(t_index, t_selected, instruction_lines)) {
 		return;
     }   
 
@@ -370,8 +370,8 @@ void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &
         m_labels->prog_labels->getLabelsBetweenRangeAddress(t_selected.firstAddress, t_selected.lastAddress, proglabels);
 
 		for (unsigned int i = 0; i < lineCount; ++i)
-            if (removeLineAndVarLabels(lineIndex))
-                deleted_labels++;
+            if (removeLineAndVarLabels(t_index, lineIndex))
+                ++deleted_labels;
 
 
 		disassembleItems(t_index, dasmed_items);
@@ -405,41 +405,38 @@ void ProcessData::disassembleData(const unsigned int t_index, SelectedItemInfo &
 }
 
 
-
-/* Returns the first and the last line of instruction / data
- * Returns program labels
- */
-bool ProcessData::filterInstructions(const unsigned int t_index, IntArray &t_range, SelectedItemInfo &t_selected)
+/// @brief Scans a range of lines, selects the first line and the last line of instruction. Saves them in the array.\
+/// @brief TODO: Improve filterIstructions
+/// @param t_index Selects the source code to be processed.
+/// @param t_range Array where will be saved the start and the end lines of code that was found.
+/// @param t_selected Array where the results are saved.
+/// @return True if it found any instruction.
+bool ProcessData::filterInstructions(const unsigned int t_index,  const SelectedItemInfo &t_selected, IntArray &t_range)
 {
     bool	foundindex;
-    int		i, last_i;
-    SourceCodeLine
-			*sc_line;
-    DisassembledItem
-			*de;
+    //int		i, last_i;
+    SourceCodeLine      *sc_line;
+    SourceCode          *source_code = 0;
     DisassembledContainer *Disassembled;
 
-    Disassembled = m_disassembled_mgr->Index(t_index);
-    foundindex = false;
-    last_i = 0;
-    for (i = t_selected.firstLine; i <= t_selected.lastLine; i++)
-    {
-        sc_line = source_code->line(i);
-        if (sc_line->dasmedItem >= 0)
-        {
-            de = Disassembled->GetData(sc_line->dasmedItem);
+    //Disassembled = m_disassembled_mgr->Index(t_index);
+    source_code = m_sourcecode_mgr->index(t_index);
 
+    foundindex = false;
+    //last_i = 0;
+    for (unsigned int i = t_selected.firstLine; i <= t_selected.lastLine; ++i) {
+        sc_line = source_code->line(i);
+        if (sc_line->dasmedItem >= 0) {
             if (!foundindex)
             {
                 t_range.push_back(i);
+                t_range.push_back(t_selected.lastLine);
                 foundindex = true;
+                break;
             }
-            last_i = i;
+            //last_i = i;
         }
     }
-    if (foundindex)
-        t_range.push_back(last_i);
-
     //if found, t_range will have only two elements, first instruction and last instruction. So we must test if size is equal 2.
 	if (t_range.size() > 0)
 		return true;
@@ -449,17 +446,25 @@ bool ProcessData::filterInstructions(const unsigned int t_index, IntArray &t_ran
 
 
 
-// Return true if a prog label was found
-bool ProcessData::removeLineAndProgLabels(const int t_line)
+/// @brief Removes t_line of source code and, if exists, the program label.
+/// @param t_index Selects the source code to be processed.
+/// @param t_line The line of source code
+/// @return True if a program label was found in this line.
+bool ProcessData::removeLineAndProgLabels(const unsigned int t_index, const int t_line)
+//TODO: Replace t_index with source_code
 {
-    SourceCodeLine *sc_line;
+    SourceCodeLine  *sc_line;
+    SourceCode      *source_code = 0;
+    DisassembledContainer *disassembled;
     bool ret = false;
 
+    source_code = m_sourcecode_mgr->index(t_index);
+    disassembled = m_disassembled_mgr->Index(t_index);
     sc_line = source_code->line(t_line);
     if (sc_line && sc_line->labelProgAddress)
     {
-        removeLabelUsers(sc_line->dasmedItem, sc_line->labelProgAddress->labelUsers);
-        m_labels->prog_labels->DelLabel(sc_line->labelProgAddress->address);
+        resetStyleFromUsers(disassembled, sc_line->labelProgAddress->labelUsers);
+        m_labels->prog_labels->delLabel(sc_line->labelProgAddress->address);
         ret = true;
     }
     source_code->delLine(t_line);
@@ -468,17 +473,24 @@ bool ProcessData::removeLineAndProgLabels(const int t_line)
 
 
 
-// Return true if a var label was found
-bool ProcessData::removeLineAndVarLabels(const int t_line)
+/// @brief Removes t_line of source code and, if exists, the variable label.
+/// @param t_index Selects the source code to be processed.
+/// @param t_line The line of source code
+/// @return True if a variable label was found in this line.
+bool ProcessData::removeLineAndVarLabels(const unsigned int t_index,const int t_line)
 {
     SourceCodeLine *sc_line;
+    SourceCode      *source_code = 0;
+    DisassembledContainer *disassembled;
     bool ret = false;
 
+    source_code = m_sourcecode_mgr->index(t_index);
+    disassembled = m_disassembled_mgr->Index(t_index);
     sc_line = source_code->line(t_line);
     if (sc_line && sc_line->labelVarAddress)
     {
-        removeLabelUsers(sc_line->dasmedItem, sc_line->labelVarAddress->labelUsers);
-        m_labels->var_labels->DelLabel(sc_line->labelVarAddress->address);
+        resetStyleFromUsers(disassembled, sc_line->labelVarAddress->labelUsers);
+        m_labels->var_labels->delLabel(sc_line->labelVarAddress->address);
         ret = true;
     }
     source_code->delLine(t_line);
@@ -488,23 +500,19 @@ bool ProcessData::removeLineAndVarLabels(const int t_line)
 
 
 
-void ProcessData::removeLabelUsers(const unsigned int t_index, IntArray *users)
-{
-    uint        i;
-    DisassembledItem        *de;
-    DisassembledContainer   *Disassembled;
+/// @brief Reset style from users(of label)
+/// @param DisassembledContainer List of disassembled items
+/// @param users List of users of the label
+void ProcessData::resetStyleFromUsers(DisassembledContainer *t_disassembled, IntArray *t_users) {
+    DisassembledItem        *disassembled_item;
     ArgumentStyleOptions    style;
 
-    Disassembled = m_disassembled_mgr->Index(t_index);
-    if (users)
-    {
-        for (i = 0; i < users->size(); ++i)
-        {
-            de = Disassembled->GetData(users->at(i));
-            if (de)
-            {
+    if (t_users && t_disassembled) {
+        for (int index : *t_users) {
+            disassembled_item = t_disassembled->GetData(t_users->at(index));
+            if (disassembled_item) {
                 style = STYLE_NONE;
-                de->SetArgumentStyle(0, style);
+                disassembled_item->SetArgumentStyle(0, style);
             }
         }
     }
@@ -512,7 +520,7 @@ void ProcessData::removeLabelUsers(const unsigned int t_index, IntArray *users)
 
 
 
-
+/*
 void ProcessData::searchInstructionArgument(word t_argument_value, uint t_search_config)
 {
 //    m_search_status->Setup(0, Disassembled->GetCount() - 1, search_config, argument_value);
@@ -563,12 +571,17 @@ bool ProcessData::searchInstructionArgumentContinue(AbsoluteAddress &t_address)
 
     return found;
 }
+*/
 
 
 
-bool ProcessData::findInArgumentVariables(DisassembledItem *de, word argument)
+/// @brief Searches for a value within the argument(var type), in an instruction.
+/// @param t_di Disassembled Item
+/// @param t_argument Value to be searched.
+/// @return True if found.
+bool ProcessData::findInArgumentVariables(DisassembledItem *t_di, unsigned int t_argument)
 {
-    if ((de->GetMnemonic()->GetArgument(0).type == OT_VARIABLE) && (de->GetArgumentValue(0, 0) == argument))
+    if ((t_di->GetMnemonic()->GetArgument(0).type == OT_VARIABLE) && (t_di->GetArgumentValue(0, 0) == t_argument))
         return true;
 
     return false;
@@ -576,13 +589,17 @@ bool ProcessData::findInArgumentVariables(DisassembledItem *de, word argument)
 
 
 
-bool ProcessData::findInArgumentLiteral(DisassembledItem *de, word argument)
+/// @brief Searches for a value within the argument(literal type), in an instruction.
+/// @param t_di Disassembled Item.
+/// @param t_argument Value to be searched.
+/// @return True if found.
+bool ProcessData::findInArgumentLiteral(DisassembledItem *t_di, unsigned int t_argument)
 {
     uint argument_index = 0;
 
-    while (argument_index < de->GetMnemonic()->GetArgumentCount())
+    while (argument_index < t_di->GetMnemonic()->GetArgumentCount())
     {
-        if ((de->GetMnemonic()->GetArgument(argument_index).type == OT_DATA) && (de->GetArgumentValue(0, 0) == argument))
+        if ((t_di->GetMnemonic()->GetArgument(argument_index).type == OT_DATA) && (t_di->GetArgumentValue(0, 0) == t_argument))
             return true;
 
         ++argument_index;
@@ -592,11 +609,16 @@ bool ProcessData::findInArgumentLiteral(DisassembledItem *de, word argument)
 }
 
 
-bool ProcessData::findInArgumentJumpsCalls(DisassembledItem *de, word argument)
-{
-    if ((de->GetMnemonic()->GetArgument(0).type == OT_ABSOLUTE_ADDRESS) && (de->GetArgumentValue(0, 0) == argument))
-        return true;
 
+/// @brief Searches for a value within the argument(Absolute address type), in an instruction.
+/// @param t_di Disassembled Item.
+/// @param t_argument Value to be searched.
+/// @return True if found.
+bool ProcessData::findInArgumentJumpsCalls(DisassembledItem *t_di, unsigned int t_argument)
+{
+    if ((t_di->GetMnemonic()->GetArgument(0).type == OT_ABSOLUTE_ADDRESS) && (t_di->GetArgumentValue(0, 0) == t_argument)) {
+        return true;
+    }
     return false;
 }
 
