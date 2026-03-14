@@ -45,7 +45,8 @@ BACKUPFILE := idz80_$(DATE)_$(TIME)
 # Selects compiler's flags, libs and other between release and debug / Seleciona opções do compilador, bibliotecas e outros para release ou debug.
 ifeq ($(DEBUG), 0)
 #	Release
-	CC_FLAGS = -Wredundant-decls -c -Wall -Wextra -pipe -mthreads -std=c++17
+	RELEASE_WARNINGS = -Wredundant-decls -Wall -Wextra
+	CC_FLAGS = -c -pipe -mthreads -std=c++17 $(RELEASE_WARNINGS)
 	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
 # -D__GNUWIN32__
 	INCLUDE0_PATH := $(WXW_INCLUDE2)
@@ -56,7 +57,8 @@ ifeq ($(DEBUG), 0)
 	LIBFILE4 := wxbase32u_xml_gcc_custom
 else
 #	DEBUG - Not updated for MSYS2 yet / Ainda não atualizado para utilizar MSYS2
-	CC_FLAGS = -g -Wredundant-decls -c -Wall -Wextra -pedantic -Wsequence-point -pipe -mthreads -std=c++17
+	DEBUG_WARNINGS = -Wredundant-decls -Wall -Wextra -pedantic -Wsequence-point -Wnon-virtual-dtor -Wold-style-cast
+	CC_FLAGS = -g -c -pipe -mthreads -std=c++17 $(DEBUG_WARNINGS)
 	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
 	INCLUDE0_PATH := $(WXW_INCLUDE2)
 	LIBFILE0 := wxbase32u_gcc_custom
@@ -96,8 +98,8 @@ SOURCE_FILES_FULL := $(wildcard $(SRCDIR)/*.cpp)
 SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src/main_dialog.cpp src/main_dialog_setup.cpp src/main_dialog_events.cpp src/debug_logbase.cpp \
 				src/debug_logwindow.cpp src/labelslist.cpp src/labelmanager.cpp src/rawdatamanager.cpp src/rawdata.cpp src/newproject_dialog.cpp src/systemlabels.cpp \
 				src/mnemonic_access.cpp src/mnemonic_container.cpp src/mnemonic_item_base.cpp src/mnemonic_item.cpp src/mnemonicxmlfile.cpp src/file_settings_dialog.cpp \
-				src/disassembled_manager.cpp src/disassembled_container.cpp src/disassembled_item.cpp
-#				src/source_code_manager.cpp src/source_code_container.cpp src/source_code_access.cpp src/source_code.cpp
+				src/disassembled_manager.cpp src/disassembled_container.cpp src/disassembled_item.cpp \
+				src/source_code_manager.cpp src/source_code_container.cpp src/source_code_access.cpp src/source_code.cpp
 OBJETOS_FULL := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES_TEMP))
 OBJETOS_FULL += $(OBJDIR)/$(RESOURCE_FILE:.rc=.o)    # Add the compiled resource
 #SOURCES_TEMP := $(notdir $(SOURCE_FILES_FULL))     #remove o diretorio antes do arquivo
