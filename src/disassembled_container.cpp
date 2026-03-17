@@ -232,7 +232,8 @@ void DisassembledContainer::DelOrigin(AbsoluteAddress address)
 
 /// @brief Search for an item address >= t_address. Return the DissassembledIndex
 /// @param t_address 
-/// @return The last item address of the DisassembledList, or the item of the above comparison.
+/// @return The last item address of the DisassembledList, or the item of the above comparison. \
+//TODO: Check this nonsense return. Must be rewritten.
 DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_address)
 {
     DisassembledIndex   item_index = 0,

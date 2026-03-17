@@ -34,11 +34,11 @@ class CartridgeRomFile
         CartridgeRomFile();
         virtual ~CartridgeRomFile();
 
-        const CartHeader *GetCartridgeHeader();
-        bool GetEntries(IntArray &entrylist);
-        void ClearCartridgeInfo();
-        bool HasBasic();
-        bool PureBasic();
+        const CartHeader *getCartridgeHeader();
+        bool getEntries(AddressVector &t_entrylist);
+        void clearCartridgeInfo();
+        bool hasBasic();
+        bool isPureBasic();
         bool isCartridge();
 
     protected:
@@ -68,3 +68,4 @@ class CartridgeRomFile
 };
 
 #endif // CARTRIDGEROMFILE_H
+

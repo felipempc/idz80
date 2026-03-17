@@ -33,12 +33,12 @@ CartridgeRomFile::CartridgeRomFile()
 
 CartridgeRomFile::~CartridgeRomFile()
 {
-    ClearCartridgeInfo();
+    clearCartridgeInfo();
 }
 
 
 
-void CartridgeRomFile::ClearCartridgeInfo()
+void CartridgeRomFile::clearCartridgeInfo()
 {
     if (m_cartridge_header)
         delete m_cartridge_header;
@@ -92,23 +92,26 @@ bool CartridgeRomFile::ValidateCartridge(void *source)
 
 
 
-bool CartridgeRomFile::GetEntries(IntArray &entrylist)
+/// @brief Gets the cartridge entries pointers into the list.
+/// @param entrylist List of addresses
+/// @return True if at least one entry pointer was added.
+bool CartridgeRomFile::getEntries(AddressVector &t_entrylist)
 {
     bool success = false;
 
-    entrylist.clear();
+    t_entrylist.clear();
 
     if (m_cartridge_header)
     {
         if (m_cartridge_header->init)
-            entrylist.push_back(m_cartridge_header->init);
+            t_entrylist.push_back(m_cartridge_header->init);
         if (m_cartridge_header->statement)
-            entrylist.push_back(m_cartridge_header->statement);
+            t_entrylist.push_back(m_cartridge_header->statement);
         if (m_cartridge_header->device)
-            entrylist.push_back(m_cartridge_header->device);
+            t_entrylist.push_back(m_cartridge_header->device);
     }
 
-    if (entrylist.size() > 0)
+    if (t_entrylist.size() > 0)
         success = true;
 
     return success;
@@ -116,21 +119,21 @@ bool CartridgeRomFile::GetEntries(IntArray &entrylist)
 
 
 
-const CartHeader *CartridgeRomFile::GetCartridgeHeader()
+const CartHeader *CartridgeRomFile::getCartridgeHeader()
 {
     return m_cartridge_header;
 }
 
 
 
-bool CartridgeRomFile::HasBasic()
+bool CartridgeRomFile::hasBasic()
 {
     return (m_cartridge_header && m_cartridge_header->text);
 }
 
 
 
-bool CartridgeRomFile::PureBasic()
+bool CartridgeRomFile::isPureBasic()
 {
     return (m_cartridge_header && !m_cartridge_header->device && !m_cartridge_header->init &&
             !m_cartridge_header->statement && m_cartridge_header->text);

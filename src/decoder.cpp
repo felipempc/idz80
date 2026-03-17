@@ -48,11 +48,11 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     uint 		offset,
                 nitems,
                 ret = 0;
-    wxArrayInt	foundItems;
+    AddressVector	foundItems;
     byte		scan;
     MnemonicItem    *mnemonic = 0;
 
-    foundItems.Clear();
+    foundItems.clear();
     offset = 0;
     if (maxitems > MAX_OPCODE_SIZE)
         maxitems = MAX_OPCODE_SIZE;
@@ -62,13 +62,13 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
         scan = m_program->GetData(prg_index + offset);
         m_mnemonic->Find(foundItems, scan, offset);
         ++offset;
-        if (foundItems.GetCount() < 2)
+        if (foundItems.size() < 2)
 			break;
     }
-    nitems = foundItems.GetCount();
+    nitems = foundItems.size();
     if (nitems == 1)
     {
-        ret = foundItems.Last();
+        ret = foundItems.back();
         mnemonic = m_mnemonic->Item(ret);
         if (mnemonic->GetByteCodeSize() > maxitems)
             ret = OPCODE_NOT_FOUND;
@@ -223,30 +223,31 @@ uint Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
 
 
 
+/// @brief Fills ProgramLabels with cartridge entries pointers.
 void Decoder::SetCartridgeLabels()
 {
 	uint address;
 
-	address = m_program->GetCartridgeHeader()->init;
+	address = m_program->getCartridgeHeader()->init;
 	if (address != 0)
 		m_labels->prog_labels->addLabel(address, "INIT");
 
-	address = m_program->GetCartridgeHeader()->statement;
+	address = m_program->getCartridgeHeader()->statement;
 	if (address != 0)
 		m_labels->prog_labels->addLabel(address, "STATEMENT");
 
-	address = m_program->GetCartridgeHeader()->device;
+	address = m_program->getCartridgeHeader()->device;
 	if (address != 0)
 		m_labels->prog_labels->addLabel(address, "DEVICE");
 
-	address = m_program->GetCartridgeHeader()->text;
+	address = m_program->getCartridgeHeader()->text;
 	if (address != 0)
 		m_labels->prog_labels->addLabel(address, "TEXT");
 }
 
 
 
-void Decoder::FullDisassemble()
+void Decoder::fullDisassemble()
 {
     uint i, f, item;
     DisassembledItem *de;

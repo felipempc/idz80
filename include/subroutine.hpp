@@ -30,29 +30,30 @@ typedef std::vector<SubRoutineData *> SubRoutineList;
 class SubRoutineCtrl: public DebugLogBase
 {
     public:
-        bool Call(uint entryaddress, uint nextaddress);
-        uint Return(uint exitaddress);
-        void UpdateSize();
-        bool IsInside();
-        bool HasConditionalReturn();
-        bool AlreadyCalled(uint address);
-        void SetConditionalReturn();
-        void Clear();
+        bool call_subroutine(uint t_entryaddress, uint t_nextaddress);
+        uint return_subroutine(uint t_exitaddress);
+        void updateSize();
+        bool isInside();
+        bool hasConditionalReturn();
+        bool alreadyCalled(uint t_address);
+        void setConditionalReturn();
+        void clear();
 
-        int GetCounter();
+        int getCounter();
 
         SubRoutineCtrl(DebugLogWindow *logparent);
         ~SubRoutineCtrl();
 
     private:
-    std::stack<uint>    Stack;
-    int                 StackPointer;
-    SubRoutineList      SubRoutines;
-    SubRoutineData      *ActualSubRoutine;
-    SortedIntArray      *CalledSubroutines;
-    bool                ReturnConditional;
+    std::stack<uint>    m_stack;                // Stack of a CPU
+    int                 m_stack_pointer;
+    SubRoutineList      m_subroutines;
+    SubRoutineData      *m_actual_subroutine;
+    AddressVector       m_called_subroutines; // Originally a SortedIntArray
+    bool                m_return_conditional;
 
-    void ClearSubRoutines();
+    void clearSubRoutines();
+    bool searchAddressInCalledSubRoutines(unsigned int t_address); // for CalledSubRoutines
 };
 
 

@@ -50,7 +50,7 @@ void ProcessData::clear()
     m_disassembled_mgr->Clear();
     //source_code->Clear();
     if (m_disassembler)
-        m_disassembler->Clear();
+        m_disassembler->clear();
 }
 
 
@@ -95,7 +95,7 @@ void ProcessData::disassembleFirst(const unsigned int t_index)
 
     LogIt("Disassemble by simulating execution of code.");
     m_disassembler->SetProgramIndex(t_index);
-    m_disassembler->FullDisassemble();
+    m_disassembler->fullDisassemble();
 
 }
 

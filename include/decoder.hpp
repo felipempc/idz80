@@ -34,7 +34,7 @@ class Decoder: public DebugLogBase
 
         void SetProgramIndex(const unsigned int program_index);
 
-        void FullDisassemble();
+        void fullDisassemble();
         void DisassembleItems(RangeItems &dasm_range);
 
 
@@ -49,7 +49,7 @@ class Decoder: public DebugLogBase
 
         Z80RegisterList     m_registers;
 
-
+        //TODO: Should it return MnemonicItem* instead?
         uint Fetch(const FileOffset startpoint, uint maxitems);
         uint Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
         void SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index);

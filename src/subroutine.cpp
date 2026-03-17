@@ -13,141 +13,177 @@
 
 SubRoutineCtrl::SubRoutineCtrl(DebugLogWindow *logparent)
 {
-    StackPointer = 0;
-    ActualSubRoutine = 0;
-    ReturnConditional = false;
-    CalledSubroutines = new SortedIntArray(CompareSortedInt);
-    CalledSubroutines->Clear();
+    m_stack_pointer = 0;
+    m_actual_subroutine = 0;
+    m_return_conditional = false;
+    m_called_subroutines.clear();
     SetTextLog(logparent);
     ModuleName = "SubRoutine";
 }
 
 SubRoutineCtrl::~SubRoutineCtrl()
 {
-    Clear();
-    delete CalledSubroutines;
+    clear();
 }
 
 
-bool SubRoutineCtrl::Call(uint entryaddress, uint nextaddress)
+
+/// @brief Search in CalledSubRoutines for t_address
+/// @param t_address The address to be found
+/// @return True if found
+bool SubRoutineCtrl::searchAddressInCalledSubRoutines(unsigned int t_address)
 {
-    SubRoutineData *sri;
+    for (auto address : m_called_subroutines) {
+        if (address == t_address)
+            return true;
+    }
+    return false;
+}
+
+
+
+/// @brief Registers data from the subroutine, simulating a call instruction
+/// @param entryaddress The subroutine address
+/// @param nextaddress The address of the next instruction
+/// @return True if it's the first time this subroutine at entryaddress is called.
+bool SubRoutineCtrl::call_subroutine(uint t_entryaddress, uint t_nextaddress)
+{
+    SubRoutineData *sr_data;
     uint ret_cond;
     bool ret = false;
 
-    if (CalledSubroutines->Index(entryaddress) == wxNOT_FOUND)
-    {
+    if (!searchAddressInCalledSubRoutines(t_entryaddress)) {
         ret = true;
-        Stack.push(nextaddress);
-        if (ReturnConditional)
+        m_stack.push(t_nextaddress);        // stores the address of the next instruction in the stack
+        if (m_return_conditional)
             ret_cond = 0;
         else
             ret_cond = 1;
-        Stack.push(ret_cond);
-        ReturnConditional = false;
+        m_stack.push(ret_cond);             // stores "return conditional" in the stack
+        m_return_conditional = false;       // reset "return conditional"
 
-        sri = new SubRoutineData;
-        sri->Start = entryaddress;
-        sri->Size = 0;
-        sri->End = entryaddress;
-        SubRoutines.push_back(sri);
+        sr_data = new SubRoutineData;       // Creates an object to store the subroutine data
+        sr_data->Start = t_entryaddress;
+        sr_data->Size = 0;                  // Will be filled at the "return" instruction
+        sr_data->End = t_entryaddress;      // Will be filled at the "return" instruction
+        m_subroutines.push_back(sr_data);   // Stores the subroutine data in the list of subroutines
 
-        ActualSubRoutine = sri;
-        StackPointer++;
-        CalledSubroutines->Add(entryaddress);
+        m_actual_subroutine = sr_data;      // Points to actual subroutine data
+        ++m_stack_pointer;
+        m_called_subroutines.push_back(t_entryaddress);     // Registers this subroutine in the already called(registered) subroutines
     }
     return ret;
 }
 
 
-uint SubRoutineCtrl::Return(uint exitaddress)
+/// @brief Restores data after a "called" subroutine, simulating an "return" instruction
+/// @param t_exitaddress Address of the next instruction after call.
+/// @return The address of the next instruction
+uint SubRoutineCtrl::return_subroutine(uint t_exitaddress)
 {
     uint returnaddress = 0;
     uint ret_cond;
 
-    if (StackPointer > 0)
+    if (m_stack_pointer > 0)
     {
-        ActualSubRoutine->End = exitaddress;
-        ret_cond = Stack.top();
-        Stack.pop();
-        if (ret_cond == 0)
-            ReturnConditional = true;
+        m_actual_subroutine->End = t_exitaddress;
+        ret_cond = m_stack.top();                       // Restores the status of "return condition"
+        m_stack.pop();                                  // Removes it from stack
+        if (ret_cond == 0)                              // Updates the "return condition" status
+            m_return_conditional = true;
         else
-            ReturnConditional = false;
+            m_return_conditional = false;
 
-        returnaddress = Stack.top();
-        Stack.pop();
-        StackPointer--;
+        returnaddress = m_stack.top();                  // Recovers the address of the next instruction from the stack
+        m_stack.pop();                                  // Removes it from stack.
+        --m_stack_pointer;
     }
-    if (StackPointer == 0)
-        ActualSubRoutine = 0;
+    if (m_stack_pointer == 0)
+        m_actual_subroutine = 0;
     else
-        ActualSubRoutine = SubRoutines[StackPointer - 1];
+        m_actual_subroutine = m_subroutines[m_stack_pointer - 1];
 
     return returnaddress;
 }
 
 
-void SubRoutineCtrl::UpdateSize()
+/// @brief Updates the size of the subroutine in the subroutine data
+void SubRoutineCtrl::updateSize()
 {
-    if (ActualSubRoutine != 0)
-        ActualSubRoutine->Size++;
+    if (m_actual_subroutine != 0)
+        m_actual_subroutine->Size++;
 }
 
 
-bool SubRoutineCtrl::IsInside()
+/// @brief Checks if it's inside a subroutine
+/// @return True if it's inside
+bool SubRoutineCtrl::isInside()
 {
-    return (StackPointer > 0);
-}
-
-bool SubRoutineCtrl::HasConditionalReturn()
-{
-    return ReturnConditional;
-}
-
-
-bool SubRoutineCtrl::AlreadyCalled(uint address)
-{
-    return (CalledSubroutines->Index(address) != wxNOT_FOUND);
-}
-
-void SubRoutineCtrl::Clear()
-{
-    CalledSubroutines->Clear();
-    ActualSubRoutine = 0;
-    ClearSubRoutines();
-    StackPointer = 0;
+    return (m_stack_pointer > 0);
 }
 
 
 
+/// @brief Checks if return instruction has a condition to return.
+/// @return 
+bool SubRoutineCtrl::hasConditionalReturn()
+{
+    return m_return_conditional;
+}
 
-void SubRoutineCtrl::ClearSubRoutines()
+
+
+/// @brief Verifies if the address subroutine has been already "called" (registered)
+/// @param address The address of a subroutine
+/// @return True if it has been already called
+bool SubRoutineCtrl::alreadyCalled(uint address)
+{
+    return (searchAddressInCalledSubRoutines(address));
+}
+
+
+
+void SubRoutineCtrl::clear()
+{
+    m_called_subroutines.clear();
+    m_actual_subroutine = 0;
+    clearSubRoutines();
+    m_stack_pointer = 0;
+}
+
+
+
+/// @brief Clear the SubRoutineData struct in the list
+void SubRoutineCtrl::clearSubRoutines()
 {
     SubRoutineData *srd;
     int size;
 
-    size = SubRoutines.size();
+    size = m_subroutines.size();
 
     for(int i = 0; i < size; i++)
     {
-        srd = SubRoutines.back();
+        srd = m_subroutines.back();
         if (srd != 0)
             delete srd;
-        SubRoutines.pop_back();
+        m_subroutines.pop_back();
     }
 }
 
 
 
-int SubRoutineCtrl::GetCounter()
+/// @brief Get the stack pointer
+/// @return 
+int SubRoutineCtrl::getCounter()
 {
-    return StackPointer;
+    return m_stack_pointer;
 }
 
 
-void SubRoutineCtrl::SetConditionalReturn()
+
+/// @brief Flags that the return instruction has a condition to return.
+void SubRoutineCtrl::setConditionalReturn()
 {
-    ReturnConditional = true;
+    m_return_conditional = true;
 }
 

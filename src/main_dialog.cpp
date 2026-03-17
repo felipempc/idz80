@@ -57,7 +57,7 @@ IDZ80::IDZ80(wxWindow* parent, wxArrayString &arraystr)
     m_panel_log = 0;
     m_status_bar = 0;
     m_log_window = 0;
-//    m_processdata = 0;
+    m_processdata = 0;
 //    codeview_ = 0;
     m_config = 0;
 //    project_ = 0;
@@ -101,7 +101,7 @@ IDZ80::~IDZ80()
 //    delete project_;
     delete m_config;
     delete m_labels;
-//    delete m_processdata;
+    delete m_processdata;
     delete m_sourcecode_mgr;
     delete m_disassembled_mgr;
 

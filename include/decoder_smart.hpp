@@ -8,7 +8,7 @@
  * This module disassembles a program in smart mode.
  **************************************************************/
 
-  // REWRITE: Work in progress
+  // TODO: REWRITE: Work in progress
 
 
 #ifndef _DECODER_SMART_H_
@@ -24,30 +24,29 @@ class SmartDecoder: public Decoder
 public:
     SmartDecoder(ProjectBase *t_parent);
     ~SmartDecoder();
-    bool FullDisassemble();
-    void Clear();
+    bool fullDisassemble();
+    void clear();
 
 protected:
 
 private:
-    void ProcessCallSubrotine();
-    void ProcessReturnSubrotine();
-    bool GetNextNearJump(IntArray &t_jmplist, AbsoluteAddress t_start, AbsoluteAddress t_end, AbsoluteAddress &t_nextaddr);
-    bool GetNextFarJump(IntArray &t_jmplist, AbsoluteAddress &t_nextaddr);
-    bool TestIfOutBoundaries(AbsoluteAddress t_addr);
-    void UpdateBoundaries();
-    bool CallSubroutine(DisassembledItem *t_de);
-    bool ReturnSubroutine(DisassembledItem *t_de, AbsoluteAddress &t_dest_address);
-    bool ProcessBranch(DisassembledItem *t_de, bool &t_processing_status);
-    void FillData();
-    bool FindAddressIn(const int &t_address, const IntArray &t_address_list);
-    bool RemoveAddressFrom(const int &t_address, IntArray &t_address_list);
+    //void ProcessCallSubrotine();
+    //void ProcessReturnSubrotine();
+    bool getNextNearJump(AddressVector &t_jmplist, AbsoluteAddress t_start, AbsoluteAddress t_end, AbsoluteAddress &t_nextaddr);
+    //bool GetNextFarJump(AddressVector &t_jmplist, AbsoluteAddress &t_nextaddr);
+    bool testIfOutBoundaries(AbsoluteAddress t_addr);
+    void updateBoundaries();
+    bool callSubroutine(DisassembledItem *t_dasmed_item);
+    bool returnSubroutine(DisassembledItem *t_dasmed_item, AbsoluteAddress &t_dest_address);
+    bool processBranch(DisassembledItem *t_dasmed_item, bool &t_processing_status);
+    void fillData();
+    bool findAddressIn(const int &t_address, const AddressVector &t_address_list);
+    bool removeAddressFrom(const int &t_address, AddressVector &t_address_list);
 
-    void DebugShowList(const wxString &t_listname, const IntArray &t_list);
-    //void DebugShowJmpList(const wxString &t_listname, const IntArray &t_list);  IT BECAME REDUNDANT
+    void debugShowList(const wxString &t_listname, const AddressVector &t_list);
 
-    IntArray    m_address_list,
-                m_address_list_processed;
+    AddressVector   m_address_list,             // List of addresses to be processed
+                    m_address_list_processed;   // List of already processed addresses.
 
     SubRoutineCtrl      *m_sub_routine;
 
@@ -56,7 +55,7 @@ private:
             m_exec_address,
             m_prg_counter,
             m_last_prg_counter,
-            m_next_address,
+            m_next_address,         // The address of the next instruction
             m_actual_address;
 };
 

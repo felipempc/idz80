@@ -131,7 +131,7 @@ void RawData::Close()
 void RawData::Clear()
 {
     ClearBin();
-    ClearCartridgeInfo();
+    clearCartridgeInfo();
 
     m_memory_buffer.Clear();
     m_filename.Clear();
@@ -349,7 +349,7 @@ void RawData::ForceNoCartridge()
     EndAddress = GetSize() - 1;
     ExecAddress = StartAddress;
     m_header_offset = 0;
-    ClearCartridgeInfo();
+    clearCartridgeInfo();
 }
 
 

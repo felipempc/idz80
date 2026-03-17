@@ -168,7 +168,7 @@ bool NewProjectDialog::AddFileToGrid(wxString& filestr)
         wxMessageBox(wxString::Format("Error while openning file [%s] !", filestr), "Error opening file !");
         return false;
     }
-    if (program->PureBasic()) {
+    if (program->isPureBasic()) {
         m_main_dialog->m_programs_mgr->RemoveCurrent();
         wxMessageBox(wxString::Format("The file [%s] is a pure BASIC program. It's not supported yet!", filestr), "Error opening file !");
         return false;
