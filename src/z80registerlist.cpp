@@ -32,6 +32,7 @@ Z80RegisterList::Z80RegisterList()
 }
 
 
+
 Z80RegisterList::~Z80RegisterList()
 {
     delete A;
@@ -50,6 +51,8 @@ Z80RegisterList::~Z80RegisterList()
 }
 
 
+
+/// @brief Decrements life counter from the registers
 void Z80RegisterList::UpdateLife()
 {
     A->DecLife();
@@ -68,50 +71,62 @@ void Z80RegisterList::UpdateLife()
 }
 
 
-void Z80RegisterList::LoadRegister(DisassembledItem *de)
+
+/// @brief Loads from the instruction (t_dasm_item) the register's data
+/// @param t_dasm_item Disassembled instruction
+void Z80RegisterList::LoadRegister(DisassembledItem *t_dasm_item)
 {
+    uint data = 0, offset = 0;
+
     UpdateLife();
 
-    switch (de->GetInstructionDetail())
-    {
-        case II_LD_A_N:
-                        A->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_B_N:
-                        B->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_C_N:
-                        C->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_D_N:
-                        D->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_E_N:
-                        E->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_H_N:
-                        H->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_L_N:
-                        L->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_BC_N:
-                        BC->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_DE_N:
-                        DE->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_HL_N:
-                        HL->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_SP_N:
-                        SP->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_IX_N:
-                        IX->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-        case II_LD_IY_N:
-                        IY->Init(de->GetArgument(0, 0), de->GetOffset());
-                        break;
-    }
+    if ((t_dasm_item->GetMnemonic()->GetSourceArgument().operand == OP_LITERAL) &&
+        (t_dasm_item->GetMnemonic()->GetDestinationArgument().type == OT_REGISTER)) {       // check if it's an "LD A, dd" kind of instruction
+        
+        data = t_dasm_item->GetArgumentValue(0);        // get the source(0) argument value
+        offset = t_dasm_item->GetOffsetInFile();
+
+        switch (t_dasm_item->GetMnemonic()->GetDestinationArgument().operand)
+        {
+            case OP_A:
+                            A->Init(data, offset);
+                            break;
+            case OP_B:
+                            B->Init(data, offset);
+                            break;
+            case OP_C:
+                            C->Init(data, offset);
+                            break;
+            case OP_D:
+                            D->Init(data, offset);
+                            break;
+            case OP_E:
+                            E->Init(data, offset);
+                            break;
+            case OP_H:
+                            H->Init(data, offset);
+                            break;
+            case OP_L:
+                            L->Init(data, offset);
+                            break;
+            case OP_BC:
+                            BC->Init(data, offset);
+                            break;
+            case OP_DE:
+                            DE->Init(data, offset);
+                            break;
+            case OP_HL:
+                            HL->Init(data, offset);
+                            break;
+            case OP_SP:
+                            SP->Init(data, offset);
+                            break;
+            case OP_IX:
+                            IX->Init(data, offset);
+                            break;
+            case OP_IY:
+                            IY->Init(data, offset);
+                            break;
+        } //switch-case
+    } // if
 }

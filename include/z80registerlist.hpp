@@ -21,6 +21,7 @@ class Z80RegisterList
 	    static const int TimeToLive = 3;
 
 	public:
+		//TODO: Why pointer to registers?
 	    Z80Register *A;
 	    Z80Register *B;
 	    Z80Register *C;
@@ -38,7 +39,7 @@ class Z80RegisterList
 	    Z80RegisterList();
 	    ~Z80RegisterList();
 
-        void LoadRegister(DisassembledItem *de);
+        void LoadRegister(DisassembledItem *t_dasm_item);
         void UpdateLife();
 };
 
