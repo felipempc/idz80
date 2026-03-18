@@ -1,9 +1,7 @@
 ﻿# TODO idz80
 
-
 --->Futuro
 - Permitir abrir programas que contenham mais de um arquivo (em  progresso)
-
 - No popup botao direito, permitir inserir novo label quando clicado sobre argumento
 - Atualizar labels.txt (Seção 3.10 MSX TOp Secret)
 - Modificar base numerica dos DB e DW
@@ -13,6 +11,10 @@
   STATUS
   ------
 
-  12/2025 - main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
-  09/03/26 - process_data.cpp - OK
+  12/2025   - main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
+  18/03/26  - Inserido no Makefile os arquivos process_data, decoder, decoder_smart, subroutine, z80register.cpp, z80registerlist
+              e está compilando.
+              Arquivos pendentes: searchmanager, search_argument_dialog, projectmanager_xml, fileinfo_dialog, editlabel_dialog, 
+                                  codeview, codeview_render, codeview_evmouse, codeview_events e codegenerator
+              Partindo pra cima de codeview*
 

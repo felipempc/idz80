@@ -7,7 +7,7 @@
  **************************************************************
  * Dialog for edit labels on list labels
  **************************************************************/
-
+//TODO: Rewrite all of it.
 
 #include "editlabel_dialog.hpp"
 #include <wx/msgdlg.h>

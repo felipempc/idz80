@@ -11,7 +11,7 @@
 
 #include "codegenerator.hpp"
 
-// OBSOLETE: MUST BE COMPLETELY REWRITED
+//TODO: OBSOLETE: MUST BE COMPLETELY REWRITED
 
 codeGenerator::codeGenerator(ProcessData *parent)
 {

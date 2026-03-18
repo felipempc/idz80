@@ -7,6 +7,7 @@
  **************************************************************
  * Load / save a project in a XML file
  **************************************************************/
+//TODO: Rewrite all of it
 
 #include <wx/dynarray.h>
 #include <wx/stopwatch.h>

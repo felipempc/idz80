@@ -8,6 +8,7 @@
  * Manages the searching sequences.
  **************************************************************/
 
+ //TODO: Rewrite all of it.
 
 #include "searchmanager.hpp"
 

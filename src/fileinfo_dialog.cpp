@@ -8,6 +8,8 @@
  * Window that shows information about a loaded program
  **************************************************************/
 
+//TODO: Rewrite all of it
+
 #include "fileinfo_dialog.hpp"
 #include <wx/intl.h>
 #include <wx/string.h>

@@ -8,6 +8,8 @@
  * User interface
  **************************************************************/
 
+//TODO: Rewrite all of it
+
 #include <wx/wx.h>
 #include <wx/dcbuffer.h>
 #include <wx/utils.h>
