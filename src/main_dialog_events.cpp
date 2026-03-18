@@ -94,8 +94,9 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 bool IDZ80::closeFileDialog(const wxString t_title_str)
 {
     wxString ask_str = wxString::Format("Are you sure you want to close %s?", t_title_str);
+    wxString title = wxString::Format("Closing %s...", t_title_str);
     int res = wxMessageBox(ask_str,
-                       "wxAUI",
+                       title,
                        wxYES_NO,
                        this);
     
