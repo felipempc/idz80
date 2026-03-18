@@ -24,7 +24,7 @@ class SmartDecoder: public Decoder
 public:
     SmartDecoder(ProjectBase *t_parent);
     ~SmartDecoder();
-    bool fullDisassemble();
+    void fullDisassemble();
     void clear();
 
 protected:

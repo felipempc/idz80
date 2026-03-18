@@ -10,7 +10,7 @@
 
 #include "decoder_smart.hpp"
 
- // REWRITE: Work in progress
+ //TODO: REWRITE: Work in progress
 
 SmartDecoder::SmartDecoder(ProjectBase *t_parent)
                 : Decoder(t_parent)
@@ -32,10 +32,10 @@ SmartDecoder::~SmartDecoder()
 
 
 
-bool SmartDecoder::fullDisassemble()
+/// @brief Permforms full disassemble of the program
+void SmartDecoder::fullDisassemble()
 {
-    bool    ret = false,
-            processing = true,
+    bool    processing = true,
             update_item = false;
 
     int     dasmed_index;
@@ -173,7 +173,7 @@ bool SmartDecoder::fullDisassemble()
     } // end while
 
     fillData();
-    return ret;
+    return;
 }
 
 

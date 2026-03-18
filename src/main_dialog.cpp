@@ -108,7 +108,6 @@ IDZ80::~IDZ80()
     delete m_programs_mgr;
     delete m_notebook;
 //    delete codeview_;
-//    delete process_;
     delete m_aui_mgr;
     delete m_status_bar;
     delete m_panel_log;
