@@ -89,12 +89,12 @@ private:
     void setupAcceleratorKeys();
 
     // window render
-    void paintBackground(wxDC &t_dc, const int t_start_y, const int t_fromline, const int t_toline, const wxBrush t_backcolour);
-    void render(wxDC &dc, const int start_y, const int fromline, const int count);
-    uint renderData(wxDC &dc, const int start_y, SourceCodeLine *cvi);
-    uint renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cvi);
-    uint renderProgramLabel(wxDC &dc, const int start_y, wxString str);
-    uint renderOrigin(wxDC &dc, const int start_y, uint address);
+    void paintBackground(wxDC &t_dc, const int t_line_pixel, const int t_fromline, const int t_toline, const wxBrush t_backcolour);
+    void render(wxDC &dc, const int t_line_pixel, const int fromline, const int count);
+    uint renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *cvi);
+    uint renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLine *cvi);
+    uint renderProgramLabel(wxDC &dc, const int t_line_pixel, wxString str);
+    uint renderOrigin(wxDC &dc, const int t_line_pixel, uint address);
     void renderBackgroundBlur(wxDC &t_dc, wxRect t_region);
 
     //utilities

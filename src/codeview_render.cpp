@@ -16,69 +16,76 @@
 
 
 
-// Plots Data item, returns the last point of the plotted string
-uint CodeView::renderData(wxDC &dc, const int start_y, SourceCodeLine *cvi)
+/// @brief Draws a line with data item
+/// @param dc Device Conext
+/// @param t_line_pixel The initial pixel line.
+/// @param sc_line Source code line
+/// @return the last point of the drawn string.
+uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_line)
 {
-    uint i, x, argwidth, lenght;
+    uint column_pixel, argwidth, lenght;
     DisassembledItem *de;
-    wxString str;
+    wxString str = "ERROR";
 
-    x = COL_MNEM;
-    de = m_process->Disassembled->GetData(cvi->dasmedItem);
+    column_pixel = COL_MNEM;
+    de = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+
+    //TODO: Verify why we drawtext of an empty string
     dc.SetTextForeground(m_color_text_foreground);
-    dc.DrawText(str, x, start_y);
-    x += dc.GetTextExtent(str).GetWidth();
+    dc.DrawText(str, column_pixel, t_line_pixel);
+    column_pixel += dc.GetTextExtent(str).GetWidth();
 
-    if (de->GetStyleArgument(0) == ast_wordhex)
-    {
+    if ((de->getArgumentStyle(0) == STYLE_WORD_HEX) && (de->getOpcodeSize() % 2 == 0)) { // Must be even
         str.Printf("DW ");
-        lenght = de->GetLength() / 2;
-        for (i = 0; i < lenght; i++)
-        {
-            argwidth = de->GetData(de->GetOffset() + i + 1) * 0xFF + de->GetData(de->GetOffset() + i);
-            argwidth = argwidth & 0xFFFF;
+        lenght = de->getOpcodeSize() / 2;
+        for (unsigned int i = 0; i < lenght; ++i) {
+
+            argwidth = de->getWordFromFile(i);
             str << wxString::Format("0x%.4X", argwidth);
             if (i < (lenght - 1))
                 str << ",";
         }
-
     }
-    else
-    {
+    else {
         str.Printf("DB ");
-
-        for (i = 0; i < de->GetLength(); i++)
+        for (unsigned int i = 0; i < de->getOpcodeSize(); ++i)
         {
-            str << wxString::Format("0x%.2X", de->GetData(de->GetOffset() + i));
-            if (i < (de->GetLength() - 1))
+            str << wxString::Format("0x%.2X", de->getByteOpcode(i));
+            if (i < (de->getOpcodeSize() - 1))
                 str << ",";
         }
     }
 
-    dc.DrawText(str, x, start_y);
+    dc.DrawText(str, column_pixel, t_line_pixel);
     argwidth = dc.GetTextExtent(str).GetWidth();
-    x += argwidth;
-    if (cvi->rectArg1 == 0)
+    column_pixel += argwidth;
+
+    // Create a rectangle around the argument
+    if (sc_line->rectArg1 == 0)
     {
-        cvi->rectArg1 = new wxRect(COL_MNEM, start_y, argwidth, m_font_height);
+        sc_line->rectArg1 = new wxRect(COL_MNEM, t_line_pixel, argwidth, m_font_height);
     }
     else
     {
-        cvi->rectArg1->SetX(COL_MNEM);
-        cvi->rectArg1->SetY(start_y);
-        cvi->rectArg1->SetHeight(m_font_height);
-        cvi->rectArg1->SetWidth(argwidth);
+        sc_line->rectArg1->SetX(COL_MNEM);
+        sc_line->rectArg1->SetY(t_line_pixel);
+        sc_line->rectArg1->SetHeight(m_font_height);
+        sc_line->rectArg1->SetWidth(argwidth);
     }
-    return x;
+    return column_pixel;
 }
 
 
 
-// Plots the instructions, return the last point of the plotted string
-uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cvi)
+/// @brief Draw a line with instruction item
+/// @param dc Device Conext
+/// @param t_line_pixel The initial pixel line.
+/// @param sc_line Source code line
+/// @return the last point of the drawn string.
+uint CodeView::renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_line)
 {
     int		nargs,
-			x,
+			column_pixel,
 			argwidth1,
 			argpos1,
 			argwidth2,
@@ -91,18 +98,18 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
 
     argwidth1 = argwidth2 = argpos1 = argpos2 = 0;
     usedlabel = false;
-    x = COL_MNEM;
-    de = m_process->Disassembled->GetData(cvi->dasmedItem);
+    column_pixel = COL_MNEM;
+    de = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
     nargs = de->GetArgumentCount();
     strparts = 0;
     str = de->GetMnemonicStr(0);
     strparts++;
     dc.SetTextForeground(m_color_text_foreground);
-    dc.DrawText(str, x, start_y);
-    x += dc.GetTextExtent(str).GetWidth();
-    argpos1 = x;
+    dc.DrawText(str, column_pixel, t_line_pixel);
+    column_pixel += dc.GetTextExtent(str).GetWidth();
+    argpos1 = column_pixel;
 
-	argument = de->GetArgument(0, m_process->Disassembled->GetBaseAddress(cvi->dasmedItem));
+	argument = de->GetArgument(0, m_process->Disassembled->GetBaseAddress(sc_line->dasmedItem));
 
     if (de->HasArgumentLabel())
     {
@@ -129,20 +136,20 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
         if (usedlabel)
         {
             dc.SetTextForeground(*wxBLUE);
-            dc.DrawText(str, x, start_y);
+            dc.DrawText(str, x, t_line_pixel);
             argwidth1 = dc.GetTextExtent(str).GetWidth();
             x += argwidth1;
             dc.SetTextForeground(m_color_text_foreground);
-            if (cvi->rectArg1 == 0)
+            if (sc_line->rectArg1 == 0)
             {
-                cvi->rectArg1 = new wxRect(argpos1, start_y, argwidth1, m_font_height);
+                sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
             }
             else
             {
-                cvi->rectArg1->SetX(argpos1);
-                cvi->rectArg1->SetY(start_y);
-                cvi->rectArg1->SetHeight(m_font_height);
-                cvi->rectArg1->SetWidth(argwidth1);
+                sc_line->rectArg1->SetX(argpos1);
+                sc_line->rectArg1->SetY(t_line_pixel);
+                sc_line->rectArg1->SetHeight(m_font_height);
+                sc_line->rectArg1->SetWidth(argwidth1);
             }
         }
     }
@@ -153,19 +160,19 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
 
 		str = formatArg(argument, de->GetStyleArgument(0));
 
-        dc.DrawText(str, x, start_y);
+        dc.DrawText(str, x, t_line_pixel);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
-        x += argwidth1;
-        if (cvi->rectArg1 == 0)
+        column_pixel += argwidth1;
+        if (sc_line->rectArg1 == 0)
         {
-            cvi->rectArg1 = new wxRect(argpos1, start_y, argwidth1, m_font_height);
+            sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
         }
         else
         {
-            cvi->rectArg1->SetX(argpos1);
-            cvi->rectArg1->SetY(start_y);
-            cvi->rectArg1->SetHeight(m_font_height);
-            cvi->rectArg1->SetWidth(argwidth1);
+            sc_line->rectArg1->SetX(argpos1);
+            sc_line->rectArg1->SetY t_line_pixel);
+            sc_line->rectArg1->SetHeight(m_font_height);
+            sc_line->rectArg1->SetWidth(argwidth1);
         }
     }
     else    // two arguments
@@ -174,45 +181,45 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
         dc.SetTextForeground(*wxRED);
 
 		str = formatArg(argument, de->GetStyleArgument(0));
-        dc.DrawText(str, x, start_y);
+        dc.DrawText(str, x, t_line_pixel);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
         x += argwidth1;
 
         dc.SetTextForeground(m_color_text_foreground);
         str = de->GetMnemonicStr(1);
         strparts++;
-        dc.DrawText(str, x, start_y);
+        dc.DrawText(str, x, t_line_pixel);
         x += dc.GetTextExtent(str).GetWidth();
         argpos2 = x;
 
         dc.SetTextForeground(*wxRED);
         str = formatArg(de->GetArgument(1, 0), de->GetStyleArgument(1));
 
-        dc.DrawText(str, x, start_y);
+        dc.DrawText(str, x, t_line_pixel);
         argwidth2 = dc.GetTextExtent(str).GetWidth();
         x += argwidth2;
-        if (cvi->rectArg1 == 0)
+        if (sc_line->rectArg1 == 0)
         {
-            cvi->rectArg1 = new wxRect(argpos1, start_y, argwidth1, m_font_height);
+            sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
         }
         else
         {
-            cvi->rectArg1->SetX(argpos1);
-            cvi->rectArg1->SetY(start_y);
-            cvi->rectArg1->SetHeight(m_font_height);
-            cvi->rectArg1->SetWidth(argwidth1);
+            sc_line->rectArg1->SetX(argpos1);
+            sc_line->rectArg1->SetY t_line_pixel);
+            sc_line->rectArg1->SetHeight(m_font_height);
+            sc_line->rectArg1->SetWidth(argwidth1);
         }
 
-        if (cvi->rectArg2 == 0)
+        if (sc_line->rectArg2 == 0)
         {
-            cvi->rectArg2 = new wxRect(argpos2, start_y, argwidth2, m_font_height);
+            sc_line->rectArg2 = new wxRect(argpos2, t_line_pixel, argwidth2, m_font_height);
         }
         else
         {
-            cvi->rectArg2->SetX(argpos2);
-            cvi->rectArg2->SetY(start_y);
-            cvi->rectArg2->SetHeight(m_font_height);
-            cvi->rectArg2->SetWidth(argwidth2);
+            sc_line->rectArg2->SetX(argpos2);
+            sc_line->rectArg2->SetY t_line_pixel);
+            sc_line->rectArg2->SetHeight(m_font_height);
+            sc_line->rectArg2->SetWidth(argwidth2);
         }
     }
 
@@ -220,7 +227,7 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
     if (de->GetMnemonicStrCount() > strparts)
     {
         str = de->GetMnemonicStr(strparts);
-        dc.DrawText(str, x, start_y);
+        dc.DrawText(str, x, t_line_pixel);
         x += dc.GetTextExtent(str).GetWidth();
     }
     return x;
@@ -228,12 +235,12 @@ uint CodeView::renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cv
 
 
 
-uint CodeView::renderProgramLabel(wxDC &dc, const int start_y,wxString str)
+uint CodeView::renderProgramLabel(wxDC &dc, const int t_line_pixel,wxString str)
 {
     int x;
     x = COL_LABEL;
     dc.SetTextForeground(m_color_label_foreground);
-    dc.DrawText(str, x, start_y);
+    dc.DrawText(str, x, t_line_pixel);
     x += dc.GetTextExtent(str).GetWidth();
     dc.SetTextForeground(m_color_text_foreground);
     return x;
@@ -241,7 +248,7 @@ uint CodeView::renderProgramLabel(wxDC &dc, const int start_y,wxString str)
 
 
 
-uint CodeView::renderOrigin(wxDC &dc, const int start_y,uint address)
+uint CodeView::renderOrigin(wxDC &dc, const int t_line_pixel,uint address)
 {
     int x;
     wxString str;
@@ -249,15 +256,15 @@ uint CodeView::renderOrigin(wxDC &dc, const int start_y,uint address)
     x = COL_MNEM;
     str.Printf("ORG %XH",address);
     dc.SetTextForeground(m_color_text_foreground);
-    dc.DrawText(str, x, start_y);
+    dc.DrawText(str, x, t_line_pixel);
     x += dc.GetTextExtent(str).GetWidth();
     return x;
 }
 
 
-void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int count)
+void CodeView::render(wxDC &dc, const int t_line_pixel, const int fromline, const int count)
 {
-    SourceCodeLine	*cvi;
+    SourceCodeLine	*sc_line;
     wxString		str;
     uint			commentoffset;
     int				linepixel, line_offset, rendering_line;
@@ -267,7 +274,7 @@ void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int
 
     GetClientSize(&width, &heigh);
 
-    linepixel = start_y;
+    linepixel = t_line_pixel;
     line_offset = 0;
     address = 0;
 
@@ -275,28 +282,28 @@ void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int
     {
         commentoffset = 0;
         rendering_line = fromline + line_offset;
-        cvi = m_sourcecode->line(rendering_line);
-        if (cvi)
+        sc_line = m_sourcecode->line(rendering_line);
+        if (sc_line)
 		{
 			/* -------------------------------------------------
 			 *  Render Origin
 			 * -------------------------------------------------*/
-			if (cvi->originAddress >= 0)
+			if (sc_line->originAddress >= 0)
 			{
-				commentoffset = renderOrigin(dc, linepixel, cvi->originAddress);
-				address = cvi->originAddress;
+				commentoffset = renderOrigin(dc, linepixel, sc_line->originAddress);
+				address = sc_line->originAddress;
 			}
 			else
 			{
 				/* -------------------------------------------------
 				 *  Render Instructions
 				 * -------------------------------------------------*/
-				if (cvi->dasmedItem >= 0)    // is It data/code ?
+				if (sc_line->dasmedItem >= 0)    // is It data/code ?
 				{
-					de = m_process->Disassembled->GetData(cvi->dasmedItem);
+					de = m_process->Disassembled->GetData(sc_line->dasmedItem);
 					if (de)
 					{
-						address = m_process->Disassembled->GetBaseAddress(cvi->dasmedItem) + de->GetOffset();
+						address = m_process->Disassembled->GetBaseAddress(sc_line->dasmedItem) + de->GetOffset();
 
 						dc.SetTextForeground(m_color_text_foreground);
 						dc.DrawText(de->GetCodeStr(), COL_CODE, linepixel);
@@ -304,11 +311,11 @@ void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int
 						switch (de->GetType())
 						{
 							case et_Data:
-												commentoffset = renderData(dc, linepixel, cvi);
+												commentoffset = renderData(dc, linepixel, sc_line);
 												break;
 
 							case et_Instruction:
-												commentoffset = renderInstruction(dc, linepixel, cvi);
+												commentoffset = renderInstruction(dc, linepixel, sc_line);
 												break;
 							default:
 												commentoffset = 0;
@@ -323,40 +330,40 @@ void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int
 				 *  Render Labels
 				 * -------------------------------------------------*/
                 {
-                        if (cvi->labelProgAddress)   // Is it a label ?
+                        if (sc_line->labelProgAddress)   // Is it a label ?
                         {
-                            if (!cvi->labelProgAddress->labelString.IsEmpty())
+                            if (!sc_line->labelProgAddress->labelString.IsEmpty())
                             {
-                                str.Printf("%s:", cvi->labelProgAddress->labelString);
+                                str.Printf("%s:", sc_line->labelProgAddress->labelString);
                                 commentoffset = renderProgramLabel(dc, linepixel, str);
-                                address = cvi->labelProgAddress->address;
+                                address = sc_line->labelProgAddress->address;
                             }
                             else
                             {
                                 str = "ERROR_LABEL:";
                                 commentoffset = renderProgramLabel(dc, linepixel, str);
-                                m_sourcecode->delSCItem(cvi);
-                                delete cvi;
-                                cvi = 0;
+                                m_sourcecode->delSCItem(sc_line);
+                                delete sc_line;
+                                sc_line = 0;
                             }
                         }
 
-                        if (cvi->labelVarAddress)   // Is it a label ?
+                        if (sc_line->labelVarAddress)   // Is it a label ?
                         {
-                            if (!cvi->labelVarAddress->labelString.IsEmpty())
+                            if (!sc_line->labelVarAddress->labelString.IsEmpty())
                             {
-                                str.Printf("%s:", cvi->labelVarAddress->labelString);
+                                str.Printf("%s:", sc_line->labelVarAddress->labelString);
                                 commentoffset = renderProgramLabel(dc, linepixel, str);
-                                address = cvi->labelVarAddress->address;
+                                address = sc_line->labelVarAddress->address;
                             }
                             else
                             {
                                 str = "ERROR_LABEL:";
                                 commentoffset = renderProgramLabel(dc, linepixel, str);
 
-                                m_sourcecode->delSCItem(cvi);
-                                delete cvi;
-                                cvi = 0;
+                                m_sourcecode->delSCItem(sc_line);
+                                delete sc_line;
+                                sc_line = 0;
                             }
                         }
                 }
@@ -375,12 +382,12 @@ void CodeView::render(wxDC &dc, const int start_y, const int fromline, const int
 			/* -------------------------------------------------
 			 *  Render Comments
 			 * -------------------------------------------------*/
-			if (cvi->comment)   // has comments ?
+			if (sc_line->comment)   // has comments ?
 			{
-			    if (!cvi->comment->IsEmpty())
+			    if (!sc_line->comment->IsEmpty())
                 {
                     dc.SetTextForeground(*wxGREEN);
-                    str = cvi->comment->Clone();
+                    str = sc_line->comment->Clone();
 
                     commentoffset += 20;
                     dc.DrawText(str, commentoffset, linepixel);

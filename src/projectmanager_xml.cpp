@@ -278,17 +278,17 @@ void ProjectManagerXML::writeDisassembled(wxXmlDocument &doc)
             if(d_item->isData())
             {
                 items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_DATA_STR, index));
-                items->AddAttribute(ATTRIBUTE_OPCODE_LENGTH_STR, wxString::Format("%d", d_item->GetLength()));
+                items->AddAttribute(ATTRIBUTE_OPCODE_LENGTH_STR, wxString::Format("%d", d_item->getOpcodeSize()));
             }
             else
             {
                 items = new wxXmlNode(section, wxXML_ELEMENT_NODE, wxString::Format("%s_%d", ATTRIBUTE_CODE_STR, index));
-                items->AddAttribute(ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR, wxString::Format("%d", d_item->GetMnemonic()->GetMnemonicSignature()));
-                if (d_item->GetMnemonic()->GetArgumentCount() > 0)
+                items->AddAttribute(ATTRIBUTE_OPCODE_MNEMONIC_SIGNATURE_STR, wxString::Format("%d", d_item->getMnemonic()->GetMnemonicSignature()));
+                if (d_item->getMnemonic()->GetArgumentCount() > 0)
                     items->AddAttribute(ATTRIBUTE_OPCODE_ARGUMENTS_STR, getArgumentAsString(d_item));
             }
 
-            items->AddAttribute(ATTRIBUTE_OPCODE_OFFSET_STR, wxString::Format("%d", d_item->GetOffsetInFile()));
+            items->AddAttribute(ATTRIBUTE_OPCODE_OFFSET_STR, wxString::Format("%d", d_item->getOffsetInFile()));
         }
     }
 }
@@ -342,12 +342,12 @@ wxString ProjectManagerXML::getArgumentAsString(DisassembledItem *d_item)
                  arg;
     wxString aux_str;
 
-    arg_aux = d_item->GetMnemonic()->GetArgumentCount() * d_item->GetMnemonic()->GetArgumentSize();
+    arg_aux = d_item->getMnemonic()->GetArgumentCount() * d_item->getMnemonic()->GetArgumentSize();
     aux_str.Clear();
 
     for(arg_index = 0; arg_index < arg_aux; arg_index++)
     {
-        arg = d_item->GetArgumentValue(arg_index);
+        arg = d_item->getArgumentValue(arg_index);
         arg = arg & 0xFF;
         aux_str << wxString::Format("%.2X ", arg);
     }
@@ -360,8 +360,8 @@ wxString ProjectManagerXML::getArgumentAsString(DisassembledItem *d_item)
 
 void ProjectManagerXML::setArgumentFromString(const wxString &arg_str, DisassembledItem *d_item)
 {
-    unsigned int arg_count = d_item->GetMnemonic()->GetArgumentCount() *
-                             d_item->GetMnemonic()->GetArgumentSize(),
+    unsigned int arg_count = d_item->getMnemonic()->GetArgumentCount() *
+                             d_item->getMnemonic()->GetArgumentSize(),
                  index = 0,
                  index_arg = 0;
     ExplicitArguments arguments;
@@ -701,7 +701,7 @@ bool ProjectManagerXML::fill_Disassembled(wxXmlNode *datanode)
             exceptiondata.line = datanode->GetLineNumber();
             throw exceptiondata;
         }
-        data_item->SetLength(static_cast<unsigned int>(conv));
+        data_item->setSize(static_cast<unsigned int>(conv));
     }
     else
     {

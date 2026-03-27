@@ -113,7 +113,7 @@ void DisassembledContainer::Del(DisassembledIndex position)
 		if (d_item)
         {
 
-            LogIt(wxString::Format("Erase item %d, mnemonic = %s", position, d_item->GetMnemonic()->GetMnemonicStr(0)));
+            LogIt(wxString::Format("Erase item %d, mnemonic = %s", position, d_item->getMnemonic()->GetMnemonicStr(0)));
             delete d_item;
             m_total_allocated -= sizeof(DisassembledItem);
         }
@@ -242,7 +242,7 @@ DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_add
 
     for (DisassembledList::iterator it = m_disassembled_list.begin(); it != m_disassembled_list.end();)
     {
-        item_address = GetBaseAddress(item_index) + static_cast<DisassembledItem *>(*it)->GetOffsetInFile();
+        item_address = GetBaseAddress(item_index) + static_cast<DisassembledItem *>(*it)->getOffsetInFile();
         if (item_address >= t_address) {
             ret_index = item_index;
             break;

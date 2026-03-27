@@ -733,8 +733,8 @@ void CodeView::createPopupMenuSingleSelection(wxMenu *popup)
     {
         case 	lt_InstructionLabel:
                                 if ((m_line_info.dasmitem) &&
-                                    (m_line_info.dasmitem->GetMnemonic()->GetGroup() == GRP_CALL
-                                    || m_line_info.dasmitem->GetMnemonic()->GetGroup() == GRP_JUMP))
+                                    (m_line_info.dasmitem->getMnemonic()->GetGroup() == GRP_CALL
+                                    || m_line_info.dasmitem->getMnemonic()->GetGroup() == GRP_JUMP))
                                 {
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();
@@ -886,8 +886,8 @@ void CodeView::treatAsSingleSelection()
         m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.lineitem->dasmedItem);
         if (m_line_info.dasmitem)
         {
-            if ((m_line_info.dasmitem->GetArgumentStyle(0) == STYLE_LABELED)
-                || (m_line_info.dasmitem->GetArgumentStyle(1) == STYLE_LABELED))
+            if ((m_line_info.dasmitem->getArgumentStyle(0) == STYLE_LABELED)
+                || (m_line_info.dasmitem->getArgumentStyle(1) == STYLE_LABELED))
                 m_line_info.type = lt_InstructionLabel;
             else
                 m_line_info.type = lt_Instruction;
@@ -896,7 +896,7 @@ void CodeView::treatAsSingleSelection()
                 m_line_info.type = lt_Data;
             m_line_info.firstInstruction = m_line_info.lineitem->dasmedItem;
             m_line_info.lastInstruction = m_line_info.firstInstruction;
-            m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->GetOffsetInFile();
+            m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
             m_line_info.lastAddress = m_line_info.firstAddress;
         }
 
@@ -942,8 +942,8 @@ void CodeView::treatAsMultiSelection()
         m_line_info.lastInstruction = last_line->dasmedItem;
         m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.firstInstruction);
         last_disassembled = m_sourcecode->getDisassembled()->GetData(m_line_info.lastInstruction);
-        m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->GetOffsetInFile();
-        m_line_info.lastAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.lastInstruction) + last_disassembled->GetOffsetInFile();
+        m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
+        m_line_info.lastAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.lastInstruction) + last_disassembled->getOffsetInFile();
     }
 
     m_line_info.hasComment = false;

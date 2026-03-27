@@ -52,16 +52,8 @@ struct ArgumentStyle
 };
 
 
-/*TODO: Do we need this?
-enum ArgumentIndex
-{
-    FIRST_ARGUMENT = 0,
-    SECOND_ARGUMENT
-};
-*/
-
-
 typedef signed int RelativeAddress;
+
 
 // Inheritance: DisassembledItem > DisassembledItemBase
 // TODO: Think about why we need all this inheritance.
@@ -73,40 +65,42 @@ class DisassembledItem : public DisassembledItemBase
 
         void clear();
         void destroy();
-        void SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset);
-        void SetupDataItem(const FileOffset offset);
+        void setupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset);
+        void setupDataItem(const FileOffset offset);
 
-        wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);
-        wxString GetAsciiCodeAsString();
+        wxString getOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);
+        wxString getAsciiCodeAsString();
 
-        FileOffset GetOffsetInFile();
+        FileOffset getOffsetInFile();
 
-        unsigned int GetLength();
-        void SetLength(unsigned int len);
+        unsigned int getOpcodeSize();
+        void setSize(unsigned int len);
 
         bool isData();
-        void MarkAsData(const bool isdata = true);
+        void markAsData(const bool isdata = true);
 
-        byte GetByteOpcode(unsigned int index);
+        unsigned int getByteOpcode(unsigned int t_opcode_index);
+        unsigned int getByteFromFile(unsigned int t_offset);
+        unsigned int getWordOpcode(unsigned int t_opcode_index);
+        unsigned int getWordFromFile(unsigned int t_index);
 
         // Arguments
-        ArgumentStyle GetArgumentStyle();
-        ArgumentStyleOptions GetArgumentStyle(unsigned int index);
-        //byte GetArgumentValue(ArgumentIndex index);
-        int GetArgumentValue(unsigned int index, unsigned int base_address = 0);
+        ArgumentStyle getArgumentStyle();
+        ArgumentStyleOptions getArgumentStyle(unsigned int index);
+
+        int getArgumentValue(unsigned int index, unsigned int base_address = 0);
         void SetArgumentStyle(unsigned int index, ArgumentStyleOptions style);
 
-        MnemonicItem *GetMnemonic();
-        RawData *GetProgram();
+        MnemonicItem *getMnemonic() const;
+        RawData *getProgram();
 
-    protected:
     private:
         ArgumentStyle   *m_arg_style;
 
-        void CopyRealBytecode();
-        void FillArgument();
+        void copyRealBytecode();
+        void fillArgument();
 
-        AbsoluteAddress ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress);
+        AbsoluteAddress convertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress);
 };
 
 #endif // DISASSEMBLEDITEM_H

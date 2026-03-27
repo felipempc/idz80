@@ -22,13 +22,11 @@ DisassembledItem::DisassembledItem(RawData* program_file)
 
 
 
-
 DisassembledItem::~DisassembledItem()
 {
     if (m_arg_style)
         delete m_arg_style;
 }
-
 
 
 
@@ -50,7 +48,6 @@ void DisassembledItem::clear()
 
 
 
-
 /// @brief Release allocated memory and init all data
 void DisassembledItem::destroy()
 {
@@ -64,7 +61,7 @@ void DisassembledItem::destroy()
 /// @brief Return a string containing the opcode in hex format. Example: 3C BD FF
 /// @param hex_style Specifies the hex representation symbol: 00H, $00, 0x00
 /// @return The string
-wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style, const DataSeparation separation)
+wxString DisassembledItem::getOpcodeAsStringHex(const HexadecimalStrStyle hex_style, const DataSeparation separation)
 {
     wxString as_string, fmt_string("%.2X");
     byte bytecode;
@@ -92,7 +89,7 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
 
         for (counter = 0; counter < m_length; ++counter)
         {
-            bytecode = GetByteOpcode(counter);
+            bytecode = getByteOpcode(counter);
             as_string << wxString::Format(fmt_string, bytecode);
         }
         counter = as_string.Len() - 1;
@@ -106,7 +103,7 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
 
 /// @brief Converts the bytecode into a string, substitutes "invisible" chars by a dot.
 /// @return The string
-wxString DisassembledItem::GetAsciiCodeAsString()
+wxString DisassembledItem::getAsciiCodeAsString()
 {
     wxString as_string;
     byte bytecode;
@@ -114,7 +111,7 @@ wxString DisassembledItem::GetAsciiCodeAsString()
     if(m_mnemonic) {
         as_string.Clear();
         for (unsigned int counter = 0; counter < m_length; ++counter) {
-            bytecode = GetByteOpcode(counter);
+            bytecode = getByteOpcode(counter);
             if ((bytecode < 32) || (bytecode > 126)) {
                 bytecode = '.';
             }
@@ -129,7 +126,7 @@ wxString DisassembledItem::GetAsciiCodeAsString()
 
 /// @brief Gets the style of arguments
 /// @return A struct with the arguments' style
-ArgumentStyle DisassembledItem::GetArgumentStyle()
+ArgumentStyle DisassembledItem::getArgumentStyle()
 {
     ArgumentStyle style;
     style.first = STYLE_NONE;
@@ -149,7 +146,7 @@ ArgumentStyle DisassembledItem::GetArgumentStyle()
 /// @brief Gets the style of the selected argument
 /// @param index Selects the argument: 0 to the first, 1 to the second.
 /// @return The argument style
-ArgumentStyleOptions DisassembledItem::GetArgumentStyle(unsigned int index)
+ArgumentStyleOptions DisassembledItem::getArgumentStyle(unsigned int index)
 {
     if(m_arg_style)
     {
@@ -169,7 +166,7 @@ ArgumentStyleOptions DisassembledItem::GetArgumentStyle(unsigned int index)
 
 /// @brief Gets the offset position of this item in the file.
 /// @return 
-FileOffset DisassembledItem::GetOffsetInFile()
+FileOffset DisassembledItem::getOffsetInFile()
 {
     return m_file_offset;
 }
@@ -178,7 +175,7 @@ FileOffset DisassembledItem::GetOffsetInFile()
 
 /// @brief Gets the opcode' size of this item.
 /// @return The size
-unsigned int DisassembledItem::GetLength()
+unsigned int DisassembledItem::getOpcodeSize()
 {
     return m_length;
 }
@@ -187,7 +184,7 @@ unsigned int DisassembledItem::GetLength()
 
 /// @brief Sets the size of this item
 /// @param len The new size
-void DisassembledItem::SetLength(unsigned int len)
+void DisassembledItem::setSize(unsigned int len)
 {
     m_length = len;
 }
@@ -205,43 +202,97 @@ bool DisassembledItem::isData()
 
 /// @brief Marks this item as data
 /// @param isdata 
-void DisassembledItem::MarkAsData(const bool isdata)
+void DisassembledItem::markAsData(const bool isdata)
 {
     m_is_data = isdata;
 }
 
 
 
-/// @brief Gets the selected byte in the opcode
-/// @param index Selects the byte, 0 to MAX_OPCODE_SIZE
+/// @brief Gets the selected byte in the opcode, limited by MAX_OPCODE_SIZE
+/// @param t_opcode_index Selects the byte, 0 to MAX_OPCODE_SIZE
 /// @return The byte
-byte DisassembledItem::GetByteOpcode(unsigned int index)
+unsigned int DisassembledItem::getByteOpcode(unsigned int t_opcode_index)
 {
-    if (index >= MAX_OPCODE_SIZE)
+    unsigned int result = 0;
+
+    if (t_opcode_index >= MAX_OPCODE_SIZE) {
         return 0;
-
-    return m_real_bytecode[index];
+    }
+    result = m_real_bytecode[t_opcode_index];
+    return (result & 0xFF);
 }
 
 
-/*TODO: DO WE REALLY NEED THIS?? 
-byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
+
+/// @brief Gets a byte data directly from file, limited by m_length
+/// @param t_offset The offset from 0 to m_length.
+/// @return The byte
+unsigned int DisassembledItem::getByteFromFile(unsigned int t_offset)
 {
-    if(index == FIRST_ARGUMENT)
-        return m_arguments.unsigned_8bit_low;
-    if(index == SECOND_ARGUMENT)
-        return m_arguments.unsigned_8bit_high;
+    unsigned int    result = 0,
+                    offset = m_file_offset + t_offset,
+                    limit = m_file_offset + m_length;
 
-    return 0;
+    if (offset >= limit) {
+        return 0;
+    }
+    result = m_program->GetData(offset);
+    return (result & 0xFF);
 }
-*/
+
+
+
+/// @brief Gets an word from opcode. Little endian result.
+/// @param t_opcode_index An even index.
+/// @return The word
+unsigned int DisassembledItem::getWordOpcode(unsigned int t_opcode_index)
+{
+    unsigned int    result = 0,
+                    high_byte_index = t_opcode_index + 1,
+                    low_byte = 0,
+                    high_byte = 0;
+
+    if ((t_opcode_index % 2 > 0)
+        || (high_byte_index >= MAX_OPCODE_SIZE)) {
+        return 0;
+    }
+    low_byte = m_real_bytecode[t_opcode_index] & 0xFF;
+    high_byte = m_real_bytecode[high_byte_index] & 0xFF;
+    result = high_byte << 8 + low_byte;
+    return (result & 0xFFFF);
+}
+
+
+
+/// @brief Gets an word directly from file, limited by m_length. Little endian result.
+/// @param t_index The offset from 0 to m_length.
+/// @return The word from file
+unsigned int DisassembledItem::getWordFromFile(unsigned int t_index)
+{
+    unsigned int    result = 0;
+    unsigned int    offset = m_file_offset + t_index,
+                    limit = m_file_offset + m_length,
+                    high_byte_offset = offset + 1,
+                    low_byte = 0,
+                    high_byte = 0;
+
+    if (high_byte_offset >= limit) {
+        return 0;
+    }
+    low_byte = m_program->GetData(offset) & 0xFF;
+    high_byte = m_program->GetData(high_byte_offset) & 0xFF;
+    result = high_byte << 8 + low_byte;
+    return (result && 0xFFFF);
+}
+
 
 
 /// @brief Gets the value of a selected argument.
 /// @param index Selects the argument: 0 to the first, 1 to the second, if exists.
 /// @param base_address The base address where the program is loaded in the original machine
 /// @return The value of the argument
-int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_address)
+int DisassembledItem::getArgumentValue(unsigned int index, unsigned int base_address)
 {
     if (m_mnemonic->GetArgumentSize() == 2) {
         return static_cast<int>(m_arguments.unsigned_16bit);
@@ -249,7 +300,7 @@ int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_add
 
     if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {
         if (m_mnemonic->GetArgument(index).type == OT_RELATIVE_ADDRESS) {
-            return ConvertRelativeToAbsolute(m_arguments.signed_value, base_address);
+            return convertRelativeToAbsolute(m_arguments.signed_value, base_address);
         }
     }
 
@@ -269,7 +320,7 @@ int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_add
 
 /// @brief Gets the pointer to the mnemonics list.
 /// @return The pointer
-MnemonicItem *DisassembledItem::GetMnemonic()
+MnemonicItem *DisassembledItem::getMnemonic() const
 {
     return m_mnemonic;
 }
@@ -278,7 +329,7 @@ MnemonicItem *DisassembledItem::GetMnemonic()
 
 /// @brief Gets the pointer to the object representing the program file
 /// @return the pointer
-RawData *DisassembledItem::GetProgram()
+RawData *DisassembledItem::getProgram()
 {
     return m_program;
 }
@@ -305,22 +356,22 @@ void DisassembledItem::SetArgumentStyle(unsigned int index, ArgumentStyleOptions
 /// @brief Initializes the DisassembledItem as an instruction code.
 /// @param mnemonic The mnemonic of this instruction
 /// @param offset in the file
-void DisassembledItem::SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset)
+void DisassembledItem::setupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset)
 {
     m_mnemonic = mnemonic;
     m_file_offset = offset;
     m_is_data = false;
     m_length = mnemonic->GetByteCodeSize();
     m_mnemonic_signature = mnemonic->GetMnemonicSignature();
-    FillArgument();
-    CopyRealBytecode();
+    fillArgument();
+    copyRealBytecode();
 }
 
 
 
 /// @brief Initializes the DisassembledItem as data.
 /// @param offset in the file
-void DisassembledItem::SetupDataItem(const FileOffset offset)
+void DisassembledItem::setupDataItem(const FileOffset offset)
 {
     clear();
     m_file_offset = offset;
@@ -333,7 +384,7 @@ void DisassembledItem::SetupDataItem(const FileOffset offset)
 /// @brief Copy the bytecode from program file \
 /// @brief 0  1  2  3   <- Position          \
 /// @brief aa bb cc dd
-void DisassembledItem::CopyRealBytecode()
+void DisassembledItem::copyRealBytecode()
 {
     if (m_program && m_mnemonic) {
         for(int offset = 0; offset < m_length; ++offset)
@@ -344,17 +395,17 @@ void DisassembledItem::CopyRealBytecode()
 
 
 /// @brief Calculate and fill arguments fields
-void DisassembledItem::FillArgument()
+void DisassembledItem::fillArgument()
 {
     if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {  // One 8bit argument
-        m_arguments.unsigned_8bit_low = GetByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
+        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
         m_arguments.unsigned_8bit_high = 0;
         m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low;
-        m_arguments.signed_value = static_cast<int>(GetByteOpcode(m_mnemonic->GetArgumentPosition()));
+        m_arguments.signed_value = static_cast<int>(getByteOpcode(m_mnemonic->GetArgumentPosition()));
     }
     else {  //Two of 8bit or 1 of 16bit
-        m_arguments.unsigned_8bit_low = GetByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
-        m_arguments.unsigned_8bit_high = GetByteOpcode(m_mnemonic->GetArgumentPosition() + 1) & 0xFF;
+        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
+        m_arguments.unsigned_8bit_high = getByteOpcode(m_mnemonic->GetArgumentPosition() + 1) & 0xFF;
         m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low + m_arguments.unsigned_8bit_high * 0x100;
         m_arguments.signed_value = static_cast<int>(m_arguments.unsigned_16bit);
     }
@@ -366,7 +417,7 @@ void DisassembledItem::FillArgument()
 /// @param relative The relative address
 /// @param baseaddress The base address where the program is load in the original machine
 /// @return The absolute address
-AbsoluteAddress DisassembledItem::ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress)
+AbsoluteAddress DisassembledItem::convertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress)
 {
     return static_cast<AbsoluteAddress>(baseaddress + m_mnemonic->GetByteCodeSize() + m_file_offset + relative);
 }

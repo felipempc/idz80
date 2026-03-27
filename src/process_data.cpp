@@ -133,14 +133,14 @@ void ProcessData::makeData(const unsigned int t_index, RangeItems &t_range)
     for (i = t_range.Index; i < f; ++i)
     {
         de = Disassembled->GetData(i);
-        offset = de->GetOffsetInFile();
-        length = de->GetLength();
+        offset = de->getOffsetInFile();
+        length = de->getOpcodeSize();
         removeFromLabelUserList(de, i);
         Disassembled->Del(i);
         for (j = 0; j < length; ++j)
         {
             de = new DisassembledItem(Program);
-            de->SetupDataItem(offset + j);
+            de->setupDataItem(offset + j);
             Disassembled->Insert(de, k++);
         }
         i += length - 1;
@@ -236,16 +236,16 @@ void ProcessData::insertLineLabelsInSourceCode(const unsigned int t_index)
 /// @param t_dasmindex Index of the disassembled item
 void ProcessData::removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmindex)
 {
-    if (t_de->GetMnemonic()->GetArgumentCount() > 0)
-        switch(t_de->GetMnemonic()->GetArgument(0).type)
+    if (t_de->getMnemonic()->GetArgumentCount() > 0)
+        switch(t_de->getMnemonic()->GetArgument(0).type)
         {
             case OT_VARIABLE:
-                m_labels->var_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmindex);
+                m_labels->var_labels->delLabelUser(t_de->getArgumentValue(0, t_de->getProgram()->ExecAddress), t_dasmindex);
             case OT_IO_ADDRESS:
-                m_labels->io_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmindex);
+                m_labels->io_labels->delLabelUser(t_de->getArgumentValue(0, t_de->getProgram()->ExecAddress), t_dasmindex);
             case OT_RELATIVE_ADDRESS:
             case OT_ABSOLUTE_ADDRESS:
-                m_labels->prog_labels->delLabelUser(t_de->GetArgumentValue(0, t_de->GetProgram()->ExecAddress), t_dasmindex);
+                m_labels->prog_labels->delLabelUser(t_de->getArgumentValue(0, t_de->getProgram()->ExecAddress), t_dasmindex);
         }
 }
 
@@ -581,7 +581,7 @@ bool ProcessData::searchInstructionArgumentContinue(AbsoluteAddress &t_address)
 /// @return True if found.
 bool ProcessData::findInArgumentVariables(DisassembledItem *t_di, unsigned int t_argument)
 {
-    if ((t_di->GetMnemonic()->GetArgument(0).type == OT_VARIABLE) && (t_di->GetArgumentValue(0, 0) == t_argument))
+    if ((t_di->getMnemonic()->GetArgument(0).type == OT_VARIABLE) && (t_di->getArgumentValue(0, 0) == t_argument))
         return true;
 
     return false;
@@ -597,9 +597,9 @@ bool ProcessData::findInArgumentLiteral(DisassembledItem *t_di, unsigned int t_a
 {
     uint argument_index = 0;
 
-    while (argument_index < t_di->GetMnemonic()->GetArgumentCount())
+    while (argument_index < t_di->getMnemonic()->GetArgumentCount())
     {
-        if ((t_di->GetMnemonic()->GetArgument(argument_index).type == OT_DATA) && (t_di->GetArgumentValue(0, 0) == t_argument))
+        if ((t_di->getMnemonic()->GetArgument(argument_index).type == OT_DATA) && (t_di->getArgumentValue(0, 0) == t_argument))
             return true;
 
         ++argument_index;
@@ -616,7 +616,7 @@ bool ProcessData::findInArgumentLiteral(DisassembledItem *t_di, unsigned int t_a
 /// @return True if found.
 bool ProcessData::findInArgumentJumpsCalls(DisassembledItem *t_di, unsigned int t_argument)
 {
-    if ((t_di->GetMnemonic()->GetArgument(0).type == OT_ABSOLUTE_ADDRESS) && (t_di->GetArgumentValue(0, 0) == t_argument)) {
+    if ((t_di->getMnemonic()->GetArgument(0).type == OT_ABSOLUTE_ADDRESS) && (t_di->getArgumentValue(0, 0) == t_argument)) {
         return true;
     }
     return false;

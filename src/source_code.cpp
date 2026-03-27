@@ -535,7 +535,7 @@ int SourceCode::getLineOfAddress(LineNumber line_index, uint line_count, Absolut
         if (cvi && (cvi->dasmedItem >= 0))
         {
             de = m_disassembled->GetData(cvi->dasmedItem);
-            line_address = m_disassembled->GetBaseAddress(cvi->dasmedItem) + de->GetOffsetInFile();
+            line_address = m_disassembled->GetBaseAddress(cvi->dasmedItem) + de->getOffsetInFile();
             if (line_address == addr)
             {
                 found_item = true;
@@ -616,7 +616,7 @@ void SourceCode::linkData(DisassembledIndex indexdasm, LineNumber indexline, uin
             if (cvi->labelProgAddress)
             {
                 de = m_disassembled->GetData(indexdasm);
-                address = m_disassembled->GetBaseAddress(indexdasm) + de->GetOffsetInFile();
+                address = m_disassembled->GetBaseAddress(indexdasm) + de->getOffsetInFile();
                 if (address >= cvi->labelProgAddress->address)
                     indexline++;
             }

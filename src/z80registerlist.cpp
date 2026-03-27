@@ -80,13 +80,13 @@ void Z80RegisterList::LoadRegister(DisassembledItem *t_dasm_item)
 
     UpdateLife();
 
-    if ((t_dasm_item->GetMnemonic()->GetSourceArgument().operand == OP_LITERAL) &&
-        (t_dasm_item->GetMnemonic()->GetDestinationArgument().type == OT_REGISTER)) {       // check if it's an "LD A, dd" kind of instruction
+    if ((t_dasm_item->getMnemonic()->GetSourceArgument().operand == OP_LITERAL) &&
+        (t_dasm_item->getMnemonic()->GetDestinationArgument().type == OT_REGISTER)) {       // check if it's an "LD A, dd" kind of instruction
         
-        data = t_dasm_item->GetArgumentValue(0);        // get the source(0) argument value
-        offset = t_dasm_item->GetOffsetInFile();
+        data = t_dasm_item->getArgumentValue(0);        // get the source(0) argument value
+        offset = t_dasm_item->getOffsetInFile();
 
-        switch (t_dasm_item->GetMnemonic()->GetDestinationArgument().operand)
+        switch (t_dasm_item->getMnemonic()->GetDestinationArgument().operand)
         {
             case OP_A:
                             A->Init(data, offset);

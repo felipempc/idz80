@@ -47,12 +47,12 @@ wxString codeGenerator::generateTextData(SourceCodeLine *cvi)
 */
     de = Process->Disassembled->GetData(cvi->dasmedItem);
     str.Printf("DB ");
-    str << de->GetOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATED);
+    str << de->getOpcodeAsStringHex(HEX_STYLE_$, COMMA_SEPARATED);
     /* OBSOLETE
-    for (i = 0; i < de->GetMnemonic()->GetByteCodeSize(); i++)
+    for (i = 0; i < de->getMnemonic()->GetByteCodeSize(); i++)
     {
         str << wxString::Format(str_number_format, de->GetData(de->GetOffset() + i));
-        if (i < (de->GetLength() - 1))
+        if (i < (de->getOpcodeSize() - 1))
             str << ",";
     }
     */
@@ -98,9 +98,9 @@ wxString codeGenerator::generateInstruction(SourceCodeLine *cvi)
 
     usedlabel = false;
     de = Process->Disassembled->GetData(cvi->dasmedItem);
-    nargs = de->GetMnemonic()->GetArgumentCount();
+    nargs = de->getMnemonic()->GetArgumentCount();
 
-    str_ret = de->GetMnemonic()->GetMnemonicStr(0);
+    str_ret = de->getMnemonic()->GetMnemonicStr(0);
     strparts = 1;
 
     str_1.Clear();
