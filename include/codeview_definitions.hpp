@@ -44,17 +44,16 @@ enum {
 
 enum LineType
 {
-	siUnknown = -1,			// -1
-	siInstruction = 0,		//  0
-	siInstructionLabel,		//  1
-	siData,					//  2
-	siLineLabelProg,		//  3
-	siLineLabelVar,			//  4
-	siComments				//  5
+	lt_Unknown = -1,			// -1
+	lt_Instruction = 0,		//  0
+	lt_InstructionLabel,		//  1
+	lt_Data,					//  2
+	lt_LineLabelProg,		//  3
+	lt_LineLabelVar,			//  4
+	lt_Comments				//  5
 };
 
-struct SelectedItemInfo
-{
+struct SelectedItemInfo {
 	LineType		type;
 	DisassembledItem* 	dasmitem;
 	SourceCodeLine* 	lineitem;
@@ -69,18 +68,19 @@ struct SelectedItemInfo
                     lastInstruction,
                     firstAddress,
                     lastAddress,
-                    cursorPosition,
-                    cursorLastPosition;
+                    cursorPosition,     // Actual cursor position(number of line of code)
+                    cursorLastPosition; // Last cursor position(number of line of code)
 
 };
 
 
 //TODO: Eliminate styledata
+/*
 struct styledata
 {
 	uint item, arg;
 };
-
+*/
 
 
 

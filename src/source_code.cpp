@@ -567,6 +567,14 @@ int SourceCode::getFirstInstructionLine()
 
 
 
+/// @brief Gets the list of disassebled code
+/// @return Pointer to disassembled code (const)
+DisassembledContainer *SourceCode::getDisassembled() const
+{
+    return m_disassembled;
+}
+
+
 
 void SourceCode::setFirstInstructionLine(int fstiline)
 {

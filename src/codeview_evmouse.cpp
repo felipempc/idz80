@@ -17,7 +17,7 @@
 
 
 
-void CodeView::OnMouseLeftDown(wxMouseEvent& event)
+void CodeView::onMouseLeftDown(wxMouseEvent& event)
 {
 	int lastposition;
 	wxPoint pt;
@@ -28,37 +28,37 @@ void CodeView::OnMouseLeftDown(wxMouseEvent& event)
     }
 
     SetFocus();
-    if (!MultiSelection)
-        line_info.cursorLastPosition = line_info.cursorPosition;
+    if (!m_multi_selection)
+        m_line_info.cursorLastPosition = m_line_info.cursorPosition;
 
-	lastposition = line_info.cursorPosition;
+	lastposition = m_line_info.cursorPosition;
 	pt = event.GetPosition();
-    CalcCursorPosition(pt);
-	if (line_info.cursorPosition < GetCount())
+    calcCursorPosition(pt);
+	if (m_line_info.cursorPosition < getCount())
 	{
-		ClearCursor();
+		clearCursor();
 
-		if (line_info.cursorPosition > GetLastLine())
+		if (m_line_info.cursorPosition > getLastLine())
 		{
-			Scroll(-1, GetFirstLine() + 1);
-			RefreshRect(CalcCursorRfshRect());
+			Scroll(-1, getFirstLine() + 1);
+			RefreshRect(calcCursorRfshRect());
 		}
 
-		DoSelection();
+		doSelection();
 
-		FillSelectedItemInfo(pt);
+		fillSelectedItemInfo(pt);
 
-		RefreshRect(CalcCursorRfshRect());
+		RefreshRect(calcCursorRfshRect());
 	}
 	else
-		line_info.cursorPosition = lastposition;
+		m_line_info.cursorPosition = lastposition;
 
 }
 
 
-void CodeView::OnMouseLeftUp(wxMouseEvent& event)
+void CodeView::onMouseLeftUp(wxMouseEvent& event)
 {
-    FillSelectedItemInfo(event.GetPosition());
+    fillSelectedItemInfo(event.GetPosition());
 
     if (HasCapture())
         ReleaseMouse();
@@ -67,7 +67,7 @@ void CodeView::OnMouseLeftUp(wxMouseEvent& event)
 
 
 
-void CodeView::OnMouseRightDown(wxMouseEvent& event)
+void CodeView::onMouseRightDown(wxMouseEvent& event)
 {
 	int	lastposition;
 	wxPoint pt;
@@ -79,60 +79,60 @@ void CodeView::OnMouseRightDown(wxMouseEvent& event)
 
     SetFocus();
 
-    if (!MultiSelection)
-        line_info.cursorLastPosition = line_info.cursorPosition;
+    if (!m_multi_selection)
+        m_line_info.cursorLastPosition = m_line_info.cursorPosition;
 
-	lastposition = line_info.cursorPosition;
+	lastposition = m_line_info.cursorPosition;
 	pt = event.GetPosition();
-    CalcCursorPosition(pt);
-	if (line_info.cursorPosition < GetCount())
+    calcCursorPosition(pt);
+	if (m_line_info.cursorPosition < getCount())
 	{
-		ClearCursor();
+		clearCursor();
 
-		if (MultiSelection && ((line_info.cursorPosition < line_info.firstLine) ||
-			(line_info.cursorPosition > line_info.lastLine)))
+		if (m_multi_selection && ((m_line_info.cursorPosition < m_line_info.firstLine) ||
+			(m_line_info.cursorPosition > m_line_info.lastLine)))
 		{
-			RefreshRect(CalcSelectedRect());
-			line_info.selectedLineCount = 1;
-			MultiSelection = false;
-			line_info.firstLine = line_info.cursorPosition;
-			line_info.cursorLastPosition = line_info.cursorPosition;
-			line_info.lastLine = line_info.cursorPosition;
+			RefreshRect(calcSelectedRect());
+			m_line_info.selectedLineCount = 1;
+			m_multi_selection = false;
+			m_line_info.firstLine = m_line_info.cursorPosition;
+			m_line_info.cursorLastPosition = m_line_info.cursorPosition;
+			m_line_info.lastLine = m_line_info.cursorPosition;
 		}
 		else
-			if (!MultiSelection)
+			if (!m_multi_selection)
 			{
-				line_info.selectedLineCount = 1;
-				line_info.firstLine = line_info.cursorPosition;
-				line_info.cursorLastPosition = line_info.cursorPosition;
-				line_info.lastLine = line_info.firstLine;
+				m_line_info.selectedLineCount = 1;
+				m_line_info.firstLine = m_line_info.cursorPosition;
+				m_line_info.cursorLastPosition = m_line_info.cursorPosition;
+				m_line_info.lastLine = m_line_info.firstLine;
 			}
 
-		FillSelectedItemInfo(pt);
+		fillSelectedItemInfo(pt);
 
-		RefreshRect(CalcCursorRfshRect());
+		RefreshRect(calcCursorRfshRect());
 	}
 	else
-		line_info.cursorPosition = lastposition;
+		m_line_info.cursorPosition = lastposition;
 
 }
 
 
-void CodeView::OnMouseRightUp(wxMouseEvent& event)
+void CodeView::onMouseRightUp(wxMouseEvent& event)
 {
     wxMenu      *PopUp;
 
-    if (!IsEmpty)
+    if (!m_is_empty)
     {
         PopUp = new wxMenu();
 
-        if (line_info.selectedLineCount > 1)
+        if (m_line_info.selectedLineCount > 1)
         {
-            CreatePopupMenuMultiSelection(PopUp);
+            createPopupMenuMultiSelection(PopUp);
         }
         else
         {
-            CreatePopupMenuSingleSelection(PopUp);
+            createPopupMenuSingleSelection(PopUp);
         }
 
         PopupMenu(PopUp);
@@ -145,38 +145,38 @@ void CodeView::OnMouseRightUp(wxMouseEvent& event)
 
 
 // TODO: Rewrite this
-void CodeView::OnMouseMove(wxMouseEvent& event)
+void CodeView::onMouseMove(wxMouseEvent& event)
 {
 	if (event.Dragging())
 	{
-	    if (!Selecting)
-            line_info.cursorLastPosition = line_info.cursorPosition;
+	    if (!m_selecting)
+            m_line_info.cursorLastPosition = m_line_info.cursorPosition;
 
         if (!HasCapture())
             CaptureMouse();
 
-	    CalcCursorPosition(event.GetPosition());
-        ClearCursor();
+	    calcCursorPosition(event.GetPosition());
+        clearCursor();
 
-		if (IncompleteArea.Contains(event.GetPosition()) && (line_info.cursorPosition < GetLastItem()))
+		if (m_incomplete_area.Contains(event.GetPosition()) && (m_line_info.cursorPosition < getLastItemIndex()))
 		{
-			Scroll(-1, GetFirstLine() + 1);
-			RefreshRect(CalcCursorRfshRect());
+			Scroll(-1, getFirstLine() + 1);
+			RefreshRect(calcCursorRfshRect());
 		}
 
-	    if (Selecting)
+	    if (m_selecting)
         {
-            UpdateSelectedRect();
-            RefreshRect(CalcSelectedRect());
+            updateSelectedRect();
+            RefreshRect(calcSelectedRect());
         }
         else
-            RefreshRect(CalcCursorRfshRect());
+            RefreshRect(calcCursorRfshRect());
 	}
 }
 
 
 
-void CodeView::OnMouseWheel(wxMouseEvent& event)
+void CodeView::onMouseWheel(wxMouseEvent& event)
 {
     bool up_motion;
     int motion_step = 3;
@@ -186,27 +186,27 @@ void CodeView::OnMouseWheel(wxMouseEvent& event)
 
     if (up_motion)
     {
-        position = GetFirstLine() - motion_step;
+        position = getFirstLine() - motion_step;
         if (position < 0)
             position = 0;
         Scroll(-1,position);
     }
     else
     {
-        position = GetFirstLine() + motion_step;
-        if (position > static_cast<int>(m_CodeViewLine->getCount() - m_linesShown))
-            position = m_CodeViewLine->getCount() - m_linesShown;
+        position = getFirstLine() + motion_step;
+        if (position > static_cast<int>(m_sourcecode->getCount() - m_lines_shown))
+            position = m_sourcecode->getCount() - m_lines_shown;
         Scroll(-1,position);
     }
 }
 
-void CodeView::OnMouseEnterWindow(wxMouseEvent& event)
+void CodeView::onMouseEnterWindow(wxMouseEvent& event)
 {
     LogIt("Mouse enter the CodeView window...");
 }
 
 
-void CodeView::OnMouseLeaveWindow(wxMouseEvent& event)
+void CodeView::onMouseLeaveWindow(wxMouseEvent& event)
 {
     LogIt("...Mouse leave the CodeView window.");
 }

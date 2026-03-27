@@ -14,39 +14,33 @@
 
 #include <wx/wx.h>
 #include <wx/scrolbar.h>
-#include <wx/dynarray.h>
+//#include <wx/dynarray.h>
 #include <wx/arrstr.h>
 #include <wx/scrolwin.h>
 
 
-#include "disassembled_container.h"
-#include "process_data.h"
-#include "SourceCodeLines.h"
-#include "codeview_definitions.h"
+#include "disassembled_container.hpp"
+#include "process_data.hpp"
+#include "source_code.hpp"
+#include "codeview_definitions.hpp"
 
 
 
-
-
-
-class CodeView : public wxScrolledCanvas, public LogBase
+class CodeView : public wxScrolledCanvas, public DebugLogBase
 {
 public:
-	CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logparent);
+	CodeView(wxWindow *t_parent, SourceCode *t_srccode, ProcessData *t_processparent);
 	~CodeView();
 
-    void Plot(void);
-    void DebugLog(wxTextCtrl *log);
-    bool IsSelected();
-    int GetIndex();
-    int GetCount();
-    void Clear();
-    void ClearSelection();
-    bool Enable(bool enable=true);
-	void CenterAddress(uint address);
-	void TestBlur();
-
-
+    void debugLog(wxTextCtrl *log);
+    bool isSelected();
+    int getIndex();
+    int getCount();
+    void clear();
+    void clearSelection();
+    void enable(bool enable=true);
+	void centerAddress(uint address);
+	void testBlur();
 
 
 
@@ -57,88 +51,86 @@ private:
 	static const int COL_LABEL = 200;
 	static const int COL_MNEM = 230;
 
-    ProcessData     *Process;
-    SourceCode    *m_CodeViewLine;
+    ProcessData     *m_process;
+    SourceCode      *m_sourcecode;
 
-    SelectedItemInfo line_info;	// Holds info about the selected item
-
-
-    uint        m_linesShown,       // Number of Items shown
-                m_fontHeight,
-                m_fontWidth;
-	styledata	m_styleData;		// Holds info to change style handlers (BIN/DEC/HEX)
-
-    wxRect      *LastCursorRect,    // The rectangle of last cursor
-                IncompleteArea;
-
-    bool        IsFocused,
-                IsEmpty,            // Is the Data Base of disassembled items empty ?
-                MultiSelection,     // we have selected more than one item
-                Selecting;          // we're selecting items
+    SelectedItemInfo m_line_info;	// Holds info about the selected item
 
 
+    uint        m_lines_shown,       // Number of Items shown
+                m_font_height,
+                m_font_width;
+//	styledata	m_style_data;		// Holds info to change style handlers (BIN/DEC/HEX)
 
-    wxFont      *font;
-    wxBitmap    DisassembleWindowBitmap;
+    wxRect      *m_last_cursor_rect,    // The rectangle of last cursor
+                m_incomplete_area;
 
-    wxColour    BackGroundColor;
-    wxColour    ForeGroundColor;
-    wxColour    SelectedItemColor;
-    wxColour    FGArgumentColor;
-    wxColour    BGArgumentColor;
-    wxColour    FG_TextColor;
-    wxColour    FG_LabelColor;
+    bool        m_is_focused,
+                m_is_empty,            // Is the Data Base of disassembled items empty ?
+                m_multi_selection,     // we have selected more than one item
+                m_selecting;          // are we selecting items?
+
+    wxFont      *m_font;
+    wxBitmap    m_disassemble_window_bitmap;
+
+    wxColour    m_color_background;
+    wxColour    m_color_foreground;
+    wxColour    m_color_selected_item;
+    wxColour    m_color_argument_foreground;
+    wxColour    m_color_argument_background;
+    wxColour    m_color_text_foreground;
+    wxColour    m_color_label_foreground;
 
 
     // Configuration
-    void SetupEvents();
-    void SetupColors();
-    void SetupFont();
-    void SetupAcceleratorKeys();
+    void setupEvents();
+    void setupColors();
+    void setupFont();
+    void setupAcceleratorKeys();
 
     // window render
-    void PaintBackground(wxDC &dc, const int start_y, const int fromline, const int toline, const wxBrush backcolour);
-    void Render(wxDC &dc, const int start_y, const int fromline, const int count);
-    uint RenderData(wxDC &dc, const int start_y, SourceCodeLine *cvi);
-    uint RenderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cvi);
-    uint RenderProgramLabel(wxDC &dc, const int start_y, wxString str);
-    uint RenderOrigin(wxDC &dc, const int start_y, uint address);
-    void RenderBackGroundBlur(wxDC &dc, wxRect region);
+    void paintBackground(wxDC &t_dc, const int t_start_y, const int t_fromline, const int t_toline, const wxBrush t_backcolour);
+    void render(wxDC &dc, const int start_y, const int fromline, const int count);
+    uint renderData(wxDC &dc, const int start_y, SourceCodeLine *cvi);
+    uint renderInstruction(wxDC &dc, const int start_y, SourceCodeLine *cvi);
+    uint renderProgramLabel(wxDC &dc, const int start_y, wxString str);
+    uint renderOrigin(wxDC &dc, const int start_y, uint address);
+    void renderBackgroundBlur(wxDC &t_dc, wxRect t_region);
 
     //utilities
-    void CalcItemsShown(void);
-    void CalcCursorPosition(wxPoint point);
-    wxRect CalcCursorRfshRect();
-    void CalcIncompleteArea();
-    wxRect CalcSelectedRect();
-	wxString FormatArg(uint arg, uint style);
-    int GetFirstLine();
-    int GetLastLine();
-    int GetLastItem();
-    void UpdateSelectedRect();
-    void UpdateLastCursorRect();
-    void UpdateVirtualSize(void);
+    void calcLinesShown();
+    void calcCursorPosition(wxPoint point);
+    wxRect calcCursorRfshRect();
+    void calcIncompleteArea();
+    wxRect calcSelectedRect();
+	wxString formatArg(uint arg, uint style);
+    int getFirstLine();
+    int getLastLine();
+    int getLastItemIndex();
+    void updateSelectedRect();
+    void updateLastCursorRect();
+    void updateVirtualSize();
 
     //cursor
-    void ShowCursor(wxDC &dc);
-    void ClearCursor();
-    void CursorUp();
-    void CursorDown();
-    void CursorPageUp();
-    void CursorPageDown();
+    void showCursor(wxDC &dc);
+    void clearCursor();
+    void cursorUp();
+    void cursorDown();
+    void cursorPageUp();
+    void cursorPageDown();
 
     //selection
-    void DoSelection();
-	void FillSelectedItemInfo(const wxPoint &pt);
-    void ResetSelectedItemInfo();
-	void TreatSingleSelection();
-	void TreatMultiSelection();
-	void IdentifyArgumentSelected(const wxPoint &mouse_cursor);
+    void doSelection();
+	void fillSelectedItemInfo(const wxPoint &pt);
+    void resetSelectedItemInfo();
+	void treatAsSingleSelection();
+	void treatAsMultiSelection();
+	void identifyArgumentSelected(const wxPoint &mouse_cursor);
 
     //Pop up Menu
-    ElementType GetTypeMultiselection(bool &hcomment);
-    void CreatePopupMenuMultiSelection(wxMenu *popup);
-    void CreatePopupMenuSingleSelection(wxMenu *popup);
+    LineType getTypesInSelection(bool &hcomment);
+    void createPopupMenuMultiSelection(wxMenu *popup);
+    void createPopupMenuSingleSelection(wxMenu *popup);
 
 
     /*
@@ -146,62 +138,62 @@ private:
      */
 
     // Window event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnDraw(wxDC &dc);
-    void OnPaint(wxPaintEvent& event);
-    void OnGetFocus(wxFocusEvent& event);
-    void OnKillFocus(wxFocusEvent& event);
-    void OnScrollLineDown(wxScrollWinEvent& event);
-    void OnScrollLineUp(wxScrollWinEvent& event);
-    void OnScrollPageDown(wxScrollWinEvent& event);
-    void OnScrollPageUp(wxScrollWinEvent& event);
-    void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
+    void onSize(wxSizeEvent& event);
+    void onDraw(wxDC &dc);
+    void onPaint(wxPaintEvent& event);
+    void onGetFocus(wxFocusEvent& event);
+    void onKillFocus(wxFocusEvent& event);
+    void onScrollLineDown(wxScrollWinEvent& event);
+    void onScrollLineUp(wxScrollWinEvent& event);
+    void onScrollPageDown(wxScrollWinEvent& event);
+    void onScrollPageUp(wxScrollWinEvent& event);
+    void onMouseCaptureLost(wxMouseCaptureLostEvent& event);
 
     // Mouse Event handlers
-    void OnMouseLeftUp(wxMouseEvent& event);
-    void OnMouseLeftDown(wxMouseEvent& event);
-    void OnMouseRightUp(wxMouseEvent& event);
-    void OnMouseRightDown(wxMouseEvent& event);
-    void OnMouseMove(wxMouseEvent& event);
-    void OnMouseWheel(wxMouseEvent& event);
-    void OnMouseEnterWindow(wxMouseEvent& event);
-    void OnMouseLeaveWindow(wxMouseEvent& event);
+    void onMouseLeftUp(wxMouseEvent& event);
+    void onMouseLeftDown(wxMouseEvent& event);
+    void onMouseRightUp(wxMouseEvent& event);
+    void onMouseRightDown(wxMouseEvent& event);
+    void onMouseMove(wxMouseEvent& event);
+    void onMouseWheel(wxMouseEvent& event);
+    void onMouseEnterWindow(wxMouseEvent& event);
+    void onMouseLeaveWindow(wxMouseEvent& event);
 
     // Keyboard event handlers
-    void OnKeyPress(wxKeyEvent& event);
-    void OnKeyRelease(wxKeyEvent& event);
+    void onKeyPress(wxKeyEvent& event);
+    void onKeyRelease(wxKeyEvent& event);
 
 
     // Pop up Menu Event Handlers
-    void OnPopUpMenuSearch(wxCommandEvent& event);
-    void OnPopUpMenuGoto(wxCommandEvent& event);
-    void OnPopUpMenuGotoAddress(wxCommandEvent& event);
-    void OnPopUpMenuMakeData(wxCommandEvent& event);
-    void OnPopUpMenuOD_Matrix(wxCommandEvent& event);
-    void OnPopUpMenuOD_String(wxCommandEvent& event);
-    void OnPopUpMenuOD_Number(wxCommandEvent& event);
-    void OnPopUpMenuDisasm(wxCommandEvent& event);
+    void onPopUpMenuSearch(wxCommandEvent& event);
+    void onPopUpMenuGoto(wxCommandEvent& event);
+    void onPopUpMenuGotoAddress(wxCommandEvent& event);
+    void onPopUpMenuMakeData(wxCommandEvent& event);
+    void onPopUpMenuOD_Matrix(wxCommandEvent& event);
+    void onPopUpMenuOD_String(wxCommandEvent& event);
+    void onPopUpMenuOD_Number(wxCommandEvent& event);
+    void onPopUpMenuDisasm(wxCommandEvent& event);
 
-    void OnPopUpMenuArgStyleBin(wxCommandEvent& event);
-    void OnPopUpMenuArgStyleDec(wxCommandEvent& event);
-    void OnPopUpMenuArgStyleHex(wxCommandEvent& event);
+    void onPopUpMenuArgStyleBin(wxCommandEvent& event);
+    void onPopUpMenuArgStyleDec(wxCommandEvent& event);
+    void onPopUpMenuArgStyleHex(wxCommandEvent& event);
 
-    void OnPopUpMenuRenLabel(wxCommandEvent& event);
-    void OnPopUpMenuDelLabel(wxCommandEvent& event);
-    void OnPopUpMenuCreateLabel(wxCommandEvent& event);
+    void onPopUpMenuRenLabel(wxCommandEvent& event);
+    void onPopUpMenuDelLabel(wxCommandEvent& event);
+    void onPopUpMenuCreateLabel(wxCommandEvent& event);
 
-    void OnPopUpMenuSearchArgument(wxCommandEvent& event);
-    void OnSearchContinue(wxCommandEvent& event);
+    void onPopUpMenuSearchArgument(wxCommandEvent& event);
+    void onSearchContinue(wxCommandEvent& event);
 
     // Pop Up Comment event handlers
-    void OnPopUpAddComment(wxCommandEvent& event);
-    void OnPopUpEditComment(wxCommandEvent& event);
-    void OnPopUpDelComment(wxCommandEvent& event);
+    void onPopUpAddComment(wxCommandEvent& event);
+    void onPopUpEditComment(wxCommandEvent& event);
+    void onPopUpDelComment(wxCommandEvent& event);
 };
 
 
 // Tools
-wxString IntToBin(uint conv);
+wxString convertIntToBin(uint conv);
 
 #endif
 

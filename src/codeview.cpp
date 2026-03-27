@@ -30,42 +30,42 @@ const int CodeView::COL_MNEM;
 
 
 
-CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logparent)
-        : wxScrolledCanvas(parent)
+CodeView::CodeView(wxWindow *t_parent,  SourceCode *t_srccode, ProcessData *t_processparent)
+        : wxScrolledCanvas(t_parent)
 {
-    Process = processparent;
-    m_linesShown = 0;
+    m_process = t_processparent;
+    m_lines_shown = 0;
 
-    MultiSelection = false;
-    Selecting = false;
-    m_fontHeight = 1;
-    IsFocused = false;
-    IsEmpty = true;
+    m_multi_selection = false;
+    m_selecting = false;
+    m_font_height = 1;
+    m_is_focused = false;
+    m_is_empty = true;
 
-    m_styleData.arg = 0;
-    m_styleData.item = 0;
-    LastCursorRect = 0;
+    //m_style_data.arg = 0;
+    //m_style_data.item = 0;
+    m_last_cursor_rect = 0;
 
-    ResetSelectedItemInfo();
+    resetSelectedItemInfo();
 
-    m_CodeViewLine = Process->CodeViewLines;
-    LastCursorRect = new wxRect();
-    IncompleteArea.x = 0;
-    IncompleteArea.y = 0;
-    IncompleteArea.width = 0;
-    IncompleteArea.height = 0;
+    m_sourcecode = t_srccode;
+    m_last_cursor_rect = new wxRect();
+    m_incomplete_area.x = 0;
+    m_incomplete_area.y = 0;
+    m_incomplete_area.width = 0;
+    m_incomplete_area.height = 0;
 
-    SetupFont();
+    setupFont();
 
-    SetScrollRate(0, m_fontHeight);
-    SetVirtualSize(wxDefaultCoord, m_fontHeight);
+    SetScrollRate(0, m_font_height);
+    SetVirtualSize(wxDefaultCoord, m_font_height);
 
-    SetupColors();
-    SetupEvents();
-    SetupAcceleratorKeys();
+    setupColors();
+    setupEvents();
+    setupAcceleratorKeys();
 
     // Debug Area
-    SetTextLog(logparent);
+    SetTextLog(t_processparent->GetTextLog());
     ModuleName = "CodeView";
 
     DisableKeyboardScrolling(); //wxScrolledCanvas uses arrows,home,end,pageup and pagedown to scroll by default
@@ -74,25 +74,28 @@ CodeView::CodeView(wxWindow *parent, ProcessData *processparent, LogWindow *logp
 
 
 
-void CodeView::SetupFont()
+/// @brief Setups the font used in the viewer
+void CodeView::setupFont()
 {
     wxClientDC dc(this);
 
-    font = new wxFont(9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL,
+    m_font = new wxFont(9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL,
             wxFONTWEIGHT_NORMAL, false, "Courier New 10 Pitch");
-    dc.SetFont(*font);
-    m_fontHeight = dc.GetTextExtent("X").GetHeight();
-    m_fontWidth = dc.GetTextExtent("X").GetWidth();
+    dc.SetFont(*m_font);
+    m_font_height = dc.GetTextExtent("X").GetHeight();
+    m_font_width = dc.GetTextExtent("X").GetWidth();
 }
 
 
-void CodeView::SetupAcceleratorKeys()
+
+/// @brief Setups the hotkeys used in the viewer
+void CodeView::setupAcceleratorKeys()
 {
     wxAcceleratorEntry hot_keys[4];
 
-    hot_keys[0].Set(wxACCEL_NORMAL, (int) 'd', idPOPUP_MAKEDATA);
-    hot_keys[1].Set(wxACCEL_NORMAL, (int) 'c', idPOPUP_DISASM);
-    hot_keys[2].Set(wxACCEL_CTRL, (int) 'f', idPOPUP_SEARCH_ARGUMENT);
+    hot_keys[0].Set(wxACCEL_NORMAL, static_cast<int>('d'), idPOPUP_MAKEDATA);
+    hot_keys[1].Set(wxACCEL_NORMAL, static_cast<int>('c'), idPOPUP_DISASM);
+    hot_keys[2].Set(wxACCEL_CTRL, static_cast<int>('f'), idPOPUP_SEARCH_ARGUMENT);
     hot_keys[3].Set(wxACCEL_NORMAL, WXK_F3, idSEARCH_CONTINUE);
     //hot_keys[4].Set(wxACCEL_NORMAL, WXK_PAGEDOWN, idKEY_PAGEDOWN);
     //hot_keys[5].Set(wxACCEL_NORMAL, WXK_PAGEUP, idKEY_PAGEUP);
@@ -104,97 +107,95 @@ void CodeView::SetupAcceleratorKeys()
 
 
 
-
-void CodeView::SetupColors()
+/// @brief Setups the colors used in the viewer
+void CodeView::setupColors()
 {
-    BackGroundColor.Set("WHITE");
-    ForeGroundColor.Set("BLACK");
-    SelectedItemColor.Set("YELLOW");
-    BGArgumentColor.Set("YELLOW");
-    FGArgumentColor.Set("GOLD");
-    FG_TextColor.Set("BLACK");
-    FG_LabelColor.Set("BLUE");
+    m_color_background.Set("WHITE");
+    m_color_foreground.Set("BLACK");
+    m_color_selected_item.Set("YELLOW");
+    m_color_argument_background.Set("YELLOW");
+    m_color_argument_foreground.Set("GOLD");
+    m_color_text_foreground.Set("BLACK");
+    m_color_label_foreground.Set("BLUE");
 }
 
 
 
-
-void CodeView::SetupEvents()
+/// @brief Setups the events of the viewer
+void CodeView::setupEvents()
 {
-    Bind(wxEVT_SIZE, &CodeView::OnSize, this);
-    Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::OnScrollLineDown, this);
-    Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::OnScrollLineUp, this);
-    Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::OnScrollPageDown, this);
-    Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::OnScrollPageUp, this);
+    Bind(wxEVT_SIZE, &CodeView::onSize, this);
+    Bind(wxEVT_SCROLLWIN_LINEDOWN, &CodeView::onScrollLineDown, this);
+    Bind(wxEVT_SCROLLWIN_LINEUP, &CodeView::onScrollLineUp, this);
+    Bind(wxEVT_SCROLLWIN_PAGEDOWN, &CodeView::onScrollPageDown, this);
+    Bind(wxEVT_SCROLLWIN_PAGEUP, &CodeView::onScrollPageUp, this);
     //Bind(wxEVT_MENU, &CodeView::OnHotKeyPageDown, this, idKEY_PAGEDOWN);
     //Bind(wxEVT_MENU, &CodeView::OnHotKeyPageUp, this, idKEY_PAGEUP);
 
-    Bind(wxEVT_PAINT, &CodeView::OnPaint, this);
+    Bind(wxEVT_PAINT, &CodeView::onPaint, this);
 
-    Bind(wxEVT_SET_FOCUS, &CodeView::OnGetFocus, this);
-    Bind(wxEVT_KILL_FOCUS, &CodeView::OnKillFocus, this);
-    Bind(wxEVT_MOUSE_CAPTURE_LOST, &CodeView::OnMouseCaptureLost, this);
-
+    Bind(wxEVT_SET_FOCUS, &CodeView::onGetFocus, this);
+    Bind(wxEVT_KILL_FOCUS, &CodeView::onKillFocus, this);
+    Bind(wxEVT_MOUSE_CAPTURE_LOST, &CodeView::onMouseCaptureLost, this);
 
     // MOUSE Events
-    Bind(wxEVT_LEFT_DOWN, &CodeView::OnMouseLeftDown, this);
-    Bind(wxEVT_LEFT_UP, &CodeView::OnMouseLeftUp, this);
-    Bind(wxEVT_RIGHT_DOWN, &CodeView::OnMouseRightDown, this);
-    Bind(wxEVT_RIGHT_UP, &CodeView::OnMouseRightUp, this);
+    Bind(wxEVT_LEFT_DOWN, &CodeView::onMouseLeftDown, this);
+    Bind(wxEVT_LEFT_UP, &CodeView::onMouseLeftUp, this);
+    Bind(wxEVT_RIGHT_DOWN, &CodeView::onMouseRightDown, this);
+    Bind(wxEVT_RIGHT_UP, &CodeView::onMouseRightUp, this);
     //TODO: Improve focus highlight
-    Bind(wxEVT_MOTION, &CodeView::OnMouseMove, this);
-    Bind(wxEVT_MOUSEWHEEL, &CodeView::OnMouseWheel, this);
-    //Bind(wxEVT_ENTER_WINDOW, &CodeView::OnMouseEnterWindow, this);
-    //Bind(wxEVT_LEAVE_WINDOW, &CodeView::OnMouseLeaveWindow, this);
+    Bind(wxEVT_MOTION, &CodeView::onMouseMove, this);
+    Bind(wxEVT_MOUSEWHEEL, &CodeView::onMouseWheel, this);
+    //Bind(wxEVT_ENTER_WINDOW, &CodeView::onMouseEnterWindow, this);
+    //Bind(wxEVT_LEAVE_WINDOW, &CodeView::onMouseLeaveWindow, this);
 
     // KEYBOARD events
-    Bind(wxEVT_KEY_DOWN, &CodeView::OnKeyPress, this);
-    Bind(wxEVT_KEY_UP, &CodeView::OnKeyRelease, this);
+    Bind(wxEVT_KEY_DOWN, &CodeView::onKeyPress, this);
+    Bind(wxEVT_KEY_UP, &CodeView::onKeyRelease, this);
 
     // Popup event connections
-    Bind(wxEVT_MENU, &CodeView::OnPopUpAddComment, this, idPOPUP_ADDCOMMENT);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpEditComment, this, idPOPUP_EDITCOMMENT);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpDelComment, this, idPOPUP_DELCOMMENT);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuGoto, this, idPOPUP_GOTO);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuGotoAddress, this, idPOPUP_GOTO_ADDRESS);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuDisasm, this, idPOPUP_DISASM);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_String, this, idPOPUP_OD_STRING);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
+    Bind(wxEVT_MENU, &CodeView::onPopUpAddComment, this, idPOPUP_ADDCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::onPopUpEditComment, this, idPOPUP_EDITCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::onPopUpDelComment, this, idPOPUP_DELCOMMENT);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuGoto, this, idPOPUP_GOTO);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuGotoAddress, this, idPOPUP_GOTO_ADDRESS);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuMakeData, this, idPOPUP_MAKEDATA);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuDisasm, this, idPOPUP_DISASM);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuOD_Matrix, this, idPOPUP_OD_MATRIX);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuOD_String, this, idPOPUP_OD_STRING);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuOD_Number, this, idPOPUP_OD_NUMBER);
 
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuArgStyleBin, this, idPOPUP_ARG_BIN);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuArgStyleDec, this, idPOPUP_ARG_DEC);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuArgStyleHex, this, idPOPUP_ARG_HEX);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuRenLabel, this, idPOPUP_EDITLABEL);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuDelLabel, this, idPOPUP_DELLABEL);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuCreateLabel, this, idPOPUP_CREATELABEL);
 
-    Bind(wxEVT_MENU, &CodeView::OnPopUpMenuSearchArgument, this, idPOPUP_SEARCH_ARGUMENT);
-    Bind(wxEVT_MENU, &CodeView::OnSearchContinue, this, idSEARCH_CONTINUE);
+    Bind(wxEVT_MENU, &CodeView::onPopUpMenuSearchArgument, this, idPOPUP_SEARCH_ARGUMENT);
+    Bind(wxEVT_MENU, &CodeView::onSearchContinue, this, idSEARCH_CONTINUE);
 }
 
 
 
-
-
-int CodeView::GetCount()
+/// @brief Counts the lines of code
+/// @return the lines of the source code
+int CodeView::getCount()
 {
-    return m_CodeViewLine->getCount();
+    return m_sourcecode->getCount();
 }
 
 
 
-
-void CodeView::OnDraw(wxDC &dc)
+/// @brief Draws the damaged region of the viewer.
+/// @param dc The device context (wxwidgets). A region where graphics and text can be drawn.
+void CodeView::onDraw(wxDC &dc)
 {
-    int			fromLine, totalLines, fixedY, fixedHeight;
-    wxRegionIterator
-				regIterator(GetUpdateRegion());
-    wxRect		touchedRegion, fullRect;
+    int fromLine, totalLines, fixedY, fixedHeight;
+    wxRegionIterator regIterator(GetUpdateRegion());
+    wxRect touchedRegion, fullRect;
 
-
-    dc.SetFont(*font);
+    dc.SetFont(*m_font);
     dc.SetBackground(*wxWHITE_BRUSH);
 
     // cleans the destroyed region
@@ -207,320 +208,350 @@ void CodeView::OnDraw(wxDC &dc)
     CalcUnscrolledPosition(fullRect.x, fullRect.y, &fullRect.x, &fullRect.y);
 
     fullRect.x = 0;
-    fromLine = fullRect.y / m_fontHeight;
-	fixedY = fromLine * m_fontHeight;
+    fromLine = fullRect.y / m_font_height;
+	fixedY = fromLine * m_font_height;
 	fixedHeight = fullRect.height + fullRect.y - fixedY;
-    totalLines = fixedHeight / m_fontHeight;
-    if ((fixedHeight % m_fontHeight) != 0)
+    totalLines = fixedHeight / m_font_height;
+    if ((fixedHeight % m_font_height) != 0)
         totalLines++;
 
     fullRect.y = fixedY;
-    fullRect.height = totalLines * m_fontHeight;
+    fullRect.height = totalLines * m_font_height;
     fullRect.width = GetClientSize().GetWidth();
 
-	if (IsEmpty)
+	if (m_sourcecode->isEmpty())
     {
-        PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxGREY_BRUSH);
+        paintBackground(dc, fullRect.y, fromLine, totalLines, *wxGREY_BRUSH);
     }
     else
     {
         if (IsEnabled())
         {
-            PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
-            if ((fromLine == line_info.cursorPosition) || ((line_info.cursorPosition >= fromLine) &&
-                (line_info.cursorPosition < (fromLine + totalLines))))
-                ShowCursor(dc);
-            Render(dc, fullRect.y, fromLine, totalLines);
+            paintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
+            if ((fromLine == m_line_info.cursorPosition) || ((m_line_info.cursorPosition >= fromLine) &&
+                (m_line_info.cursorPosition < (fromLine + totalLines)))) {
+                showCursor(dc);
+            }
+
+            render(dc, fullRect.y, fromLine, totalLines);
         }
-        else
-        {
-            PaintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
-            //RenderBackGroundBlur(dc, fullRect);
+        else {
+            paintBackground(dc, fullRect.y, fromLine, totalLines, *wxWHITE_BRUSH);
+            //renderBackgroundBlur(dc, fullRect);
         }
     }
 }
 
 
 
-void CodeView::RenderBackGroundBlur(wxDC &dc, wxRect region)
+/// @brief Blurs the background.
+/// @param dc The device context (wxwidgets). A region where graphics and text can be drawn.
+/// @param region A rectangle containing the region to be blurred.
+void CodeView::renderBackgroundBlur(wxDC &t_dc, wxRect t_region)
 {
     wxBitmap window;
 
     LogIt("Rendering blur...");
     //dc.DestroyClippingRegion();
-    LogIt(wxString::Format("Region(%d, %d, %d, %d)", region.x, region.y, region.width, region.height));
-    window = DisassembleWindowBitmap.GetSubBitmap(region);
+    LogIt(wxString::Format("Region(%d, %d, %d, %d)", t_region.x, t_region.y, t_region.width, t_region.height));
+    window = m_disassemble_window_bitmap.GetSubBitmap(t_region);
     window = window.ConvertToDisabled(128);
     //*window = ;
-    dc.DrawBitmap(window, region.GetPosition());
+    t_dc.DrawBitmap(window, t_region.GetPosition());
 }
 
 
-void CodeView::TestBlur()
+
+/// @brief Tests the blur effect on the background.
+void CodeView::testBlur()
 {
     wxClientDC dc(this);
 
-    RenderBackGroundBlur(dc, GetClientRect());
+    renderBackgroundBlur(dc, GetClientRect());
 }
 
 
-void CodeView::PaintBackground(wxDC &dc, const int start_y, const int fromline, const int toline, const wxBrush backcolour)
+
+/// @brief Paints the background from line.
+/// @param t_dc The device context (wxwidgets). A region where graphics and text can be drawn.
+/// @param t_start_y Initial vertical coordinate.
+/// @param t_fromline Initial line of code
+/// @param t_toline  Last line of code
+/// @param t_backcolour Color
+void CodeView::paintBackground(wxDC &t_dc, const int t_start_y, const int t_fromline, const int t_toline, const wxBrush t_backcolour)
 {
     int i, y;
 
     wxSize sz = GetClientSize();
 
-    dc.SetPen(*wxTRANSPARENT_PEN);
+    t_dc.SetPen(*wxTRANSPARENT_PEN);
 
-    for (i = 0; i < toline; i++)
+    for (i = 0; i < t_toline; i++)
     {
-        if (MultiSelection &&
-           ((fromline + i) >= line_info.firstLine) &&
-           ((fromline + i) <= line_info.lastLine))
-            dc.SetBrush(wxBrush(SelectedItemColor));
+        if (m_multi_selection &&
+           ((t_fromline + i) >= m_line_info.firstLine) &&
+           ((t_fromline + i) <= m_line_info.lastLine))
+            t_dc.SetBrush(wxBrush(m_color_selected_item));
         else
-            dc.SetBrush(backcolour);
+            t_dc.SetBrush(t_backcolour);
 
-        y = (i * m_fontHeight) + start_y;
-        dc.DrawRectangle(0, y, sz.x, m_fontHeight);
+        y = (i * m_font_height) + t_start_y;
+        t_dc.DrawRectangle(0, y, sz.x, m_font_height);
     }
 }
 
 
 
-
-void CodeView::OnPaint(wxPaintEvent& event)
+/// @brief Event to render the view.
+/// @param t_event Event info
+void CodeView::onPaint(wxPaintEvent& t_event)
 {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxAutoBufferedPaintDC dc(this);
     DoPrepareDC(dc);
-    UpdateLastCursorRect();
-    OnDraw(dc);
-    UpdateVirtualSize();
+    updateLastCursorRect();
+    onDraw(dc);
+    updateVirtualSize();
 }
 
 
 
 CodeView::~CodeView()
 {
-    delete LastCursorRect;
-    delete font;
+    delete m_last_cursor_rect;
+    delete m_font;
 }
 
 
 
 
-void CodeView::Clear()
+//TODO: Revise it
+void CodeView::clear()
 {
-    ClearSelection();
-    IsFocused = false;
-    IsEmpty = true;
-    if (Process->Disassembled != 0)
-        Process->Disassembled->Clear();
+    clearSelection();
+    m_is_focused = false;
+    m_is_empty = true;
+/*
+    TODO: Since CodeView won't destroy Disassembled and Sourcecode, check if the real owner will do it.
+    if (m_process->Disassembled != 0)
+        m_process->Disassembled->Clear();
 
-    m_CodeViewLine->Clear();
+    m_sourcecode->Clear();
+*/
     Refresh();
 }
 
 
 
-void CodeView::ClearSelection()
+/// @brief Clears the selection controls.
+void CodeView::clearSelection()
 {
-    ResetSelectedItemInfo();
-    MultiSelection = false;
-    Selecting = false;
+    resetSelectedItemInfo();
+    m_multi_selection = false;
+    m_selecting = false;
 }
 
 
 
-bool CodeView::Enable(bool enable)
+/// @brief Enables or disables the viewer.
+/// @param enable True to enable, false to disable
+/// @return 
+void CodeView::enable(bool enable)
 {
-    bool ret = false;
-
     if (enable)
     {
         wxScrolledCanvas::Enable(true);
-        SetVirtualSize(wxDefaultCoord, m_CodeViewLine->getCount() * m_fontHeight);
-        IsEmpty = m_CodeViewLine->isEmpty();
-        ret = true;
+        SetVirtualSize(wxDefaultCoord, m_sourcecode->getCount() * m_font_height);
+        //m_is_empty = m_sourcecode->isEmpty();
     }
     else
     {
     	SetVirtualSize(0, 0);
         wxScrolledCanvas::Enable(false);
     }
-    return ret;
 }
 
+
 // Receives device coordenate
-void CodeView::CalcCursorPosition(wxPoint point)
+
+/// @brief Calculates the cursor position
+/// @param point The device coordinate.
+void CodeView::calcCursorPosition(wxPoint point)
 {
     int cursor;
 
     CalcUnscrolledPosition(point.x,point.y,&point.x,&point.y);
-    cursor = int(point.y / m_fontHeight);
+    cursor = int(point.y / m_font_height);
 
-    if (cursor <= GetLastLine())
-        line_info.cursorPosition = cursor;
+    if (cursor <= getLastLine())
+        m_line_info.cursorPosition = cursor;
 }
 
-wxRect CodeView::CalcCursorRfshRect()
+
+
+/// @brief Calculates the region of the cursor rectangle to prepare to refresh.
+/// @return The region of the cursor rectangle
+wxRect CodeView::calcCursorRfshRect()
 {
-    wxRect cursor(0, line_info.cursorPosition * m_fontHeight, GetClientSize().x, m_fontHeight);
+    wxRect cursor(0, m_line_info.cursorPosition * m_font_height, GetClientSize().x, m_font_height);
     CalcScrolledPosition(cursor.x, cursor.y, 0, &cursor.y);
     return (cursor);
 }
 
 
 
-void CodeView::DoSelection()
+/// @brief Performs the cursor selection
+void CodeView::doSelection()
 {
-    if (Selecting)
+    if (m_selecting)
     {
-        UpdateSelectedRect();
-        if (MultiSelection)
-            RefreshRect(CalcSelectedRect());
+        updateSelectedRect();
+        if (m_multi_selection)
+            RefreshRect(calcSelectedRect());
     }
     else
     {
-        if (MultiSelection)
-            RefreshRect(CalcSelectedRect());
+        if (m_multi_selection)
+            RefreshRect(calcSelectedRect());
 
-        line_info.selectedLineCount = 1;
+        m_line_info.selectedLineCount = 1;
 
-        MultiSelection = false;
-        line_info.firstLine = line_info.cursorPosition;
-        line_info.cursorLastPosition = line_info.cursorPosition;
-        line_info.lastLine = line_info.cursorPosition;
+        m_multi_selection = false;
+        m_line_info.firstLine = m_line_info.cursorPosition;
+        m_line_info.cursorLastPosition = m_line_info.cursorPosition;
+        m_line_info.lastLine = m_line_info.cursorPosition;
     }
 }
 
 
-void CodeView::UpdateSelectedRect()
+
+/// @brief Calculates the selection lines.
+void CodeView::updateSelectedRect()
 {
     int index;
 
-    if (line_info.cursorPosition >= line_info.cursorLastPosition)
+    if (m_line_info.cursorPosition >= m_line_info.cursorLastPosition)
     {
-        index = line_info.cursorLastPosition;
-        line_info.selectedLineCount = line_info.cursorPosition - line_info.cursorLastPosition + 1;
+        index = m_line_info.cursorLastPosition;
+        m_line_info.selectedLineCount = m_line_info.cursorPosition - m_line_info.cursorLastPosition + 1;
     }
     else
     {
-        index = line_info.cursorPosition;
-        line_info.selectedLineCount = line_info.cursorLastPosition - line_info.cursorPosition + 1;
+        index = m_line_info.cursorPosition;
+        m_line_info.selectedLineCount = m_line_info.cursorLastPosition - m_line_info.cursorPosition + 1;
     }
 
-    line_info.firstLine = index;
-    line_info.lastLine = index + line_info.selectedLineCount - 1;
-    if (line_info.selectedLineCount > 1)
-        MultiSelection = true;
+    m_line_info.firstLine = index;
+    m_line_info.lastLine = index + m_line_info.selectedLineCount - 1;
+    if (m_line_info.selectedLineCount > 1)
+        m_multi_selection = true;
     else
-        MultiSelection = false;
+        m_multi_selection = false;
 
 }
 
 
 
-
-// Returns the current Selected items' rectangle
-wxRect CodeView::CalcSelectedRect()
+/// @brief Calculates the selection's rectangle.
+/// @return The calculated rectangle
+wxRect CodeView::calcSelectedRect()
 {
     wxRect rect;
     int count;
     uint y;
 
-    if (line_info.firstLine < GetFirstLine())
-    {
-        y = GetFirstLine();
-        count = GetFirstLine() - line_info.firstLine;
+    if (m_line_info.firstLine < getFirstLine()) {
+        y = getFirstLine();
+        count = getFirstLine() - m_line_info.firstLine;
     }
-    else
-    {
-        y = line_info.firstLine;
-        count = line_info.selectedLineCount;
+    else {
+        y = m_line_info.firstLine;
+        count = m_line_info.selectedLineCount;
     }
-    if ((y + count) >= (GetFirstLine() + m_linesShown))
-        count = GetLastLine();
+    if ((y + count) >= (getFirstLine() + m_lines_shown)) {
+        count = getLastLine();
+    }
     rect.x = 0;
-    rect.y = y * m_fontHeight;
+    rect.y = y * m_font_height;
     rect.width = GetClientSize().x;
-    rect.height = count * m_fontHeight;
+    rect.height = count * m_font_height;
     CalcScrolledPosition(rect.x, rect.y, 0, &rect.y);
     return rect;
 }
 
 
 
-
-
-void CodeView::CalcIncompleteArea()
+/// @brief Calculates the uncovered area after a resize window.
+void CodeView::calcIncompleteArea()
 {
-    IncompleteArea.x = 0;
-    IncompleteArea.y = m_linesShown * m_fontHeight + 1;
-    IncompleteArea.width = GetClientSize().GetWidth();
-    IncompleteArea.height = GetClientSize().GetHeight() - IncompleteArea.y;
+    m_incomplete_area.x = 0;
+    m_incomplete_area.y = m_lines_shown * m_font_height + 1;
+    m_incomplete_area.width = GetClientSize().GetWidth();
+    m_incomplete_area.height = GetClientSize().GetHeight() - m_incomplete_area.y;
 }
 
 
-/*
- * Take an address and show it
- * in the center of codeview
- */
-void CodeView::CenterAddress(uint address)
+
+/// @brief Centralizes the given address in the viewer and selects it.
+/// @param address 
+void CodeView::centerAddress(uint address)
 {
-    int     i,
+    int     line,
             firstlineshown,
             lastlineshown,
             position;
     bool    needscroll = false;
 
-    firstlineshown = GetFirstLine();
-    lastlineshown = firstlineshown + m_linesShown - 1;
+    firstlineshown = getFirstLine();
+    lastlineshown = firstlineshown + m_lines_shown - 1;
 
-    i = m_CodeViewLine->getLineOfAddress(address);
+    line = m_sourcecode->getLineOfAddress(address);
 
-    if (i >= 0)
+    if (line >= 0)
     {
-        position = m_linesShown / 2;
-        if ((i >= firstlineshown) && (i <= lastlineshown))
+        position = m_lines_shown / 2;
+        if ((line >= firstlineshown) && (line <= lastlineshown))
         {
-            line_info.cursorLastPosition = line_info.cursorPosition;
-            line_info.cursorPosition = i;
+            m_line_info.cursorLastPosition = m_line_info.cursorPosition;
+            m_line_info.cursorPosition = line;
         }
         else
         {
-            line_info.cursorLastPosition = i;
-            line_info.cursorPosition = i;
+            m_line_info.cursorLastPosition = line;
+            m_line_info.cursorPosition = line;
             needscroll = true;
         }
 
-        RefreshRect(*LastCursorRect);
+        RefreshRect(*m_last_cursor_rect);
 
         if (needscroll)
-            Scroll(-1, (i - position));
-        RefreshRect(CalcCursorRfshRect());
+            Scroll(-1, (line - position));
+        RefreshRect(calcCursorRfshRect());
     }
 }
 
 
-
-
+/*DEPRECATED: Use Refresh()
 void CodeView::Plot(void)
 {
     Refresh();
 }
+*/
 
 
-void CodeView::CalcItemsShown(void)
+
+/// @brief Calculates the number of lines of code that can be shown in the viewer.
+void CodeView::calcLinesShown()
 {
     wxSize size = GetClientSize();
-    m_linesShown = size.GetHeight() / m_fontHeight;
+    m_lines_shown = size.GetHeight() / m_font_height;
 }
 
 
 
-int CodeView::GetFirstLine()
+/// @brief Gets the first visible line
+/// @return in logical scroll units (wxScrolled)
+int CodeView::getFirstLine()
 {
     int ret;
     GetViewStart(NULL, &ret);
@@ -529,54 +560,62 @@ int CodeView::GetFirstLine()
 
 
 
-
-int CodeView::GetLastLine()
+/// @brief Gets the number of the last line of code
+/// @return The number of the last line of code
+int CodeView::getLastLine()
 {
-    return (GetFirstLine() + m_linesShown - 1);
+    return (getFirstLine() + m_lines_shown - 1);
 }
 
 
-int CodeView::GetLastItem()
+
+/// @brief Gets the index of the last line of code
+/// @return The index of the last line of code
+int CodeView::getLastItemIndex()
 {
-    return (Process->CodeViewLines->GetCount() - 1);
+    return (m_sourcecode->getCount() - 1);
 }
 
 
-void CodeView::UpdateLastCursorRect()
+
+/// @brief Updates the rectangle corresponding to the last cursor position.
+void CodeView::updateLastCursorRect()
 {
-    if (LastCursorRect != 0)
-    {
+    if (m_last_cursor_rect != 0) {
         wxCoord width;
         GetClientSize(&width, 0);
 
-        LastCursorRect->x = 2;
-        LastCursorRect->y = line_info.cursorPosition * m_fontHeight;
-        LastCursorRect->width = width - 4;
-        LastCursorRect->height = m_fontHeight;
-        CalcScrolledPosition(0, LastCursorRect->y, 0, &LastCursorRect->y);
+        m_last_cursor_rect->x = 2;
+        m_last_cursor_rect->y = m_line_info.cursorPosition * m_font_height;
+        m_last_cursor_rect->width = width - 4;
+        m_last_cursor_rect->height = m_font_height;
+        CalcScrolledPosition(0, m_last_cursor_rect->y, 0, &m_last_cursor_rect->y);  // Translates the logical coordinates to the device ones.
     }
 }
 
 
 
-void CodeView::UpdateVirtualSize(void)
+/// @brief Updates the size, in device units, of the scrollable window area.
+void CodeView::updateVirtualSize()
 {
 	if (IsEnabled())
 	{
 		wxSize sz = GetVirtualSize();
-		sz.y = m_CodeViewLine->getCount() * m_fontHeight;
+		sz.y = m_sourcecode->getCount() * m_font_height;
 		SetVirtualSize(sz);
 	}
 }
 
 
 
-void CodeView::ShowCursor(wxDC &dc)
+/// @brief Draws the cursor
+/// @param dc Device context
+void CodeView::showCursor(wxDC &dc)
 {
     wxRect cursor;
-    UpdateLastCursorRect();
-    cursor = *LastCursorRect;
-    CalcUnscrolledPosition(cursor.x, cursor.y, 0, &cursor.y);
+    updateLastCursorRect();
+    cursor = *m_last_cursor_rect;
+    CalcUnscrolledPosition(cursor.x, cursor.y, 0, &cursor.y);   //Translates the device coordinates(pixel) to the logical ones.
     dc.SetPen(*wxBLACK_PEN);
     dc.SetBrush(*wxLIGHT_GREY_BRUSH);
     dc.DrawRectangle(cursor);
@@ -584,80 +623,82 @@ void CodeView::ShowCursor(wxDC &dc)
 
 
 
-void CodeView::ClearCursor()
+/// @brief Marks the rectangle of the last cursor position, to be repainted.
+void CodeView::clearCursor()
 {
-    if ((line_info.cursorLastPosition >= 0) && (line_info.cursorLastPosition <= GetLastLine()))
-        RefreshRect(*LastCursorRect);
+    if ((m_line_info.cursorLastPosition >= 0) && (m_line_info.cursorLastPosition <= getLastLine()))
+        RefreshRect(*m_last_cursor_rect);
 }
 
 
 
-
-
-
-ElementType CodeView::GetTypeMultiselection(bool &hcomment)
+/// @brief Gets the type of line code into the selection range lines and if it has comments
+/// @param hcomment Return if the line has comment
+/// @return Type of the line of code
+LineType CodeView::getTypesInSelection(bool &hcomment)
 
 {
-    SourceCodeLine *cvi;
-    DisassembledItem *de;
-    int i;
+    SourceCodeLine      *sc_line;
+    DisassembledItem    *dasmed_item;
+    int line;
     bool homogeneous = false;
-    ElementType lastitem = et_None;
+    LineType lastitem = lt_Unknown;
 
 
-    for (i = line_info.firstLine; i < line_info.lastLine; i++)
-    {
-        cvi = m_CodeViewLine->line(i);
-        if (cvi->dasmedItem >= 0)
-        {
-			if (cvi->comment)
+    for (line = m_line_info.firstLine; line < m_line_info.lastLine; ++line) {
+        sc_line = m_sourcecode->line(line);
+        if (sc_line->dasmedItem >= 0) {
+			if (sc_line->comment) {
 				hcomment = true;
+            }
 
-            de = Process->Disassembled->GetData(cvi->dasmedItem);
-            if (de->IsInstruction())
-            {
-                if ((lastitem == et_None) || (lastitem == et_Instruction))
+            dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+            if (dasmed_item->isData()) {
+                if ((lastitem == lt_Unknown) || (lastitem == lt_Data))
                 {
-                    lastitem = et_Instruction;
+                    lastitem = lt_Data;
                     homogeneous = true;
                 }
                 else
                     homogeneous = false;
             }
-            else
-                if (de->IsData())
+            else {  // Instruction
+                if ((lastitem == lt_Unknown) || (lastitem == lt_Instruction))
                 {
-                    if ((lastitem == et_None) || (lastitem == et_Data))
-                    {
-                        lastitem = et_Data;
-                        homogeneous = true;
-                    }
-                    else
-                        homogeneous = false;
+                    lastitem = lt_Instruction;
+                    homogeneous = true;
                 }
-            if ((lastitem != et_None) && (!homogeneous))
+                else
+                    homogeneous = false;
+            }
+
+            if ((lastitem != lt_Unknown) && (!homogeneous))
                 break;
         }
     }
-    if ((lastitem != et_None) && homogeneous)
+    
+    if ((lastitem != lt_Unknown) && homogeneous) {
         return lastitem;
-    return (et_None);
+    }
+
+    return (lt_Unknown);
 }
 
 
 
-
-void CodeView::CreatePopupMenuMultiSelection(wxMenu *popup)
+/// @brief Create a pop up menu based on the type of multiple lines of code.
+/// @param popup The wxMenu to be filled.
+void CodeView::createPopupMenuMultiSelection(wxMenu *popup)
 {
     bool    hascomments;
     wxMenu  *organizeDataSubMenu = 0;
 
-    switch (GetTypeMultiselection(hascomments))
+    switch (getTypesInSelection(hascomments))
     {
-        case et_Instruction:
+        case lt_Instruction:
                         popup->Append(idPOPUP_MAKEDATA, "Make data\td");
                         break;
-        case et_Data:
+        case lt_Data:
                         organizeDataSubMenu = new wxMenu();
                         popup->Append(idPOPUP_DISASM, "Disassemble\tc");
                         organizeDataSubMenu->Append(idPOPUP_OD_STRING, "String");
@@ -679,42 +720,45 @@ void CodeView::CreatePopupMenuMultiSelection(wxMenu *popup)
 
 
 
-void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
+/// @brief Create a pop up menu based on the type of the line of code.
+/// @param popup The wxMenu to be filled.
+void CodeView::createPopupMenuSingleSelection(wxMenu *popup)
 {
     wxMenu		*argStyleSubMenu = 0,
 				*labelMenu = 0;
 
     popup->Append(idPOPUP_GOTO_ADDRESS, "Goto address...");
 
-    switch(line_info.type)
+    switch(m_line_info.type)
     {
-        case 	siInstructionLabel:
-                                if ((line_info.dasmitem) &&
-                                    (line_info.dasmitem->m_mnemonic->IsCall() || line_info.dasmitem->m_mnemonic->IsJump()))
+        case 	lt_InstructionLabel:
+                                if ((m_line_info.dasmitem) &&
+                                    (m_line_info.dasmitem->GetMnemonic()->GetGroup() == GRP_CALL
+                                    || m_line_info.dasmitem->GetMnemonic()->GetGroup() == GRP_JUMP))
                                 {
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();
                                 }
-        case	siLineLabelProg:
-        case	siLineLabelVar:
+        case	lt_LineLabelProg:
+        case	lt_LineLabelVar:
                                 labelMenu = new wxMenu();
                                 labelMenu->Append(idPOPUP_EDITLABEL, "Edit");
                                 labelMenu->AppendSeparator();
                                 labelMenu->Append(idPOPUP_DELLABEL, "Delete");
 
-        case	siInstruction:
-                                if ((line_info.type != siLineLabelProg) &&
-                                    (line_info.type != siLineLabelVar))
+        case	lt_Instruction:
+                                if ((m_line_info.type != lt_LineLabelProg) &&
+                                    (m_line_info.type != lt_LineLabelVar))
                                     popup->Append(idPOPUP_MAKEDATA, "Make data");
                                 break;
-        case	siData:
+        case	lt_Data:
                                 labelMenu = new wxMenu();
                                 labelMenu->Append(idPOPUP_CREATELABEL, "Create");
 
                                 popup->Append(idPOPUP_DISASM, "Disassemble");
 
-        case    siUnknown:
-        case    siComments:
+        case    lt_Unknown:
+        case    lt_Comments:
                                 break;
     }
 
@@ -722,7 +766,7 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
         popup->Append(idPOPUP_LBL, "Label", labelMenu);
 
     // Clicked over an argument
-    if (line_info.argSelected > 0)
+    if (m_line_info.argSelected > 0)
     {
         argStyleSubMenu = new wxMenu();
 
@@ -736,139 +780,141 @@ void CodeView::CreatePopupMenuSingleSelection(wxMenu *popup)
     popup->Append(idPOPUP_SEARCH_ARGUMENT, "Search");
     popup->AppendSeparator();
 
-    if ((line_info.type == siComments) || (line_info.hasComment))
+    if ((m_line_info.type == lt_Comments) || (m_line_info.hasComment))
     {
         popup->Append(idPOPUP_EDITCOMMENT, "Edit comment");
         popup->Append(idPOPUP_DELCOMMENT, "Del comment");
     }
     else
         popup->Append(idPOPUP_ADDCOMMENT, "Add comment");
-
 }
 
 
 
-
-
-void CodeView::FillSelectedItemInfo(const wxPoint &pt)
+/// @brief Fills the structure m_line_info
+/// @param pt Mouse coordinates
+void CodeView::fillSelectedItemInfo(const wxPoint &pt)
 {
-	wxPoint         mousept;
+	wxPoint mousept;
 
 	CalcUnscrolledPosition(pt.x, pt.y, &mousept.x, &mousept.y);
 
-	line_info.type = siUnknown;
+	m_line_info.type = lt_Unknown;
 
-    line_info.firstInstruction = -1;
-    line_info.firstAddress = -1;
-    line_info.lastInstruction = -1;
-    line_info.lastAddress = -1;
+    m_line_info.firstInstruction = -1;
+    m_line_info.firstAddress = -1;
+    m_line_info.lastInstruction = -1;
+    m_line_info.lastAddress = -1;
 
-    if (line_info.selectedLineCount == 1)
-        TreatSingleSelection();
-    if (line_info.selectedLineCount > 1)
-        TreatMultiSelection();
+    if (m_line_info.selectedLineCount == 1)
+        treatAsSingleSelection();
+    if (m_line_info.selectedLineCount > 1)
+        treatAsMultiSelection();
 
-    IdentifyArgumentSelected(mousept);
+    identifyArgumentSelected(mousept);
 
-    //LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", line_info.firstLine, line_info.firstAddress, line_info.lastLine, line_info.lastAddress));
+    //LogIt(wxString::Format("First: line = %d, address = 0x%X\nLast: line = %d, address = %X", m_line_info.firstLine, m_line_info.firstAddress, m_line_info.lastLine, m_line_info.lastAddress));
 }
 
 
 
-
-
-void CodeView::ResetSelectedItemInfo()
+/// @brief Resets all members of m_line_info.
+void CodeView::resetSelectedItemInfo()
 {
-    line_info.type = siUnknown;
-    line_info.dasmitem = 0;
-    line_info.lineitem = 0;
-    line_info.hasComment = false;
-    line_info.argSelected = 0;
-    line_info.firstAddress = -1;
-    line_info.firstInstruction = -1;
-    line_info.firstLine = -1;
-    line_info.lastAddress = -1;
-    line_info.lastInstruction = -1;
-    line_info.lastLine = -1;
-    line_info.selectedLineCount = 0;
-    line_info.cursorLastPosition = -1;
-    line_info.cursorPosition = -1;
+    m_line_info.type = lt_Unknown;
+    m_line_info.dasmitem = 0;
+    m_line_info.lineitem = 0;
+    m_line_info.hasComment = false;
+    m_line_info.argSelected = 0;
+    m_line_info.firstAddress = -1;
+    m_line_info.firstInstruction = -1;
+    m_line_info.firstLine = -1;
+    m_line_info.lastAddress = -1;
+    m_line_info.lastInstruction = -1;
+    m_line_info.lastLine = -1;
+    m_line_info.selectedLineCount = 0;
+    m_line_info.cursorLastPosition = -1;
+    m_line_info.cursorPosition = -1;
 }
 
 
 
-// If clicked over an instruction argument, discover which was
-void CodeView::IdentifyArgumentSelected(const wxPoint &mouse_cursor)
+/// @brief Identifies the argument number under the mouse.
+/// @param mouse_cursor Mouse pointer coordinate.
+void CodeView::identifyArgumentSelected(const wxPoint &mouse_cursor)
 {
-    if (line_info.lineitem)
+    if (m_line_info.lineitem)
     {
-        if (line_info.lineitem->rectArg1)
+        if (m_line_info.lineitem->rectArg1)
         {
-            if (line_info.lineitem->rectArg1->Contains(mouse_cursor))
-                line_info.argSelected = 1;
+            if (m_line_info.lineitem->rectArg1->Contains(mouse_cursor))
+                m_line_info.argSelected = 1;
             else
-                line_info.argSelected = 0;
+                m_line_info.argSelected = 0;
         }
 
-        if (line_info.lineitem->rectArg2)
-            if (line_info.lineitem->rectArg2->Contains(mouse_cursor))
-                line_info.argSelected = 2;
+        if (m_line_info.lineitem->rectArg2)
+            if (m_line_info.lineitem->rectArg2->Contains(mouse_cursor))
+                m_line_info.argSelected = 2;
     }
 }
 
 
 
-
-
-void CodeView::TreatSingleSelection()
+/// @brief Fills m_line_info considering just one selected line.
+void CodeView::treatAsSingleSelection()
 {
 	bool    testcomment = false;
 
-	line_info.lineitem = m_CodeViewLine->line(line_info.cursorPosition);
-	if (line_info.lineitem)
+	m_line_info.lineitem = m_sourcecode->line(m_line_info.cursorPosition);
+	if (m_line_info.lineitem)
 	{
 		// Does the line have comment ?
-		if (line_info.lineitem->comment)
-			line_info.hasComment = true;
+		if (m_line_info.lineitem->comment)
+			m_line_info.hasComment = true;
 		else
-			line_info.hasComment = false;
+			m_line_info.hasComment = false;
 
 		// If line is a program label or a var label
-		if (line_info.lineitem->labelProgAddress >= 0)
-			line_info.type = siLineLabelProg;
+		if (m_line_info.lineitem->labelProgAddress >= 0)
+			m_line_info.type = lt_LineLabelProg;
 
-		if (line_info.lineitem->labelVarAddress >= 0)
-			line_info.type = siLineLabelVar;
+		if (m_line_info.lineitem->labelVarAddress >= 0)
+			m_line_info.type = lt_LineLabelVar;
 
 		// check if line has instruction
-        line_info.dasmitem = Process->Disassembled->GetData(line_info.lineitem->dasmedItem);
-        if (line_info.dasmitem)
+        m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.lineitem->dasmedItem);
+        if (m_line_info.dasmitem)
         {
-            if (line_info.dasmitem->HasArgumentLabel())
-                line_info.type = siInstructionLabel;
+            if ((m_line_info.dasmitem->GetArgumentStyle(0) == STYLE_LABELED)
+                || (m_line_info.dasmitem->GetArgumentStyle(1) == STYLE_LABELED))
+                m_line_info.type = lt_InstructionLabel;
             else
-                line_info.type = siInstruction;
+                m_line_info.type = lt_Instruction;
 
-            if (line_info.dasmitem->IsData())
-                line_info.type = siData;
-            line_info.firstInstruction = line_info.lineitem->dasmedItem;
-            line_info.lastInstruction = line_info.firstInstruction;
-            line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();
-            line_info.lastAddress = line_info.firstAddress;
+            if (m_line_info.dasmitem->isData())
+                m_line_info.type = lt_Data;
+            m_line_info.firstInstruction = m_line_info.lineitem->dasmedItem;
+            m_line_info.lastInstruction = m_line_info.firstInstruction;
+            m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->GetOffsetInFile();
+            m_line_info.lastAddress = m_line_info.firstAddress;
         }
 
-
 		// Test if line has only comments
-		testcomment = ((line_info.lineitem->originAddress + line_info.lineitem->dasmedItem) == -2) && !line_info.lineitem->labelProgAddress && !line_info.lineitem->labelVarAddress;
+		testcomment = ((m_line_info.lineitem->originAddress + m_line_info.lineitem->dasmedItem) == -2)
+                        && !m_line_info.lineitem->labelProgAddress
+                        && !m_line_info.lineitem->labelVarAddress;
+
 		if (testcomment)
-			line_info.type = siComments;
+			m_line_info.type = lt_Comments;
 	}
 }
 
 
 
 
-void CodeView::TreatMultiSelection()
+/// @brief Fills m_line_info considering multi lines selected.
+void CodeView::treatAsMultiSelection()
 {
     DisassembledItem *last_disassembled;
     SourceCodeLine *last_line;
@@ -877,35 +923,29 @@ void CodeView::TreatMultiSelection()
             last_found;
 
 
-    for (first_instruction = line_info.firstLine; first_instruction <= line_info.lastLine; first_instruction++)
-    {
-        line_info.lineitem = m_CodeViewLine->line(first_instruction);
-        first_found = (line_info.lineitem && (line_info.lineitem->dasmedItem >= 0));
+    for (first_instruction = m_line_info.firstLine; first_instruction <= m_line_info.lastLine; ++first_instruction) {
+        m_line_info.lineitem = m_sourcecode->line(first_instruction);
+        first_found = (m_line_info.lineitem && (m_line_info.lineitem->dasmedItem >= 0));
         if (first_found)
             break;
     }
 
-    for (last_instruction = line_info.lastLine; last_instruction > first_instruction; last_instruction--)
-    {
-        last_line = m_CodeViewLine->line(last_instruction);
+    for (last_instruction = m_line_info.lastLine; last_instruction > first_instruction; --last_instruction) {
+        last_line = m_sourcecode->line(last_instruction);
         last_found = (last_line && (last_line->dasmedItem >= 0));
         if (last_found)
             break;
     }
 
-    if (first_found && last_found)
-    {
-        line_info.firstInstruction = line_info.lineitem->dasmedItem;
-        line_info.lastInstruction = last_line->dasmedItem;
-        line_info.dasmitem = Process->Disassembled->GetData(line_info.firstInstruction);
-        last_disassembled = Process->Disassembled->GetData(line_info.lastInstruction);
-        line_info.firstAddress = Process->Disassembled->GetBaseAddress(line_info.firstInstruction) + line_info.dasmitem->GetOffset();
-        line_info.lastAddress = Process->Disassembled->GetBaseAddress(line_info.lastInstruction) + last_disassembled->GetOffset();
+    if (first_found && last_found) {
+        m_line_info.firstInstruction = m_line_info.lineitem->dasmedItem;
+        m_line_info.lastInstruction = last_line->dasmedItem;
+        m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.firstInstruction);
+        last_disassembled = m_sourcecode->getDisassembled()->GetData(m_line_info.lastInstruction);
+        m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->GetOffsetInFile();
+        m_line_info.lastAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.lastInstruction) + last_disassembled->GetOffsetInFile();
     }
 
-    line_info.hasComment = false;
-
+    m_line_info.hasComment = false;
 }
-
-
 

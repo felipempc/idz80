@@ -52,6 +52,7 @@ class SourceCode: public SourceCodeAccess
         int getLineOfAddress(AbsoluteAddress t_addr);
         int getLineOfAddress(LineNumber line_index, uint line_count, AbsoluteAddress t_addr);
         int getFirstInstructionLine();
+        DisassembledContainer *getDisassembled() const;
 
         void setFirstInstructionLine(int fstiline);
 

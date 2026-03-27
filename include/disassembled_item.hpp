@@ -52,7 +52,7 @@ struct ArgumentStyle
 };
 
 
-/*
+/*TODO: Do we need this?
 enum ArgumentIndex
 {
     FIRST_ARGUMENT = 0,
@@ -71,9 +71,9 @@ class DisassembledItem : public DisassembledItemBase
         DisassembledItem(RawData* program_file);
         ~DisassembledItem();
 
-        void Clear();
-        void Destroy();
-        bool SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset);
+        void clear();
+        void destroy();
+        void SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset);
         void SetupDataItem(const FileOffset offset);
 
         wxString GetOpcodeAsStringHex(const HexadecimalStrStyle hex_style = HEX_STYLE_NONE, const DataSeparation separation = SPACE_SEPARATED);

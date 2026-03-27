@@ -17,7 +17,7 @@
 DisassembledItem::DisassembledItem(RawData* program_file)
 {
     m_program = program_file;
-    Clear();
+    clear();
 }
 
 
@@ -33,7 +33,7 @@ DisassembledItem::~DisassembledItem()
 
 
 /// @brief Init all data
-void DisassembledItem::Clear()
+void DisassembledItem::clear()
 {
     m_mnemonic = 0;
     m_arg_style = 0;
@@ -52,11 +52,11 @@ void DisassembledItem::Clear()
 
 
 /// @brief Release allocated memory and init all data
-void DisassembledItem::Destroy()
+void DisassembledItem::destroy()
 {
     if(m_arg_style)
         delete m_arg_style;
-    Clear();
+    clear();
 }
 
 
@@ -104,20 +104,20 @@ wxString DisassembledItem::GetOpcodeAsStringHex(const HexadecimalStrStyle hex_st
 
 
 
-
+/// @brief Converts the bytecode into a string, substitutes "invisible" chars by a dot.
+/// @return The string
 wxString DisassembledItem::GetAsciiCodeAsString()
 {
     wxString as_string;
     byte bytecode;
 
-    if(m_mnemonic)
-    {
+    if(m_mnemonic) {
         as_string.Clear();
-        for (unsigned int counter = 0; counter < m_length; ++counter)
-        {
+        for (unsigned int counter = 0; counter < m_length; ++counter) {
             bytecode = GetByteOpcode(counter);
-            if ((bytecode < 32) || (bytecode > 126))
+            if ((bytecode < 32) || (bytecode > 126)) {
                 bytecode = '.';
+            }
             as_string << wxString::Format("%c", bytecode);
         }
     }
@@ -127,6 +127,8 @@ wxString DisassembledItem::GetAsciiCodeAsString()
 
 
 
+/// @brief Gets the style of arguments
+/// @return A struct with the arguments' style
 ArgumentStyle DisassembledItem::GetArgumentStyle()
 {
     ArgumentStyle style;
@@ -144,15 +146,20 @@ ArgumentStyle DisassembledItem::GetArgumentStyle()
 
 
 
+/// @brief Gets the style of the selected argument
+/// @param index Selects the argument: 0 to the first, 1 to the second.
+/// @return The argument style
 ArgumentStyleOptions DisassembledItem::GetArgumentStyle(unsigned int index)
 {
     if(m_arg_style)
     {
-        if(index == 0)
+        if(index == 0) {
             return m_arg_style->first;
+        }
 
-        if(index == 1)
+        if(index == 1) {
             return m_arg_style->second;
+        }
     }
 
     return STYLE_NONE;
@@ -160,6 +167,8 @@ ArgumentStyleOptions DisassembledItem::GetArgumentStyle(unsigned int index)
 
 
 
+/// @brief Gets the offset position of this item in the file.
+/// @return 
 FileOffset DisassembledItem::GetOffsetInFile()
 {
     return m_file_offset;
@@ -167,6 +176,8 @@ FileOffset DisassembledItem::GetOffsetInFile()
 
 
 
+/// @brief Gets the opcode' size of this item.
+/// @return The size
 unsigned int DisassembledItem::GetLength()
 {
     return m_length;
@@ -174,6 +185,8 @@ unsigned int DisassembledItem::GetLength()
 
 
 
+/// @brief Sets the size of this item
+/// @param len The new size
 void DisassembledItem::SetLength(unsigned int len)
 {
     m_length = len;
@@ -181,6 +194,8 @@ void DisassembledItem::SetLength(unsigned int len)
 
 
 
+/// @brief Verifies if this item is data.
+/// @return true if it is data.
 bool DisassembledItem::isData()
 {
     return m_is_data;
@@ -188,6 +203,8 @@ bool DisassembledItem::isData()
 
 
 
+/// @brief Marks this item as data
+/// @param isdata 
 void DisassembledItem::MarkAsData(const bool isdata)
 {
     m_is_data = isdata;
@@ -195,6 +212,9 @@ void DisassembledItem::MarkAsData(const bool isdata)
 
 
 
+/// @brief Gets the selected byte in the opcode
+/// @param index Selects the byte, 0 to MAX_OPCODE_SIZE
+/// @return The byte
 byte DisassembledItem::GetByteOpcode(unsigned int index)
 {
     if (index >= MAX_OPCODE_SIZE)
@@ -204,7 +224,7 @@ byte DisassembledItem::GetByteOpcode(unsigned int index)
 }
 
 
-/* DO WE REALLY NEED THIS?? 
+/*TODO: DO WE REALLY NEED THIS?? 
 byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
 {
     if(index == FIRST_ARGUMENT)
@@ -217,20 +237,29 @@ byte DisassembledItem::GetArgumentValue(ArgumentIndex index)
 */
 
 
+/// @brief Gets the value of a selected argument.
+/// @param index Selects the argument: 0 to the first, 1 to the second, if exists.
+/// @param base_address The base address where the program is loaded in the original machine
+/// @return The value of the argument
 int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_address)
 {
-    if (m_mnemonic->GetArgumentSize() == 2)
+    if (m_mnemonic->GetArgumentSize() == 2) {
         return static_cast<int>(m_arguments.unsigned_16bit);
-    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {
-        if (m_mnemonic->GetArgument(index).type == OT_RELATIVE_ADDRESS)
-            return ConvertRelativeToAbsolute(m_arguments.signed_value, base_address);
     }
-        return static_cast<int>(m_arguments.unsigned_8bit_low);
+
+    if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {
+        if (m_mnemonic->GetArgument(index).type == OT_RELATIVE_ADDRESS) {
+            return ConvertRelativeToAbsolute(m_arguments.signed_value, base_address);
+        }
+    }
+
     if ((m_mnemonic->GetArgumentCount() == 2) && (m_mnemonic->GetArgumentSize() == 1)) {
-        if (index == 0)
+        if (index == 0) {
             return static_cast<int>(m_arguments.unsigned_8bit_low);
-        if (index == 1)
+        }
+        if (index == 1) {
             return static_cast<int>(m_arguments.unsigned_8bit_high);
+        }
     }
 
     return 0;
@@ -238,6 +267,8 @@ int DisassembledItem::GetArgumentValue(unsigned int index, unsigned int base_add
 
 
 
+/// @brief Gets the pointer to the mnemonics list.
+/// @return The pointer
 MnemonicItem *DisassembledItem::GetMnemonic()
 {
     return m_mnemonic;
@@ -245,6 +276,8 @@ MnemonicItem *DisassembledItem::GetMnemonic()
 
 
 
+/// @brief Gets the pointer to the object representing the program file
+/// @return the pointer
 RawData *DisassembledItem::GetProgram()
 {
     return m_program;
@@ -252,6 +285,9 @@ RawData *DisassembledItem::GetProgram()
 
 
 
+/// @brief Setups the argument style
+/// @param index Selects the first(0) or the second(1) argument
+/// @param style 
 void DisassembledItem::SetArgumentStyle(unsigned int index, ArgumentStyleOptions style)
 {
     if(!m_arg_style)
@@ -259,13 +295,17 @@ void DisassembledItem::SetArgumentStyle(unsigned int index, ArgumentStyleOptions
 
     if(index == 0)
         m_arg_style->first = style;
+
     if(index == 1)
         m_arg_style->second = style;
 }
 
 
 
-bool DisassembledItem::SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset)
+/// @brief Initializes the DisassembledItem as an instruction code.
+/// @param mnemonic The mnemonic of this instruction
+/// @param offset in the file
+void DisassembledItem::SetupInstructionItem(MnemonicItem *mnemonic, const FileOffset offset)
 {
     m_mnemonic = mnemonic;
     m_file_offset = offset;
@@ -273,20 +313,19 @@ bool DisassembledItem::SetupInstructionItem(MnemonicItem *mnemonic, const FileOf
     m_length = mnemonic->GetByteCodeSize();
     m_mnemonic_signature = mnemonic->GetMnemonicSignature();
     FillArgument();
-
-    return false;
+    CopyRealBytecode();
 }
 
 
 
+/// @brief Initializes the DisassembledItem as data.
+/// @param offset in the file
 void DisassembledItem::SetupDataItem(const FileOffset offset)
 {
-    Clear();
+    clear();
     m_file_offset = offset;
     m_is_data = true;
     m_length = 1;
-
-
 }
 
 
@@ -323,10 +362,12 @@ void DisassembledItem::FillArgument()
 
 
 
+/// @brief Converts a relative address (may be a signed value) to an absolute address
+/// @param relative The relative address
+/// @param baseaddress The base address where the program is load in the original machine
+/// @return The absolute address
 AbsoluteAddress DisassembledItem::ConvertRelativeToAbsolute(RelativeAddress relative, AbsoluteAddress baseaddress)
 {
     return static_cast<AbsoluteAddress>(baseaddress + m_mnemonic->GetByteCodeSize() + m_file_offset + relative);
 }
-
-
 

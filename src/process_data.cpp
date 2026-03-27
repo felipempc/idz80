@@ -153,7 +153,7 @@ void ProcessData::makeData(const unsigned int t_index, RangeItems &t_range)
 
 /// @brief Inserts initial data in the source code
 /// @param t_index Selects the source code to be processed.
-void ProcessData::initData(const unsigned int t_index)
+void ProcessData::initSourceCode(const unsigned int t_index)
 {
     uint                    i, fstil;
     wxArrayString           m_Comments;

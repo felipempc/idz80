@@ -44,7 +44,7 @@ class ProcessData : public ProjectBase
         void disassembleData(const unsigned int t_index, SelectedItemInfo &t_selected);
         void makeData(const unsigned int t_index, RangeItems &t_range);
         //void AutoLabel();
-        void initData(const unsigned int t_index);
+        void initSourceCode(const unsigned int t_index);
         void insertLineLabelsInSourceCode(const unsigned int t_index);
 
         bool setupSystemLabels();

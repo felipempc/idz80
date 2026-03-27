@@ -15,104 +15,104 @@
 #include "search_argument_dialog.hpp"
 
 
-void CodeView::OnScrollLineDown(wxScrollWinEvent& event)
+void CodeView::onScrollLineDown(wxScrollWinEvent& event)
 {
-    if (line_info.cursorPosition < static_cast<int>(m_CodeViewLine->getCount() - 1))
+    if (m_line_info.cursorPosition < static_cast<int>(m_sourcecode->getCount() - 1))
     {
-        if (!MultiSelection)
-            line_info.cursorLastPosition = line_info.cursorPosition;
+        if (!m_multi_selection)
+            m_line_info.cursorLastPosition = m_line_info.cursorPosition;
 
-        line_info.cursorPosition++;
+        m_line_info.cursorPosition++;
 
-        ClearCursor();
-        DoSelection();
+        clearCursor();
+        doSelection();
 
-        if (line_info.cursorPosition > GetLastLine())
+        if (m_line_info.cursorPosition > getLastLine())
         {
-                Scroll(-1, GetFirstLine() + 1);
+                Scroll(-1, getFirstLine() + 1);
         }
-            RefreshRect(CalcCursorRfshRect());
+            RefreshRect(calcCursorRfshRect());
 
-        if (line_info.selectedLineCount == 1)
-            TreatSingleSelection();
+        if (m_line_info.selectedLineCount == 1)
+            treatAsSingleSelection();
         else
-            if (line_info.selectedLineCount > 1)
-                TreatMultiSelection();
+            if (m_line_info.selectedLineCount > 1)
+                treatAsMultiSelection();
 
-        if (Selecting)
-            LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
+        if (m_selecting)
+            LogIt(wxString::Format("Selection = (%d, %d)", m_line_info.firstLine, m_line_info.lastLine));
     }
 }
 
 
 
-void CodeView::OnScrollLineUp(wxScrollWinEvent& event)
+void CodeView::onScrollLineUp(wxScrollWinEvent& event)
 {
-    if (line_info.cursorPosition > 0)
+    if (m_line_info.cursorPosition > 0)
     {
-        if (!MultiSelection)
-            line_info.cursorLastPosition = line_info.cursorPosition;
+        if (!m_multi_selection)
+            m_line_info.cursorLastPosition = m_line_info.cursorPosition;
 
-        line_info.cursorPosition--;
+        m_line_info.cursorPosition--;
 
-        ClearCursor();
-        DoSelection();
+        clearCursor();
+        doSelection();
 
-        if (line_info.cursorPosition < GetFirstLine())
+        if (m_line_info.cursorPosition < getFirstLine())
         {
-            Scroll(-1, GetFirstLine() - 1);
+            Scroll(-1, getFirstLine() - 1);
         }
-        RefreshRect(CalcCursorRfshRect());
+        RefreshRect(calcCursorRfshRect());
 
-        if (line_info.selectedLineCount == 1)
-            TreatSingleSelection();
+        if (m_line_info.selectedLineCount == 1)
+            treatAsSingleSelection();
         else
-            if (line_info.selectedLineCount > 1)
-                TreatMultiSelection();
+            if (m_line_info.selectedLineCount > 1)
+                treatAsMultiSelection();
 
-        if (Selecting)
-            LogIt(wxString::Format("Selection = (%d, %d)", line_info.firstLine, line_info.lastLine));
+        if (m_selecting)
+            LogIt(wxString::Format("Selection = (%d, %d)", m_line_info.firstLine, m_line_info.lastLine));
     }
 }
 
 
-void CodeView::OnScrollPageDown(wxScrollWinEvent& event)
+void CodeView::onScrollPageDown(wxScrollWinEvent& event)
 {
     int page;
 
-    if (GetFirstLine() < static_cast<int>(m_CodeViewLine->getCount() - m_linesShown))
+    if (getFirstLine() < static_cast<int>(m_sourcecode->getCount() - m_lines_shown))
     {
-        page = line_info.cursorPosition;
-        Scroll(-1, GetFirstLine() + m_linesShown);
-        UpdateLastCursorRect();
-        line_info.cursorLastPosition = GetLastLine();
-        line_info.cursorPosition = line_info.cursorLastPosition;
-        page = line_info.cursorPosition - page;
-        if (page < static_cast<int>(m_linesShown))
-            RefreshRect(*LastCursorRect);
+        page = m_line_info.cursorPosition;
+        Scroll(-1, getFirstLine() + m_lines_shown);
+        updateLastCursorRect();
+        m_line_info.cursorLastPosition = getLastLine();
+        m_line_info.cursorPosition = m_line_info.cursorLastPosition;
+        page = m_line_info.cursorPosition - page;
+        if (page < static_cast<int>(m_lines_shown))
+            RefreshRect(*m_last_cursor_rect);
     }
 }
 
 
-void CodeView::OnScrollPageUp(wxScrollWinEvent& event)
+void CodeView::onScrollPageUp(wxScrollWinEvent& event)
 {
     int page;
 
-    if (GetFirstLine() > 0)
+    if (getFirstLine() > 0)
     {
-        page = line_info.cursorPosition;
-        Scroll(-1,GetFirstLine() - m_linesShown);
-        UpdateLastCursorRect();
-        line_info.cursorLastPosition = GetFirstLine();
-        line_info.cursorPosition = line_info.cursorLastPosition;
-        page -= line_info.cursorPosition;
-        if (page < static_cast<int>(m_linesShown))
-            RefreshRect(*LastCursorRect);
+        page = m_line_info.cursorPosition;
+        Scroll(-1,getFirstLine() - m_lines_shown);
+        updateLastCursorRect();
+        m_line_info.cursorLastPosition = getFirstLine();
+        m_line_info.cursorPosition = m_line_info.cursorLastPosition;
+        page -= m_line_info.cursorPosition;
+        if (page < static_cast<int>(m_lines_shown))
+            RefreshRect(*m_last_cursor_rect);
     }
 }
 
 
-void CodeView::CursorPageDown()
+void CodeView::cursorPageDown()
 {
     wxScrollWinEvent evtPageDown(wxEVT_SCROLLWIN_PAGEDOWN);
     AddPendingEvent(evtPageDown);
@@ -121,20 +121,20 @@ void CodeView::CursorPageDown()
 
 
 
-void CodeView::CursorPageUp()
+void CodeView::cursorPageUp()
 {
     wxScrollWinEvent evtPageUp(wxEVT_SCROLLWIN_PAGEUP);
     AddPendingEvent(evtPageUp);
 }
 
 
-void CodeView::CursorDown()
+void CodeView::cursorDown()
 {
     wxScrollWinEvent evtLineDown(wxEVT_SCROLLWIN_LINEDOWN);
     AddPendingEvent(evtLineDown);
 }
 
-void CodeView::CursorUp()
+void CodeView::cursorUp()
 {
     wxScrollWinEvent evtLineUp(wxEVT_SCROLLWIN_LINEUP);
     AddPendingEvent(evtLineUp);
@@ -142,7 +142,7 @@ void CodeView::CursorUp()
 
 
 // Event handler for Page up/down and direction keys
-void CodeView::OnKeyPress(wxKeyEvent& event)
+void CodeView::onKeyPress(wxKeyEvent& event)
 {
     int key;
     key = event.GetKeyCode();
@@ -151,33 +151,33 @@ void CodeView::OnKeyPress(wxKeyEvent& event)
     {
 
         case WXK_DOWN:
-                        CursorDown();
+                        cursorDown();
                         break;
         case WXK_UP:
-                        CursorUp();
+                        cursorUp();
                         break;
         case WXK_NUMPAD_PAGEDOWN:
         case WXK_PAGEDOWN:
-                        CursorPageDown();
+                        cursorPageDown();
                         break;
         case WXK_NUMPAD_PAGEUP:
         case WXK_PAGEUP:
-                        CursorPageUp();
+                        cursorPageUp();
                         break;
         case WXK_SHIFT:
-                        if (!Selecting)
-							Selecting = true;
-                        MultiSelection = true;
+                        if (!m_selecting)
+							m_selecting = true;
+                        m_multi_selection = true;
                         break;
         default:
-                        //LogIt(wxString::Format("OnKeyPress: <%X> Pressed !", key));
+                        //LogIt(wxString::Format("onKeyPress: <%X> Pressed !", key));
                         event.Skip();
     }
 }
 
 
 
-void CodeView::OnKeyRelease(wxKeyEvent& event)
+void CodeView::onKeyRelease(wxKeyEvent& event)
 {
     int key;
     key = event.GetKeyCode();
@@ -185,59 +185,59 @@ void CodeView::OnKeyRelease(wxKeyEvent& event)
     switch (key)
     {
         case WXK_SHIFT:
-                        Selecting = false;
+                        m_selecting = false;
                         break;
         default:
-                        //LogIt(wxString::Format("OnKeyRelease: <%X> Released !", key));
+                        //LogIt(wxString::Format("onKeyRelease: <%X> Released !", key));
                         event.Skip();
     }
 }
 
 
-void CodeView::OnSearchContinue(wxCommandEvent& event)
+void CodeView::onSearchContinue(wxCommandEvent& event)
 {
     AbsoluteAddress address;
 
-    if (Process->searchInstructionArgumentContinue(address))
+    if (m_process->searchInstructionArgumentContinue(address))
     {
-        CenterAddress(address);
+        centerAddress(address);
     }
 }
 
 
 
-void CodeView::OnGetFocus(wxFocusEvent& event)
+void CodeView::onGetFocus(wxFocusEvent& event)
 {
-    if (!IsFocused)
+    if (!m_is_focused)
     {
-        IsFocused = true;
+        m_is_focused = true;
         LogIt("Entrei...");
     }
 }
 
-void CodeView::OnKillFocus(wxFocusEvent& event)
+void CodeView::onKillFocus(wxFocusEvent& event)
 {
-    if (IsFocused)
+    if (m_is_focused)
     {
-        IsFocused = false;
+        m_is_focused = false;
         LogIt("Saí...");
         wxClientDC dc(this);
-        DisassembleWindowBitmap = dc.GetAsBitmap();
+        m_disassemble_window_bitmap = dc.GetAsBitmap();
     }
 }
 
 
 
-void CodeView::OnSize(wxSizeEvent& event)
+void CodeView::onSize(wxSizeEvent& event)
 {
-    CalcItemsShown();
-    CalcIncompleteArea();
+    calcLinesShown();
+    calcIncompleteArea();
     Refresh();
 }
 
 
 
-void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
+void CodeView::onPopUpMenuSearch(wxCommandEvent& event)
 {
     LogIt("Search Menu Clicked !!!\n");
 }
@@ -245,22 +245,22 @@ void CodeView::OnPopUpMenuSearch(wxCommandEvent& event)
 
 
 
-void CodeView::OnPopUpMenuGoto(wxCommandEvent& event)
+void CodeView::onPopUpMenuGoto(wxCommandEvent& event)
 {
     SourceCodeLine	*cvi;
     DisassembledItem		*de;
     uint 			address;
 
-    cvi = m_CodeViewLine->line(line_info.cursorPosition);
-    de = Process->Disassembled->GetData(cvi->dasmedItem);
-    address = de->GetArgument(0, Process->Disassembled->GetBaseAddress(cvi->dasmedItem));
-    CenterAddress(address);
+    cvi = m_sourcecode->line(m_line_info.cursorPosition);
+    de = m_process->Disassembled->GetData(cvi->dasmedItem);
+    address = de->GetArgument(0, m_process->Disassembled->GetBaseAddress(cvi->dasmedItem));
+    centerAddress(address);
 
 }
 
 
 
-void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
+void CodeView::onPopUpMenuGotoAddress(wxCommandEvent& event)
 {
     long address = 0;
     wxTextEntryDialog enter_address(0, "Enter Address", "Address to go");
@@ -274,7 +274,7 @@ void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
             LogIt(wxString::Format("Going to %X", address));
             #endif
 
-            CenterAddress(address);
+            centerAddress(address);
         }
     }
 }
@@ -285,202 +285,202 @@ void CodeView::OnPopUpMenuGotoAddress(wxCommandEvent& event)
  * Take selected lines of code and convert to lines
  * of data.
  */
-void CodeView::OnPopUpMenuMakeData(wxCommandEvent& event)
+void CodeView::onPopUpMenuMakeData(wxCommandEvent& event)
 {
-        Process->transformToData(line_info);
-        UpdateSelectedRect();
+        m_process->transformToData(m_line_info);
+        updateSelectedRect();
 		Refresh();
 }
 
 
-void CodeView::OnPopUpMenuDisasm(wxCommandEvent& event)
+void CodeView::onPopUpMenuDisasm(wxCommandEvent& event)
 {
-        Process->disassembleData(line_info);
-		UpdateSelectedRect();
+        m_process->disassembleData(m_line_info);
+		updateSelectedRect();
 		Refresh();
 }
 
 
 
-void CodeView::OnPopUpAddComment(wxCommandEvent& event)
+void CodeView::onPopUpAddComment(wxCommandEvent& event)
 {
     SourceCodeLine *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+    cvi = m_sourcecode->line(m_line_info.cursorPosition);
 
     if (cvi)
     {
         if (cvi->comment == 0)
         {
             comment = ::wxGetTextFromUser("Add Comment", "Add");
-            if (!comment.IsEmpty())
+            if (!comment.m_is_empty())
             {
                 comment = comment.Trim(false);
                 if (comment.Left(1) != ";")
                     comment.Prepend("; ");
-                m_CodeViewLine->appendComment(comment, line_info.cursorPosition);
+                m_sourcecode->appendComment(comment, m_line_info.cursorPosition);
                 Refresh();
             }
         }
     }
 }
 
-void CodeView::OnPopUpEditComment(wxCommandEvent& event)
+void CodeView::onPopUpEditComment(wxCommandEvent& event)
 {
     SourceCodeLine *cvi;
     wxString comment;
 
-    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+    cvi = m_sourcecode->line(m_line_info.cursorPosition);
 	if ((cvi) && (cvi->comment))
 		comment = ::wxGetTextFromUser("Edit Comment", "Edit", cvi->comment->c_str());
-	if (!comment.IsEmpty())
+	if (!comment.m_is_empty())
 	{
 		comment = comment.Trim(false);
 		if (comment.Left(1) != ";")
 			comment.Prepend("; ");
-		m_CodeViewLine->editComment(comment, line_info.cursorPosition);
+		m_sourcecode->editComment(comment, m_line_info.cursorPosition);
 		Refresh();
 	}
 }
 
-void CodeView::OnPopUpDelComment(wxCommandEvent& event)
+void CodeView::onPopUpDelComment(wxCommandEvent& event)
 {
     SourceCodeLine *cvi;
-    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+    cvi = m_sourcecode->line(m_line_info.cursorPosition);
     if (cvi != 0)
     {
         if ((cvi->dasmedItem == -1) && (cvi->labelProgAddress) && (cvi->labelVarAddress) && (cvi->originAddress == -1))
-            m_CodeViewLine->delSCItem(cvi);
+            m_sourcecode->delSCItem(cvi);
         else
-            m_CodeViewLine->delComment(cvi);
+            m_sourcecode->delComment(cvi);
         Refresh();
     }
 }
 
 
-void CodeView::OnPopUpMenuOD_Matrix(wxCommandEvent &event)
+void CodeView::onPopUpMenuOD_Matrix(wxCommandEvent &event)
 {
 	LogIt("Data Matrixed !!\n");
 }
 
-void CodeView::OnPopUpMenuOD_String(wxCommandEvent& event)
+void CodeView::onPopUpMenuOD_String(wxCommandEvent& event)
 {
 	LogIt("Data stringed !!\n");
 }
 
-void CodeView::OnPopUpMenuOD_Number(wxCommandEvent& event)
+void CodeView::onPopUpMenuOD_Number(wxCommandEvent& event)
 {
 	LogIt("Data numbered !!\n");
 }
 
-void CodeView::OnPopUpMenuRenLabel(wxCommandEvent& event)
+void CodeView::onPopUpMenuRenLabel(wxCommandEvent& event)
 {
     SourceCodeLine *cvi;
     DisassembledItem *de;
-    cvi = m_CodeViewLine->line(line_info.cursorPosition);
+    cvi = m_sourcecode->line(m_line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (cvi)
 	{
-	    de = line_info.dasmitem;
+	    de = m_line_info.dasmitem;
 
 		if (cvi->labelProgAddress)
-			Process->prog_labels->EditLabelDialog(cvi->labelProgAddress->address);
+			m_process->prog_labels->EditLabelDialog(cvi->labelProgAddress->address);
         else
             if (de && (de->IsArgumentProgramAddress()))
-                Process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
+                m_process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
 		if (cvi->labelVarAddress)
-			Process->var_labels->EditLabelDialog(cvi->labelVarAddress->address);
+			m_process->var_labels->EditLabelDialog(cvi->labelVarAddress->address);
         else
             if (de && (de->IsArgumentVariableAddress()))
-                Process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
+                m_process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
 
         Refresh();
 	}
 }
 
-void CodeView::OnPopUpMenuDelLabel(wxCommandEvent& event)
+void CodeView::onPopUpMenuDelLabel(wxCommandEvent& event)
 {
-    if (line_info.type == siLineLabelProg)
+    if (m_line_info.type == lt_LineLabelProg)
     {
-        Process->removeLineAndProgLabels(line_info.firstLine);
+        m_process->removeLineAndProgLabels(m_line_info.firstLine);
         Refresh();
     }
 
-    if (line_info.type == siLineLabelVar)
+    if (m_line_info.type == lt_LineLabelVar)
     {
-        Process->removeLineAndVarLabels(line_info.firstLine);
+        m_process->removeLineAndVarLabels(m_line_info.firstLine);
         Refresh();
     }
 
 
-    if (line_info.type == siInstructionLabel)
+    if (m_line_info.type == lt_InstructionLabel)
     {
-        Process->removeFromLabelUserList(line_info.dasmitem, line_info.firstInstruction);
-        line_info.dasmitem->SetArgLabel(false);
-        RefreshRect(CalcCursorRfshRect());
+        m_process->removeFromLabelUserList(m_line_info.dasmitem, m_line_info.firstInstruction);
+        m_line_info.dasmitem->SetArgLabel(false);
+        RefreshRect(calcCursorRfshRect());
     }
 }
 
-void CodeView::OnPopUpMenuCreateLabel(wxCommandEvent& event)
+void CodeView::onPopUpMenuCreateLabel(wxCommandEvent& event)
 {
-    if (line_info.type == siData)
-        LogIt(wxString::Format("Label created for address %.4X.", line_info.firstAddress));
+    if (m_line_info.type == lt_Data)
+        LogIt(wxString::Format("Label created for address %.4X.", m_line_info.firstAddress));
 }
 
 
 
 
-void CodeView::OnPopUpMenuArgStyleBin(wxCommandEvent &event)
+void CodeView::onPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
-	if (line_info.argSelected == 1)
-		line_info.dasmitem->SetStyleArgument(0, ast_bytebin);
+	if (m_line_info.argSelected == 1)
+		m_line_info.dasmitem->SetStyleArgument(0, ast_bytebin);
 
-	if (line_info.argSelected == 2)
-		line_info.dasmitem->SetStyleArgument(1, ast_bytebin);
+	if (m_line_info.argSelected == 2)
+		m_line_info.dasmitem->SetStyleArgument(1, ast_bytebin);
 
-	RefreshRect(CalcCursorRfshRect());
+	RefreshRect(calcCursorRfshRect());
 }
 
 
-void CodeView::OnPopUpMenuArgStyleDec(wxCommandEvent& event)
+void CodeView::onPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
-	if (line_info.argSelected == 1)
-		line_info.dasmitem->SetStyleArgument(0, ast_bytedec);
+	if (m_line_info.argSelected == 1)
+		m_line_info.dasmitem->SetStyleArgument(0, ast_bytedec);
 
-	if (line_info.argSelected == 2)
-		line_info.dasmitem->SetStyleArgument(1, ast_bytedec);
+	if (m_line_info.argSelected == 2)
+		m_line_info.dasmitem->SetStyleArgument(1, ast_bytedec);
 
-	RefreshRect(CalcCursorRfshRect());
+	RefreshRect(calcCursorRfshRect());
 }
 
 
-void CodeView::OnPopUpMenuArgStyleHex(wxCommandEvent& event)
+void CodeView::onPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
-	if (line_info.argSelected == 1)
-		line_info.dasmitem->SetStyleArgument(0, ast_bytehex);
+	if (m_line_info.argSelected == 1)
+		m_line_info.dasmitem->SetStyleArgument(0, ast_bytehex);
 
-	if (line_info.argSelected == 2)
-		line_info.dasmitem->SetStyleArgument(1, ast_bytehex);
+	if (m_line_info.argSelected == 2)
+		m_line_info.dasmitem->SetStyleArgument(1, ast_bytehex);
 
-		RefreshRect(CalcCursorRfshRect());
+		RefreshRect(calcCursorRfshRect());
 }
 
 
 
 
-void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
+void CodeView::onPopUpMenuSearchArgument(wxCommandEvent& event)
 {
     SearchArgumentDialog *search_dialog = new SearchArgumentDialog(this);
     AbsoluteAddress address = 0;
 
     if (search_dialog->ShowModal() == wxID_OK)
     {
-        Process->searchInstructionArgument(search_dialog->getValue(), search_dialog->getSearchConfig());
+        m_process->searchInstructionArgument(search_dialog->getValue(), search_dialog->getSearchConfig());
 
-        if (Process->searchInstructionArgumentContinue(address))
+        if (m_process->searchInstructionArgumentContinue(address))
         {
-            CenterAddress(address);
+            centerAddress(address);
         }
 
     }
@@ -493,7 +493,7 @@ void CodeView::OnPopUpMenuSearchArgument(wxCommandEvent& event)
 
 
 
-void CodeView::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
+void CodeView::onMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     LogIt("Mouse Lost !!!!");
 }

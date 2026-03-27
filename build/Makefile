@@ -46,7 +46,7 @@ BACKUPFILE := idz80_$(DATE)_$(TIME)
 ifeq ($(DEBUG), 0)
 #	Release
 	RELEASE_WARNINGS = -Wredundant-decls -Wall -Wextra
-	CC_FLAGS = -c -pipe -mthreads -std=c++17 $(RELEASE_WARNINGS)
+	CC_FLAGS = -c -pipe -mthreads -std=c++17 $(RELEASE_WARNINGS) -static-libgcc -static-libstdc++ -static
 	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
 # -D__GNUWIN32__
 	INCLUDE0_PATH := $(WXW_INCLUDE2)

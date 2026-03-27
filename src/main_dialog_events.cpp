@@ -40,7 +40,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     m_sourcecode_mgr = new SourceCodeManager(this);
     m_labels = new LabelManager();
 //    m_processdata = new ProcessData(this);
-//    codeview_ = new CodeView(this, process_, m_log_window);
+//    NOT HERE ANYMORE. codeview_ = new CodeView(this, process_, m_log_window);
 //    project_ = new ProjectManagerXML(this);
 
     SetupLabels();
@@ -189,7 +189,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     unsigned int file_selected = m_notebook->GetSelection();
 
 //    m_processdata->disassembleFirst(file_selected);
-//    m_processdata->initData(file_selected);
+//    m_processdata->initSourceCode(file_selected);
 /*
     process_->insertLineLabelsInSourceCode();
     process_->prog_labels->SortAddress(true);
@@ -220,7 +220,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 //    process_->Program->GetEntries(entries);
 
 //    if (!entries.IsEmpty())
-//        codeview_->CenterAddress(entries[0]);
+//        codeview_->centerAddress(entries[0]);
 }
 
 
