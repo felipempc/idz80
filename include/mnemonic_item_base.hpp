@@ -16,7 +16,7 @@
 #define MAX_OPCODE_SIZE     4
 
 typedef unsigned char ByteCode [MAX_OPCODE_SIZE];
-
+constexpr int MAX_ARGUMENT_COUNT = 2;
 
 
 

@@ -578,6 +578,37 @@ int CodeView::getLastItemIndex()
 
 
 
+/// @brief Gets the correct label to the argument
+/// @param t_dasmeditem The disassembled item
+/// @param t_argument_index The argument's index
+/// @param t_argument The argument
+/// @return The label string or an empty string if the label was not found
+wxString CodeView::getArgumentLabel(const DisassembledItem *t_dasmeditem, const unsigned int &t_argument_index, const unsigned int &t_argument)
+{
+    wxString stringlabel;
+
+    switch (t_dasmeditem->getMnemonic()->GetArgument(t_argument_index).type)
+    {
+        case OT_RELATIVE_ADDRESS:
+        case OT_ABSOLUTE_ADDRESS:
+                        m_process->m_labels->prog_labels->getLabel(t_argument, stringlabel);
+                        break;
+        case OT_IO_ADDRESS:
+                        m_process->m_labels->io_labels->getLabel(t_argument, stringlabel);
+                        break;
+        case OT_VARIABLE:
+                        m_process->m_labels->var_labels->getLabel(t_argument, stringlabel);
+                        break;
+        case OT_NONE:
+        case OT_DATA:
+        case OT_OFFSET:
+                        break;
+    }
+    return stringlabel;
+}
+
+
+
 /// @brief Updates the rectangle corresponding to the last cursor position.
 void CodeView::updateLastCursorRect()
 {
@@ -604,6 +635,29 @@ void CodeView::updateVirtualSize()
 		sz.y = m_sourcecode->getCount() * m_font_height;
 		SetVirtualSize(sz);
 	}
+}
+
+
+
+/// @brief Updates or creates the argument's rectangle dimensions
+/// @param t_rectangle Pointer to the rectangle
+/// @param t_x X position
+/// @param t_y Y position
+/// @param t_width Width
+/// @param t_height Height
+void CodeView::updateRectangle(wxRect *t_rectangle, int t_x, int t_y, int t_width, int t_height)
+{
+    if (t_rectangle == 0)
+    {
+        t_rectangle = new wxRect(t_x, t_y, t_width, t_height);
+    }
+    else
+    {
+        t_rectangle->SetX(t_x);
+        t_rectangle->SetY(t_y);
+        t_rectangle->SetHeight(t_height);
+        t_rectangle->SetWidth(t_width);
+    }
 }
 
 

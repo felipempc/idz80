@@ -17,6 +17,10 @@
 class LabelManager
 {
     public:
+        bool loadSystemLabels(const wxString &filename);
+        void clearUserLabels();
+        void destroyAll();
+
         // User Labels
         LabelListCtrl       *var_labels,
                             *prog_labels,
@@ -28,10 +32,6 @@ class LabelManager
 							*sys_io,
 							*sys_const;
         LabelManager();
-        bool loadSystemLabels(const wxString &filename);
-        void clearUserLabels();
-        void destroyAll();
-
 };
 
 

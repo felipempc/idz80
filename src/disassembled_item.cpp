@@ -164,6 +164,68 @@ ArgumentStyleOptions DisassembledItem::getArgumentStyle(unsigned int index)
 
 
 
+/// @brief Gets the number of arguments that has a label
+/// @return 
+unsigned int DisassembledItem::getNumArgumentLabeled()
+{
+    unsigned int num_labeled = 0;
+
+    if (m_arg_style) {
+        if (m_arg_style->first == STYLE_LABELED) {
+            ++num_labeled;
+        }
+        if (m_arg_style->second == STYLE_LABELED) {
+            ++num_labeled;
+        }
+    }
+    return num_labeled;
+}
+
+
+
+/// @brief Gets the index of the first argument that has a label associated. May be the first or the second.
+/// @return -1 if there is no label associated by any argument, 0 to the first and 1 to the second argument.
+int DisassembledItem::getFirstArgumentLabeled()
+{
+    int labeled = -1;
+
+    if (m_arg_style) {
+        if (m_arg_style->first == STYLE_LABELED) {
+            labeled = 0;
+        }
+        else {
+            if (m_arg_style->second == STYLE_LABELED) {
+                labeled = 1;
+            }
+        }
+    }
+    return labeled;
+}
+
+
+
+/// @brief Gets the index of the second argument that has a label associated, of it's not, check the first argument.
+/// @return -1 if there is no label associated by any argument,  0 to the first and 1 to the second argument.
+int DisassembledItem::getSecondArgumentLabeled()
+{
+    int labeled = -1;
+
+    if (m_arg_style) {
+        if (m_arg_style->second == STYLE_LABELED) {
+            labeled = 1;
+        }
+        else {
+            if (m_arg_style->first == STYLE_LABELED) {
+                labeled = 0;
+            }
+        }
+    }
+
+    return labeled;
+}
+
+
+
 /// @brief Gets the offset position of this item in the file.
 /// @return 
 FileOffset DisassembledItem::getOffsetInFile()

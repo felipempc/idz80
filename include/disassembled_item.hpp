@@ -87,7 +87,9 @@ class DisassembledItem : public DisassembledItemBase
         // Arguments
         ArgumentStyle getArgumentStyle();
         ArgumentStyleOptions getArgumentStyle(unsigned int index);
-
+        unsigned int getNumArgumentLabeled();
+        int getFirstArgumentLabeled();
+        int getSecondArgumentLabeled();
         int getArgumentValue(unsigned int index, unsigned int base_address = 0);
         void SetArgumentStyle(unsigned int index, ArgumentStyleOptions style);
 

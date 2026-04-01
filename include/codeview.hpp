@@ -107,9 +107,11 @@ private:
     int getFirstLine();
     int getLastLine();
     int getLastItemIndex();
+    wxString getArgumentLabel(const DisassembledItem *t_dasmeditem, const unsigned int &t_argument_index, const unsigned int &t_argument);
     void updateSelectedRect();
     void updateLastCursorRect();
     void updateVirtualSize();
+    void updateRectangle(wxRect *t_rectangle, int  t_x, int t_y, int t_width, int t_height);
 
     //cursor
     void showCursor(wxDC &dc);

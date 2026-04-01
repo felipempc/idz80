@@ -24,23 +24,23 @@
 uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_line)
 {
     uint column_pixel, argwidth, lenght;
-    DisassembledItem *de;
+    DisassembledItem *dasmed_item;
     wxString str = "ERROR";
 
     column_pixel = COL_MNEM;
-    de = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+    dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
 
     //TODO: Verify why we drawtext of an empty string
     dc.SetTextForeground(m_color_text_foreground);
     dc.DrawText(str, column_pixel, t_line_pixel);
     column_pixel += dc.GetTextExtent(str).GetWidth();
 
-    if ((de->getArgumentStyle(0) == STYLE_WORD_HEX) && (de->getOpcodeSize() % 2 == 0)) { // Must be even
+    if ((dasmed_item->getArgumentStyle(0) == STYLE_WORD_HEX) && (dasmed_item->getOpcodeSize() % 2 == 0)) { // Must be even
         str.Printf("DW ");
-        lenght = de->getOpcodeSize() / 2;
+        lenght = dasmed_item->getOpcodeSize() / 2;
         for (unsigned int i = 0; i < lenght; ++i) {
 
-            argwidth = de->getWordFromFile(i);
+            argwidth = dasmed_item->getWordFromFile(i);
             str << wxString::Format("0x%.4X", argwidth);
             if (i < (lenght - 1))
                 str << ",";
@@ -48,10 +48,10 @@ uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_l
     }
     else {
         str.Printf("DB ");
-        for (unsigned int i = 0; i < de->getOpcodeSize(); ++i)
+        for (unsigned int i = 0; i < dasmed_item->getOpcodeSize(); ++i)
         {
-            str << wxString::Format("0x%.2X", de->getByteOpcode(i));
-            if (i < (de->getOpcodeSize() - 1))
+            str << wxString::Format("0x%.2X", dasmed_item->getByteOpcode(i));
+            if (i < (dasmed_item->getOpcodeSize() - 1))
                 str << ",";
         }
     }
@@ -84,153 +84,108 @@ uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_l
 /// @return the last point of the drawn string.
 uint CodeView::renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_line)
 {
-    int		nargs,
-			column_pixel,
-			argwidth1,
-			argpos1,
-			argwidth2,
-			argpos2;
-    uint	strparts,   // counts the number of mnemonic str used
-			argument;
+    int		num_arguments = 0,
+            num_arguments_labeled = 0,
+            //index_arguments = 0,
+			column_pixel = 0,
+			argwidth1 = 0,
+			argpos1 = 0,
+			argwidth2 = 0,
+			argpos2 = 0;
+    uint	strparts = 0,   // counts the number of mnemonic str used
+			argument = 0;
     wxString str;
-    bool usedlabel;
-    DisassembledItem *de;
+    bool usedlabel  = false;
+    DisassembledItem *dasmed_item;
+    std::array<int, MAX_ARGUMENT_COUNT> argwidth = {0, 0};
 
-    argwidth1 = argwidth2 = argpos1 = argpos2 = 0;
     usedlabel = false;
     column_pixel = COL_MNEM;
-    de = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
-    nargs = de->GetArgumentCount();
+    dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+    num_arguments = dasmed_item->getMnemonic()->GetArgumentCount();
+    if (num_arguments > MAX_ARGUMENT_COUNT) {
+        num_arguments = MAX_ARGUMENT_COUNT;
+    }
+    num_arguments_labeled = dasmed_item->getNumArgumentLabeled();
     strparts = 0;
-    str = de->GetMnemonicStr(0);
-    strparts++;
+    str = dasmed_item->getMnemonic()->GetMnemonicStr(0);
+    ++strparts;
     dc.SetTextForeground(m_color_text_foreground);
-    dc.DrawText(str, column_pixel, t_line_pixel);
+    dc.DrawText(str, column_pixel, t_line_pixel);       // Prints the first part of the instruction
     column_pixel += dc.GetTextExtent(str).GetWidth();
     argpos1 = column_pixel;
 
-	argument = de->GetArgument(0, m_process->Disassembled->GetBaseAddress(sc_line->dasmedItem));
-
-    if (de->HasArgumentLabel())
-    {
-        switch (de->GetArgumentType(0))
-        {
-            case ARG_REL_ADDR:
-            case ARG_ABS_ADDR:
-                            if (m_process->prog_labels->GetLabel(argument, str) >= 0)
-                                usedlabel = true;
-                            break;
-            case ARG_IO_ADDR:
-                            if (m_process->io_labels->GetLabel(argument, str) >= 0)
-                                usedlabel = true;
-                            break;
-            case ARG_VARIABLE:
-                            if (m_process->var_labels->GetLabel(argument, str) >= 0)
-                                usedlabel = true;
-                            break;
-            case ARG_NONE:
-            case ARG_LITERAL:
-            case ARG_OFFSET:
-                            break;
+    for(int index_arguments = 0; index_arguments < num_arguments; ++index_arguments) {
+        argument = dasmed_item->getArgumentValue(index_arguments, m_sourcecode->getDisassembled()->GetBaseAddress(sc_line->dasmedItem));
+        if (dasmed_item->getArgumentStyle(index_arguments) == STYLE_LABELED) {
+            str = getArgumentLabel(dasmed_item, index_arguments, argument);
+            if (!str.IsEmpty()) {
+                dc.SetTextForeground(m_color_label_foreground);
+            }
         }
+        dc.DrawText(str, column_pixel, t_line_pixel);
+
+    }
+    // --------------------------------
         if (usedlabel)
         {
             dc.SetTextForeground(*wxBLUE);
-            dc.DrawText(str, x, t_line_pixel);
+            dc.DrawText(str, column_pixel, t_line_pixel);
             argwidth1 = dc.GetTextExtent(str).GetWidth();
-            x += argwidth1;
+            column_pixel += argwidth1;
             dc.SetTextForeground(m_color_text_foreground);
-            if (sc_line->rectArg1 == 0)
-            {
-                sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
-            }
-            else
-            {
-                sc_line->rectArg1->SetX(argpos1);
-                sc_line->rectArg1->SetY(t_line_pixel);
-                sc_line->rectArg1->SetHeight(m_font_height);
-                sc_line->rectArg1->SetWidth(argwidth1);
-            }
+            updateRectangle(sc_line->rectArg1, argpos1, t_line_pixel, argwidth1, m_font_height);
         }
-    }
+    }   // End rendering labeled arguments
 
-    if ((nargs == 1) && (!usedlabel))
+    if ((num_arguments == 1) && (!usedlabel))
     {
         dc.SetTextForeground(*wxRED);
 
-		str = formatArg(argument, de->GetStyleArgument(0));
+		str = formatArg(argument, dasmed_item->GetStyleArgument(0));
 
-        dc.DrawText(str, x, t_line_pixel);
+        dc.DrawText(str, column_pixel, t_line_pixel);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
         column_pixel += argwidth1;
-        if (sc_line->rectArg1 == 0)
-        {
-            sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
-        }
-        else
-        {
-            sc_line->rectArg1->SetX(argpos1);
-            sc_line->rectArg1->SetY t_line_pixel);
-            sc_line->rectArg1->SetHeight(m_font_height);
-            sc_line->rectArg1->SetWidth(argwidth1);
-        }
+        updateRectangle(sc_line->rectArg1, argpos1, t_line_pixel, argwidth1, m_font_height);
     }
     else    // two arguments
-    if ((nargs == 2) && (!usedlabel))
+    if ((num_arguments == 2) && (!usedlabel))
     {
         dc.SetTextForeground(*wxRED);
 
-		str = formatArg(argument, de->GetStyleArgument(0));
-        dc.DrawText(str, x, t_line_pixel);
+		str = formatArg(argument, dasmed_item->GetStyleArgument(0));
+        dc.DrawText(str, column_pixel, t_line_pixel);
         argwidth1 = dc.GetTextExtent(str).GetWidth();
-        x += argwidth1;
+        column_pixel += argwidth1;
 
         dc.SetTextForeground(m_color_text_foreground);
-        str = de->GetMnemonicStr(1);
-        strparts++;
-        dc.DrawText(str, x, t_line_pixel);
-        x += dc.GetTextExtent(str).GetWidth();
-        argpos2 = x;
+        str = dasmed_item->GetMnemonicStr(1);
+        ++strparts;
+        dc.DrawText(str, column_pixel, t_line_pixel);
+        column_pixel += dc.GetTextExtent(str).GetWidth();
+        argpos2 = column_pixel;
 
         dc.SetTextForeground(*wxRED);
-        str = formatArg(de->GetArgument(1, 0), de->GetStyleArgument(1));
+        str = formatArg(dasmed_item->GetArgument(1, 0), dasmed_item->GetStyleArgument(1));
 
-        dc.DrawText(str, x, t_line_pixel);
+        dc.DrawText(str, column_pixel, t_line_pixel);
         argwidth2 = dc.GetTextExtent(str).GetWidth();
-        x += argwidth2;
-        if (sc_line->rectArg1 == 0)
-        {
-            sc_line->rectArg1 = new wxRect(argpos1, t_line_pixel, argwidth1, m_font_height);
-        }
-        else
-        {
-            sc_line->rectArg1->SetX(argpos1);
-            sc_line->rectArg1->SetY t_line_pixel);
-            sc_line->rectArg1->SetHeight(m_font_height);
-            sc_line->rectArg1->SetWidth(argwidth1);
-        }
-
-        if (sc_line->rectArg2 == 0)
-        {
-            sc_line->rectArg2 = new wxRect(argpos2, t_line_pixel, argwidth2, m_font_height);
-        }
-        else
-        {
-            sc_line->rectArg2->SetX(argpos2);
-            sc_line->rectArg2->SetY t_line_pixel);
-            sc_line->rectArg2->SetHeight(m_font_height);
-            sc_line->rectArg2->SetWidth(argwidth2);
-        }
+        column_pixel += argwidth2;
+    
+        updateRectangle(sc_line->rectArg1, argpos1, t_line_pixel, argwidth1, m_font_height);
+        updateRectangle(sc_line->rectArg2, argpos2, t_line_pixel, argwidth2, m_font_height);
     }
 
     dc.SetTextForeground(m_color_text_foreground);
-    if (de->GetMnemonicStrCount() > strparts)
+    if (dasmed_item->getMnemonic()->GetMnemonicStrCount() > strparts)
     {
-        str = de->GetMnemonicStr(strparts);
-        dc.DrawText(str, x, t_line_pixel);
-        x += dc.GetTextExtent(str).GetWidth();
+        str = dasmed_item->getMnemonic()->GetMnemonicStr(strparts);
+        dc.DrawText(str, column_pixel, t_line_pixel);
+        column_pixel += dc.GetTextExtent(str).GetWidth();
     }
-    return x;
+
+    return column_pixel;
 }
 
 
@@ -269,7 +224,7 @@ void CodeView::render(wxDC &dc, const int t_line_pixel, const int fromline, cons
     uint			commentoffset;
     int				linepixel, line_offset, rendering_line;
     uint			address;
-    DisassembledItem		*de;
+    DisassembledItem		*dasmed_item;
     wxCoord			width, heigh;
 
     GetClientSize(&width, &heigh);
@@ -300,15 +255,15 @@ void CodeView::render(wxDC &dc, const int t_line_pixel, const int fromline, cons
 				 * -------------------------------------------------*/
 				if (sc_line->dasmedItem >= 0)    // is It data/code ?
 				{
-					de = m_process->Disassembled->GetData(sc_line->dasmedItem);
-					if (de)
+					dasmed_item = m_process->Disassembled->GetData(sc_line->dasmedItem);
+					if (dasmed_item)
 					{
-						address = m_process->Disassembled->GetBaseAddress(sc_line->dasmedItem) + de->GetOffset();
+						address = m_process->Disassembled->GetBaseAddress(sc_line->dasmedItem) + dasmed_item->GetOffset();
 
 						dc.SetTextForeground(m_color_text_foreground);
-						dc.DrawText(de->GetCodeStr(), COL_CODE, linepixel);
-						dc.DrawText(de->GetAsciiStr(), COL_ASCII, linepixel);
-						switch (de->GetType())
+						dc.DrawText(dasmed_item->GetCodeStr(), COL_CODE, linepixel);
+						dc.DrawText(dasmed_item->GetAsciiStr(), COL_ASCII, linepixel);
+						switch (dasmed_item->GetType())
 						{
 							case et_Data:
 												commentoffset = renderData(dc, linepixel, sc_line);

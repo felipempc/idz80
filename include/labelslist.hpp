@@ -56,7 +56,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         void delLabelUser(const AbsoluteAddress t_address, const DisassembledIndex t_dasmitem);
         void editLabel(const LabelIndex t_listitem, const wxString &t_strlabel);
 		bool editLabelDialog(const AbsoluteAddress t_address);
-        int getLabel(const AbsoluteAddress t_address, const wxString& str);
+        int getLabel(const AbsoluteAddress t_address, wxString& str);
         LabelIndex getLabelIndex(const AbsoluteAddress t_address);
         wxString getLabel(const LabelIndex t_index);
         wxString getAddress(const LabelIndex t_index);

@@ -284,25 +284,30 @@ bool LabelListCtrl::editLabelDialog(const AbsoluteAddress t_address)
 
 
 
-//TODO: MODIFY or Remove....
-int LabelListCtrl::getLabel(const AbsoluteAddress t_address, const wxString &str)
+/// @brief Gets the existing label of t_address and puts it in str
+/// @param t_address The address of the label
+/// @param str Where the label will be assigned
+/// @return The index of the label in the label list
+int LabelListCtrl::getLabel(const AbsoluteAddress t_address, wxString &str)
 {
-    /*
-    int i;
+    int index;
     wxListItem item;
+    wxString address_string;
 
-    str =  .Printf("%X", t_address);
-    i = FindItem(-1, str);
-    if (i >= 0)
+    address_string.Printf("%X", t_address);
+    index = FindItem(-1, address_string);
+    if (index >= 0)
     {
-        item.m_itemId = i;
+        item.m_itemId = index;
         item.m_col = 1;
         item.m_mask = wxLIST_MASK_TEXT;
         GetItem(item);
         str = item.m_text;
     }
-*/
-    return 0;   //i;
+    else {
+        str.Clear();
+    }
+    return index;
 }
 
 
