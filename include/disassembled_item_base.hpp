@@ -26,7 +26,8 @@ class DisassembledItemBase
         ExplicitArguments   m_arguments;
 
         FileOffset      m_file_offset;
-        bool            m_is_data;
+        bool            m_is_data,
+                        m_is_instruction;
         unsigned int    m_length;
 };
 

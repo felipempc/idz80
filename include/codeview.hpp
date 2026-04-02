@@ -90,11 +90,11 @@ private:
 
     // window render
     void paintBackground(wxDC &t_dc, const int t_line_pixel, const int t_fromline, const int t_toline, const wxBrush t_backcolour);
-    void render(wxDC &dc, const int t_line_pixel, const int fromline, const int count);
-    uint renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *cvi);
-    uint renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLine *cvi);
-    uint renderProgramLabel(wxDC &dc, const int t_line_pixel, wxString str);
-    uint renderOrigin(wxDC &dc, const int t_line_pixel, uint address);
+    void render(wxDC &t_dc, const int t_line_pixel, const int t_fromline, const int t_count);
+    uint renderData(wxDC &t_dc, const int t_line_pixel, SourceCodeLine *sc_line);
+    uint renderInstruction(wxDC &t_dc, const int t_line_pixel, SourceCodeLine *sc_line);
+    uint renderProgramLabel(wxDC &t_dc, const int t_line_pixel, wxString t_label_string);
+    uint renderOrigin(wxDC &t_dc, const int t_line_pixel, uint t_address);
     void renderBackgroundBlur(wxDC &t_dc, wxRect t_region);
 
     //utilities
@@ -103,7 +103,7 @@ private:
     wxRect calcCursorRfshRect();
     void calcIncompleteArea();
     wxRect calcSelectedRect();
-	wxString formatArg(uint arg, uint style);
+	wxString formatArg(uint arg, ArgumentStyleOptions style);
     int getFirstLine();
     int getLastLine();
     int getLastItemIndex();
@@ -111,7 +111,7 @@ private:
     void updateSelectedRect();
     void updateLastCursorRect();
     void updateVirtualSize();
-    void updateRectangle(wxRect *t_rectangle, int  t_x, int t_y, int t_width, int t_height);
+    void updateRectangle(wxRect** t_rectangle, int  t_x, int t_y, int t_width, int t_height);
 
     //cursor
     void showCursor(wxDC &dc);

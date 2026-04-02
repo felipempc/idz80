@@ -640,23 +640,24 @@ void CodeView::updateVirtualSize()
 
 
 /// @brief Updates or creates the argument's rectangle dimensions
-/// @param t_rectangle Pointer to the rectangle
+/// @param t_rectangle Pointer to pointer to the rectangle
 /// @param t_x X position
 /// @param t_y Y position
 /// @param t_width Width
 /// @param t_height Height
-void CodeView::updateRectangle(wxRect *t_rectangle, int t_x, int t_y, int t_width, int t_height)
+void CodeView::updateRectangle(wxRect** t_rectangle, int t_x, int t_y, int t_width, int t_height)
 {
-    if (t_rectangle == 0)
-    {
-        t_rectangle = new wxRect(t_x, t_y, t_width, t_height);
+    wxRect* rectangle;
+
+    if (*t_rectangle == nullptr) {
+        *t_rectangle = new wxRect(t_x, t_y, t_width, t_height);
     }
-    else
-    {
-        t_rectangle->SetX(t_x);
-        t_rectangle->SetY(t_y);
-        t_rectangle->SetHeight(t_height);
-        t_rectangle->SetWidth(t_width);
+    else {
+        rectangle = *t_rectangle;
+        rectangle->SetX(t_x);
+        rectangle->SetY(t_y);
+        rectangle->SetHeight(t_height);
+        rectangle->SetWidth(t_width);
     }
 }
 

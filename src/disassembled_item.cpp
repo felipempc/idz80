@@ -36,6 +36,7 @@ void DisassembledItem::clear()
     m_mnemonic = 0;
     m_arg_style = 0;
     m_is_data = false;
+    m_is_instruction = false;
     m_file_offset = 0;
     m_length = 0;
     m_mnemonic_signature = 0;
@@ -262,11 +263,21 @@ bool DisassembledItem::isData()
 
 
 
+/// @brief Verifies if this item is an instruction
+/// @return true if it is an instruction
+bool DisassembledItem::isInstruction()
+{
+    return m_is_instruction;
+}
+
+
+
 /// @brief Marks this item as data
 /// @param isdata 
 void DisassembledItem::markAsData(const bool isdata)
 {
     m_is_data = isdata;
+    m_is_instruction = !m_is_data;
 }
 
 
@@ -423,6 +434,7 @@ void DisassembledItem::setupInstructionItem(MnemonicItem *mnemonic, const FileOf
     m_mnemonic = mnemonic;
     m_file_offset = offset;
     m_is_data = false;
+    m_is_instruction = true;
     m_length = mnemonic->GetByteCodeSize();
     m_mnemonic_signature = mnemonic->GetMnemonicSignature();
     fillArgument();
@@ -438,6 +450,7 @@ void DisassembledItem::setupDataItem(const FileOffset offset)
     clear();
     m_file_offset = offset;
     m_is_data = true;
+    m_is_instruction = false;
     m_length = 1;
 }
 

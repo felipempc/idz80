@@ -77,6 +77,8 @@ class DisassembledItem : public DisassembledItemBase
         void setSize(unsigned int len);
 
         bool isData();
+        bool isInstruction();
+
         void markAsData(const bool isdata = true);
 
         unsigned int getByteOpcode(unsigned int t_opcode_index);
@@ -87,6 +89,7 @@ class DisassembledItem : public DisassembledItemBase
         // Arguments
         ArgumentStyle getArgumentStyle();
         ArgumentStyleOptions getArgumentStyle(unsigned int index);
+        //TODO: Remove this xxxArgumentLabeled()
         unsigned int getNumArgumentLabeled();
         int getFirstArgumentLabeled();
         int getSecondArgumentLabeled();
