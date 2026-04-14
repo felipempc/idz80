@@ -707,7 +707,7 @@ LineType CodeView::getTypesInSelection(bool &hcomment)
 				hcomment = true;
             }
 
-            dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+            dasmed_item = m_sourcecode->getDisassembled()->getData(sc_line->dasmedItem);
             if (dasmed_item->isData()) {
                 if ((lastitem == lt_Unknown) || (lastitem == lt_Data))
                 {
@@ -938,7 +938,7 @@ void CodeView::treatAsSingleSelection()
 			m_line_info.type = lt_LineLabelVar;
 
 		// check if line has instruction
-        m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.lineitem->dasmedItem);
+        m_line_info.dasmitem = m_sourcecode->getDisassembled()->getData(m_line_info.lineitem->dasmedItem);
         if (m_line_info.dasmitem)
         {
             if ((m_line_info.dasmitem->getArgumentStyle(0) == STYLE_LABELED)
@@ -951,7 +951,7 @@ void CodeView::treatAsSingleSelection()
                 m_line_info.type = lt_Data;
             m_line_info.firstInstruction = m_line_info.lineitem->dasmedItem;
             m_line_info.lastInstruction = m_line_info.firstInstruction;
-            m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
+            m_line_info.firstAddress = m_sourcecode->getDisassembled()->getBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
             m_line_info.lastAddress = m_line_info.firstAddress;
         }
 
@@ -995,10 +995,10 @@ void CodeView::treatAsMultiSelection()
     if (first_found && last_found) {
         m_line_info.firstInstruction = m_line_info.lineitem->dasmedItem;
         m_line_info.lastInstruction = last_line->dasmedItem;
-        m_line_info.dasmitem = m_sourcecode->getDisassembled()->GetData(m_line_info.firstInstruction);
-        last_disassembled = m_sourcecode->getDisassembled()->GetData(m_line_info.lastInstruction);
-        m_line_info.firstAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
-        m_line_info.lastAddress = m_sourcecode->getDisassembled()->GetBaseAddress(m_line_info.lastInstruction) + last_disassembled->getOffsetInFile();
+        m_line_info.dasmitem = m_sourcecode->getDisassembled()->getData(m_line_info.firstInstruction);
+        last_disassembled = m_sourcecode->getDisassembled()->getData(m_line_info.lastInstruction);
+        m_line_info.firstAddress = m_sourcecode->getDisassembled()->getBaseAddress(m_line_info.firstInstruction) + m_line_info.dasmitem->getOffsetInFile();
+        m_line_info.lastAddress = m_sourcecode->getDisassembled()->getBaseAddress(m_line_info.lastInstruction) + last_disassembled->getOffsetInFile();
     }
 
     m_line_info.hasComment = false;

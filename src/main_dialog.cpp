@@ -199,7 +199,7 @@ void IDZ80::updateNotebookPages()
         namepage = m_notebook->GetPageText(i);
         if (!filename.IsSameAs(namepage))
         {
-            DisassembledContainer *disassembled = new DisassembledContainer(this);
+            DisassembledContainer *disassembled = new DisassembledContainer(m_programs_mgr->Index(i));
             m_disassembled_mgr->Add(disassembled);
             m_sourcecode_mgr->addSourceCode(new SourceCode(disassembled, m_labels));
             m_notebook->AddPage(new wxPanel(this), filename, true);

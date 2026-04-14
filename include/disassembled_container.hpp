@@ -32,22 +32,23 @@ typedef std::vector<DisassembledItem *> DisassembledList;
 class DisassembledContainer : public DebugLogBase
 {
     public:
-        void Clear();
-        int  Add(DisassembledItem *d_item);
-        void Del(DisassembledIndex position);
-        void Del(DisassembledIndex index, uint count);
-        int  Insert(DisassembledItem *dasmelement, DisassembledIndex beforeitem);
-        DisassembledItem *GetData(DisassembledIndex index);
-        uint GetCount();
-        bool IsLoaded();
-        uint GetUsedMem();
-        uint GetBaseAddress(DisassembledIndex index);
-        void AddOrigin(DisassembledIndex index, AbsoluteAddress address);
-        void DelOrigin(AbsoluteAddress address);
-        DisassembledIndex FindAddress(const AbsoluteAddress t_address);
+        void clear();
+        int  add(DisassembledItem *d_item);
+        void del(DisassembledIndex position);
+        void del(DisassembledIndex index, uint count);
+        int  insert(DisassembledItem *dasmelement, DisassembledIndex beforeitem);
+        DisassembledItem *getData(DisassembledIndex index);
+        uint getCount();
+        bool isLoaded();
+        uint getUsedMem();
+        uint getBaseAddress(DisassembledIndex index);
+        void addOrigin(DisassembledIndex index, AbsoluteAddress address);
+        void delOrigin(AbsoluteAddress address);
+        DisassembledIndex findAddress(const AbsoluteAddress t_address);
 
+        RawData *getProgram() const;
 
-        DisassembledContainer(DebugLogBase *logparent);
+        DisassembledContainer(RawData *t_rawdata);
         ~DisassembledContainer();
 
     private:
@@ -59,6 +60,7 @@ class DisassembledContainer : public DebugLogBase
         typedef std::vector<OriginData *> AddressList;
 
         DisassembledList    m_disassembled_list;
+        RawData *m_file_program;  //Keeps the track of the file
         uint    m_total_allocated;
         AddressList     m_origin_list;		// keeps Origin Addresses
 };

@@ -40,9 +40,13 @@ class ProcessData : public ProjectBase
     public:
         void disassembleFirst(const unsigned int t_index);
         void disassembleItems(const unsigned int t_index, RangeItems &t_range);
+        void disassembleItems(SourceCode *t_sourcecode, RangeItems &t_range);
         void transformToData(const unsigned int t_index, SelectedItemInfo &t_selected);
+        void transformToData(SourceCode *t_sourcecode, SelectedItemInfo &t_selected);
         void disassembleData(const unsigned int t_index, SelectedItemInfo &t_selected);
+        void disassembleData(SourceCode *t_sourcecode, SelectedItemInfo &t_selected);
         void makeData(const unsigned int t_index, RangeItems &t_range);
+        void makeData(SourceCode *t_sourcecode, RangeItems &t_range);
         //void AutoLabel();
         void initSourceCode(const unsigned int t_index);
         void insertLineLabelsInSourceCode(const unsigned int t_index);
@@ -52,7 +56,8 @@ class ProcessData : public ProjectBase
 
         void removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmindex);
         bool removeLineAndVarLabels(const unsigned int t_index,const int t_line);
-        bool removeLineAndProgLabels(const unsigned int t_index,const int t_line);
+        bool removeLineAndVarLabels(SourceCode *t_sourcecode,const int t_line);
+        bool removeLineAndProgLabels(SourceCode *t_sourcecode,const int t_line);
 /*
         void searchInstructionArgument(word t_argument_value, uint t_search_config);
         bool searchInstructionArgumentContinue(AbsoluteAddress &t_address);
@@ -66,6 +71,7 @@ class ProcessData : public ProjectBase
 
         void resetStyleFromUsers(DisassembledContainer *t_disassembled, IntArray *t_users);
         bool filterInstructions(const unsigned int t_index,  const SelectedItemInfo &t_selected, IntArray &t_range);
+        bool filterInstructions(SourceCode *t_sourcecode,  const SelectedItemInfo &t_selected, IntArray &t_range);
         void processLabel(const unsigned int t_index, LabelListCtrl *t_label);
 
         bool findInArgumentVariables(DisassembledItem *t_di, unsigned int t_argument);

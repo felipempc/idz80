@@ -35,6 +35,7 @@ class Decoder: public DebugLogBase
         void SetProgramIndex(const unsigned int program_index);
 
         void fullDisassemble();
+        void fullDisassemble(DisassembledContainer *t_disassembled);
         void DisassembleItems(RangeItems &dasm_range);
 
 

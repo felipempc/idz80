@@ -29,7 +29,7 @@ uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_l
     wxString str = "ERROR";
 
     column_pixel = COL_MNEM;
-    dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+    dasmed_item = m_sourcecode->getDisassembled()->getData(sc_line->dasmedItem);
 
     //TODO: Verify why we drawtext of an empty string
     dc.SetTextForeground(m_color_text_foreground);
@@ -90,7 +90,7 @@ uint CodeView::renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLin
     std::array<wxRect**, MAX_ARGUMENT_COUNT> arg_rectangle = {nullptr, nullptr};
 
     column_pixel = COL_MNEM;
-    dasmed_item = m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+    dasmed_item = m_sourcecode->getDisassembled()->getData(sc_line->dasmedItem);
     num_arguments = dasmed_item->getMnemonic()->GetArgumentCount();
     if (num_arguments > MAX_ARGUMENT_COUNT) {
         return 0;
@@ -112,7 +112,7 @@ uint CodeView::renderInstruction(wxDC &dc, const int t_line_pixel, SourceCodeLin
 
     //TODO: Debug here.
     for(int index_arguments = 0; index_arguments < num_arguments; ++index_arguments) {
-        argument = dasmed_item->getArgumentValue(index_arguments, m_sourcecode->getDisassembled()->GetBaseAddress(sc_line->dasmedItem));
+        argument = dasmed_item->getArgumentValue(index_arguments, m_sourcecode->getDisassembled()->getBaseAddress(sc_line->dasmedItem));
         if (dasmed_item->getArgumentStyle(index_arguments) == STYLE_LABELED) {
             line_string = getArgumentLabel(dasmed_item, index_arguments, argument);
         }
@@ -227,9 +227,9 @@ void CodeView::render(wxDC &t_dc, const int t_line_pixel, const int t_fromline, 
 
         // Render instructions or data
         if (sc_line->dasmedItem >= 0) {    // Tests if there is an index of a disassembled item
-            dasmed_item =  m_sourcecode->getDisassembled()->GetData(sc_line->dasmedItem);
+            dasmed_item =  m_sourcecode->getDisassembled()->getData(sc_line->dasmedItem);
             if (dasmed_item) {
-                address =  m_sourcecode->getDisassembled()->GetBaseAddress(sc_line->dasmedItem) + dasmed_item->getOffsetInFile();
+                address =  m_sourcecode->getDisassembled()->getBaseAddress(sc_line->dasmedItem) + dasmed_item->getOffsetInFile();
 
                 t_dc.SetTextForeground(m_color_text_foreground);
                 t_dc.DrawText(dasmed_item->getOpcodeAsStringHex(), COL_CODE, linepixel);

@@ -11,25 +11,24 @@
 #include "disassembled_container.hpp"
 
 
-DisassembledContainer::DisassembledContainer(DebugLogBase *logparent)
+DisassembledContainer::DisassembledContainer(RawData *t_rawdata)
 {
     m_total_allocated = 0;
-    SetTextLog(logparent->GetTextLog());
+    m_file_program = t_rawdata;
+    SetTextLog(t_rawdata->GetTextLog());
     ModuleName = "DisassembledContainer";
 }
 
 
 
-
 DisassembledContainer::~DisassembledContainer()
 {
-    Clear();
+    clear();
 }
 
 
 
-
-void DisassembledContainer::Clear()
+void DisassembledContainer::clear()
 {
     DisassembledItem *d_item;
     int size;
@@ -50,7 +49,7 @@ void DisassembledContainer::Clear()
 
 
 
-DisassembledItem *DisassembledContainer::GetData(DisassembledIndex index)
+DisassembledItem *DisassembledContainer::getData(DisassembledIndex index)
 {
     if (index >= m_disassembled_list.size())
         return 0;
@@ -60,7 +59,7 @@ DisassembledItem *DisassembledContainer::GetData(DisassembledIndex index)
 
 
 
-uint DisassembledContainer::GetCount()
+uint DisassembledContainer::getCount()
 {
     return m_disassembled_list.size();
 }
@@ -68,15 +67,15 @@ uint DisassembledContainer::GetCount()
 
 
 
-bool DisassembledContainer::IsLoaded()
+bool DisassembledContainer::isLoaded()
 {
-    return (GetCount() > 0);
+    return (getCount() > 0);
 }
 
 
 
 
-int DisassembledContainer::Add(DisassembledItem *d_item)
+int DisassembledContainer::add(DisassembledItem *d_item)
 {
     int     ret = -1;
 
@@ -93,7 +92,7 @@ int DisassembledContainer::Add(DisassembledItem *d_item)
 
 
 
-uint DisassembledContainer::GetUsedMem()
+uint DisassembledContainer::getUsedMem()
 {
     return m_total_allocated;
 }
@@ -101,7 +100,7 @@ uint DisassembledContainer::GetUsedMem()
 
 
 
-void DisassembledContainer::Del(DisassembledIndex position)
+void DisassembledContainer::del(DisassembledIndex position)
 {
 	DisassembledList::iterator it_d_item;
 	DisassembledItem *d_item;
@@ -127,7 +126,7 @@ void DisassembledContainer::Del(DisassembledIndex position)
 
 
 
-void DisassembledContainer::Del(DisassembledIndex index, uint count)
+void DisassembledContainer::del(DisassembledIndex index, uint count)
 {
     DisassembledList::iterator	it_begin,
                                 it_end;
@@ -143,14 +142,14 @@ void DisassembledContainer::Del(DisassembledIndex index, uint count)
 
 
 
-int DisassembledContainer::Insert(DisassembledItem *d_item, DisassembledIndex beforeitem)
+int DisassembledContainer::insert(DisassembledItem *d_item, DisassembledIndex beforeitem)
 {
-    uint    numitems = GetCount();
+    uint    numitems = getCount();
     int     ret = -1;
     DisassembledList::iterator it_d_item;
 
     if (beforeitem >= numitems)
-        ret = Add(d_item);
+        ret = add(d_item);
     else
     {
 		it_d_item = m_disassembled_list.begin() + beforeitem;
@@ -164,7 +163,7 @@ int DisassembledContainer::Insert(DisassembledItem *d_item, DisassembledIndex be
 
 
 
-uint DisassembledContainer::GetBaseAddress(DisassembledIndex index)
+uint DisassembledContainer::getBaseAddress(DisassembledIndex index)
 {
     AbsoluteAddress baseaddress = 0;
     AddressList::iterator  it_origin;
@@ -182,7 +181,7 @@ uint DisassembledContainer::GetBaseAddress(DisassembledIndex index)
 
 
 
-void DisassembledContainer::AddOrigin(DisassembledIndex index, AbsoluteAddress address)
+void DisassembledContainer::addOrigin(DisassembledIndex index, AbsoluteAddress address)
 {
     OriginData  *origin;
     AddressList::iterator  it_origin;
@@ -212,7 +211,7 @@ void DisassembledContainer::AddOrigin(DisassembledIndex index, AbsoluteAddress a
 
 
 
-void DisassembledContainer::DelOrigin(AbsoluteAddress address)
+void DisassembledContainer::delOrigin(AbsoluteAddress address)
 {
     AddressList::iterator  it_origin;
     OriginData *origin;
@@ -234,7 +233,7 @@ void DisassembledContainer::DelOrigin(AbsoluteAddress address)
 /// @param t_address 
 /// @return The last item address of the DisassembledList, or the item of the above comparison. \
 //TODO: Check this nonsense return. Must be rewritten.
-DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_address)
+DisassembledIndex DisassembledContainer::findAddress(const AbsoluteAddress t_address)
 {
     DisassembledIndex   item_index = 0,
                         ret_index = 0;
@@ -242,7 +241,7 @@ DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_add
 
     for (DisassembledList::iterator it = m_disassembled_list.begin(); it != m_disassembled_list.end();)
     {
-        item_address = GetBaseAddress(item_index) + static_cast<DisassembledItem *>(*it)->getOffsetInFile();
+        item_address = getBaseAddress(item_index) + static_cast<DisassembledItem *>(*it)->getOffsetInFile();
         if (item_address >= t_address) {
             ret_index = item_index;
             break;
@@ -260,3 +259,11 @@ DisassembledIndex DisassembledContainer::FindAddress(const AbsoluteAddress t_add
     return ret_index;
 }
 
+
+
+/// @brief Returns the program file associated.
+/// @return 
+RawData *DisassembledContainer::getProgram() const
+{
+    return m_file_program;
+}

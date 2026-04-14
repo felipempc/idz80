@@ -98,7 +98,7 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
 
 
     // ensure it won't overwrite existing dasmitems
-    next_de = m_disassembled_list->GetData(dasm_position);
+    next_de = m_disassembled_list->getData(dasm_position);
     if (next_de == 0)
         scan_limit = m_program->GetSize();
     else
@@ -109,12 +109,12 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
     if (mnc_item == OPCODE_NOT_FOUND)
     {
         de->setupDataItem(prg_index);
-        ret = m_disassembled_list->Insert(de, dasm_position);
+        ret = m_disassembled_list->insert(de, dasm_position);
     }
     else
     {
         de->setupInstructionItem(m_mnemonic->Item(mnc_item), prg_index);
-    	ret = m_disassembled_list->Insert(de, dasm_position);
+    	ret = m_disassembled_list->insert(de, dasm_position);
     }
 
     return ret;
@@ -147,7 +147,7 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
                                 break;
             case OT_ABSOLUTE_ADDRESS:
             case OT_RELATIVE_ADDRESS:
-                                argument_value = de->getArgumentValue(i, m_disassembled_list->GetBaseAddress(index));
+                                argument_value = de->getArgumentValue(i, m_disassembled_list->getBaseAddress(index));
                                 str = m_labels->sys_calls->find(argument_value);
                                 m_labels->prog_labels->addLabel(argument_value, str, index);
                                 de->SetArgumentStyle(i, STYLE_LABELED);
@@ -207,14 +207,14 @@ uint Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
                     // ID of Slot: DB slot_number
                     de = new DisassembledItem(de->getProgram());
                     de->setupDataItem(++offset);
-                    m_disassembled_list->Insert(de, dasm_position++);
+                    m_disassembled_list->insert(de, dasm_position++);
 
                     // address to be called: DW address
                     de = new DisassembledItem(de->getProgram());
                     de->setupDataItem(++offset);
                     de->setSize(2);
                     de->SetArgumentStyle(0, STYLE_WORD_HEX);
-                    m_disassembled_list->Insert(de, dasm_position);
+                    m_disassembled_list->insert(de, dasm_position);
                     new_program_counter = 3;    // 1 byte ID + 2 bytes Address
                     break;
     }
@@ -247,8 +247,10 @@ void Decoder::SetCartridgeLabels()
 
 
 
+/// @brief Performs the disassembly of all code, must select the program index first
 void Decoder::fullDisassemble()
 {
+    //TODO: Think if we need this function
     uint i, f, item;
     DisassembledItem *de;
 
@@ -274,6 +276,37 @@ void Decoder::fullDisassemble()
 
 
 
+/// @brief Performs the disassembly of all file
+/// @param t_disassembled The container of the disassembled code
+void Decoder::fullDisassemble(DisassembledContainer *t_disassembled)
+{
+    uint file_size, item;
+    DisassembledItem *dasm_item;
+
+    m_program = t_disassembled->getProgram();
+    m_disassembled_list = t_disassembled;
+    
+    if ((!m_program) || (!t_disassembled))
+        return;
+
+    m_labels->clearUserLabels();
+
+    if (m_program->isCartridge())
+        SetCartridgeLabels();
+
+    file_size = m_program->GetSize();
+    for (unsigned int file_offset = 0; file_offset < file_size; ++file_offset) {
+        dasm_item = new DisassembledItem(m_program);
+        item = Decode(dasm_item, file_offset);
+        SetupArgumentLabels(dasm_item, item);
+        m_registers.LoadRegister(dasm_item);
+        file_offset += MSXWeirdRST(dasm_item, file_size);
+        file_offset += (dasm_item->getOpcodeSize() - 1);
+    }
+}
+
+
+
 void Decoder::DisassembleItems(RangeItems &dasm_range)
 {
     uint 		i, item,
@@ -287,17 +320,17 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
         return;
 
     dasm_last = dasm_range.Index + dasm_range.Count - 1;
-    disassembled_count = m_disassembled_list->GetCount();
+    disassembled_count = m_disassembled_list->getCount();
 
     if ((dasm_range.Index < disassembled_count) || (dasm_last < disassembled_count))
     {
-        de = m_disassembled_list->GetData(dasm_range.Index);
+        de = m_disassembled_list->getData(dasm_range.Index);
         program_first = de->getOffsetInFile();
-        de = m_disassembled_list->GetData(dasm_range.Index + dasm_range.Count - 1);
+        de = m_disassembled_list->getData(dasm_range.Index + dasm_range.Count - 1);
         program_last = de->getOffsetInFile() + de->getOpcodeSize();
 
         LogIt(wxString::Format("Deleting index = %d, count = %d.", dasm_range.Index, dasm_range.Count));
-        m_disassembled_list->Del(dasm_range.Index, dasm_range.Count);
+        m_disassembled_list->del(dasm_range.Index, dasm_range.Count);
         disassembled_count = dasm_range.Index;
         dasm_range.Count = 0;
         for (i = program_first; i < program_last; i++)

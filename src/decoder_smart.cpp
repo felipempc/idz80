@@ -73,7 +73,7 @@ void SmartDecoder::fullDisassemble()
     dasmed_index = program_size;
     while (processing)
     {
-        m_last_prg_counter = m_next_address - m_disassembled_list->GetBaseAddress(0);
+        m_last_prg_counter = m_next_address - m_disassembled_list->getBaseAddress(0);
         m_actual_address = m_next_address;
 
 
@@ -94,7 +94,7 @@ void SmartDecoder::fullDisassemble()
         size_sum += dasmed_item->getOpcodeSize();
         m_prg_counter = m_last_prg_counter + dasmed_item->getOpcodeSize();              // Similar to the CPU Program counter register.
 
-        address = dasmed_item->getArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
+        address = dasmed_item->getArgumentValue(0, m_disassembled_list->getBaseAddress(0));
 
         SetupArgumentLabels(dasmed_item, dasmed_index);
 
@@ -157,7 +157,7 @@ void SmartDecoder::fullDisassemble()
         if (update_item)
         {
             //TODO: Revise it
-            dasmed_index = m_disassembled_list->FindAddress(m_next_address);
+            dasmed_index = m_disassembled_list->findAddress(m_next_address);
             if (dasmed_index == -1) // will never be -1. Must be revised
                 processing = false;
             update_item = false;
@@ -188,7 +188,7 @@ bool SmartDecoder::processBranch(DisassembledItem *t_dasmed_item, bool &t_proces
             tempaddress;
     bool    update_dasm_item = false;
 
-    address = t_dasmed_item->getArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
+    address = t_dasmed_item->getArgumentValue(0, m_disassembled_list->getBaseAddress(0));
 
     if (t_dasmed_item->getMnemonic()->GetConditionalBranch())
     {
@@ -357,7 +357,7 @@ bool SmartDecoder::returnSubroutine(DisassembledItem *t_dasmed_item, AbsoluteAdd
 bool SmartDecoder::callSubroutine(DisassembledItem *t_dasmed_item)
 {
     bool ret = false;
-    uint address = t_dasmed_item->getArgumentValue(0, m_disassembled_list->GetBaseAddress(0));
+    uint address = t_dasmed_item->getArgumentValue(0, m_disassembled_list->getBaseAddress(0));
 
     if (testIfOutBoundaries(address)) {
 #ifdef IDZ80_DEBUG_DECODER
@@ -444,24 +444,24 @@ void SmartDecoder::fillData()
                         *de_2;
 	bool    processing;
 
-	processing = (m_disassembled_list->GetCount() > 1);
+	processing = (m_disassembled_list->getCount() > 1);
 	i = 0;
 
 	while (processing)
 	{
-		de_1 = m_disassembled_list->GetData(i);
-		de_2 = m_disassembled_list->GetData(i + 1);
+		de_1 = m_disassembled_list->getData(i);
+		de_2 = m_disassembled_list->getData(i + 1);
 		index = (de_1->getOffsetInFile() + de_1->getOpcodeSize());
 		delta = de_2->getOffsetInFile() - index;
 		for(count = 0; count < delta; ++count)
 		{
 			de_1 = new DisassembledItem(m_program);
             de_1->setupDataItem(index + count);
-			m_disassembled_list->Insert(de_1, i + 1);
+			m_disassembled_list->insert(de_1, i + 1);
 			++i;
 		}
 		++i;
-		if (i > (m_disassembled_list->GetCount() - 2))
+		if (i > (m_disassembled_list->getCount() - 2))
 			processing = false;
 	}
 
@@ -471,7 +471,7 @@ void SmartDecoder::fillData()
 	{
 		de_1 = new DisassembledItem(m_program);
         de_1->setupDataItem(count);
-		m_disassembled_list->Add(de_1);
+		m_disassembled_list->add(de_1);
 	}
 }
 
