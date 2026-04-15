@@ -341,16 +341,14 @@ void CodeView::onPopUpAddComment(wxCommandEvent& event)
     wxString comment;
 
     sc_line = m_sourcecode->line(m_line_info.cursorPosition);
-
-    if (sc_line)
-    {
-        if (sc_line->comment == 0)
-        {
+    if (sc_line) {
+        if (sc_line->comment == 0) {
             comment = ::wxGetTextFromUser("Add Comment", "Add");
             if (!comment.IsEmpty()) {
                 comment = comment.Trim(false);
-                if (comment.Left(1) != ";")
+                if (comment.Left(1) != ";") {
                     comment.Prepend("; ");
+                }
                 m_sourcecode->appendComment(comment, m_line_info.cursorPosition);
                 Refresh();
             }
@@ -368,13 +366,14 @@ void CodeView::onPopUpEditComment(wxCommandEvent& event)
     wxString comment;
 
     sc_line = m_sourcecode->line(m_line_info.cursorPosition);
-	if ((sc_line) && (sc_line->comment))
+	if ((sc_line) && (sc_line->comment)) {
 		comment = ::wxGetTextFromUser("Edit Comment", "Edit", sc_line->comment->c_str());
-	if (!comment.IsEmpty())
-	{
+    }
+	if (!comment.IsEmpty()) {
 		comment = comment.Trim(false);
-		if (comment.Left(1) != ";")
+		if (comment.Left(1) != ";") {
 			comment.Prepend("; ");
+        }
 		m_sourcecode->editComment(comment, m_line_info.cursorPosition);
 		Refresh();
 	}
@@ -388,18 +387,21 @@ void CodeView::onPopUpDelComment(wxCommandEvent& event)
 {
     SourceCodeLine *sc_line;
     sc_line = m_sourcecode->line(m_line_info.cursorPosition);
-    if (sc_line != 0)
-    {
-        if ((sc_line->dasmedItem == -1) && (sc_line->labelProgAddress) && (sc_line->labelVarAddress) && (sc_line->originAddress == -1))
+    if (sc_line) {
+        if ((sc_line->dasmedItem == -1) && (sc_line->labelProgAddress) && (sc_line->labelVarAddress) && (sc_line->originAddress == -1)) {
             m_sourcecode->delSCItem(sc_line);
-        else
+        }
+        else {
             m_sourcecode->delComment(sc_line);
-        Refresh();
+        }
     }
+    Refresh();
 }
 
 
 
+/// @brief Event handler to format data sequence to a matrix, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuOD_Matrix(wxCommandEvent &event)
 {
 	LogIt("Data Matrixed !!\n");
@@ -407,6 +409,8 @@ void CodeView::onPopUpMenuOD_Matrix(wxCommandEvent &event)
 
 
 
+/// @brief Event handler to format data sequence to a string, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuOD_String(wxCommandEvent& event)
 {
 	LogIt("Data stringed !!\n");
@@ -414,6 +418,8 @@ void CodeView::onPopUpMenuOD_String(wxCommandEvent& event)
 
 
 
+/// @brief Event handler to format data sequence to numbers, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuOD_Number(wxCommandEvent& event)
 {
 	LogIt("Data numbered !!\n");
@@ -426,100 +432,184 @@ void CodeView::onPopUpMenuOD_Number(wxCommandEvent& event)
 void CodeView::onPopUpMenuRenLabel(wxCommandEvent& event)
 {
     SourceCodeLine *sc_line;
-    DisassembledItem *de;
+    DisassembledItem *dasm_item;
     sc_line = m_sourcecode->line(m_line_info.cursorPosition);
     //TODO: Implement label editing in instructions
 	if (sc_line)
 	{
-	    de = m_line_info.dasmitem;
+	    dasm_item = m_line_info.dasmitem;
 
-		if (sc_line->labelProgAddress)
-			m_process->prog_labels->EditLabelDialog(sc_line->labelProgAddress->address);
-        else
-            if (de && (de->IsArgumentProgramAddress()))
-                m_process->prog_labels->EditLabelDialog(de->GetArgument(0, 0));
-		if (sc_line->labelVarAddress)
-			m_process->var_labels->EditLabelDialog(sc_line->labelVarAddress->address);
-        else
-            if (de && (de->IsArgumentVariableAddress()))
-                m_process->var_labels->EditLabelDialog(de->GetArgument(0, 0));
+		if (sc_line->labelProgAddress) {
+			m_process->m_labels->prog_labels->editLabelDialog(sc_line->labelProgAddress->address);
+        }
+        else {
+            if (dasm_item && (dasm_item->isArgumentProgramAddress())) {
+                m_process->m_labels->prog_labels->editLabelDialog(dasm_item->getArgumentValue(0, 0));
+            }
+        }
+
+		if (sc_line->labelVarAddress) {
+			m_process->m_labels->var_labels->editLabelDialog(sc_line->labelVarAddress->address);
+        }
+        else {
+            if (dasm_item && (dasm_item->isArgumentVariableAddress())) {
+                m_process->m_labels->var_labels->editLabelDialog(dasm_item->getArgumentValue(0, 0));
+            }
+        }
 
         Refresh();
 	}
 }
 
+
+
+/// @brief Event handler to delete a label, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuDelLabel(wxCommandEvent& event)
 {
     if (m_line_info.type == lt_LineLabelProg)
     {
-        m_process->removeLineAndProgLabels(m_line_info.firstLine);
+        m_process->removeLineAndProgLabels(m_sourcecode, m_line_info.firstLine);
         Refresh();
     }
 
     if (m_line_info.type == lt_LineLabelVar)
     {
-        m_process->removeLineAndVarLabels(m_line_info.firstLine);
+        m_process->removeLineAndVarLabels(m_sourcecode, m_line_info.firstLine);
         Refresh();
     }
-
 
     if (m_line_info.type == lt_InstructionLabel)
     {
         m_process->removeFromLabelUserList(m_line_info.dasmitem, m_line_info.firstInstruction);
-        m_line_info.dasmitem->SetArgLabel(false);
+        m_line_info.dasmitem->resetArgumentStyle();
         RefreshRect(calcCursorRfshRect());
     }
 }
 
+
+
+/// @brief Event handler to create a label, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuCreateLabel(wxCommandEvent& event)
 {
-    if (m_line_info.type == lt_Data)
+    //TODO: Fully implement this method
+    if (m_line_info.type == lt_Data) {
         LogIt(wxString::Format("Label created for address %.4X.", m_line_info.firstAddress));
+    }
 }
 
 
 
 
+/// @brief Event handler to change the numerical system of an argument to binary, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuArgStyleBin(wxCommandEvent &event)
 {
-	if (m_line_info.argSelected == 1)
-		m_line_info.dasmitem->SetStyleArgument(0, ast_bytebin);
+    ArgumentStyleOptions style = STYLE_NONE;
+    MnemonicItem *mnemonic = m_line_info.dasmitem->getMnemonic();
 
-	if (m_line_info.argSelected == 2)
-		m_line_info.dasmitem->SetStyleArgument(1, ast_bytebin);
+    if (mnemonic) {
+        switch(mnemonic->GetArgumentSize()) {
+            case 2:
+                style = STYLE_WORD_BIN;
+                break;
+            case 1:
+                style = STYLE_BYTE_BIN;
+                break;
+            case 0:
+            default:
+                style = STYLE_NONE;
+        }
+    }
+
+	if (m_line_info.argSelected == 1) {
+		m_line_info.dasmitem->setArgumentStyle(0, style);
+    }
+
+	if (m_line_info.argSelected == 2) {
+		m_line_info.dasmitem->setArgumentStyle(1, style);
+    }
 
 	RefreshRect(calcCursorRfshRect());
 }
 
 
+
+/// @brief Event handler to change the numerical system of an argument to decimal, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuArgStyleDec(wxCommandEvent& event)
 {
-	if (m_line_info.argSelected == 1)
-		m_line_info.dasmitem->SetStyleArgument(0, ast_bytedec);
+    ArgumentStyleOptions style = STYLE_NONE;
+    MnemonicItem *mnemonic = m_line_info.dasmitem->getMnemonic();
 
-	if (m_line_info.argSelected == 2)
-		m_line_info.dasmitem->SetStyleArgument(1, ast_bytedec);
+    if (mnemonic) {
+        switch(mnemonic->GetArgumentSize()) {
+            case 2:
+                style = STYLE_WORD_DEC;
+                break;
+            case 1:
+                style = STYLE_BYTE_DEC;
+                break;
+            case 0:
+            default:
+                style = STYLE_NONE;
+        }
+    }
+
+	if (m_line_info.argSelected == 1) {
+		m_line_info.dasmitem->setArgumentStyle(0, style);
+    }
+
+	if (m_line_info.argSelected == 2) {
+		m_line_info.dasmitem->setArgumentStyle(1, style);
+    }
 
 	RefreshRect(calcCursorRfshRect());
 }
 
 
+
+/// @brief Event handler to change the numerical system of an argument to hexadecimal, from a pop up menu command.
+/// @param event 
 void CodeView::onPopUpMenuArgStyleHex(wxCommandEvent& event)
 {
-	if (m_line_info.argSelected == 1)
-		m_line_info.dasmitem->SetStyleArgument(0, ast_bytehex);
+    ArgumentStyleOptions style = STYLE_NONE;
+    MnemonicItem *mnemonic = m_line_info.dasmitem->getMnemonic();
 
-	if (m_line_info.argSelected == 2)
-		m_line_info.dasmitem->SetStyleArgument(1, ast_bytehex);
+    if (mnemonic) {
+        switch(mnemonic->GetArgumentSize()) {
+            case 2:
+                style = STYLE_WORD_HEX;
+                break;
+            case 1:
+                style = STYLE_BYTE_HEX;
+                break;
+            case 0:
+            default:
+                style = STYLE_NONE;
+        }
+    }
 
-		RefreshRect(calcCursorRfshRect());
+	if (m_line_info.argSelected == 1) {
+		m_line_info.dasmitem->setArgumentStyle(0, style);
+    }
+
+	if (m_line_info.argSelected == 2) {
+		m_line_info.dasmitem->setArgumentStyle(1, style);
+    }
+
+	RefreshRect(calcCursorRfshRect());
 }
 
 
 
 
+/// @brief Event handler to search for an argument, from a pop up menu command. (Not written)
+/// @param event 
 void CodeView::onPopUpMenuSearchArgument(wxCommandEvent& event)
 {
+    /*  TODO: Rewrite this
     SearchArgumentDialog *search_dialog = new SearchArgumentDialog(this);
     AbsoluteAddress address = 0;
 
@@ -533,19 +623,16 @@ void CodeView::onPopUpMenuSearchArgument(wxCommandEvent& event)
         }
 
     }
-
-
-
     delete search_dialog;
+    */
 }
 
 
 
-
+/// @brief Event handler to report the lost of the mouse capture
+/// @param event 
 void CodeView::onMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     LogIt("Mouse Lost !!!!");
 }
-
-
 

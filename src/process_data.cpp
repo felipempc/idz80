@@ -588,7 +588,7 @@ void ProcessData::resetStyleFromUsers(DisassembledContainer *t_disassembled, Int
             disassembled_item = t_disassembled->getData(t_users->at(index));
             if (disassembled_item) {
                 style = STYLE_NONE;
-                disassembled_item->SetArgumentStyle(0, style);
+                disassembled_item->setArgumentStyle(0, style);
             }
         }
     }

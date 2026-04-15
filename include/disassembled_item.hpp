@@ -90,11 +90,16 @@ class DisassembledItem : public DisassembledItemBase
         ArgumentStyle getArgumentStyle();
         ArgumentStyleOptions getArgumentStyle(unsigned int index);
         //TODO: Remove this xxxArgumentLabeled()
+        /*
         unsigned int getNumArgumentLabeled();
         int getFirstArgumentLabeled();
         int getSecondArgumentLabeled();
+        */
+        bool isArgumentProgramAddress();
+        bool isArgumentVariableAddress();
         int getArgumentValue(unsigned int index, unsigned int base_address = 0);
-        void SetArgumentStyle(unsigned int index, ArgumentStyleOptions style);
+        void setArgumentStyle(unsigned int index, ArgumentStyleOptions style);
+        void resetArgumentStyle();
 
         MnemonicItem *getMnemonic() const;
         RawData *getProgram();

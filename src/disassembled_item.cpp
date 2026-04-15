@@ -164,7 +164,7 @@ ArgumentStyleOptions DisassembledItem::getArgumentStyle(unsigned int index)
 }
 
 
-
+/*
 /// @brief Gets the number of arguments that has a label
 /// @return 
 unsigned int DisassembledItem::getNumArgumentLabeled()
@@ -224,7 +224,7 @@ int DisassembledItem::getSecondArgumentLabeled()
 
     return labeled;
 }
-
+*/
 
 
 /// @brief Gets the offset position of this item in the file.
@@ -361,6 +361,32 @@ unsigned int DisassembledItem::getWordFromFile(unsigned int t_index)
 
 
 
+/// @brief Checks if the argument is a program address
+/// @return True if it's a program address
+bool DisassembledItem::isArgumentProgramAddress()
+{
+    Arguments source, destination;
+    source = m_mnemonic->GetSourceArgument();
+    destination = m_mnemonic->GetDestinationArgument();
+    return ((source.type == OT_ABSOLUTE_ADDRESS) || (source.type == OT_RELATIVE_ADDRESS)
+            || (destination.type == OT_ABSOLUTE_ADDRESS) || (destination.type == OT_RELATIVE_ADDRESS));
+}
+
+
+
+/// @brief Checks if the argument is a variable address
+/// @return True if it's a variable address
+bool DisassembledItem::isArgumentVariableAddress()
+{
+    Arguments source, destination;
+    source = m_mnemonic->GetSourceArgument();
+    destination = m_mnemonic->GetDestinationArgument();
+
+    return ((source.type == OT_VARIABLE) || (destination.type == OT_VARIABLE));
+}
+
+
+
 /// @brief Gets the value of a selected argument.
 /// @param index Selects the argument: 0 to the first, 1 to the second, if exists.
 /// @param base_address The base address where the program is loaded in the original machine
@@ -412,16 +438,30 @@ RawData *DisassembledItem::getProgram()
 /// @brief Setups the argument style
 /// @param index Selects the first(0) or the second(1) argument
 /// @param style 
-void DisassembledItem::SetArgumentStyle(unsigned int index, ArgumentStyleOptions style)
+void DisassembledItem::setArgumentStyle(unsigned int index, ArgumentStyleOptions style)
 {
-    if(!m_arg_style)
+    if(!m_arg_style) {
         m_arg_style = new ArgumentStyle;
+    }
 
-    if(index == 0)
+    if(index == 0) {
         m_arg_style->first = style;
+    }
 
-    if(index == 1)
+    if(index == 1) {
         m_arg_style->second = style;
+    }
+}
+
+
+
+/// @brief Resets to default style all arguments
+void DisassembledItem::resetArgumentStyle()
+{
+    if (m_arg_style) {
+        m_arg_style->first = STYLE_NONE;
+        m_arg_style->second = STYLE_NONE;
+    }
 }
 
 

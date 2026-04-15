@@ -143,20 +143,20 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
                                 argument_value = de->getArgumentValue(i, 0);
                                 str = m_labels->sys_vars->find(argument_value);
                                 m_labels->var_labels->addLabel(argument_value, str, index);
-                                de->SetArgumentStyle(i, STYLE_LABELED);
+                                de->setArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_ABSOLUTE_ADDRESS:
             case OT_RELATIVE_ADDRESS:
                                 argument_value = de->getArgumentValue(i, m_disassembled_list->getBaseAddress(index));
                                 str = m_labels->sys_calls->find(argument_value);
                                 m_labels->prog_labels->addLabel(argument_value, str, index);
-                                de->SetArgumentStyle(i, STYLE_LABELED);
+                                de->setArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_IO_ADDRESS:
                                 argument_value = de->getArgumentValue(i, 0);
                                 str = m_labels->sys_io->find(argument_value);
                                 m_labels->io_labels->addLabel(argument_value, str, index);
-                                de->SetArgumentStyle(i, STYLE_LABELED);
+                                de->setArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_NONE:
             case OT_DATA:
@@ -213,7 +213,7 @@ uint Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
                     de = new DisassembledItem(de->getProgram());
                     de->setupDataItem(++offset);
                     de->setSize(2);
-                    de->SetArgumentStyle(0, STYLE_WORD_HEX);
+                    de->setArgumentStyle(0, STYLE_WORD_HEX);
                     m_disassembled_list->insert(de, dasm_position);
                     new_program_counter = 3;    // 1 byte ID + 2 bytes Address
                     break;
