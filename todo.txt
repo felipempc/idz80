@@ -17,4 +17,6 @@
               Arquivos pendentes: searchmanager, search_argument_dialog, projectmanager_xml, fileinfo_dialog, editlabel_dialog, 
                                   codeview, codeview_render, codeview_evmouse, codeview_events e codegenerator
               Partindo pra cima de codeview*
- 27/03/26   - Trabalhando em codeview_render.cpp
+ 14/04/26   - Terminado codeview, codeview_render, codeview_evmouse, codeview_events e codeview_render.cpp
+              Pendentes: searchmanager, search_argument_dialog, projectmanager_xml, fileinfo_dialog, editlabel_dialog e codegenerator
+

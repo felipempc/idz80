@@ -23,7 +23,7 @@
 //#include "mnemonic_container.h"
 //#include "rawdata.h"
 #include "process_data.hpp"
-//#include "codeview.h"
+#include "codeview.hpp"
 //#include "labelslist.h"
 //#include "projectmanager_xml.h"
 //#include "codegenerator.h"

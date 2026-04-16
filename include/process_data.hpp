@@ -9,7 +9,7 @@
  **************************************************************/
 
 
-  // MUST BE COMPLETELY REWRITTEN !!!!
+  //TODO: Rewrite is work in progress.
 
 
 #ifndef _IDZ80_PROCESSDATA_H
@@ -54,7 +54,7 @@ class ProcessData : public ProjectBase
         bool setupSystemLabels();
         void clear();
 
-        void removeFromLabelUserList(DisassembledItem *t_de, const uint t_dasmindex);
+        void removeFromLabelUserList(DisassembledItem *t_dasmitem, const uint t_dasmindex);
         bool removeLineAndVarLabels(const unsigned int t_index,const int t_line);
         bool removeLineAndVarLabels(SourceCode *t_sourcecode,const int t_line);
         bool removeLineAndProgLabels(SourceCode *t_sourcecode,const int t_line);
@@ -74,10 +74,9 @@ class ProcessData : public ProjectBase
         bool filterInstructions(SourceCode *t_sourcecode,  const SelectedItemInfo &t_selected, IntArray &t_range);
         void processLabel(const unsigned int t_index, LabelListCtrl *t_label);
 
-        bool findInArgumentVariables(DisassembledItem *t_di, unsigned int t_argument);
-        bool findInArgumentLiteral(DisassembledItem *t_di, unsigned int t_argument);
-        bool findInArgumentJumpsCalls(DisassembledItem *t_di, unsigned int t_argument);
+        bool findInArgumentVariables(DisassembledItem *t_di, int t_argument);
+        bool findInArgumentLiteral(DisassembledItem *t_di, int t_argument);
+        bool findInArgumentJumpsCalls(DisassembledItem *t_di, int t_argument);
 };
-
 
 #endif

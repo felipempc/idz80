@@ -37,6 +37,7 @@ class Decoder: public DebugLogBase
         void fullDisassemble();
         void fullDisassemble(DisassembledContainer *t_disassembled);
         void DisassembleItems(RangeItems &dasm_range);
+        void DisassembleItems(SourceCode *t_sourcecode, RangeItems &dasm_range);
 
 
     protected:

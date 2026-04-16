@@ -345,3 +345,17 @@ void Decoder::DisassembleItems(RangeItems &dasm_range)
     }
 }
 
+
+
+/// @brief Disassembles a range of the bytecode
+/// @param t_sourcecode The Source code
+/// @param dasm_range A range index of DisassembledContainer
+void Decoder::DisassembleItems(SourceCode *t_sourcecode, RangeItems &dasm_range)
+{
+    m_disassembled_list = t_sourcecode->getDisassembled();
+    if (m_disassembled_list) {
+        m_program = m_disassembled_list->getProgram();
+    }
+    DisassembleItems(dasm_range);
+}
+

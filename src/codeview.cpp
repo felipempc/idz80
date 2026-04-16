@@ -794,13 +794,15 @@ void CodeView::createPopupMenuSingleSelection(wxMenu *popup)
                                     popup->Append(idPOPUP_GOTO, "Goto label");
                                     popup->AppendSeparator();
                                 }
+                                [[fallthrought]]
         case	lt_LineLabelProg:
+                                [[fallthrought]]
         case	lt_LineLabelVar:
                                 labelMenu = new wxMenu();
                                 labelMenu->Append(idPOPUP_EDITLABEL, "Edit");
                                 labelMenu->AppendSeparator();
                                 labelMenu->Append(idPOPUP_DELLABEL, "Delete");
-
+                                [[fallthrought]]
         case	lt_Instruction:
                                 if ((m_line_info.type != lt_LineLabelProg) &&
                                     (m_line_info.type != lt_LineLabelVar))
@@ -809,9 +811,8 @@ void CodeView::createPopupMenuSingleSelection(wxMenu *popup)
         case	lt_Data:
                                 labelMenu = new wxMenu();
                                 labelMenu->Append(idPOPUP_CREATELABEL, "Create");
-
                                 popup->Append(idPOPUP_DISASM, "Disassemble");
-
+                                [[fallthrought]]
         case    lt_Unknown:
         case    lt_Comments:
                                 break;
@@ -931,10 +932,10 @@ void CodeView::treatAsSingleSelection()
 			m_line_info.hasComment = false;
 
 		// If line is a program label or a var label
-		if (m_line_info.lineitem->labelProgAddress >= 0)
+		if (m_line_info.lineitem->labelProgAddress)
 			m_line_info.type = lt_LineLabelProg;
 
-		if (m_line_info.lineitem->labelVarAddress >= 0)
+		if (m_line_info.lineitem->labelVarAddress)
 			m_line_info.type = lt_LineLabelVar;
 
 		// check if line has instruction

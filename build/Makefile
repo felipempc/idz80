@@ -101,7 +101,8 @@ SOURCES_TEMP := src/binfile.cpp src/cartridge_rom_file.cpp src/idz80_app.cpp src
 				src/disassembled_manager.cpp src/disassembled_container.cpp src/disassembled_item.cpp \
 				src/source_code_manager.cpp src/source_code_container.cpp src/source_code_access.cpp src/source_code.cpp \
 				src/process_data.cpp src/decoder.cpp src/decoder_smart.cpp\
-				src/subroutine.cpp src/z80register.cpp src/z80registerlist.cpp
+				src/subroutine.cpp src/z80register.cpp src/z80registerlist.cpp\
+				src/codeview.cpp src/codeview_render.cpp src/codeview_evmouse.cpp src/codeview_events.cpp
 OBJETOS_FULL := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES_TEMP))
 OBJETOS_FULL += $(OBJDIR)/$(RESOURCE_FILE:.rc=.o)    # Add the compiled resource
 #SOURCES_TEMP := $(notdir $(SOURCE_FILES_FULL))     #remove o diretorio antes do arquivo
