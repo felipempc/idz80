@@ -203,7 +203,7 @@ void IDZ80::updateNotebookPages()
             m_disassembled_mgr->Add(disassembled);
             SourceCode *sourcecode = new SourceCode(disassembled, m_labels);
             m_sourcecode_mgr->addSourceCode(sourcecode);
-            m_notebook->AddPage(/*new CodeView(this, sourcecode, m_processdata)*/new wxPanel(this), filename, true);
+            m_notebook->AddPage(new CodeView(this, sourcecode, m_processdata) /*new wxPanel(this)*/, filename, true);
         }
     }
 

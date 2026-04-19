@@ -39,8 +39,7 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     m_disassembled_mgr = new DisassembledManager(this);
     m_sourcecode_mgr = new SourceCodeManager(this);
     m_labels = new LabelManager();
-//    m_processdata = new ProcessData(this);
-//    NOT HERE ANYMORE. codeview_ = new CodeView(this, process_, m_log_window);
+    m_processdata = new ProcessData(this);
 //    project_ = new ProjectManagerXML(this);
 
     SetupLabels();

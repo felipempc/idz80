@@ -51,7 +51,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         ~LabelListCtrl();
 
         int addLabel(const AbsoluteAddress t_address, const wxString &t_name, DisassembledIndex t_dasmitem = NO_DASM_ITEM);
-        int addLabel(const AbsoluteAddress t_address, const wxString &t_name, const IndexVector &t_labelusers);
+        //int addLabel(const AbsoluteAddress t_address, const wxString &t_name, const IndexVector &t_labelusers);
         bool delLabel(const AbsoluteAddress t_address);
         void delLabelUser(const AbsoluteAddress t_address, const DisassembledIndex t_dasmitem);
         void editLabel(const LabelIndex t_listitem, const wxString &t_strlabel);
@@ -82,14 +82,15 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
     protected:
     private:
         static const DisassembledIndex NO_DASM_ITEM = 0xFFFFFFFF;
-        volatile LabelIndex m_selected_item;
-        volatile LabelIndex m_label_index;
+        LabelIndex m_selected_item;
+        LabelIndex m_label_index;   // holds the last list item index
         wxString m_default_label_name;
         wxWindow *m_main_window;
         TypeLabelList m_type_label_list;
 
 
-        LabelItem *findByAddress(const AbsoluteAddress t_address, const LabelIndex t_label_index);
+        LabelItem *findByAddress(const AbsoluteAddress t_address, LabelIndex &t_label_index);
+        LabelIndex createLabel(const AbsoluteAddress t_address, const wxString &t_name, DisassembledIndex &t_dasmitem);
         wxString createDefaultName(const AbsoluteAddress t_address);
         void deleteLabelData(LabelItem *t_label);
 

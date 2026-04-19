@@ -18,7 +18,7 @@
 struct LabelItem
 {
     AbsoluteAddress address;
-    IndexVector *labelUsers;
+    IndexVector *labelUsers;    //List of DisassembledItem
     wxString labelString;
 };
 #endif // _LABELITEM_H_
