@@ -29,21 +29,17 @@ LabelManager::LabelManager()
 
 void LabelManager::clearUserLabels()
 {
-    if (var_labels != 0) {
-        var_labels->clear();
-        var_labels = 0;
+    if (var_labels) {
+        var_labels->clearLabelUsers();
     }
-    if (prog_labels != 0) {
-        prog_labels->clear();
-        prog_labels = 0;
+    if (prog_labels) {
+        prog_labels->clearLabelUsers();
     }
-    if (io_labels != 0) {
-        io_labels->clear();
-        io_labels = 0;
+    if (io_labels) {
+        io_labels->clearLabelUsers();
     }
-    if (constant_labels != 0) {
-        constant_labels->clear();
-        constant_labels = 0;
+    if (constant_labels) {
+        constant_labels->clearLabelUsers();
     }
 }
 

@@ -178,14 +178,10 @@ void IDZ80::OnMenuHelpAbout(wxCommandEvent& event)
 
 void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 {
-    /*
-    wxSize  psize,ldsize;
-    wxPoint ldpos;
-    int     w,h,x,y;
-    */
     //SortedIntArray  entries(CompareSortedInt);
 //    codeview_->Enable(false);
     unsigned int file_selected = m_notebook->GetSelection();
+    m_processdata->disassembleFirst(file_selected);
 
 //    m_processdata->disassembleFirst(file_selected);
 //    m_processdata->initSourceCode(file_selected);

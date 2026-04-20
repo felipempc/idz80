@@ -167,7 +167,7 @@ bool LabelListCtrl::delLabel(const AbsoluteAddress t_address)
     lbl = findByAddress(t_address, label);
 
     if (lbl) {
-        deleteLabelData(lbl);
+        destroyLabelData(lbl);
         success = true;
         DeleteItem(static_cast<long>(label));
         --m_label_index;
@@ -500,9 +500,9 @@ wxString LabelListCtrl::createDefaultName(const AbsoluteAddress t_address)
 
 
 
-/// @brief Delete all t_label data
-/// @param t_label pointer of a label data to be deleted
-void LabelListCtrl::deleteLabelData(LabelItem *t_label)
+/// @brief Destroys all t_label data (labelsusers and label)
+/// @param t_label pointer of a label data to be destroyed
+void LabelListCtrl::destroyLabelData(LabelItem *t_label)
 {
     if (t_label) {
         if (t_label->labelUsers) {
@@ -589,7 +589,7 @@ void LabelListCtrl::onMenuPopUpAdd([[maybe_unused]] wxCommandEvent& event)
 
 void LabelListCtrl::onMenuPopUpDel([[maybe_unused]] wxCommandEvent& event)
 {
-    deleteLabelData(getData(m_selected_item));
+    destroyLabelData(getData(m_selected_item));
     DeleteItem(m_selected_item);
     --m_label_index;
     m_selected_item = -1;
@@ -611,10 +611,25 @@ void LabelListCtrl::clear()
 {
     LabelIndex i;
     for (i = 0; i < GetItemCount(); ++i) {
-        deleteLabelData(getData(i));
+        destroyLabelData(getData(i));
     }
     m_label_index = -1;
     DeleteAllItems();
+}
+
+
+
+/// @brief Clears all label users
+void LabelListCtrl::clearLabelUsers()
+{
+    LabelItem *label;
+
+    for(LabelIndex label_index; label_index < GetItemCount(); ++label_index) {
+        label = getData(label_index);
+        if (label && label->labelUsers) {
+            label->labelUsers->clear();
+        }
+    }
 }
 
 

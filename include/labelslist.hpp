@@ -69,6 +69,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         uint getCount();
         bool isEmpty();
         void clear();
+        void clearLabelUsers();
 
         // Tools
         bool findDataIn(const int t_data, const IndexVector *t_data_list);
@@ -92,7 +93,7 @@ class LabelListCtrl : public wxListCtrl, public DebugLogBase
         LabelItem *findByAddress(const AbsoluteAddress t_address, LabelIndex &t_label_index);
         LabelIndex createLabel(const AbsoluteAddress t_address, const wxString &t_name, DisassembledIndex &t_dasmitem);
         wxString createDefaultName(const AbsoluteAddress t_address);
-        void deleteLabelData(LabelItem *t_label);
+        void destroyLabelData(LabelItem *t_label);
 
         void onMouseRightDown(wxListEvent& t_event);
         void onMouseDblLeft(wxListEvent& t_event);
