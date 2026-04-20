@@ -15,7 +15,6 @@
 
 
 
-
 /*
  *	Initialize after main window shows up
  */
@@ -39,7 +38,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     m_disassembled_mgr = new DisassembledManager(this);
     m_sourcecode_mgr = new SourceCodeManager(this);
     m_labels = new LabelManager();
-    m_processdata = new ProcessData(this);
 //    project_ = new ProjectManagerXML(this);
 
     SetupLabels();
@@ -48,15 +46,9 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
     ReadStoredConfiguration();
     LoadMnemonicsDB();
 
+    m_processdata = new ProcessData(this);  //Needs mnemonics loaded
+
     m_status_bar->SetStatusText(m_app_root_dir);
-
-    /*
-	if (m_commandline.GetCount() > 1)
-	{
-		OpenProgramFile(m_commandline[1]);
-	}
-    */
-
 //    codeview_->Enable(false);
 
 	m_log_window->Show();
@@ -68,19 +60,6 @@ void IDZ80::OnFirstIdle(wxIdleEvent &event)
 
     if (m_maximize_main_window)
         Maximize();
-
-/*
-    if (m_programs_mgr->First()->IsLoaded())
-    {
-        wxMenuBar *mb;
-        mb = GetMenuBar();
-        mb->Enable(idMenuToolsDasmAll, true);
-        mb->Enable(idMenuFileInfo, true);
-        mb->Enable(idMenuFileClose, true);
-        mb->Enable(idMenuToolsGenCode, false);
-        mb->Enable(idMenuToolsAutoLabel, false);
-    }
-*/
 
     //  TEST AREA   --------------------->
 
@@ -194,6 +173,8 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 
     codeview_->Enable(true);
 */
+    CodeView *codeview = static_cast<CodeView *>(m_notebook->GetPage(file_selected));
+    codeview->Enable();
     #ifdef IDZ80DEBUG
     wxString stemp;
     stemp.Printf("Used memory (dasmed)= %d bytes\n", process_->Disassembled->GetUsedMem());

@@ -22,7 +22,7 @@ Decoder::Decoder(ProjectBase *parent)
     m_disassembled_list = 0;
     m_program = 0;
     m_labels = parent->m_labels;
-    m_mnemonic = parent->m_mnemonics;
+    m_mnemonics = parent->m_mnemonics;
 
     SetTextLog(parent->GetTextLog());
     ModuleName = "DECODER";
@@ -60,7 +60,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     while (offset < maxitems)
     {
         scan = m_program->GetData(prg_index + offset);
-        m_mnemonic->Find(foundItems, scan, offset);
+        m_mnemonics->Find(foundItems, scan, offset);
         ++offset;
         if (foundItems.size() < 2)
 			break;
@@ -69,7 +69,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
     if (nitems == 1)
     {
         ret = foundItems.back();
-        mnemonic = m_mnemonic->Item(ret);
+        mnemonic = m_mnemonics->Item(ret);
         if (mnemonic->GetByteCodeSize() > maxitems)
             ret = OPCODE_NOT_FOUND;
     }
@@ -113,7 +113,7 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
     }
     else
     {
-        de->setupInstructionItem(m_mnemonic->Item(mnc_item), prg_index);
+        de->setupInstructionItem(m_mnemonics->Item(mnc_item), prg_index);
     	ret = m_disassembled_list->insert(de, dasm_position);
     }
 

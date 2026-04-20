@@ -45,7 +45,7 @@ class Decoder: public DebugLogBase
 
         ProjectBase         *m_project_base;
         RawData             *m_program;
-        MnemonicContainer   *m_mnemonic;
+        MnemonicContainer   *m_mnemonics;
         LabelManager        *m_labels;
         DisassembledContainer   *m_disassembled_list;
 
