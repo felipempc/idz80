@@ -41,23 +41,25 @@ void SourceCode::clear()
 int SourceCode::addNewItem(const int t_dasmindex, const int labelprogaddr, const int labelvaraddr,
 							 const int org, const wxString &comment)
 {
-    SourceCodeLine *cvi;
+    SourceCodeLine *scline;
 
-    cvi = new SourceCodeLine;
-    cvi->comment = 0;
+    scline = new SourceCodeLine;
+    scline->comment = nullptr;
 
-    if (!comment.IsEmpty())
-    {
-        cvi->comment = new wxString(comment);
+    if (comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
+        scline->comment = new wxString(comment);
     }
 
-    cvi->dasmedItem = t_dasmindex;
-    cvi->labelProgAddress = m_labels->prog_labels->getDatabyAddress(labelprogaddr);
-    cvi->labelVarAddress = m_labels->var_labels->getDatabyAddress(labelvaraddr);
-    cvi->originAddress = org;
-    cvi->rectArg1 = 0;
-    cvi->rectArg2 = 0;
-    addLine(cvi);
+    scline->dasmedItem = t_dasmindex;
+    scline->labelProgAddress = m_labels->prog_labels->getDatabyAddress(labelprogaddr);
+    scline->labelVarAddress = m_labels->var_labels->getDatabyAddress(labelvaraddr);
+    scline->originAddress = org;
+    scline->rectArg1 = 0;
+    scline->rectArg2 = 0;
+    addLine(scline);
    return ++m_itemcount;
 }
 
@@ -71,8 +73,12 @@ int SourceCode::addDasmIndex(const DisassembledIndex t_dasmindex, const wxString
 {
     SourceCodeLine *scline = new SourceCodeLine;
 
-    if (!t_comment.IsEmpty())
+    if (t_comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
         scline->comment = new wxString(t_comment);
+    }
 
     scline->dasmedItem = t_dasmindex;
     scline->labelProgAddress = 0;
@@ -95,8 +101,12 @@ int SourceCode::addProgramLabel(const AbsoluteAddress t_labeladdr, const wxStrin
 {
     SourceCodeLine *scline = new SourceCodeLine;
 
-    if (!t_comment.IsEmpty())
+    if (t_comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
         scline->comment = new wxString(t_comment);
+    }
 
     scline->dasmedItem = -1;
     scline->labelProgAddress = m_labels->prog_labels->getDatabyAddress(t_labeladdr);
@@ -119,8 +129,12 @@ int SourceCode::addVarLabel(const AbsoluteAddress t_labeladdr, const wxString &t
 {
     SourceCodeLine *scline = new SourceCodeLine;
 
-    if (!t_comment.IsEmpty())
+    if (t_comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
         scline->comment = new wxString(t_comment);
+    }
 
     scline->dasmedItem = -1;
     scline->labelProgAddress = 0;
@@ -139,8 +153,12 @@ int SourceCode::addOrigin(const AbsoluteAddress t_org, const wxString &t_comment
 {
     SourceCodeLine *scline = new SourceCodeLine;
 
-    if (!t_comment.IsEmpty())
+    if (t_comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
         scline->comment = new wxString(t_comment);
+    }
 
     scline->dasmedItem = -1;
     scline->labelProgAddress = 0;
@@ -160,8 +178,12 @@ int SourceCode::addComment(const wxString &t_comment)
 {
     SourceCodeLine *scline = new SourceCodeLine;
 
-    if (!t_comment.IsEmpty())
+    if (t_comment.IsEmpty()) {
+        scline->comment = nullptr;
+    }
+    else {
         scline->comment = new wxString(t_comment);
+    }
 
     scline->dasmedItem = -1;
     scline->labelProgAddress = 0;

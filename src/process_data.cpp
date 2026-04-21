@@ -229,8 +229,9 @@ void ProcessData::initSourceCode(const unsigned int t_index)
     // points to the last line of actual source_code
     fstil = source_code->getCount();
 
-    while (i < disassembled->getCount())
+    while (i < disassembled->getCount()) {
         source_code->addDasmIndex(i++, "");
+    }
 
     source_code->setFirstInstructionLine(fstil);
 }

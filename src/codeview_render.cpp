@@ -222,6 +222,8 @@ void CodeView::render(wxDC &t_dc, const int t_line_pixel, const int t_fromline, 
         if (sc_line->originAddress >= 0) {
             commentoffset = renderOrigin(t_dc, linepixel, sc_line->originAddress);
             address = sc_line->originAddress;
+            ++line_offset;
+            linepixel += m_font_height;
             continue;   // go to next line_offset
         }
 

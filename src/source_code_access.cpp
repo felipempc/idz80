@@ -132,7 +132,7 @@ SourceCodeLine *SourceCodeAccess::line(LineNumber t_linenumber)
     else
     {
         m_current_index = 0;
-        m_current_item = 0;
+        m_current_item = nullptr;
     }
     return m_current_item;
 }

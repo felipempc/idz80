@@ -161,6 +161,7 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
 //    codeview_->Enable(false);
     unsigned int file_selected = m_notebook->GetSelection();
     m_processdata->disassembleFirst(file_selected);
+    m_processdata->initSourceCode(file_selected);
 
 //    m_processdata->disassembleFirst(file_selected);
 //    m_processdata->initSourceCode(file_selected);
@@ -183,6 +184,8 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     m_panel_log->AppendText(wxString::Format("Program Label = %d items, Var Label = %d items, IO Labels = %d items.\n",
                                           process_->prog_labels->GetCount(), process_->var_labels->GetCount(), process_->io_labels->GetCount()));
     #endif
+
+    codeview->Refresh();
 
 //    codeview_->Plot();
 
