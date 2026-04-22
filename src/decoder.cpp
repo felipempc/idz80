@@ -141,20 +141,20 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
         {
             case OT_VARIABLE:
                                 argument_value = de->getArgumentValue(i, 0);
-                                str = m_labels->sys_vars->find(argument_value);
+                                //str = m_labels->sys_vars->find(argument_value);
                                 m_labels->var_labels->addLabel(argument_value, str, index);
                                 de->setArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_ABSOLUTE_ADDRESS:
             case OT_RELATIVE_ADDRESS:
                                 argument_value = de->getArgumentValue(i, m_disassembled_list->getBaseAddress(index));
-                                str = m_labels->sys_calls->find(argument_value);
+                                //str = m_labels->sys_calls->find(argument_value);
                                 m_labels->prog_labels->addLabel(argument_value, str, index);
                                 de->setArgumentStyle(i, STYLE_LABELED);
                                 break;
             case OT_IO_ADDRESS:
                                 argument_value = de->getArgumentValue(i, 0);
-                                str = m_labels->sys_io->find(argument_value);
+                                //str = m_labels->sys_io->find(argument_value);
                                 m_labels->io_labels->addLabel(argument_value, str, index);
                                 de->setArgumentStyle(i, STYLE_LABELED);
                                 break;

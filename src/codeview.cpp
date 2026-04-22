@@ -189,7 +189,7 @@ int CodeView::getCount()
 
 /// @brief Draws the damaged region of the viewer.
 /// @param dc The device context (wxwidgets). A region where graphics and text can be drawn.
-void CodeView::onDraw(wxDC &dc)
+void CodeView::Draw(wxDC &dc)
 {
     int fromLine, totalLines, fixedY, fixedHeight;
     wxRegionIterator regIterator(GetUpdateRegion());
@@ -310,7 +310,7 @@ void CodeView::onPaint(wxPaintEvent& t_event)
     wxAutoBufferedPaintDC dc(this);
     DoPrepareDC(dc);
     updateLastCursorRect();
-    onDraw(dc);
+    Draw(dc);
     updateVirtualSize();
 }
 

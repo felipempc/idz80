@@ -68,6 +68,7 @@ void SmartDecoder::fullDisassemble()
     {
         m_next_address = m_program->ExecAddress;                    // Next address is the execution address
         m_labels->prog_labels->addLabel(m_next_address, "START");
+        m_disassembled_list->addOrigin(0, m_next_address);
     }
     program_size = m_program->GetSize();
     dasmed_index = program_size;

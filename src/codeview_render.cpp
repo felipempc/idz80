@@ -64,8 +64,10 @@ uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_l
     //TODO: Since it's data, a rectangle is needed?
     // Create a rectangle around the argument
     wxRect** data_rectangle = nullptr;
-    *data_rectangle = sc_line->rectArg1;
-    updateRectangle(data_rectangle, COL_MNEM, t_line_pixel, argwidth, m_font_height);
+    if (sc_line->rectArg1) {
+        *data_rectangle = sc_line->rectArg1;
+        updateRectangle(data_rectangle, COL_MNEM, t_line_pixel, argwidth, m_font_height);
+    }
 
     return column_pixel;
 }

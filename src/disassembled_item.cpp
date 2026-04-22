@@ -477,8 +477,8 @@ void DisassembledItem::setupInstructionItem(MnemonicItem *mnemonic, const FileOf
     m_is_instruction = true;
     m_length = mnemonic->GetByteCodeSize();
     m_mnemonic_signature = mnemonic->GetMnemonicSignature();
-    fillArgument();
     copyRealBytecode();
+    fillArgument();
 }
 
 
@@ -513,14 +513,16 @@ void DisassembledItem::copyRealBytecode()
 void DisassembledItem::fillArgument()
 {
     if ((m_mnemonic->GetArgumentCount() == 1) && (m_mnemonic->GetArgumentSize() == 1)) {  // One 8bit argument
-        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
+        int arg_debug1 = getByteOpcode(m_mnemonic->GetArgumentPosition());
+        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition());
         m_arguments.unsigned_8bit_high = 0;
         m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low;
         m_arguments.signed_value = static_cast<int>(getByteOpcode(m_mnemonic->GetArgumentPosition()));
     }
     else {  //Two of 8bit or 1 of 16bit
-        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition()) & 0xFF;
-        m_arguments.unsigned_8bit_high = getByteOpcode(m_mnemonic->GetArgumentPosition() + 1) & 0xFF;
+        int arg_debug2 = getByteOpcode(m_mnemonic->GetArgumentPosition());
+        m_arguments.unsigned_8bit_low = getByteOpcode(m_mnemonic->GetArgumentPosition());
+        m_arguments.unsigned_8bit_high = getByteOpcode(m_mnemonic->GetArgumentPosition() + 1);
         m_arguments.unsigned_16bit = m_arguments.unsigned_8bit_low + m_arguments.unsigned_8bit_high * 0x100;
         m_arguments.signed_value = static_cast<int>(m_arguments.unsigned_16bit);
     }

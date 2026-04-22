@@ -163,8 +163,6 @@ void IDZ80::OnMenuToolsDisAsm(wxCommandEvent& event)
     m_processdata->disassembleFirst(file_selected);
     m_processdata->initSourceCode(file_selected);
 
-//    m_processdata->disassembleFirst(file_selected);
-//    m_processdata->initSourceCode(file_selected);
 /*
     process_->insertLineLabelsInSourceCode();
     process_->prog_labels->SortAddress(true);

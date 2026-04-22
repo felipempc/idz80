@@ -141,7 +141,7 @@ private:
 
     // Window event handlers
     void onSize(wxSizeEvent& event);
-    void onDraw(wxDC &dc);
+    void Draw(wxDC &dc);
     void onPaint(wxPaintEvent& event);
     void onGetFocus(wxFocusEvent& event);
     void onKillFocus(wxFocusEvent& event);

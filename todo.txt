@@ -19,4 +19,7 @@
               Partindo pra cima de codeview*
  14/04/26   - Terminado codeview, codeview_render, codeview_evmouse, codeview_events e codeview_render.cpp
               Pendentes: searchmanager, search_argument_dialog, projectmanager_xml, fileinfo_dialog, editlabel_dialog e codegenerator
-
+21/04/26    - decoder_smart: m_disassembled_list->getBaseAddress() está retornando 0 assim o file offset vai ao infinito,
+              precisa ser definido o ORG "origem" inicial em fullDisassemble. OK
+22/04/25    - Problemas: HotKey para abrir arquivo (ALT + l) não funciona. DisassembledItem::fillArgument preenche argumento para as
+              instruções que não tem argumento. DecoderSmart está travando em fillData().
