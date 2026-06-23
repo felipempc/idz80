@@ -29,6 +29,7 @@ ProcessData::ProcessData(ProjectBase *t_parent)
 
     //m_search_status = new SearchManager();
     //m_disassembler = new SmartDecoder(t_parent);
+    m_disassembler = new Decoder(t_parent);
 
 
     ModuleName = "ProcessData";

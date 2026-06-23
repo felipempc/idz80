@@ -132,8 +132,12 @@ void Decoder::SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index)
 
     uint            argument_value;
     wxString		str;
+    MnemonicItem    *mnemonic = 0;
 
-    args = de->getMnemonic()->GetSourceArgument();
+    mnemonic = de->getMnemonic();
+    if (mnemonic) {
+        args = mnemonic->GetSourceArgument();
+    }
 
     for (unsigned int i; i < 2; ++i) {
         args = de->getMnemonic()->GetArgument(i);
@@ -192,11 +196,17 @@ uint Decoder::MSXWeirdRST(DisassembledItem *de, DisassembledIndex dasm_position)
 {
     uint offset, new_program_counter;
     Arguments args;
+    MnemonicItem    *mnemonic = 0;
 
     offset = de->getOffsetInFile();
     new_program_counter = 0;
 
-    args = de->getMnemonic()->GetArgument(0);
+    mnemonic = de->getMnemonic();
+    if (!mnemonic) {
+        return new_program_counter;
+    }
+
+    args = mnemonic->GetArgument(0);
     switch (args.operand)
     {
         case OP_08:

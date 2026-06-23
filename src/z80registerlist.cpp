@@ -77,11 +77,14 @@ void Z80RegisterList::UpdateLife()
 void Z80RegisterList::LoadRegister(DisassembledItem *t_dasm_item)
 {
     uint data = 0, offset = 0;
+    MnemonicItem    *mnemonic = 0;
 
     UpdateLife();
+    mnemonic = t_dasm_item->getMnemonic();
 
-    if ((t_dasm_item->getMnemonic()->GetSourceArgument().operand == OP_LITERAL) &&
-        (t_dasm_item->getMnemonic()->GetDestinationArgument().type == OT_REGISTER)) {       // check if it's an "LD A, dd" kind of instruction
+    if ((mnemonic) &&
+        (mnemonic->GetSourceArgument().operand == OP_LITERAL) &&
+        (mnemonic->GetDestinationArgument().type == OT_REGISTER)) {       // check if it's an "LD A, dd" kind of instruction
         
         data = t_dasm_item->getArgumentValue(0);        // get the source(0) argument value
         offset = t_dasm_item->getOffsetInFile();
