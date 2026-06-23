@@ -49,7 +49,6 @@ ifeq ($(DEBUG), 0)
 	CC_FLAGS = -c -pipe -mthreads -std=c++17 $(RELEASE_WARNINGS) -static-libgcc -static-libstdc++ -static
 	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
 # -D__GNUWIN32__
-	INCLUDE0_PATH := $(WXW_INCLUDE2)
 	LIBFILE0 := wxbase32u_gcc_custom
 	LIBFILE1 := wxmsw32u_core_gcc_custom
 	LIBFILE2 := wxmsw32u_aui_gcc_custom
@@ -60,22 +59,15 @@ else
 	DEBUG_WARNINGS = -Wredundant-decls -Wall -Wextra -pedantic -Wsequence-point -Wnon-virtual-dtor -Wold-style-cast
 	CC_FLAGS = -g -c -pipe -mthreads -std=c++17 $(DEBUG_WARNINGS)
 	DEFS = -D__WXMSW__ -DwxUSE_UNICODE -DWXUSINGDLL
-	INCLUDE0_PATH := $(WXW_INCLUDE2)
 	LIBFILE0 := wxbase32u_gcc_custom
 	LIBFILE1 := wxmsw32u_core_gcc_custom
 	LIBFILE2 := wxmsw32u_aui_gcc_custom
 	LIBFILE3 := wxmsw32u_adv_gcc_custom
 	LIBFILE4 := wxbase32u_xml_gcc_custom
-#	CC_FLAGS = -Wredundant-decls -c -Wall -pipe -mthreads -g -std=c++17 -Wsequence-point
-#	DEFS = -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL -DwxUSE_UNICODE -D__WXDEBUG__ -DIDZ80DEBUG -DIDZ80_DECODER -DIDZ80_DASMED
-#	INCLUDE0_PATH = $(WXW)/lib/gcc_dll/mswud
-#	LIBFILE1 := -lwxbase$(WXVERSION_SHORT)ud_gcc_custom
-#	LIBFILE2 := -lwxmsw$(WXVERSION_SHORT)ud_aui_gcc_custom
-#	LIBFILE3 := -lwxmsw$(WXVERSION_SHORT)ud_core_gcc_custom
 endif
 
-
-INCLUDE :=-I$(PROJECT_INCLUDE) -I$(WXW_INCLUDE1) -I$(INCLUDE0_PATH)
+# using -isystem to avoid warnings from wxwidgets headers
+INCLUDE :=-I$(PROJECT_INCLUDE) -isystem $(WXW_INCLUDE1) -isystem $(WXW_INCLUDE2)
 
 # ld flags / Opções de linkedição
 LDFLAGS =  -Wl,--subsystem,windows -mwindows

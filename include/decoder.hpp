@@ -53,7 +53,7 @@ class Decoder: public DebugLogBase
 
         //TODO: Should it return MnemonicItem* instead?
         uint Fetch(const FileOffset startpoint, uint maxitems);
-        uint Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
+        uint Decode(DisassembledItem *de, const FileOffset prg_index, DisassembledIndex dasm_position = 0xFFFFFFFF);
         void SetupArgumentLabels(DisassembledItem *de, DisassembledIndex index);
 
         void MSXCheckFunctionRegisters(DisassembledItem *de);

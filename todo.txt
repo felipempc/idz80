@@ -11,6 +11,8 @@
   STATUS
   ------
 
+  19/06/26  - Bug em decoder_smart, a rotina fill_data trava e não insere nenhum item decodificado. delta passa do tamanho do arquivo.
+  20/06/26  - m_disassembled_list->getData(i + 1) retorna um valor muito maior do que o tamanho do arquivo.
   12/2025   - main_dialog - Prosseguir em OpenProgramFile() para consolidar a estrutura do projeto e dar proseguimento a desassemblar.
   18/03/26  - Inserido no Makefile os arquivos process_data, decoder, decoder_smart, subroutine, z80register.cpp, z80registerlist
               e está compilando.

@@ -89,7 +89,7 @@ uint Decoder::Fetch(const FileOffset prg_index, uint maxitems)
  *            position - of item to be inserted in the list
  * Return = index of the item inserted in the list
   */
-uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledIndex dasm_position)
+uint Decoder::Decode(DisassembledItem *de, const FileOffset prg_index, DisassembledIndex dasm_position)
 {
     uint     mnc_item,
             ret = -1;
@@ -99,7 +99,7 @@ uint Decoder::Decode(DisassembledItem *de, FileOffset prg_index, DisassembledInd
 
     // ensure it won't overwrite existing dasmitems
     next_de = m_disassembled_list->getData(dasm_position);
-    if (next_de == 0)
+    if (next_de == nullptr)
         scan_limit = m_program->GetSize();
     else
         scan_limit = next_de->getOffsetInFile() - prg_index;
@@ -283,8 +283,9 @@ void Decoder::fullDisassemble(DisassembledContainer *t_disassembled)
     uint file_size, item;
     DisassembledItem *dasm_item;
 
-    m_program = t_disassembled->getProgram();
     m_disassembled_list = t_disassembled;
+    m_program = m_disassembled_list->getProgram();
+    
     
     if ((!m_program) || (!t_disassembled))
         return;

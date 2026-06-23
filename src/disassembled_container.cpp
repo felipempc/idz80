@@ -52,7 +52,7 @@ void DisassembledContainer::clear()
 DisassembledItem *DisassembledContainer::getData(DisassembledIndex index)
 {
     if (index >= m_disassembled_list.size())
-        return 0;
+        return nullptr;
     return m_disassembled_list[index];
 }
 

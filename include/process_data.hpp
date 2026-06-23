@@ -19,7 +19,8 @@
 #include "disassembled_item.hpp"
 #include "labelslist.hpp"
 #include "systemlabels.hpp"
-#include "decoder_smart.hpp"
+//#include "decoder_smart.hpp"
+#include "decoder.hpp"
 #include "debug_logwindow.hpp"
 #include "labelmanager.hpp"
 #include "codeview_definitions.hpp"
@@ -66,7 +67,8 @@ class ProcessData : public ProjectBase
         ~ProcessData();
 
     private:
-        SmartDecoder    *m_disassembler;
+        //SmartDecoder    *m_disassembler;
+        Decoder         *m_disassembler;
         SearchManager   *m_search_status;
 
         void resetStyleFromUsers(DisassembledContainer *t_disassembled, IntArray *t_users);

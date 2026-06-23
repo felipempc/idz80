@@ -36,7 +36,7 @@ SmartDecoder::~SmartDecoder()
 void SmartDecoder::fullDisassemble()
 {
     bool    processing = true,
-            update_item = false;
+            next_address_modified = false;
 
     int     dasmed_index;
 
@@ -74,6 +74,8 @@ void SmartDecoder::fullDisassemble()
     dasmed_index = program_size;
     while (processing)
     {
+        ///if (m_next_address < m_disassembled_list->getBaseAddress(0))
+
         m_last_prg_counter = m_next_address - m_disassembled_list->getBaseAddress(0);
         m_actual_address = m_next_address;
 
@@ -102,9 +104,9 @@ void SmartDecoder::fullDisassemble()
         switch (dasmed_item->getMnemonic()->GetGroup())
         {
         case GRP_CALL:
-            update_item = callSubroutine(dasmed_item);
+            next_address_modified = callSubroutine(dasmed_item);
 #ifdef IDZ80_DEBUG_DECODER
-            if (update_item)
+            if (next_address_modified)
             {
                 LogIt(wxString::Format("[0x%.4X] Entering subroutine No. %d  [0x%.4X].", m_actual_address, m_sub_routine->getCounter(), address));
             }
@@ -112,9 +114,9 @@ void SmartDecoder::fullDisassemble()
             break;
 
         case GRP_RETURN:
-            update_item = returnSubroutine(dasmed_item, m_next_address);
+            next_address_modified = returnSubroutine(dasmed_item, m_next_address);
 #ifdef IDZ80_DEBUG_DECODER
-            if (update_item)
+            if (next_address_modified)
             {
                 LogIt(wxString::Format("[0x%.4X] Returning from subroutine No. %d.", m_actual_address, (m_sub_routine->getCounter() + 1)));
             }
@@ -122,7 +124,7 @@ void SmartDecoder::fullDisassemble()
             break;
 
         case GRP_JUMP:
-            update_item = processBranch(dasmed_item, processing);
+            next_address_modified = processBranch(dasmed_item, processing);
             break;
 
         case GRP_LOAD_16BIT:
@@ -133,7 +135,7 @@ void SmartDecoder::fullDisassemble()
         case GRP_RST:
             if (MSXWeirdRST(dasmed_item, (dasmed_index + 1)))
             {
-                update_item = true;
+                next_address_modified = true;
                 m_next_address += 3;
             }
             break;
@@ -151,17 +153,18 @@ void SmartDecoder::fullDisassemble()
 
             m_next_address = CartridgeCalls.at(0);
             removeAddressFrom(m_next_address, CartridgeCalls);
-            update_item = true;
+            next_address_modified = true;
             processing = true;
         }
 
-        if (update_item)
+
+        if (next_address_modified)
         {
             //TODO: Revise it
             dasmed_index = m_disassembled_list->findAddress(m_next_address);
             if (dasmed_index == -1) // will never be -1. Must be revised
                 processing = false;
-            update_item = false;
+            next_address_modified = false;
         }
         else
             ++dasmed_index;
@@ -378,7 +381,7 @@ bool SmartDecoder::callSubroutine(DisassembledItem *t_dasmed_item)
         {
             ret = m_sub_routine->call_subroutine(address, m_next_address);
             if (ret)
-                m_next_address = address;
+                m_next_address = address;   //Modify next address to be processed
         }
     }
     return ret;
@@ -454,6 +457,11 @@ void SmartDecoder::fillData()
 		de_2 = m_disassembled_list->getData(i + 1);
 		index = (de_1->getOffsetInFile() + de_1->getOpcodeSize());
 		delta = de_2->getOffsetInFile() - index;
+
+        if (i == 4168) {
+            int its_a_trap = 1;
+        }
+
 		for(count = 0; count < delta; ++count)
 		{
 			de_1 = new DisassembledItem(m_program);
