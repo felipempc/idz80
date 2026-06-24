@@ -26,14 +26,14 @@ uint CodeView::renderData(wxDC &dc, const int t_line_pixel, SourceCodeLine *sc_l
 {
     uint column_pixel, argwidth, lenght;
     DisassembledItem *dasmed_item;
-    wxString str = "ERROR";
+    wxString str;   // = "ERROR";
 
     column_pixel = COL_MNEM;
     dasmed_item = m_sourcecode->getDisassembled()->getData(sc_line->dasmedItem);
 
     //TODO: Verify why we drawtext of an empty string
     dc.SetTextForeground(m_color_text_foreground);
-    dc.DrawText(str, column_pixel, t_line_pixel);
+    //dc.DrawText(str, column_pixel, t_line_pixel);
     column_pixel += dc.GetTextExtent(str).GetWidth();
 
     if ((dasmed_item->getArgumentStyle(0) == STYLE_WORD_HEX) && (dasmed_item->getOpcodeSize() % 2 == 0)) { // Must be even
