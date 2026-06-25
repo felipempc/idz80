@@ -100,7 +100,7 @@ void IDZ80::disableMenuForNoFile()
 
 void IDZ80::OnMenuFileOpen(wxCommandEvent& event)
 {
-    Clear_all();
+//    clearAll();
     if (event.GetId() == idMenuFileOpenArchive)
         OpenProgramFile();
     else
@@ -254,16 +254,20 @@ void IDZ80::OnAuiNotebookClose(wxAuiNotebookEvent &event)
 {
     int i = m_notebook->GetSelection();
     if (closeFileDialog(m_notebook->GetPageText(i))) {
-        m_programs_mgr->Remove(event.GetSelection());
+        m_notebook->DeletePage(i);
+        m_programs_mgr->Remove(i);
+        m_disassembled_mgr->Delete(i);
+        m_sourcecode_mgr->deleteSourceCode(i);
         if (m_programs_mgr->Count() == 0)
         {
             disableMenuForNoFile();
             UpdateTitle("");
-            Clear_all();
+//          clearAll();
         }
     }
-    else    
+    else {
         event.Veto();
+    }
 }
 
 
@@ -426,7 +430,6 @@ void IDZ80::OnMenuFileInfo(wxCommandEvent& event)
 
 
 
-
 void IDZ80::OnMenuFileClose(wxCommandEvent& event)
 {
     int i = m_notebook->GetSelection();
@@ -434,11 +437,13 @@ void IDZ80::OnMenuFileClose(wxCommandEvent& event)
     {
         m_notebook->DeletePage(i);
         m_programs_mgr->Remove(i);
+        m_disassembled_mgr->Delete(i);
+        m_sourcecode_mgr->deleteSourceCode(i);
         if(m_notebook->GetPageCount() == 0)
         {
             disableMenuForNoFile();
             UpdateTitle("");
-            Clear_all();
+            //clearAll();
         }
     }
 }

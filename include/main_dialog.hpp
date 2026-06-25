@@ -86,7 +86,7 @@ class IDZ80: public ProjectBase, public wxFrame
 
         bool LoadMnemonicsDB();
         bool SaveAs();
-        void Clear_all();
+//        void clearAll();
 
         void OpenProgramFile();
         void OpenProjectFile();

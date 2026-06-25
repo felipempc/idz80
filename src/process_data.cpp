@@ -209,7 +209,7 @@ void ProcessData::makeData(SourceCode *t_sourcecode, RangeItems &t_range)
 void ProcessData::initSourceCode(const unsigned int t_index)
 {
     uint                    i, fstil;
-    wxArrayString           m_Comments;
+    wxArrayString           comments;
     DisassembledContainer   *disassembled = 0;
     SourceCode  *source_code = 0;
 
@@ -217,15 +217,15 @@ void ProcessData::initSourceCode(const unsigned int t_index)
     source_code = m_sourcecode_mgr->index(t_index);
     source_code->clear();
 
-    m_Comments.Add("; ------------------------");
-    m_Comments.Add("; Disassembled with IDZ80");
-    m_Comments.Add("; 2010 by Felipempc");
-    m_Comments.Add("; ------------------------");
-    m_Comments.Add("");
+    comments.Add("; ------------------------");
+    comments.Add("; Disassembled with IDZ80");
+    comments.Add("; 2010 by Felipempc");
+    comments.Add("; ------------------------");
+    comments.Add("");
 
     i = 0;
-    while (i < m_Comments.GetCount())
-        source_code->addComment(m_Comments[i++]);
+    while (i < comments.GetCount())
+        source_code->addComment(comments[i++]);
 
     source_code->addOrigin(disassembled->getBaseAddress(0), "");
     i = 0;
@@ -314,15 +314,6 @@ void ProcessData::removeFromLabelUserList(DisassembledItem *t_dasmitem, const ui
 }
 
 
-
-/*
- * Take selected lines of code and convert to lines
- * of data.
- * Delete program labels;
- * Keeps var labels;
- * Keeps comments;
- * keeps org directives;
- */
 
 
 /// @brief Takes selected lines of code and convert to lines of data\

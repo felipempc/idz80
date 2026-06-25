@@ -275,14 +275,13 @@ bool IDZ80::SaveAs()
 }
 
 
-
-void IDZ80::Clear_all()
+/*
+void IDZ80::clearAll()
 {
-//    codeview_->Clear();
-//    codeview_->Enable(false);
+    //TODO: Rewrite it in process data
 //    process_->Clear();
 }
-
+*/
 
 
 void IDZ80::UpdateTitle(const wxString str)
